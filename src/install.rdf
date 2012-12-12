@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+    <RDF:Description about="urn:mozilla:install-manifest">
+        <em:creator>Laurent Jouanneau</em:creator>
+        <em:description/>
+        <em:homepageURL/>
+        <em:aboutURL></em:aboutURL>
+        <em:iconURL/>
+        <em:id>slimerjs@innophi</em:id>
+        <em:name>SlimerJS</em:name>
+        <em:version>0.1</em:version>
+        <em:updateURL/>
+        <em:type>2</em:type>
+        <!--<em:bootstrap>true</em:bootstrap>-->
+        <em:targetApplication>
+            <RDF:Description>
+                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+                <em:minVersion>16.*</em:minVersion>
+                <em:maxVersion>18.*</em:maxVersion>
+            </RDF:Description>
+        </em:targetApplication>
+        <!--<em:optionsURL/>
+        <em:targetPlatform/>
+        <em:updateKey/>
+        <em:hidden/>
+        <em:localized>
+            <RDF:Description><em:locale/><em:name/><em:description/></RDF:Description>
+        </em:localized>
+        <em:localized><RDF:Description><em:locale/><em:name/><em:description/></RDF:Description></em:localized>
+        <em:localized><RDF:Description><em:locale/><em:name/><em:description/></RDF:Description></em:localized>
+        <em:localized><RDF:Description><em:locale/><em:name/><em:description/></RDF:Description></em:localized>-->
+   </RDF:Description>
+</RDF>
