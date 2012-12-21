@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ "$1" == "--help" -o "$1" == "-h" ]
+then
+    echo "  --cookies-file=<file>        specifies the file name to store"
+    echo "                               the persistent Cookies."
+    echo "  --disk-cache=[yes|no]        enables disk cache (default is no)."
+    echo "  --help or -h                 show this help"
+    echo "  --ignore-ssl-errors=[yes|no] ignores SSL errors (default is no)."
+    echo "  --load-images=[yes|no]       load all inlined images (default is yes)."
+    echo "  --local-to-remote-url-access=[yes|no] allows local content to "
+    echo "                               access remote URL (default is no)."
+    echo "  --max-disk-cache-size=size   limits the size of disk cache (in KB)."
+    echo "  --output-encoding=encoding   sets the encoding used for terminal"
+    echo "                               output (default is utf8)."
+    echo "  --proxy=address:port         specifies the proxy server to use"
+    echo "                               (e.g. --proxy=192.168.1.42:8080)."
+    echo "  --proxy-type=[http|socks5|none] specifies the type of the proxy"
+    echo "                               server (default is http)."
+    echo '  --script-encoding=encoding   sets the encoding used for the'
+    echo '                               starting script (default is utf8).'
+    echo '  --version or -v              prints out the version of SlimerJS.'
+    echo '                               Halts immediately.'
+    echo '  --web-security=[yes|no]      enables web security and forbids'
+    echo '                               cross-domain XHR (default is yes).'
+    echo '  --config=<filename>          load the given configuration file'
+    exit 0
+fi
+
+if [ "$1" == "--version" -o "$1" == "-v" ]
+then
+    echo "SlimerJS 0.0.1"
+    exit 0
+fi
+
+firefox -P slimerjs --slimerjs -no-remote $@

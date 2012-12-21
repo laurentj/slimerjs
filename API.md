@@ -19,7 +19,7 @@ Here is the compatibility table.
 <table>
     <tr style="background-color:red;"><td>--cookies-file=/path/to/cookies.txt</td><td></td></tr>
     <tr style="background-color:red;"><td>--disk-cache=\[yes\|no\]</td><td></td></tr>
-    <tr style="background-color:red;"><td>--help or -h</td><td></td></tr>
+    <tr style="background-color:green;"><td>--help or -h</td><td></td></tr>
     <tr style="background-color:red;"><td>--ignore-ssl-errors=\[yes\|no\]</td><td></td></tr>
     <tr style="background-color:red;"><td>--load-images=\[yes\|no\]</td><td></td></tr>
     <tr style="background-color:red;"><td>--local-to-remote-url-access=\[yes|no\]</td><td></td></tr>
@@ -28,11 +28,11 @@ Here is the compatibility table.
     <tr style="background-color:red;"><td>--proxy=address:port</td><td></td></tr>
     <tr style="background-color:red;"><td>--proxy-type=\[http|socks5|none\]</td><td></td></tr>
     <tr style="background-color:red;"><td>--script-encoding=encoding</td><td></td></tr>
-    <tr style="background-color:red;"><td>--version or -v</td><td></td></tr>
+    <tr style="background-color:green;"><td>--version or -v</td><td></td></tr>
     <tr style="background-color:red;"><td>--web-security=\[yes|no\]</td><td></td></tr>
     <tr style="background-color:red;"><td>--config=/path/to/config.json</td><td></td></tr>
-    <tr style="background-color:red;"><td>script path</td><td></td></tr>
-    <tr style="background-color:red;"><td>script arguments</td><td></td></tr>
+    <tr style="background-color:green;"><td>script path</td><td></td></tr>
+    <tr style="background-color:green;"><td>script arguments</td><td></td></tr>
 </table>
 
 # phantom object
