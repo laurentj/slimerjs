@@ -51,6 +51,9 @@ doesn't work yet.
 You could use the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference), but it
 is not implemented yet.
 
+You can read the [compatibility table](API.md) to know the implementation progress.
+
+
 # FAQ
 
 - Why is it not Headless?
