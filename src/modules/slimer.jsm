@@ -30,7 +30,8 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 var httpCookies = [];
 
 function Slimer(version) {
-    this._version = version;
+    let [major, minor, patch] = version.split('.');
+    this._version = { major: major, minor: minor, patch: patch, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
 }
 
 Slimer.prototype = {
