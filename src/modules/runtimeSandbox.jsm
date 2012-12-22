@@ -42,13 +42,14 @@ function runtimeSandbox(name, contentWindow) {
     var c = {}
     Components.utils.import("resource://gre/modules/devtools/Console.jsm", c);
     // we need to indicate which properties the script can access
-    c.console.__exposedProps__ ={
+    c.console.__exposedProps__ = {
         debug:'r', log:'r', info:'r', warn:'r',
         error:'r', trace:'r', clear:'r',
         dir:'r', dirxml:'r', group:'r', groupEnd:'r'
     }
     this._sandbox.console = c.console;
 
+    Components.utils.import('resource://slimerjs/slimer.jsm', this._sandbox);
 }
 
 

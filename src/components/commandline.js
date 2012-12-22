@@ -155,9 +155,16 @@ slCommandLine.prototype = {
             return;
         }
 
-        Services.ww.openWindow(null, "chrome://slimerjs/content/slimerjs.xul", "_blank",
-                "chrome,menubar,toolbar,status,resizable,dialog=no",
-                null);
+        Components.utils.import("resource://gre/modules/AddonManager.jsm");
+        AddonManager.getAddonByID("slimerjs@innophi", function(addon) {
+            slConfiguration.version = addon.version;
+
+            Services.ww.openWindow(null, "chrome://slimerjs/content/slimerjs.xul", "_blank",
+                    "chrome,menubar,toolbar,status,resizable,dialog=no",
+                    null);
+
+        });
+
     },
 
     get helpInfo () {

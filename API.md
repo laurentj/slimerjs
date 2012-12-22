@@ -25,7 +25,7 @@ Here is the compatibility table.
     <tr><td>script arguments</td><td>Parsed</td></tr>
 </table>
 
-# phantom object
+# slimer object
 
 ## properties
 
@@ -35,7 +35,7 @@ Here is the compatibility table.
     <tr><td>cookiesEnabled</td><td></td></tr>
     <tr><td>libraryPath</td><td></td></tr>
     <tr><td>scriptName</td><td>deprecated in phantomjs: not implemented</td></tr>
-    <tr><td>version</td><td></td></tr>
+    <tr><td>version</td><td>Implemented</td></tr>
 </table>
 
 ## methods
@@ -49,6 +49,11 @@ Here is the compatibility table.
     <tr><td>onerror(msg, trace)</td><td></td></tr>
 </table>
 
+# phantom object
+
+It has the same properties as the slimer object, except the version property:
+it returns the version of PhantomJS to which SlimerJS is compatible.
+
 # CommonJS API
 
 <table>
@@ -57,11 +62,15 @@ Here is the compatibility table.
 
 # Module: Webpage
 
+Not available yet
+
 <table>
     <tr><td>create()</td><td></td></tr>
 </table>
 
 # Webpage object
+
+Not available yet
 
 ## properties
 
@@ -123,11 +132,15 @@ Here is the compatibility table.
 
 # Module: system
 
+Not available yet
+
 <table>
     <tr><td>create()</td><td></td></tr>
 </table>
 
 # System object
+
+Not available yet
 
 ## properties
 
@@ -141,11 +154,15 @@ Here is the compatibility table.
 
 # Module: FileSystem
 
+Not available yet
+
 <table>
     <tr><td>create()</td><td></td></tr>
 </table>
 
 # fs object
+
+Not available yet
 
 ## properties
 
@@ -186,6 +203,8 @@ Here is the compatibility table.
 
 # stream object
 
+Not available yet
+
 <table>
     <tr><td>read()</td><td></td></tr>
     <tr><td>readLine()</td><td></td></tr>
@@ -197,17 +216,23 @@ Here is the compatibility table.
 
 # Module: webserver
 
+Not available yet
+
 <table>
     <tr><td>create()</td><td></td></tr>
 </table>
 
 # WebServer object
 
+Not available yet
+
 <table>
     <tr><td>listen(port, callback)</td><td></td></tr>
 </table>
 
 ## request object
+
+Not available yet
 
 <table>
     <tr><td>method</td><td></td></tr>
@@ -219,6 +244,8 @@ Here is the compatibility table.
 </table>
 
 ## response object
+
+Not available yet
 
 <table>
     <tr><td>headers</td><td></td></tr>

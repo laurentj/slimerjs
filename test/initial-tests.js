@@ -14,6 +14,17 @@ function assertExists(arg, title) {
         dump("FAIL\n");
 }
 
+function assertEquals(expected, result, title) {
+    dump(title+" ")
+    if (expected == result) {
+        dump("OK\n");
+    }
+    else
+        dump("FAIL\n");
+}
+
+
+
 assertExists(window, "has window object? ");
 assertExists(document, "has document object? ");
 assertExists(window.document, "has window.document object? ");
@@ -22,6 +33,12 @@ assertExists(alert, "has alert object? ");
 assertExists(confirm, "has alert object? ");
 dump('Message console should be "log ok": ');
 console.log('log ok');
+
+assertExists(slimer, "has slimer object? ");
+assertExists(phantom, "has phantom object? ");
+
+assertEquals("0.0.2", slimer.version, "slimer has the good version");
+assertEquals("1.7.0", phantom.version, "phantom has the good version");
 
 dump('\nEND of tests\n');
 

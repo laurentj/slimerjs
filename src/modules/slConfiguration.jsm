@@ -33,5 +33,11 @@ var slConfiguration = {
     /**
      * @var nsIFile
      */
-    scriptFile: null
+    scriptFile: null,
+
+    /**
+     * the version of SlimerJS. Field during startup
+     * @see commandline.js
+     */
+    version : ''
 }
