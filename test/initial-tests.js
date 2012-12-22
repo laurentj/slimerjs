@@ -42,4 +42,6 @@ assertEquals("1.7.0", phantom.version, "phantom has the good version");
 
 dump('\nEND of tests\n');
 
+slimer.exit()
+
 

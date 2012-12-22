@@ -48,17 +48,25 @@ You can for example launch some tests:
     slimerjs ../test/initial-tests.js
 ```
 
-
 # Content of a script
 
-It should contain only basic javascript instructions. No API yet except a window object,
-a document object, a console object and dump.
+It should contain javascript instructions. The script is executed in the context of a
+blank page. Here are objects you can play with:
 
-In the future, there will be all features of [PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start).
-You could use the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference), but it
-is not implemented yet.
+- the [window object](https://developer.mozilla.org/en-US/docs/DOM/window) of the blank page and all of its functions
+- the [document object](https://developer.mozilla.org/en-US/docs/DOM/document) of the blank page
+- a console object, similar with the [DOM Console object](https://developer.mozilla.org/en-US/docs/DOM/console),
+  providing these methods: debug, log, info, warn, error, trace, clear, dir, dirxml, group, groupEnd
+- a slimer object and its clone phantom: it will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
+  but all of its properties and methods are not implemented
 
 You can read the [compatibility table](API.md) to know the implementation progress.
+
+In the future, there will be all features of [PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start).
+
+Note that you must execute ```slimer.exit()``` or ```phantom.exit()``` to terminate the application, else
+the window of SlimerJS won't be closed.
+
 
 # FAQ
 

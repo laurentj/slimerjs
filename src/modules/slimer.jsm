@@ -25,6 +25,7 @@
 
 var EXPORTED_SYMBOLS = ["slimer", "phantom"];
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
+Components.utils.import("resource://gre/modules/Services.jsm");
 
 var httpCookies = [];
 
@@ -87,10 +88,18 @@ Slimer.prototype = {
     },
 
     /**
-     * quit the application
+     * quit the application.
+     *
+     * The given exit code is not supported because there is no way
+     * in Mozilla to return this code after the shutdown of the application.
+     *
+     * @param integer code the exit code for the shell console. 0 means ok (default value)
+     * @phantomcompatibilityissue
+     * @internal to resolve the issue, we should provide our own patched xulrunner
      */
-    exit : function() {
-        throw "Not Implemented";
+    exit : function(code) {
+        let c = code || 0;
+        Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },
 
     /**

@@ -44,7 +44,8 @@ Here is the compatibility table.
     <tr><td>addCookie(cookie)</td><td></td></tr>
     <tr><td>clearCookies()</td><td></td></tr>
     <tr><td>deleteCookie(cookieName)</td><td></td></tr>
-    <tr><td>exit(returnValue)</td><td></td></tr>
+    <tr><td>exit(returnValue)</td><td>Partial implementation. The exit code cannot be returned
+      to the shell console because the Mozilla toolkit does not provide a way to return it.</td></tr>
     <tr><td>injectJs(filename)</td><td></td></tr>
     <tr><td>onerror(msg, trace)</td><td></td></tr>
 </table>
