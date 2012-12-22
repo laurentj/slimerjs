@@ -39,20 +39,26 @@ Go to the bin directory and launch:
 ```
 
 It only opens a window with nothing in it (Probably you'll see a ghost...). Yes, this is an incredible project!
-myscript.js is an existing js script, and can contain anything for the moment (it is ignored).
+The given script myscripts.js is executed in the background.
 
-Be patient, this window will not be haunted any more in the future, and the script will be executed.
+You can for example launch some tests:
+
+
+```
+    slimerjs ../test/initial-tests.js
+```
+
 
 # Content of a script
 
-See [Documentation of PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start), although it
-doesn't work yet.
+It should contain only basic javascript instructions. No API yet except a window object,
+a document object, a console object and dump.
 
+In the future, there will be all features of [PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start).
 You could use the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference), but it
 is not implemented yet.
 
 You can read the [compatibility table](API.md) to know the implementation progress.
-
 
 # FAQ
 

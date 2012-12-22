@@ -9,7 +9,9 @@
     windowtype="slimerjs"
     align="center" pack="center"
     width="600" height="400"
+    onload="initRuntime()"
     >
+    <script type="application/javascript" src="runtime.js" />
     <stack id="hauntedwall" width="320" height="320">
         <html:div>
             <html:h1>&slimerjs.title;</html:h1>
@@ -17,5 +19,6 @@
         </html:div>
         <image src="slimerjs.png" width="50" height="50" />
     </stack>
-    
+    <iframe id="runtime" src="about:blank" type="content" collapsed="true"/>
+
 </window>

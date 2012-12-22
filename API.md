@@ -21,7 +21,7 @@ Here is the compatibility table.
     <tr><td>--version or -v</td><td>Implemented</td></tr>
     <tr><td>--web-security=[yes|no]</td><td></td></tr>
     <tr><td>--config=/path/to/config.json</td><td></td></tr>
-    <tr><td>script path</td><td>Parsed</td></tr>
+    <tr><td>script path</td><td>Implemented</td></tr>
     <tr><td>script arguments</td><td>Parsed</td></tr>
 </table>
 
