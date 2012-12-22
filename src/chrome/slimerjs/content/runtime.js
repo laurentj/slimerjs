@@ -28,8 +28,8 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 // we need to output to the shell console
 Services.prefs.setBoolPref('browser.dom.window.dump.enabled', true);
 
-Components.utils.import('resource://slimerjs/runtimeSandbox.js');
-Components.utils.import('resource://slimerjs/slConfiguration.js');
+Components.utils.import('resource://slimerjs/runtimeSandbox.jsm');
+Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 
 
 
