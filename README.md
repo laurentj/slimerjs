@@ -9,7 +9,7 @@ it runs Gecko instead of Webkit, and it is not headless (but you can still use x
 
 You could then use other tools like [CasperJS](http://casperjs.org)...
 
-For the moment, it is only a ghostware :-)
+For the moment, you can only run simple scripts. No API are provided yet.
 
 # Install
 
