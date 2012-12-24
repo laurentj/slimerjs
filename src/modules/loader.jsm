@@ -10,7 +10,7 @@
  * Some functionnalities have been added:
  *  - the possibility to indicate the javascript version in the loader options
  *    to evaluate modules with this version.
- *
+ *  - the possibility to not define pseudo modules '@loader/*' and 'chrome'
  * main contributor: Laurent Jouanneau
  */
 
@@ -338,14 +338,17 @@ exports.unload = unload;
 //   If `resolve` does not returns `uri` string exception will be thrown by
 //   an associated `require` call.
 // - `javascriptVersion` to indicate with which javascript version modules
-//   will be executed
+//   will be executed (default: 1.8)
+// - `definePseudoModules` : set it to false to not define pseudo modules
+//     '@loader/*' and 'chrome' (default: true)
 const Loader = iced(function Loader(options) {
-  let { modules, globals, resolve, paths, javascriptVersion } = override({
+  let { modules, globals, resolve, paths, javascriptVersion, definePseudoModules } = override({
     paths: {},
     modules: {},
     globals: {},
     resolve: exports.resolve,
-    javascriptVersion : '1.8'
+    javascriptVersion : '1.8',
+    definePseudoModules : true
   }, options);
 
   // We create an identity object that will be dispatched on an unload
@@ -361,13 +364,15 @@ const Loader = iced(function Loader(options) {
     sort(function(a, b) { return b.length - a.length }).
     map(function(path) { return [ path, paths[path] ] });
 
-  // Define pseudo modules.
-  modules = override({
-    '@loader/unload': destructor,
-    '@loader/options': options,
-    'chrome': { Cc: Cc, Ci: Ci, Cu: Cu, Cr: Cr, Cm: Cm,
-                CC: bind(CC, Components), components: Components }
-  }, modules);
+  if (definePseudoModules) {
+    // Define pseudo modules.
+    modules = override({
+      '@loader/unload': destructor,
+      '@loader/options': options,
+      'chrome': { Cc: Cc, Ci: Ci, Cu: Cu, Cr: Cr, Cm: Cm,
+                  CC: bind(CC, Components), components: Components }
+    }, modules);
+  }
 
   modules = keys(modules).reduce(function(result, id) {
     // We resolve `uri` from `id` since modules are cached by `uri`.
