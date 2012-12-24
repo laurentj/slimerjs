@@ -58,20 +58,21 @@ function launchMainScript(contentWindow, scriptFile) {
 
     // load and execute the provided script
     let fileURI = Services.io.newFileURI(scriptFile).spec;
-    mainLoader = prepareLoader(fileURI);
+    let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;
+    mainLoader = prepareLoader(fileURI, dirURI);
     Loader.main(mainLoader, 'main', sandbox)
 }
 
 
-function prepareLoader(fileURI) {
+function prepareLoader(fileURI, dirURI) {
 
     return Loader.Loader({
         definePseudoModules : false,
         javascriptVersion : 'ECMAv5',
 
         paths: {
-          'main': fileURI
-          //'': 'resource://slimerjs/commonjs/',
+          'main': fileURI,
+          '': dirURI
         },
         globals: {
         },

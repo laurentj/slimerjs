@@ -57,7 +57,8 @@ blank page. Here are objects you can play with:
 - the [document object](https://developer.mozilla.org/en-US/docs/DOM/document) of the blank page
 - a console object, similar with the [DOM Console object](https://developer.mozilla.org/en-US/docs/DOM/console),
   providing these methods: debug, log, info, warn, error, trace, clear, dir, dirxml, group, groupEnd
-- a slimer object and its clone phantom: it will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
+- a slimer object (and a phantom object that is a reference to slimer for compatibility): it
+  will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
   but all of its properties and methods are not implemented
 
 You can read the [compatibility table](API.md) to know the implementation progress.
@@ -73,7 +74,7 @@ the window of SlimerJS won't be closed.
 - Why is it not Headless?
   - Gecko, the rendering engine of Firefox, cannot render web content without a window.
     See [Mozilla bug 446591](https://bugzilla.mozilla.org/show_bug.cgi?id=446591). however you could
-    launch it with xvfb.
+    launch SlimerJS with xvfb.
 - Why is it called "SlimerJs"?
    - Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox source code uses
     many references from this movie, and since PhantomJS, CasperJs and other related tools, is a matter of ghost...

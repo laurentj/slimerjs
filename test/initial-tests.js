@@ -46,6 +46,15 @@ assertEquals("1", phantom.version.major, "phantom has the good major version");
 assertEquals("7", phantom.version.minor, "phantom has the good minor version");
 assertEquals("0", phantom.version.patch, "phantom has the good patch version");
 
+
+var ex = require('requiredexample');
+assertExists(ex, "is 'ex' defined? ");
+assertEquals("foo", ex.myExample, "value of ex.myExample");
+assertEquals(5, ex.myCalcFunc(2), "value of ex.myCalcFunc(2)");
+
+var m = require('a/b');
+assertEquals("Laurent", m.identity.firstName, "value of m.identity.firstName");
+
 dump('\nEND of tests\n');
 
 slimer.exit()

@@ -46,5 +46,6 @@ function initRuntime() {
     catch(e) {
         dumpex(e, 'Error during the script execution\n');
         dumpStack(e.stack);
+        Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     }
 }

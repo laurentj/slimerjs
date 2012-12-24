@@ -58,7 +58,10 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
 # CommonJS API
 
 <table>
-    <tr><td>require(modulename)</td><td></td></tr>
+    <tr><td>require(modulename)</td><td>Implemented
+        <br/>Limitation: it imports only modules from the same directory
+            of the launched script (or from its sub-directories)
+        </td></tr>
 </table>
 
 # Module: Webpage
