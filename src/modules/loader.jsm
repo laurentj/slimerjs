@@ -3,6 +3,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
+/**
+ * this files does originally come from the Mozilla project (addons-sdk)
+ * resource://gre/modules/commonjs/loader.js
+ * Some functionnalities have been added:
+ *  - the possibility to indicate the javascript version in the loader options
+ *    to evaluate modules with this version.
+ *
+ * main contributor: Laurent Jouanneau
+ */
+
+
 ;(function(id, factory) { // Module boilerplate :(
   if (typeof(define) === 'function') { // RequireJS
     define(factory);
@@ -172,7 +184,7 @@ exports.evaluate = evaluate;
 // Populates `exports` of the given CommonJS `module` object, in the context
 // of the given `loader` by evaluating code associated with it.
 const load = iced(function load(loader, module) {
-  let { sandboxes, globals } = loader;
+  let { sandboxes, globals, javascriptVersion } = loader;
   let require = Require(loader, module);
 
   let sandbox = sandboxes[module.uri] = Sandbox({
@@ -191,7 +203,10 @@ const load = iced(function load(loader, module) {
     wantXrays: false
   });
 
-  evaluate(sandbox, module.uri);
+  let evalOptions =  {
+    version : javascriptVersion
+  }
+  evaluate(sandbox, module.uri, evalOptions);
 
   if (module.exports && typeof(module.exports) === 'object')
     freeze(module.exports);
@@ -322,12 +337,15 @@ exports.unload = unload;
 //   module object (that has `uri` property) and `baseURI` of the loader.
 //   If `resolve` does not returns `uri` string exception will be thrown by
 //   an associated `require` call.
+// - `javascriptVersion` to indicate with which javascript version modules
+//   will be executed
 const Loader = iced(function Loader(options) {
-  let { modules, globals, resolve, paths } = override({
+  let { modules, globals, resolve, paths, javascriptVersion } = override({
     paths: {},
     modules: {},
     globals: {},
-    resolve: exports.resolve
+    resolve: exports.resolve,
+    javascriptVersion : '1.8'
   }, options);
 
   // We create an identity object that will be dispatched on an unload
@@ -372,6 +390,7 @@ const Loader = iced(function Loader(options) {
     // Map of module sandboxes indexed by module URIs.
     sandboxes: { enumerable: false, value: {} },
     resolve: { enumerable: false, value: resolve },
+    javascriptVersion : { enumerable: false, value: javascriptVersion },
     // Main (entry point) module, it can be set only once, since loader
     // instance can have only one main module.
     main: new function() {
