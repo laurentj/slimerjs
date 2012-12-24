@@ -189,10 +189,31 @@ const load = iced(function load(loader, module, initialSandbox) {
 
   let sandbox;
   if (initialSandbox) {
-    sandbox = initialSandbox;
-    sandbox.require = require;
-    sandbox.module = module;
-    sandbox.exports = module.exports;
+    // The new sandbox should "inherits" from the initial sandbox
+
+    // we create the prototype of the new sandbox.
+    // we don't import directly require and module.exports
+    // into the initialSandbox else properties of module.exports
+    // are shadowed and an __exposedProps__ should be needed.
+    // this is why we create a new sandbox with a new prototype
+    // that contains properties of the initial sandbox and
+    // the properties we want to inject
+
+    let proto = create(globals, descriptor({
+        require: require,
+        module: module,
+        exports: module.exports
+      }));
+    proto = create(initialSandbox, descriptor(proto));
+
+    sandbox = Sandbox({
+      name: module.uri,
+      // set this sandbox property so we can reuse its compartment
+      // when creating the new one to reduce memory consumption.
+      sandbox: initialSandbox,
+      prototype: proto,
+      wantXrays: false
+    });
   }
   else {
     sandbox = Sandbox({
