@@ -68,6 +68,13 @@ In the future, there will be all features of [PhantomJS](https://github.com/ariy
 Note that you must execute ```slimer.exit()``` or ```phantom.exit()``` to terminate the application, else
 the window of SlimerJS won't be closed.
 
+# Roadmap
+
+For a first stable release:
+- implementation of the API of PhantomJS
+- package for XulRunner
+
+After this release, I'll try to hack XulRunner to run headless windows (very difficult I guess :-) )
 
 # FAQ
 
