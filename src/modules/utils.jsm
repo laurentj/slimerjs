@@ -1,4 +1,4 @@
-/*
+/*!
 * This file is part of the SlimerJS project from Innophi.
 * https://github.com/laurentj/slimerjs
 *
@@ -22,29 +22,36 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 * DEALINGS IN THE SOFTWARE.
 */
+"use strict";
+var EXPORTED_SYMBOLS = ["dumpex", "dumpStack"];
 
-Components.utils.import("resource://gre/modules/Services.jsm");
 
-// we need to output to the shell console
-Services.prefs.setBoolPref('browser.dom.window.dump.enabled', true);
 
-Components.utils.import('resource://slimerjs/launcher.jsm');
-Components.utils.import('resource://slimerjs/slConfiguration.jsm');
-Components.utils.import('resource://slimerjs/utils.jsm');
-
-/**
- * reference the iframe where scripts are executed
- */
-var runtimeIframe = null;
-
-function initRuntime() {
-    var runtimeIframe = document.getElementById('runtime');
-
-    try {
-        launchMainScript(runtimeIframe.contentWindow, slConfiguration.scriptFile);
+function dumpex(ex, msg) {
+    if (msg)
+        dump (msg);
+    if ( (typeof ex) == 'object') {
+        dump('[Exception] '+ex);
+        if ('fileName' in ex) {
+            dump ('  filename:'+ex.fileName);
+        }
+        if ('lineNumber' in ex) {
+            dump ('  line:'+ex.lineNumber);
+        }
+        dump('\n');
     }
-    catch(e) {
-        dumpex(e, 'Error during the script execution\n');
-        dumpStack(e.stack);
+    else {
+        dump('[Exception] '+ex+'\n');
     }
+}
+
+function dumpStack(aStack) {
+    let stackText = "\nStack trace:\n";
+    let count = 0;
+    let stack = aStack || Components.stack.caller;
+    while(stack) {
+        stackText += count++ + ":" + stack +"\n";
+        stack = stack.caller;
+    }
+    dump(stackText);
 }

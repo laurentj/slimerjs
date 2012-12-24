@@ -1,0 +1,88 @@
+/*!
+* This file is part of the SlimerJS project from Innophi.
+* https://github.com/laurentj/slimerjs
+*
+* Copyright (c) 2012 Laurent Jouanneau
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included
+* in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+"use strict";
+var EXPORTED_SYMBOLS = ["launchMainScript"];
+
+const Cu = Components.utils;
+
+Cu.import("resource://gre/modules/Services.jsm");
+Cu.import('resource://slimerjs/loader.jsm'); //Sandbox, Require, main, Module, Loader
+
+var sandbox = null;
+var mainLoader = null;
+
+function launchMainScript(contentWindow, scriptFile) {
+
+    sandbox = Cu.Sandbox(contentWindow,
+                        {
+                            'sandboxName': 'slimerjs',
+                            'sandboxPrototype': contentWindow,
+                            'wantXrays': true
+                        });
+
+    // expose a console object that dump output into the shell console
+    var c = {}
+    Cu.import("resource://gre/modules/devtools/Console.jsm", c);
+    // we need to indicate which properties the script can access on the console
+    c.console.__exposedProps__ = {
+        debug:'r', log:'r', info:'r', warn:'r',
+        error:'r', trace:'r', clear:'r',
+        dir:'r', dirxml:'r', group:'r', groupEnd:'r'
+    }
+    sandbox.console = c.console;
+
+    // import the slimer/phantom API into the sandbox
+    Cu.import('resource://slimerjs/slimer.jsm', sandbox);
+
+    // load and execute the provided script
+    let fileURI = Services.io.newFileURI(scriptFile).spec;
+    mainLoader = prepareLoader(fileURI);
+    Loader.main(mainLoader, 'main', sandbox)
+}
+
+
+function prepareLoader(fileURI) {
+
+    return Loader.Loader({
+        definePseudoModules : false,
+        javascriptVersion : 'ECMAv5',
+
+        paths: {
+          'main': fileURI
+          //'': 'resource://slimerjs/commonjs/',
+        },
+        globals: {
+        },
+        modules: {
+          /*"webserver": Cu.import("resource://slimerjs/webserver.jsm", {}),
+          "system": Cu.import("resource://slimerjs/system.jsm", {}),
+          "webpage": Cu.import("resource://slimerjs/webpage.jsm", {}),
+          "fs": Cu.import("resource://slimerjs/fs.jsm", {})*/
+        }
+        /*,resolve: function(id, requirer) {
+         
+        }*/
+    });
+}
