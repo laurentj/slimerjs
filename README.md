@@ -38,11 +38,10 @@ Go to the bin directory and launch:
     slimerjs myscript.js
 ```
 
-It only opens a window with nothing in it (Probably you'll see a ghost...). Yes, this is an incredible project!
-The given script myscripts.js is executed in the background.
+The given script myscripts.js is then executed in a window. If your script is
+short, you probably won't see this window.
 
 You can for example launch some tests:
-
 
 ```
     slimerjs ../test/initial-tests.js
@@ -60,6 +59,7 @@ blank page. Here are objects you can play with:
 - a slimer object (and a phantom object that is a reference to slimer for compatibility): it
   will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
   but all of its properties and methods are not implemented
+- a require function to load CommonJS modules
 
 You can read the [compatibility table](API.md) to know the implementation progress.
 
