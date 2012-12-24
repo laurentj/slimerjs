@@ -11,9 +11,9 @@
  *  - the possibility to indicate the javascript version in the loader options
  *    to evaluate modules with this version.
  *  - the possibility to not define pseudo modules '@loader/*' and 'chrome'
+ *  - the possiblity to indicate our own sandbox for the main module
  * main contributor: Laurent Jouanneau
  */
-
 
 ;(function(id, factory) { // Module boilerplate :(
   if (typeof(define) === 'function') { // RequireJS
@@ -183,25 +183,35 @@ exports.evaluate = evaluate;
 
 // Populates `exports` of the given CommonJS `module` object, in the context
 // of the given `loader` by evaluating code associated with it.
-const load = iced(function load(loader, module) {
+const load = iced(function load(loader, module, initialSandbox) {
   let { sandboxes, globals, javascriptVersion } = loader;
   let require = Require(loader, module);
 
-  let sandbox = sandboxes[module.uri] = Sandbox({
-    name: module.uri,
-    // Get an existing module sandbox, if any, so we can reuse its compartment
-    // when creating the new one to reduce memory consumption.
-    sandbox: sandboxes[keys(sandboxes).shift()],
-    // We expose set of properties defined by `CommonJS` specification via
-    // prototype of the sandbox. Also globals are deeper in the prototype
-    // chain so that each module has access to them as well.
-    prototype: create(globals, descriptor({
-      require: require,
-      module: module,
-      exports: module.exports
-    })),
-    wantXrays: false
-  });
+  let sandbox;
+  if (initialSandbox) {
+    sandbox = initialSandbox;
+    sandbox.require = require;
+    sandbox.module = module;
+    sandbox.exports = module.exports;
+  }
+  else {
+    sandbox = Sandbox({
+      name: module.uri,
+      // Get an existing module sandbox, if any, so we can reuse its compartment
+      // when creating the new one to reduce memory consumption.
+      sandbox: sandboxes[keys(sandboxes).shift()],
+      // We expose set of properties defined by `CommonJS` specification via
+      // prototype of the sandbox. Also globals are deeper in the prototype
+      // chain so that each module has access to them as well.
+      prototype: create(globals, descriptor({
+        require: require,
+        module: module,
+        exports: module.exports
+      })),
+      wantXrays: false
+    });
+  }
+  sandboxes[module.uri] =  sandbox;
 
   let evalOptions =  {
     version : javascriptVersion
@@ -291,10 +301,10 @@ const Require = iced(function Require(loader, requirer) {
 });
 exports.Require = Require;
 
-const main = iced(function main(loader, id) {
+const main = iced(function main(loader, id, sandbox) {
   let module = Module(id, resolveURI(id, loader.mapping));
   loader.main = module;
-  return load(loader, module).exports;
+  return load(loader, module, sandbox).exports;
 });
 exports.main = main;
 
