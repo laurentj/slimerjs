@@ -1,3 +1,11 @@
+
+* src/modules/loaders.js comes from the Mozilla Project (and has been modified)
+    It is released under the Mozilla Public License, v. 2.0
+    see http://mozilla.org/MPL/2.0/
+
+
+* All other files are released under this license:
+
 Copyright (c) 2012 Laurent Jouanneau
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
