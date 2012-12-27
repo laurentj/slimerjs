@@ -26,7 +26,6 @@
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import("resource://gre/modules/Services.jsm");
-
 Components.utils.import("resource://slimerjs/slConfiguration.jsm");
 
 function slCommandLine() {
@@ -155,15 +154,9 @@ slCommandLine.prototype = {
             return;
         }
 
-        Components.utils.import("resource://gre/modules/AddonManager.jsm");
-        AddonManager.getAddonByID("slimerjs@innophi", function(addon) {
-            slConfiguration.version = addon.version;
-
-            Services.ww.openWindow(null, "chrome://slimerjs/content/slimerjs.xul", "_blank",
-                    "chrome,menubar,toolbar,status,resizable,dialog=no",
-                    null);
-        });
-
+        Services.ww.openWindow(null, "chrome://slimerjs/content/slimerjs.xul", "_blank",
+                "chrome,menubar,toolbar,status,resizable,dialog=no",
+                null);
     },
 
     get helpInfo () {
