@@ -28,7 +28,7 @@ var EXPORTED_SYMBOLS = ["launchMainScript"];
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import('resource://slimerjs/loader.jsm'); //Sandbox, Require, main, Module, Loader
+Cu.import('resource://slimerjs/addon-sdk/loader.jsm'); //Sandbox, Require, main, Module, Loader
 
 var sandbox = null;
 var mainLoader = null;
@@ -60,19 +60,20 @@ function launchMainScript(contentWindow, scriptFile) {
     let fileURI = Services.io.newFileURI(scriptFile).spec;
     let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;
     mainLoader = prepareLoader(fileURI, dirURI);
-    Loader.main(mainLoader, 'main', sandbox)
+    Loader.main(mainLoader, 'main', sandbox);
 }
 
 
 function prepareLoader(fileURI, dirURI) {
 
     return Loader.Loader({
-        definePseudoModules : false,
+        definePseudoModules : true,
         javascriptVersion : 'ECMAv5',
 
         paths: {
           'main': fileURI,
-          '': dirURI
+          '': dirURI,
+          'sdk/': 'resource://slimerjs/addon-sdk/'
         },
         globals: {
         },
@@ -81,9 +82,36 @@ function prepareLoader(fileURI, dirURI) {
           "system": Cu.import("resource://slimerjs/system.jsm", {}),
           "webpage": Cu.import("resource://slimerjs/webpage.jsm", {}),
           "fs": Cu.import("resource://slimerjs/fs.jsm", {})*/
+        },
+        resolve: function(id, requirer) {
+            // we have some aliases, let's resolve them
+            if (id == 'fs') {
+                return 'sdk/io/file';
+            }
+
+            // the chrome module is only allowed in emmbedded modules
+            if (id == 'chrome') {
+                if (requirer.indexOf('sdk/') === 0) {
+                    return 'chrome';
+                }
+                throw Error("Module "+ requirer+ " is not allowed to require the chrome module");
+            }
+
+            if (id.indexOf('@loader/') === 0)
+                throw Error("Unknown "+ id +"module");
+
+            // let's resolve other id module as usual
+            let paths = id.split('/');
+            let result = requirer.split('/');
+            result.pop();
+            while (paths.length) {
+              let path = paths.shift();
+              if (path === '..')
+                result.pop();
+              else if (path !== '.')
+                result.push(path);
+            }
+            return result.join('/');
         }
-        /*,resolve: function(id, requirer) {
-         
-        }*/
     });
 }

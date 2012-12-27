@@ -11,7 +11,7 @@ function assertExists(arg, title) {
         dump("OK\n");
     }
     else
-        dump("FAIL\n");
+        dump("\t\t-----> FAIL!!!\n");
 }
 
 function assertEquals(expected, result, title) {
@@ -20,7 +20,7 @@ function assertEquals(expected, result, title) {
         dump("OK\n");
     }
     else
-        dump("FAIL\n");
+        dump("\t\t-----> FAIL!!!\n");
 }
 
 
@@ -55,8 +55,9 @@ assertEquals(5, ex.myCalcFunc(2), "value of ex.myCalcFunc(2)");
 var m = require('a/b');
 assertEquals("Laurent", m.identity.firstName, "value of m.identity.firstName");
 
+
+var fs = require("fs");
+
 dump('\nEND of tests\n');
 
 slimer.exit()
-
-

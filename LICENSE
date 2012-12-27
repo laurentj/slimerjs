@@ -1,8 +1,8 @@
 
-* src/modules/loaders.js comes from the Mozilla Project (and has been modified)
-    It is released under the Mozilla Public License, v. 2.0
+* src/modules/addon-sdk/*
+    are released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
-
+    These files comes from Firefox source code and Mozilla Addon-SDK source code
 
 * All other files are released under this license:
 

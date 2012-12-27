@@ -38,6 +38,7 @@ Components.utils.import('resource://slimerjs/utils.jsm');
 var runtimeIframe = null;
 
 function initRuntime() {
+
     var runtimeIframe = document.getElementById('runtime');
 
     try {

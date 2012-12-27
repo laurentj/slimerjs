@@ -158,15 +158,7 @@ Not available yet
 
 # Module: FileSystem
 
-Not available yet
-
-<table>
-    <tr><td>create()</td><td></td></tr>
-</table>
-
 # fs object
-
-Not available yet
 
 ## properties
 
@@ -178,44 +170,82 @@ Not available yet
 ## methods
 
 <table>
-    <tr><td>list(path)</td><td></td></tr>
-    <tr><td>absolute(path)</td><td></td></tr>
-    <tr><td>exists(path)</td><td></td></tr>
-    <tr><td>isDirectory(path)</td><td></td></tr>
-    <tr><td>isFile(path)</td><td></td></tr>
-    <tr><td>isAbsolute(path)</td><td></td></tr>
-    <tr><td>isExecutable(path)</td><td></td></tr>
-    <tr><td>isReadable(path)</td><td></td></tr>
-    <tr><td>isWritable(path)</td><td></td></tr>
-    <tr><td>isLink(path)</td><td></td></tr>
-    <tr><td>readLink(path)</td><td></td></tr>
-    <tr><td>changeWorkingDirectory(path)</td><td></td></tr>
+    <tr><td>open(path, mode)</td><td>Implemented. "a" mode is still missing</td></tr>
+    <tr><td>read(path)</td><td>Implemented</td></tr>
+    <tr><td>write(path, content, mode)</td><td>Implemented. "a" mode not implemented</td></tr>
+    <tr><td>copy(source, destination)</td><td></td></tr>
+    <tr><td>move(source, destination)</td><td></td></tr>
+    <tr><td>remove(path)</td><td>Implemented</td></tr>
+    <tr><td>touch(path)</td><td></td></tr>
+
+
     <tr><td>makeDirectory(path)</td><td></td></tr>
-    <tr><td>makeTree(path)</td><td></td></tr>
     <tr><td>removeDirectory(path)</td><td></td></tr>
+    <tr><td>makeTree(path)</td><td></td></tr>
     <tr><td>removeTree(path)</td><td></td></tr>
     <tr><td>copyTree(source, destination)</td><td></td></tr>
-    <tr><td>open(path, mode)</td><td></td></tr>
-    <tr><td>read(path)</td><td></td></tr>
-    <tr><td>write(path, content, mode)</td><td></td></tr>
+
+    <tr><td>list(path)</td><td>Implemented</td></tr>
+    <tr><td>readLink(path)</td><td></td></tr>
+
+
+    <tr><td>exists(path)</td><td>Implemented</td></tr>
+    <tr><td>isFile(path)</td><td>Implemented</td></tr>
+    <tr><td>isDirectory(path)</td><td></td></tr>
+    <tr><td>isLink(path)</td><td></td></tr>
+    <tr><td>isReadable(path)</td><td></td></tr>
+    <tr><td>isWritable(path)</td><td></td></tr>
+
+    <tr><td>absolute(path)</td><td></td></tr>
+
     <tr><td>size(path)</td><td></td></tr>
-    <tr><td>remove(path)</td><td></td></tr>
-    <tr><td>copy(path)</td><td></td></tr>
-    <tr><td>move(path)</td><td></td></tr>
-    <tr><td>touch(path)</td><td></td></tr>
+
+    <tr><td>isAbsolute(path)</td><td>(not a CommonJS FileSystem method)</td></tr>
+    <tr><td>isExecutable(path)</td><td>(not a CommonJS FileSystem method)</td></tr>
+
+    <tr><td>changeWorkingDirectory(path)</td><td></td></tr>
 </table>
+
+Other additionnal methods not provided in PhantomJS 1.7, but that
+are part of the CommonJS FileSystem specification
+
+<table>
+
+    <tr><td>rename(path, name)</td><td></td></tr>
+
+    <tr><td>listTree(path)</td><td></td></tr>
+    <tr><td>listDirectoryTree(path)</td><td></td></tr>
+
+    <tr><td>link(source, target)</td><td></td></tr>
+    <tr><td>hardLink(source, target) </td><td></td></tr>
+
+    <tr><td>same(source, target)</td><td></td></tr>
+
+    <tr><td>lastModified(path) Date </td><td></td></tr>
+
+    <tr><td>workingDirectoryPath()</td><td></td></tr>
+
+    <tr><td>join(base)</td><td>Implemented</td></tr>
+    <tr><td>split(path)</td><td></td></tr>
+    <tr><td>normal(path)</td><td></td></tr>
+    <tr><td>canonical(path)</td><td></td></tr>
+    <tr><td>directory(path)</td><td></td></tr>
+    <tr><td>base(path)</td><td></td></tr>
+    <tr><td>extension(path)</td><td></td></tr>
+</table>
+
 
 # stream object
 
 Not available yet
 
 <table>
-    <tr><td>read()</td><td></td></tr>
+    <tr><td>read()</td><td>Implemented</td></tr>
     <tr><td>readLine()</td><td></td></tr>
-    <tr><td>write(data)</td><td></td></tr>
+    <tr><td>write(data)</td><td>Implemented</td></tr>
     <tr><td>writeLine(data)</td><td></td></tr>
-    <tr><td>flush()</td><td></td></tr>
-    <tr><td>close()</td><td></td></tr>
+    <tr><td>flush()</td><td>Implemented</td></tr>
+    <tr><td>close()</td><td>Implemented</td></tr>
 </table>
 
 # Module: webserver
