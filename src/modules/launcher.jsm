@@ -67,7 +67,6 @@ function launchMainScript(contentWindow, scriptFile) {
 function prepareLoader(fileURI, dirURI) {
 
     return Loader.Loader({
-        definePseudoModules : true,
         javascriptVersion : 'ECMAv5',
 
         paths: {
