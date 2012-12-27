@@ -55,7 +55,6 @@ assertEquals(5, ex.myCalcFunc(2), "value of ex.myCalcFunc(2)");
 var m = require('a/b');
 assertEquals("Laurent", m.identity.firstName, "value of m.identity.firstName");
 
-
 var fs = require("fs");
 
 dump('\nEND of tests\n');

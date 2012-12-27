@@ -91,7 +91,7 @@ function StreamManager(stream, rawStream) {
     self.unload();
   };
 
-  require("../system/unload").ensure(this);
+  //require("../system/unload").ensure(this);
 }
 
 StreamManager.prototype = {
