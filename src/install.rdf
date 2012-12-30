@@ -8,7 +8,7 @@
         <em:iconURL/>
         <em:id>slimerjs@innophi</em:id>
         <em:name>SlimerJS</em:name>
-        <em:version>0.0.2</em:version><!-- change it also into slConfiguration.jsm -->
+        <em:version>0.0.3</em:version><!-- change it also into slConfiguration.jsm -->
         <em:updateURL/>
         <em:type>2</em:type>
         <!--<em:bootstrap>true</em:bootstrap>-->

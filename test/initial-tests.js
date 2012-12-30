@@ -41,7 +41,7 @@ assertExists(slimer.version, "has slimer.version object? ");
 
 assertEquals("0", slimer.version.major, "slimer has the good major version");
 assertEquals("0", slimer.version.minor, "slimer has the good minor version");
-assertEquals("2", slimer.version.patch, "slimer has the good patch version");
+assertEquals("3", slimer.version.patch, "slimer has the good patch version");
 assertEquals("1", phantom.version.major, "phantom has the good major version");
 assertEquals("7", phantom.version.minor, "phantom has the good minor version");
 assertEquals("0", phantom.version.patch, "phantom has the good patch version");
@@ -56,6 +56,23 @@ var m = require('a/b');
 assertEquals("Laurent", m.identity.firstName, "value of m.identity.firstName");
 
 var fs = require("fs");
+
+var system = require("system");
+
+dump("os.architecture="+system.os.architecture+"\n");
+dump("os.name="+system.os.name+"\n");
+dump("os.version="+system.os.version+"\n");
+
+dump("\n\n------ check yourself if following values are ok\n")
+
+dump("Environment variable:\n")
+dump("  HOME="+system.env['HOME']+"\n");
+dump("  LOGNAME="+system.env['LOGNAME']+"\n");
+
+dump("Command line arguments:\n")
+system.args.forEach(function(arg, i){
+    dump("   "+i+": "+arg+"\n");
+});
 
 dump('\nEND of tests\n');
 

@@ -22,7 +22,7 @@ Here is the compatibility table.
     <tr><td>--web-security=[yes|no]</td><td></td></tr>
     <tr><td>--config=/path/to/config.json</td><td></td></tr>
     <tr><td>script path</td><td>Implemented</td></tr>
-    <tr><td>script arguments</td><td>Parsed</td></tr>
+    <tr><td>script arguments</td><td>Implemented</td></tr>
 </table>
 
 # slimer object
@@ -136,24 +136,16 @@ Not available yet
 
 # Module: system
 
-Not available yet
-
-<table>
-    <tr><td>create()</td><td></td></tr>
-</table>
-
 # System object
-
-Not available yet
 
 ## properties
 
 <table>
-    <tr><td>pid</td><td></td></tr>
-    <tr><td>platform</td><td></td></tr>
-    <tr><td>os</td><td></td></tr>
-    <tr><td>env</td><td></td></tr>
-    <tr><td>args</td><td></td></tr>
+    <tr><td>pid</td><td>Not Implemented. Always returns 0. It seems Mozilla doesn't provide an API for that</td></tr>
+    <tr><td>platform</td><td>Implemented</td></tr>
+    <tr><td>os</td><td>Implemented</td></tr>
+    <tr><td>env</td><td>Implemented</td></tr>
+    <tr><td>args</td><td>Implemented</td></tr>
 </table>
 
 # Module: FileSystem

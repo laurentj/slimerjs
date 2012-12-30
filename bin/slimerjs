@@ -32,5 +32,16 @@ then
     echo "SlimerJS 0.0.1"
     exit 0
 fi
+# retrieve list of existing environment variable, because Mozilla doesn't provide an API to get this
+# list
+LISTVAR=""
+ENVVAR=`env`;
+for v in $ENVVAR; do
+    IFS='=' read -a var <<< "$v"
+    LISTVAR="$LISTVAR,${var[0]}"
+done
 
-firefox -P slimerjs --slimerjs -no-remote $@
+firefox -P slimerjs --slimerjs -no-remote --envs "$LISTVAR" "$@"
+
+
+ 

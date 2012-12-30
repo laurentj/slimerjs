@@ -9,7 +9,7 @@ it runs Gecko instead of Webkit, and it is not headless (but you can still use x
 
 You could then use other tools like [CasperJS](http://casperjs.org)...
 
-For the moment, you can only run simple scripts. No API are provided yet.
+For the moment, you can only run simple scripts that can use the system and the fs module.
 
 # Install
 
@@ -47,6 +47,9 @@ You can for example launch some tests:
     slimerjs ../test/initial-tests.js
 ```
 
+
+Note: on windows, you must launch SlimerJS from an unix environment like msys or Cygwin. slimer.bat script is not provided yet.
+
 # Content of a script
 
 It should contain javascript instructions. The script is executed in the context of a
@@ -60,6 +63,8 @@ blank page. Here are objects you can play with:
   will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
   but all of its properties and methods are not implemented
 - a require function to load CommonJS modules
+- You can load and use the system module
+- You can load and use the fs module although its implementation is not finished
 
 You can read the [compatibility table](API.md) to know the implementation progress.
 

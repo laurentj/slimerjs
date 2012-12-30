@@ -48,6 +48,8 @@ slCommandLine.prototype = {
 
         cmdLine.preventDefault = true;
 
+        slConfiguration.setEnvNames(cmdLine.handleFlagWithParam("envs", false).split(/,/));
+
         let configFile = cmdLine.handleFlagWithParam("config", false);
         if (configFile) {
             dump("--config not supported yet\n");
