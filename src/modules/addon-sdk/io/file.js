@@ -25,11 +25,29 @@ const OPEN_FLAGS = {
 var dirsvc = Cc["@mozilla.org/file/directory_service;1"]
              .getService(Ci.nsIProperties);
 
+var currentWorkingDirectory = dirsvc.get("CurWorkD", Ci.nsIFile);
+
 function MozFile(path) {
-  var file = Cc['@mozilla.org/file/local;1']
-             .createInstance(Ci.nsILocalFile);
+  var file = currentWorkingDirectory.clone();
+  try {
+    // if path is a relative path, there won't have exception
+    file.appendRelativePath(path);
+    return file;
+  }
+  catch(e) { }
+  // the given path is really an absolute path
+  file = Cc['@mozilla.org/file/local;1']
+            .createInstance(Ci.nsILocalFile);
   file.initWithPath(path);
   return file;
+}
+
+exports.workingDirectory = function workingDirectory() {
+    return currentWorkingDirectory.path;
+}
+
+exports.changeWorkingDirectory = function changeWorkingDirectory(path) {
+    currentWorkingDirectory = MozFile(path);
 }
 
 function ensureReadable(file) {
@@ -211,3 +229,42 @@ exports.rmdir = function rmdir(path) {
     throw new Error("The directory is not empty: " + path);
   }
 };
+
+
+exports.copy = function copy(sourceFileName, targetFileName) {
+  var sourceFile = MozFile(sourceFileName);
+  var targetFile = MozFile(targetFileName);
+  ensureFile(sourceFile);
+  sourceFile.copyTo(targetFile.parent, targetFile.leafName);
+};
+
+exports.rename = function rename(path, name) {
+  var sourceFile = MozFile(path);
+  ensureFile(sourceFile);
+  sourceFile.moveTo(sourceFile.parent, name);
+}
+
+exports.move = function move(sourceFileName, targetFileName) {
+  var sourceFile = MozFile(sourceFileName);
+  var targetFile = MozFile(targetFileName);
+  ensureFile(sourceFile);
+  sourceFile.moveTo(targetFile.parent, targetFile.leafName);
+}
+
+exports.touch = function move(path, date) {
+  var file = MozFile(path);
+  var d;
+  if (date)
+    d = new Date(date);
+  else
+    d = new Date();
+
+  if (file.exists()) {
+    file.lastModifiedTime = d.getTime();
+  }
+  else {
+    file.create(file.NORMAL_FILE_TYPE, parseInt('644', 8));
+    if (date)
+      file.lastModifiedTime = d.getTime();
+  }
+}

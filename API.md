@@ -156,7 +156,7 @@ Not available yet
 
 <table>
     <tr><td>separator</td><td></td></tr>
-    <tr><td>workingDirectory</td><td></td></tr>
+    <tr><td>workingDirectory</td><td>Implemented as method, as specified in the CommonJS FileSystem specification</td></tr>
 </table>
 
 ## methods
@@ -165,10 +165,10 @@ Not available yet
     <tr><td>open(path, mode)</td><td>Implemented. "a" mode is still missing</td></tr>
     <tr><td>read(path)</td><td>Implemented</td></tr>
     <tr><td>write(path, content, mode)</td><td>Implemented. "a" mode not implemented</td></tr>
-    <tr><td>copy(source, destination)</td><td></td></tr>
-    <tr><td>move(source, destination)</td><td></td></tr>
+    <tr><td>copy(source, destination)</td><td>Implemented</td></tr>
+    <tr><td>move(source, destination)</td><td>Implemented</td></tr>
     <tr><td>remove(path)</td><td>Implemented</td></tr>
-    <tr><td>touch(path)</td><td></td></tr>
+    <tr><td>touch(path)</td><td>Implemented</td></tr>
 
 
     <tr><td>makeDirectory(path)</td><td></td></tr>
@@ -195,7 +195,7 @@ Not available yet
     <tr><td>isAbsolute(path)</td><td>(not a CommonJS FileSystem method)</td></tr>
     <tr><td>isExecutable(path)</td><td>(not a CommonJS FileSystem method)</td></tr>
 
-    <tr><td>changeWorkingDirectory(path)</td><td></td></tr>
+    <tr><td>changeWorkingDirectory(path)</td><td>Implemented</td></tr>
 </table>
 
 Other additionnal methods not provided in PhantomJS 1.7, but that
@@ -203,7 +203,7 @@ are part of the CommonJS FileSystem specification
 
 <table>
 
-    <tr><td>rename(path, name)</td><td></td></tr>
+    <tr><td>rename(path, name)</td><td>Implemented</td></tr>
 
     <tr><td>listTree(path)</td><td></td></tr>
     <tr><td>listDirectoryTree(path)</td><td></td></tr>
