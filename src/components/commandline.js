@@ -46,6 +46,16 @@ slCommandLine.prototype = {
             return;
         }
 
+        // clear all caches, so scripts will be truly loaded
+        var cacheService = Components.classes["@mozilla.org/network/cache-service;1"]
+                           .getService(Components.interfaces.nsICacheService);
+
+        try {
+            cacheService.evictEntries(Components.interfaces.nsICache.STORE_ANYWHERE);
+        } catch(ex) {
+            dump("error cache service:"+ ex+"\n");
+        }
+
         cmdLine.preventDefault = true;
 
         slConfiguration.setEnvNames(cmdLine.handleFlagWithParam("envs", false).split(/,/));
