@@ -12,6 +12,8 @@ You could then use other tools like [CasperJS](http://casperjs.org)...
 
 For the moment, you can only run simple scripts that can use few functions from the **system** module, the **fs** module and the **webpage** module.
 
+Follow us on twitter: [@slimerjs](https://twitter.com/slimerjs)
+
 # Install
 
 - Install Firefox 17 or higher
