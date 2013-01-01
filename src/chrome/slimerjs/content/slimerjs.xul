@@ -8,9 +8,9 @@
     id="slimerjswin" hidechrome="false" title="SlimerJS"
     windowtype="slimerjs"
     width="600" height="400"
-    onload="initRuntime()"
+    onload="startup()"
     >
-    <script type="application/javascript" src="runtime.js" />
+    <script type="application/javascript" src="slimerjs.js" />
 
     <deck id="browsers" flex="1">
         <box flex="1" align="center" pack="center">

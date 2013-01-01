@@ -28,22 +28,22 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 // we need to output to the shell console
 Services.prefs.setBoolPref('browser.dom.window.dump.enabled', true);
 
-Components.utils.import('resource://slimerjs/launcher.jsm');
+Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
-Components.utils.import('resource://slimerjs/utils.jsm');
+Components.utils.import('resource://slimerjs/slUtils.jsm');
 
 /**
  * reference the iframe where scripts are executed
  */
 var runtimeIframe = null;
 
-function initRuntime() {
+function startup() {
 
     var runtimeIframe = document.getElementById('runtime');
-    slConfiguration.browserElements = document.getElementById('browsers');
+    slLauncher.browserElements = document.getElementById('browsers');
 
     try {
-        launchMainScript(runtimeIframe.contentWindow, slConfiguration.scriptFile);
+        slLauncher.launchMainScript(runtimeIframe.contentWindow, slConfiguration.scriptFile);
     }
     catch(e) {
         dumpex(e, 'Error during the script execution\n');

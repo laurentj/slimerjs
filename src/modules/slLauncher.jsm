@@ -23,7 +23,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 "use strict";
-var EXPORTED_SYMBOLS = ["launchMainScript"];
+var EXPORTED_SYMBOLS = ["slLauncher"];
 
 const Cu = Components.utils;
 
@@ -33,34 +33,64 @@ Cu.import('resource://slimerjs/addon-sdk/loader.jsm'); //Sandbox, Require, main,
 var sandbox = null;
 var mainLoader = null;
 
-function launchMainScript(contentWindow, scriptFile) {
 
-    sandbox = Cu.Sandbox(contentWindow,
-                        {
-                            'sandboxName': 'slimerjs',
-                            'sandboxPrototype': contentWindow,
-                            'wantXrays': true
-                        });
+var slLauncher = {
+    launchMainScript: function (contentWindow, scriptFile) {
 
-    // expose a console object that dump output into the shell console
-    var c = {}
-    Cu.import("resource://gre/modules/devtools/Console.jsm", c);
-    // we need to indicate which properties the script can access on the console
-    c.console.__exposedProps__ = {
-        debug:'r', log:'r', info:'r', warn:'r',
-        error:'r', trace:'r', clear:'r',
-        dir:'r', dirxml:'r', group:'r', groupEnd:'r'
+        sandbox = Cu.Sandbox(contentWindow,
+                            {
+                                'sandboxName': 'slimerjs',
+                                'sandboxPrototype': contentWindow,
+                                'wantXrays': true
+                            });
+    
+        // expose a console object that dump output into the shell console
+        var c = {}
+        Cu.import("resource://gre/modules/devtools/Console.jsm", c);
+        // we need to indicate which properties the script can access on the console
+        c.console.__exposedProps__ = {
+            debug:'r', log:'r', info:'r', warn:'r',
+            error:'r', trace:'r', clear:'r',
+            dir:'r', dirxml:'r', group:'r', groupEnd:'r'
+        }
+        sandbox.console = c.console;
+    
+        // import the slimer/phantom API into the sandbox
+        Cu.import('resource://slimerjs/slimer.jsm', sandbox);
+    
+        // load and execute the provided script
+        let fileURI = Services.io.newFileURI(scriptFile).spec;
+        let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;
+        mainLoader = prepareLoader(fileURI, dirURI);
+        Loader.main(mainLoader, 'main', sandbox);
+    },
+
+    /**
+     * the XUL elements containing all opened browsers
+     * @var DOMElement
+     */
+    browserElements : null,
+
+    /**
+     * create a new browser element. call the given callback when it is ready,
+     * with the browser element as parameter.
+     */
+    openBrowser : function(callback) {
+        let browser = this.browserElements.ownerDocument.createElement("webpage");
+        function onReady(event) {
+            browser.removeEventListener("BrowserReady", onReady, false);
+            callback(browser);
+        }
+        browser.addEventListener("BrowserReady", onReady, false);
+        this.browserElements.appendChild(browser);
+        this.browserElements.selectedPanel = browser;
+    },
+
+    closeBrowser: function (navigator) {
+        //navigator.resetBrowser();
+        navigator.parentNode.removeChild(navigator);
+        this.browserElements.selectedPanel = this.browserElements.lastChild;
     }
-    sandbox.console = c.console;
-
-    // import the slimer/phantom API into the sandbox
-    Cu.import('resource://slimerjs/slimer.jsm', sandbox);
-
-    // load and execute the provided script
-    let fileURI = Services.io.newFileURI(scriptFile).spec;
-    let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;
-    mainLoader = prepareLoader(fileURI, dirURI);
-    Loader.main(mainLoader, 'main', sandbox);
 }
 
 

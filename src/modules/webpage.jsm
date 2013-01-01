@@ -24,7 +24,7 @@
 */
 
 var EXPORTED_SYMBOLS = ["create"];
-Components.utils.import('resource://slimerjs/slConfiguration.jsm');
+Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
 
 
@@ -71,7 +71,7 @@ function create() {
         // -------------------------------- Window manipulation
         
         open: function(url, callback) {
-            slConfiguration.openBrowser(function(nav){
+            slLauncher.openBrowser(function(nav){
                 navigator = nav;
                 navigator.onpageloaded = function () {
                     navigator.onpageloaded = null;
@@ -83,7 +83,7 @@ function create() {
         },
     
         close: function() {
-            slConfiguration.closeBrowser(navigator);
+            slLauncher.closeBrowser(navigator);
             navigator=null;
         },
     
