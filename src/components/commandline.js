@@ -52,8 +52,6 @@ slCommandLine.prototype = {
             dump("error cache service:"+ ex+"\n");
         }
 
-        cmdLine.preventDefault = true;
-
         slConfiguration.setEnvNames(cmdLine.handleFlagWithParam("envs", false).split(/,/));
 
         let configFile = cmdLine.handleFlagWithParam("config", false);

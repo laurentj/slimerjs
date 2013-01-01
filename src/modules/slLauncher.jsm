@@ -43,7 +43,7 @@ var slLauncher = {
                                 'sandboxPrototype': contentWindow,
                                 'wantXrays': true
                             });
-    
+
         // expose a console object that dump output into the shell console
         var c = {}
         Cu.import("resource://gre/modules/devtools/Console.jsm", c);
@@ -54,10 +54,10 @@ var slLauncher = {
             dir:'r', dirxml:'r', group:'r', groupEnd:'r'
         }
         sandbox.console = c.console;
-    
+
         // import the slimer/phantom API into the sandbox
         Cu.import('resource://slimerjs/slimer.jsm', sandbox);
-    
+
         // load and execute the provided script
         let fileURI = Services.io.newFileURI(scriptFile).spec;
         let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;

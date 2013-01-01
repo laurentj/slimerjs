@@ -24,7 +24,8 @@
 */
 
 var EXPORTED_SYMBOLS = ["slConfiguration"];
-Components.utils.import("resource://gre/modules/AddonManager.jsm");
+
+
 
 var slConfiguration = {
 
@@ -35,12 +36,6 @@ var slConfiguration = {
      */
     scriptFile: null,
 
-    /**
-     * the version of SlimerJS. Field during startup
-     * @see commandline.js
-     */
-    version : '0.0.3',
-
     setEnvNames : function(envvars) {
         this.envs = envvars.filter(function(element, index, array) {
             return /^[a-z0-9_]+$/i.test(element);
@@ -49,8 +44,3 @@ var slConfiguration = {
 
     envs : []
 }
-
-/*
-AddonManager.getAddonByID("slimerjs@innophi", function(addon) {
-    slConfiguration.version = addon.version;
-});*/

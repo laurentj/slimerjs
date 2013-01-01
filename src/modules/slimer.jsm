@@ -27,6 +27,9 @@ var EXPORTED_SYMBOLS = ["slimer", "phantom"];
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
 
+var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+                 .getService(Components.interfaces.nsIXULAppInfo);
+
 var httpCookies = [];
 
 function Slimer(version) {
@@ -143,7 +146,7 @@ Slimer.prototype = {
     }
 }
 
-var slimer = new Slimer(slConfiguration.version);
+var slimer = new Slimer(xulAppInfo.version);
 var phantom = new Slimer("1.7.0");
 
 /**
