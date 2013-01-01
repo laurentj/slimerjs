@@ -77,8 +77,8 @@ system.args.forEach(function(arg, i){
 
 var webpage = require("webpage").create();
 
-webpage.open("http://jelix.org", function(){
-    dump("Webpage testapp loaded\n");
+webpage.open("http://jelix.org", function(success){
+    dump("Webpage testapp loaded. Result: "+success+"\n");
     webpage.close();
     slimer.exit()
 })

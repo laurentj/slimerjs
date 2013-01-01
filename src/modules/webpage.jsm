@@ -73,10 +73,10 @@ function create() {
         open: function(url, callback) {
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
-                navigator.onpageloaded = function () {
+                navigator.onpageloaded = function (success) {
                     navigator.onpageloaded = null;
                     if (callback)
-                        callback();
+                        callback(success);
                 }
                 navigator.browser.loadURI(url);
             });

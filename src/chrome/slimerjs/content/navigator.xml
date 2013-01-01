@@ -58,8 +58,14 @@
                 var mm = this.browser.messageManager;
 
                 mm.addMessageListener("pageloaded", function(message){
+                    let channel = me.browser.docShell.currentDocumentChannel.QueryInterface(Components.interfaces.nsIHttpChannel);
+                    let success = "success";
+                    if (channel) {
+                        success = channel.requestSucceeded?"success":"fail";
+                    }
+
                     if (me.onpageloaded)
-                        me.onpageloaded();
+                        me.onpageloaded(success);
                 });
                 ]]></body>
             </method>
