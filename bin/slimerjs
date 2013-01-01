@@ -1,5 +1,18 @@
 #!/bin/bash
 
+if [ "$SLIMERJSLAUNCHER" == "" ]
+then
+    echo "SLIMERJSLAUNCHER environment variable is missing. Set it with the path to Firefox"
+    exit 1
+fi
+
+if [ ! -x "$SLIMERJSLAUNCHER" ]
+then
+    echo "SLIMERJSLAUNCHER environment variable does not contain an executable path. Set it with the path to Firefox"
+    exit 1
+fi
+
+
 if [ "$1" == "--help" -o "$1" == "-h" ]
 then
     echo "  --cookies-file=<file>        specifies the file name to store"
@@ -32,6 +45,9 @@ then
     echo "SlimerJS 0.0.1"
     exit 0
 fi
+
+SCRIPTDIR=$(dirname $0)
+
 # retrieve list of existing environment variable, because Mozilla doesn't provide an API to get this
 # list
 LISTVAR=""
@@ -41,7 +57,7 @@ for v in $ENVVAR; do
     LISTVAR="$LISTVAR,${var[0]}"
 done
 
-firefox -P slimerjs --slimerjs -no-remote --envs "$LISTVAR" "$@"
+"$SLIMERJSLAUNCHER" -app $SCRIPTDIR/../src/application.ini --envs "$LISTVAR" "$@"
 
 
  

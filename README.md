@@ -1,38 +1,35 @@
 
 # SlimerJS
 
-SlimerJS will be an extension for Firefox, allowing to execute an external javascript script which
-can manipulate web content.
+SlimerJS is a XulRunner application that can be launched with Firefox, allowing
+to execute an external javascript script which can manipulate web content.
 
-Its goal is to provide a tool like [PhantomJs](http://phantomjs.org/), with the same API, except that
-it runs Gecko instead of Webkit, and it is not headless (but you can still use xvfb to have a headless SlimerJS).
+Its goal is to provide a tool like [PhantomJs](http://phantomjs.org/), with the
+same API, except that it runs Gecko instead of Webkit, and it is not headless
+(but you can still use xvfb to have a headless SlimerJS).
 
 You could then use other tools like [CasperJS](http://casperjs.org)...
 
-For the moment, you can only run simple scripts that can use the **system** module, the **fs** module and the **webpage** module.
+For the moment, you can only run simple scripts that can use few functions from the **system** module, the **fs** module and the **webpage** module.
 
 # Install
 
-First, you have to build the addon. It will be provided in download later.
-
+- Install Firefox 17 or higher
+- For Windows users: install [Cygwin](http://www.cygwin.com/) or any other unix
+  environment with a true console ;-). A .bat is not povided yet.
 - [download the source code of SlimerJS](https://github.com/laurentj/slimerjs/archive/master.zip) if you didn't it yet
 - Open a terminal
-- On a Linux system or MacOS, execute build/build.sh. You'll have a zip file named slimerjs.xpi. This is an addon for Firefox.
-- For windows users, zip "by hand" the content of the src/ directory and name the zip file as slimerjs.xpi
-- Create a new profile in Firefox. So SlimerJS will run into a cleaned profile, without extensions etc :
-  it will be faster and it won't be annoyed by some extension that interacts with web content etc..
-  Anyway, it's better to launch tests with a different profile than the profile you use daily to surf etc.
-   - execute ```firefox -CreateProfile slimerjs -no-remote```, it will create a profile named "slimerjs"
-   - launch Firefox with this profile : ```firefox -P slimerjs -no-remote``` and then install the slimerjs addon with the addons manager
-
-Note:
-- on windows, replace ```firefox``` by ```firefox.exe```
-- on mac, replace ```firefox``` by ```/Applications/Firefox.app/Contents/MacOS/firefox```
+- Set the environment variable SLIMERJSLAUNCHER, which should contain the full
+  path to the firefox binary :
+   - On linux: ```export SLIMERJSLAUNCHER=/usr/bin/firefox```
+   - On windows, with cygwin, something like that: ```export SLIMERJSLAUNCHER="/cygdrive/c/program files/mozilla firefox/firefox.exe"```
+   - On MacOS: ```export SLIMERJSLAUNCHER=/Applications/Firefox.app/Contents/MacOS/firefox```
+- You can set this variable in your .bashrc or .profile of course.
 
 
 # Launching SlimerJS
 
-Go to the bin directory and launch:
+Open a terminal and go to the bin directory of SlimerJS. Then launch:
 
 ```
     slimerjs myscript.js
@@ -46,9 +43,6 @@ You can for example launch some tests:
 ```
     slimerjs ../test/initial-tests.js
 ```
-
-
-Note: on windows, you must launch SlimerJS from an unix environment like msys or Cygwin. slimer.bat script is not provided yet.
 
 # Content of a script
 
@@ -78,7 +72,6 @@ the window of SlimerJS won't be closed.
 
 For a first stable release:
 - implementation of the API of PhantomJS
-- package for XulRunner
 
 After this release, I'll try to hack XulRunner to run headless windows (very difficult I guess :-) )
 

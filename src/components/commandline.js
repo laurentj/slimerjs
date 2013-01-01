@@ -42,10 +42,6 @@ slCommandLine.prototype = {
 
     handle : function (cmdLine) {
 
-        if (!cmdLine.handleFlag("slimerjs", false)) {
-            return;
-        }
-
         // clear all caches, so scripts will be truly loaded
         var cacheService = Components.classes["@mozilla.org/network/cache-service;1"]
                            .getService(Components.interfaces.nsICacheService);
@@ -165,14 +161,10 @@ slCommandLine.prototype = {
             dump("script not found\n");
             return;
         }
-
-        Services.ww.openWindow(null, "chrome://slimerjs/content/slimerjs.xul", "_blank",
-                "chrome,menubar,toolbar,status,resizable,dialog=no",
-                null);
     },
 
     get helpInfo () {
-        return "  -slimerjs           launch SlimerJS instead of Firefox\n";
+        return "\n";
     }
 }
 
