@@ -57,7 +57,7 @@ blank page. Here are objects you can play with:
   providing these methods: debug, log, info, warn, error, trace, clear, dir, dirxml, group, groupEnd
 - a slimer object (and a phantom object that is a reference to slimer for compatibility): it
   will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
-  but all of its properties and methods are not implemented
+  but all of its properties and methods are not implemented yet
 - a require function to load CommonJS modules
 - You can load and use the **system** module
 - You can load and use the **fs** module although its implementation is not finished
@@ -72,8 +72,7 @@ the window of SlimerJS won't be closed.
 
 # Roadmap
 
-For a first stable release:
-- implementation of the API of PhantomJS
+The goal for  a first stable release is to have a full implementation of the API of PhantomJS 1.7 (or 1.8?).
 
 After this release, I'll try to hack XulRunner to run headless windows (very difficult I guess :-) )
 
@@ -85,6 +84,6 @@ After this release, I'll try to hack XulRunner to run headless windows (very dif
     launch SlimerJS with xvfb.
 - Why is it called "SlimerJs"?
    - Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox source code uses
-    many references from this movie, and since PhantomJS, CasperJs and other related tools, is a matter of ghost...
+    many references from this movie, and since PhantomJS, CasperJs and other related tools, is a matter of ghost... ;-)
 
 
