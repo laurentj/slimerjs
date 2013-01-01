@@ -74,6 +74,14 @@ system.args.forEach(function(arg, i){
     dump("   "+i+": "+arg+"\n");
 });
 
-dump('\nEND of tests\n');
 
-slimer.exit()
+var webpage = require("webpage").create();
+
+webpage.open("http://jelix.org", function(){
+    dump("Webpage testapp loaded\n");
+    webpage.close();
+    slimer.exit()
+})
+
+
+dump('\nEND of tests\n');

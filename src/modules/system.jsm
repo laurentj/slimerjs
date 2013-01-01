@@ -66,7 +66,7 @@ this.__defineGetter__('os', function(){ return  OS;});
 
 
 this.__defineGetter__('pid', function(){
-    Components.utils.reportError("system.pid not implemented");
+    //Components.utils.reportError("system.pid not implemented");
     return 0;  // no Mozilla API to retrieve the PID :-/
 });
 

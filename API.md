@@ -64,17 +64,13 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
         </td></tr>
 </table>
 
-# Module: Webpage
-
-Not available yet
+# Module: webpage
 
 <table>
-    <tr><td>create()</td><td></td></tr>
+    <tr><td>create()</td><td>Implemented</td></tr>
 </table>
 
-# Webpage object
-
-Not available yet
+# WebPage object
 
 ## properties
 
@@ -102,13 +98,13 @@ Not available yet
 <table>
     <tr><td>addCookie(Cookie)</td><td></td></tr>
     <tr><td>clearCookies()</td><td></td></tr>
-    <tr><td>close()</td><td></td></tr>
+    <tr><td>close()</td><td>Implemented</td></tr>
     <tr><td>deleteCookie(cookieName)</td><td></td></tr>
     <tr><td>evaluate(function, arg1, arg2,...)</td><td></td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td></td></tr>
     <tr><td>includeJs(url, callback)</td><td></td></tr>
     <tr><td>injectJs(filename)</td><td></td></tr>
-    <tr><td>open(url, callback)</td><td></td></tr>
+    <tr><td>open(url, callback)</td><td>Implemented</td></tr>
     <tr><td>release()</td><td></td></tr>
     <tr><td>render(filename)</td><td></td></tr>
     <tr><td>renderBase64(format)</td><td></td></tr>

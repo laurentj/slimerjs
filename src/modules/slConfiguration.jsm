@@ -47,7 +47,34 @@ var slConfiguration = {
         });
     },
 
-    envs : []
+    envs : [],
+
+    /**
+     * the XUL elements containing all opened browsers
+     * @var DOMElement
+     */
+    browserElements : null,
+
+    /**
+     * create a new browser element. call the given callback when it is ready,
+     * with the browser element as parameter.
+     */
+    openBrowser : function(callback) {
+        let browser = this.browserElements.ownerDocument.createElement("webpage");
+        function onReady(event) {
+            browser.removeEventListener("BrowserReady", onReady, false);
+            callback(browser);
+        }
+        browser.addEventListener("BrowserReady", onReady, false);
+        this.browserElements.appendChild(browser);
+        this.browserElements.selectedPanel = browser;
+    },
+
+    closeBrowser: function (navigator) {
+        //navigator.resetBrowser();
+        navigator.parentNode.removeChild(navigator);
+        this.browserElements.selectedPanel = this.browserElements.lastChild;
+    }
 }
 
 /*

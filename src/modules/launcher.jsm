@@ -79,7 +79,7 @@ function prepareLoader(fileURI, dirURI) {
         modules: {
           //"webserver": Cu.import("resource://slimerjs/webserver.jsm", {}),
           "system": Cu.import("resource://slimerjs/system.jsm", {}),
-          //"webpage": Cu.import("resource://slimerjs/webpage.jsm", {}),
+          "webpage": Cu.import("resource://slimerjs/webpage.jsm", {}),
         },
         resolve: function(id, requirer) {
             // we have some aliases, let's resolve them

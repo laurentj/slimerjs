@@ -9,7 +9,7 @@ it runs Gecko instead of Webkit, and it is not headless (but you can still use x
 
 You could then use other tools like [CasperJS](http://casperjs.org)...
 
-For the moment, you can only run simple scripts that can use the system and the fs module.
+For the moment, you can only run simple scripts that can use the **system** module, the **fs** module and the **webpage** module.
 
 # Install
 
@@ -63,8 +63,9 @@ blank page. Here are objects you can play with:
   will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
   but all of its properties and methods are not implemented
 - a require function to load CommonJS modules
-- You can load and use the system module
-- You can load and use the fs module although its implementation is not finished
+- You can load and use the **system** module
+- You can load and use the **fs** module although its implementation is not finished
+- You can load and use the **webpage** module although its implementation is not finished
 
 You can read the [compatibility table](API.md) to know the implementation progress.
 
