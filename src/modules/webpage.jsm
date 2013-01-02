@@ -79,7 +79,7 @@ function create() {
                         callback(success);
                 }
                 navigator.browser.loadURI(url);
-            });
+            }, navigator);
         },
     
         close: function() {
