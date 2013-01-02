@@ -135,7 +135,9 @@ function create() {
         // -------------------------------- Javascript evaluation
     
         evaluate: function(func, arg) {
-            throw "Not Implemented"
+            if (navigator)
+                return navigator.evaluate(func, arg);
+            throw "WebPage not opened";
         },
         evaluateAsync: function(func) {
             throw "Not Implemented"

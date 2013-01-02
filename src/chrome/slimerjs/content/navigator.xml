@@ -58,7 +58,11 @@
                 var mm = this.browser.messageManager;
 
                 mm.addMessageListener("pageloaded", function(message){
-                    let channel = me.browser.docShell.currentDocumentChannel.QueryInterface(Components.interfaces.nsIHttpChannel);
+                    let channel = me.browser.docShell.currentDocumentChannel
+                    try {
+                        channel = channel.QueryInterface(Components.interfaces.nsIHttpChannel);
+                    }
+                    catch(e){}
                     let success = "success";
                     if (channel) {
                         success = channel.requestSucceeded?"success":"fail";
@@ -134,6 +138,24 @@
                     }
                 ]]>
             </field>
+
+            <method name="evaluate">
+                <parameter name="script" />
+                <parameter name="args" />
+                <body><![CDATA[
+                // FIXME: should the sandbox be created each time or only after the page is loaded?
+                let sandbox = Components.utils.Sandbox(this.browser.contentWindow,
+                            {
+                                'sandboxName': this.browser.currentURI.spec,
+                                'sandboxPrototype': this.browser.contentWindow,
+                                'wantXrays': true
+                            });
+                sandbox.__slimer_args = Array.isArray(args)?args:[args];
+                script = 'try{('+script.toSource()+').apply(null, __slimer_args);}catch(e){dump("err evaluate:"+e+"\\n");}';
+                return Components.utils.evalInSandbox(script, sandbox);
+                ]]></body>
+            </method>
+
         </implementation>
         <handlers>
         </handlers>

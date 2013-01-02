@@ -23,6 +23,15 @@ function assertEquals(expected, result, title) {
         dump("\t\t-----> FAIL!!! given result: "+result+"\n");
     }
 }
+function assertNotEquals(expected, result, title) {
+    dump(title+" ")
+    if (expected != result) {
+        dump("OK\n");
+    }
+    else{
+        dump("\t\t-----> FAIL!!! given result: "+result+"\n");
+    }
+}
 
 assertExists(window, "has window object? ");
 assertExists(document, "has document object? ");
@@ -79,6 +88,9 @@ var url = "http://jelix.org/";
 webpage.open(url, function(success){
     assertEquals("success", success, "Webpage testapp loaded");
     assertEquals(url, webpage.url, "browser should have the right url");
+    assertNotEquals("", webpage.evaluate(function(prefix){
+                    return prefix+document.title;
+                }, "title: "), "retrieve title page");
     webpage.close();
     dump('\n------------------- END of tests\n');
     slimer.exit()
