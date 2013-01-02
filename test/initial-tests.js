@@ -19,11 +19,10 @@ function assertEquals(expected, result, title) {
     if (expected == result) {
         dump("OK\n");
     }
-    else
-        dump("\t\t-----> FAIL!!!\n");
+    else{
+        dump("\t\t-----> FAIL!!! given result: "+result+"\n");
+    }
 }
-
-
 
 assertExists(window, "has window object? ");
 assertExists(document, "has document object? ");
@@ -65,23 +64,22 @@ dump("os.version="+system.os.version+"\n");
 
 dump("\n\n------ check yourself if following values are ok\n")
 
-dump("Environment variable:\n")
+dump("--- Environment variable:\n")
 dump("  HOME="+system.env['HOME']+"\n");
 dump("  LOGNAME="+system.env['LOGNAME']+"\n");
 
-dump("Command line arguments:\n")
+dump("--- Command line arguments:\n")
 system.args.forEach(function(arg, i){
     dump("   "+i+": "+arg+"\n");
 });
 
-
+dump('\n------ tests on webpage:\n');
 var webpage = require("webpage").create();
-
-webpage.open("http://jelix.org", function(success){
-    dump("Webpage testapp loaded. Result: "+success+"\n");
+var url = "http://jelix.org/";
+webpage.open(url, function(success){
+    assertEquals("success", success, "Webpage testapp loaded");
+    assertEquals(url, webpage.url, "browser should have the right url");
     webpage.close();
+    dump('\n------------------- END of tests\n');
     slimer.exit()
 })
-
-
-dump('\nEND of tests\n');

@@ -69,7 +69,12 @@ function create() {
         },
     
         // -------------------------------- Window manipulation
-        
+        /**
+         * Open a web page in a browser
+         * @param string url    the url of the page to open
+         * @param function callback  a function called when the page is loaded. it
+         *                           receives "success" or "fail" as parameter.
+         */
         open: function(url, callback) {
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
@@ -81,20 +86,25 @@ function create() {
                 navigator.browser.loadURI(url);
             }, navigator);
         },
-    
+
+        /**
+         * close the browser
+         */
         close: function() {
-            slLauncher.closeBrowser(navigator);
+            if (navigator) {
+                if (this.onClosing)
+                    this.onClosing(this);
+                slLauncher.closeBrowser(navigator);
+            }
             navigator=null;
         },
-    
-        get onClosing() {
-            throw "Not Implemented"
-        },
-    
-        set onClosing(callback) {
-            throw "Not Implemented"
-        },
-    
+
+        /**
+         * function called when the browser is being closed, during a call of WebPage.close()
+         * or during a call of window.close() inside the web page (not implemented yet)
+         */
+        onClosing: null,
+
         get frameUrl() {
             throw "Not Implemented"
         },
@@ -107,12 +117,13 @@ function create() {
         set navigationLocked(val) {
             throw "Not Implemented"
         },
-    
+
         get url() {
-            throw "Not Implemented"
+            if (navigator)
+                return navigator.browser.currentURI.spec;
+            return "";
         },
-    
-    
+
         get viewportSize() {
             throw "Not Implemented"
         },
