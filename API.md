@@ -100,7 +100,7 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
     <tr><td>clearCookies()</td><td></td></tr>
     <tr><td>close()</td><td>Implemented</td></tr>
     <tr><td>deleteCookie(cookieName)</td><td></td></tr>
-    <tr><td>evaluate(function, arg1, arg2,...)</td><td></td></tr>
+    <tr><td>evaluate(function, arg1, arg2,...)</td><td>implemented</td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td></td></tr>
     <tr><td>includeJs(url, callback)</td><td></td></tr>
     <tr><td>injectJs(filename)</td><td></td></tr>
