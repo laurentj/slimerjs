@@ -26,7 +26,6 @@
 var EXPORTED_SYMBOLS = ["create"];
 Components.utils.import("resource://gre/modules/Services.jsm");
 
-
 function create() {
     var server = Components.classes["@mozilla.org/server/jshttp;1"]
                            .createInstance(Components.interfaces.nsIHttpServer);
@@ -37,11 +36,6 @@ function create() {
             var req = new HttpRequest(request);
             var resp = new HttpResponse(response);
             handlerCallback(req, resp);
-        },
-        QueryInterface: function(iid) {
-          if (iid.equals(Components.interfaces.nsIHttpRequestHandler) || iid.equals(Components.interfaces.nsISupports))
-            return this;
-          throw Components.results.NS_ERROR_NO_INTERFACE;
         }
     }
     server.registerPrefixHandler("/", requestHandler);
@@ -57,12 +51,35 @@ function create() {
                 server.identity.add('http', host, port);
             }
             server.start(port);
+            return true;
         },
         close: function(){
             server.stop(function(){});
+        },
+        get port() {
+            return server.identity.primaryPort
         }
     }
 }
+
+function parseQueryString(qs) {
+    if (qs == "")
+        return {}
+    let listparam;
+    if (qs.indexOf('&') == -1) {
+        listparam = [qs];
+    }
+    else {
+        listparam = qs.split('&');
+    }
+    let result = {}
+    listparam.forEach(function(element, index, arr) {
+        let [name, value] = element.split('=');
+        result[name] = decodeURIComponent(value);
+    });
+    return result;
+}
+
 
 function HttpRequest(request) {
     this._request = request;
@@ -74,16 +91,11 @@ function HttpRequest(request) {
     let count = request.bodyInputStream.available();
  
     this._rawbody = this._body = new BinaryInputStream(request.bodyInputStream).readBytes(count);
-    try {
+    if (request.hasHeader("content-type")){
         let type = request.getHeader("content-type");
         if (type == 'application/x-www-form-urlencoded') {
-            this._body = {}
-            for( let param in this._rawbody.split('&')) {
-                let [name, value] = param.split('=');
-                this._body[name] = decodeURIComponent(value);
-            }
+            this._body = parseQueryString(this._rawbody);
         }
-    }catch(e) {
     }
 }
 
@@ -92,11 +104,7 @@ HttpRequest.prototype = {
         return this._request.method;
     },
     get url () {
-        let u = this._request.scheme+'://'+this._request.host;
-        if (this._request.port != 80) {
-            u += ':'+this._request.port;
-        }
-        u += this._request.path;
+        let u = this._request.path;
         if (this._request.queryString != '')
             u += '?'+this._request.queryString;
         return u;
@@ -118,6 +126,14 @@ HttpRequest.prototype = {
     },
     get postRaw() {
         return this._rawbody;
+    },
+
+    // not compatible with PhantomJS 1.8
+    get path () {
+        return this._request.path;
+    },
+    get queryString () {
+        return this._request.queryString;
     }
 }
 

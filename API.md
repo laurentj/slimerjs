@@ -225,8 +225,6 @@ are part of the CommonJS FileSystem specification
 
 # stream object
 
-Not available yet
-
 <table>
     <tr><td>read()</td><td>Implemented</td></tr>
     <tr><td>readLine()</td><td></td></tr>
@@ -258,6 +256,12 @@ Not available yet
     <tr><td>headers</td><td>Implemented</td></tr>
     <tr><td>post</td><td>Implemented</td></tr>
     <tr><td>postRaw</td><td>Implemented</td></tr>
+</table>
+
+Properties not compatible with PhantomJS request object:
+<table>
+    <tr><td>path</td><td>contains the path part of the URL (Readonly)</td></tr>
+    <tr><td>queryString</td><td>contains the query part of the URL (Readonly)</td></tr>
 </table>
 
 ## response object
