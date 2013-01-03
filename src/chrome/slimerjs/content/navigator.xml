@@ -151,7 +151,7 @@
                                 'wantXrays': true
                             });
                 sandbox.__slimer_args = Array.isArray(args)?args:[args];
-                script = '('+script.toSource()+').apply(null, __slimer_args);}';
+                script = '('+script.toSource()+').apply(null, __slimer_args);';
                 return Components.utils.evalInSandbox(script, sandbox);
                 ]]></body>
             </method>

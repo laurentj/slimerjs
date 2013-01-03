@@ -76,7 +76,7 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
 
 <table>
     <tr><td>clipRect</td><td></td></tr>
-    <tr><td>content</td><td>Implemented</td></tr>
+    <tr><td>content</td><td>Implemented. Setter not implemented yet</td></tr>
     <tr><td>cookies</td><td></td></tr>
     <tr><td>customHeaders</td><td></td></tr>
     <tr><td>frameContent</td><td></td></tr>

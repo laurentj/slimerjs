@@ -33,12 +33,9 @@ function create() {
     var navigator = null;
 
     var webpage = {
-        clipRect :null,
-        libraryPath : null,
-        paperSize : null,
+
         settings : null,
-        zoomFactor : null,
-    
+
         // ------------------------ cookies and headers
         get cookies() {
             throw "Not Implemented"
@@ -149,7 +146,10 @@ function create() {
                 return navigator.includeJs(url, callback);
             throw "WebPage not opened";
         },
+        // FIXME: should be initialized with the provided script directory path
+        libraryPath : null,
         injectJs: function(filename) {
+            // filename resolved against the libraryPath property
             throw "Not Implemented"
             /*if (navigator)
                 return navigator.injectJs(filename);
@@ -217,7 +217,11 @@ function create() {
         },
     
         // ------------------------------- Screenshot and pdf export
-    
+
+        clipRect :null,
+        paperSize : null,
+        zoomFactor : null,
+
         render: function(filename) {
             throw "Not Implemented"
         },
