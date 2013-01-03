@@ -165,7 +165,16 @@ function create() {
         // --------------------------------- content manipulation
     
         get content () {
-            throw "Not Implemented"
+            if (!navigator)
+                throw "WebPage not opened";
+
+            const de = Components.interfaces.nsIDocumentEncoder
+            let encoder = Components.classes["@mozilla.org/layout/documentEncoder;1?type=text/html"]
+                            .createInstance(Components.interfaces.nsIDocumentEncoder);
+            let doc = navigator.browser.contentDocument;
+            encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
+            encoder.setNode(doc);
+            return encoder.encodeToString();
         },
         
         set content(val) {
@@ -185,7 +194,16 @@ function create() {
         },
     
         get plainText() {
-            throw "Not Implemented"
+            if (!navigator)
+                throw "WebPage not opened";
+
+            const de = Components.interfaces.nsIDocumentEncoder
+            let encoder = Components.classes["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
+                            .createInstance(Components.interfaces.nsIDocumentEncoder);
+            let doc = navigator.browser.contentDocument;
+            encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly);
+            encoder.setNode(doc);
+            return encoder.encodeToString();
         },
     
         sendEvent: function(eventType, keyOrMouseX, mouseY, button) {

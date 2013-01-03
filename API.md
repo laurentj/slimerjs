@@ -76,7 +76,7 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
 
 <table>
     <tr><td>clipRect</td><td></td></tr>
-    <tr><td>content</td><td></td></tr>
+    <tr><td>content</td><td>Implemented</td></tr>
     <tr><td>cookies</td><td></td></tr>
     <tr><td>customHeaders</td><td></td></tr>
     <tr><td>frameContent</td><td></td></tr>
@@ -85,10 +85,10 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
     <tr><td>libraryPath</td><td></td></tr>
     <tr><td>navigationLocked</td><td></td></tr>
     <tr><td>paperSize</td><td></td></tr>
-    <tr><td>plainText</td><td></td></tr>
+    <tr><td>plainText</td><td>Implemented</td></tr>
     <tr><td>scrollPosition</td><td></td></tr>
     <tr><td>settings</td><td></td></tr>
-    <tr><td>url</td><td></td></tr>
+    <tr><td>url</td><td>Implemented</td></tr>
     <tr><td>viewportSize</td><td></td></tr>
     <tr><td>zoomFactor</td><td></td></tr>
 </table>
@@ -102,7 +102,7 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
     <tr><td>deleteCookie(cookieName)</td><td></td></tr>
     <tr><td>evaluate(function, arg1, arg2,...)</td><td>implemented</td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td>implemented</td></tr>
-    <tr><td>includeJs(url, callback)</td><td></td></tr>
+    <tr><td>includeJs(url, callback)</td><td>implemented</td></tr>
     <tr><td>injectJs(filename)</td><td></td></tr>
     <tr><td>open(url, callback)</td><td>Implemented</td></tr>
     <tr><td>release()</td><td></td></tr>
