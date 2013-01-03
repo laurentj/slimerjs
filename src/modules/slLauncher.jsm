@@ -45,15 +45,20 @@ var slLauncher = {
                             });
 
         // expose a console object that dump output into the shell console
-        var c = {}
-        Cu.import("resource://gre/modules/devtools/Console.jsm", c);
-        // we need to indicate which properties the script can access on the console
-        c.console.__exposedProps__ = {
-            debug:'r', log:'r', info:'r', warn:'r',
-            error:'r', trace:'r', clear:'r',
-            dir:'r', dirxml:'r', group:'r', groupEnd:'r'
+        var console = {
+            debug:function(str) { dump(str+"\n");},
+            log:function(str) { dump(str+"\n");},
+            info:function(str) { dump(str+"\n");},
+            warn:function(str) { dump(str+"\n");},
+            error:function(str) { dump(str+"\n");},
+            __exposedProps__ : {
+                debug:'r', log:'r', info:'r', warn:'r',
+                error:'r', trace:'r'
+                /*clear:'r',
+                dir:'r', dirxml:'r', group:'r', groupEnd:'r'*/
+            }
         }
-        sandbox.console = c.console;
+        sandbox.console = console;
 
         // import the slimer/phantom API into the sandbox
         Cu.import('resource://slimerjs/slimer.jsm', sandbox);
