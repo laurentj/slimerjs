@@ -140,7 +140,9 @@ function create() {
             throw "WebPage not opened";
         },
         evaluateAsync: function(func) {
-            throw "Not Implemented"
+            if (navigator)
+                return navigator.evaluateAsync(func);
+            throw "WebPage not opened";
         },
         includeJs: function(url, callback) {
             throw "Not Implemented"
