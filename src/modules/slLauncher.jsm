@@ -111,7 +111,7 @@ function prepareLoader(fileURI, dirURI) {
         globals: {
         },
         modules: {
-          //"webserver": Cu.import("resource://slimerjs/webserver.jsm", {}),
+          "webserver": Cu.import("resource://slimerjs/webserver.jsm", {}),
           "system": Cu.import("resource://slimerjs/system.jsm", {}),
           "webpage": Cu.import("resource://slimerjs/webpage.jsm", {}),
         },

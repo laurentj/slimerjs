@@ -10,7 +10,8 @@ same API, except that it runs Gecko instead of Webkit, and it is not headless
 
 You could then use other tools like [CasperJS](http://casperjs.org)...
 
-For the moment, you can only run simple scripts that can use few functions from the **system** module, the **fs** module and the **webpage** module.
+For the moment, you can only run simple scripts that can use few functions from
+the **system** module, the **fs** module, the **webpage** module and the **webserver** module.
 
 Follow us on twitter: [@slimerjs](https://twitter.com/slimerjs)
 
@@ -62,10 +63,11 @@ blank page. Here are objects you can play with:
 - You can load and use the **system** module
 - You can load and use the **fs** module although its implementation is not finished
 - You can load and use the **webpage** module although its implementation is not finished
+- You can load and use the **webserver** module
 
 You can read the [compatibility table](API.md) to know the implementation progress.
 
-In the future, there will be all features of [PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start).
+To use all available APIs, read the [PhantomJS documentation](https://github.com/ariya/phantomjs/wiki/Quick-Start).
 
 Note that you must execute ```slimer.exit()``` or ```phantom.exit()``` to terminate the application, else
 the window of SlimerJS won't be closed.

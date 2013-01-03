@@ -238,42 +238,35 @@ Not available yet
 
 # Module: webserver
 
-Not available yet
 
 <table>
-    <tr><td>create()</td><td></td></tr>
+    <tr><td>create()</td><td>Implemented</td></tr>
 </table>
 
 # WebServer object
 
-Not available yet
-
 <table>
-    <tr><td>listen(port, callback)</td><td></td></tr>
+    <tr><td>listen(port, callback)</td><td>Implemented</td></tr>
 </table>
 
 ## request object
 
-Not available yet
-
 <table>
-    <tr><td>method</td><td></td></tr>
-    <tr><td>url</td><td></td></tr>
-    <tr><td>httpVersion</td><td></td></tr>
-    <tr><td>headers</td><td></td></tr>
-    <tr><td>post</td><td></td></tr>
-    <tr><td>postRaw</td><td></td></tr>
+    <tr><td>method</td><td>Implemented</td></tr>
+    <tr><td>url</td><td>Implemented</td></tr>
+    <tr><td>httpVersion</td><td>Implemented</td></tr>
+    <tr><td>headers</td><td>Implemented</td></tr>
+    <tr><td>post</td><td>Implemented</td></tr>
+    <tr><td>postRaw</td><td>Implemented</td></tr>
 </table>
 
 ## response object
 
-Not available yet
-
 <table>
-    <tr><td>headers</td><td></td></tr>
-    <tr><td>statusCode</td><td></td></tr>
-    <tr><td>write(data)</td><td></td></tr>
-    <tr><td>writeHead(statusCode, headers)</td><td></td></tr>
-    <tr><td>close()</td><td></td></tr>
+    <tr><td>headers</td><td>Implemented</td></tr>
+    <tr><td>statusCode</td><td>Implemented</td></tr>
+    <tr><td>write(data)</td><td>Implemented</td></tr>
+    <tr><td>writeHead(statusCode, headers)</td><td>Implemented</td></tr>
+    <tr><td>close()</td><td>Implemented</td></tr>
 </table>
 

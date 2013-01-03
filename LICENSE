@@ -4,6 +4,11 @@
     see http://mozilla.org/MPL/2.0/
     These files comes from Firefox source code and Mozilla Addon-SDK source code
 
+* components/httpd.js
+    is released under the Mozilla Public License, v. 2.0
+    see http://mozilla.org/MPL/2.0/
+    These files comes from Mozilla source code
+
 * All other files are released under this license:
 
 Copyright (c) 2012 Laurent Jouanneau

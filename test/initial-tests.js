@@ -82,16 +82,30 @@ system.args.forEach(function(arg, i){
     dump("   "+i+": "+arg+"\n");
 });
 
+dump('\n------ test webserver\n');
+
+var webserver = require("webserver").create();
+
+var service = webserver.listen(8082, function(request, response) {
+
+    response.statusCode = 200;
+    response.write('<html><head><title>hello world</title></head><body>Hello!</body></html>');
+    response.close();
+});
+
+
 dump('\n------ tests on webpage:\n');
 var webpage = require("webpage").create();
-var url = "http://jelix.org/";
+var url = "http://127.0.0.1:8082/";
+
 webpage.open(url, function(success){
-    assertEquals("success", success, "Webpage testapp loaded");
+    assertEquals("success", success, "Webpage loaded");
     assertEquals(url, webpage.url, "browser should have the right url");
-    assertNotEquals("", webpage.evaluate(function(prefix){
+    assertEquals("title: hello world", webpage.evaluate(function(prefix){
                     return prefix+document.title;
                 }, "title: "), "retrieve title page");
     webpage.close();
+    webserver.close();
     dump('\n------------------- END of tests\n');
     slimer.exit()
 })

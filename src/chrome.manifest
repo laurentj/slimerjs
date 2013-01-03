@@ -5,3 +5,5 @@ resource slimerjs modules/
 component {00995ba2-223f-4efb-b656-ce98aff7019b} components/commandline.js
 contract @mozilla.org/commandlinehandler/general-startup;1?type=slimerjs {00995ba2-223f-4efb-b656-ce98aff7019b}
 category command-line-handler m-slimerjscli @mozilla.org/commandlinehandler/general-startup;1?type=slimerjs
+
+manifest components/httpd.manifest
