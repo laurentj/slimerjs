@@ -145,16 +145,19 @@ function create() {
             throw "WebPage not opened";
         },
         includeJs: function(url, callback) {
-            throw "Not Implemented"
+            if (navigator)
+                return navigator.includeJs(url, callback);
+            throw "WebPage not opened";
         },
         injectJs: function(filename) {
             throw "Not Implemented"
+            /*if (navigator)
+                return navigator.injectJs(filename);
+            throw "WebPage not opened";*/
         },
-    
         get onError() {
             throw "Not Implemented"
         },
-    
         set onError(callback) {
             throw "Not Implemented"
         },

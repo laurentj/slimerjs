@@ -172,7 +172,34 @@
                 }, 0)
                 ]]></body>
             </method>
-
+            <method name="includeJS">
+                <parameter name="url" />
+                <parameter name="callback" />
+                <body>
+                    let doc = this.browser.contentWindow.document;
+                    let body = doc.documentElement.getElementsByTagName("body")[0];
+                    let script = doc.createElement('script');
+                    script.setAttribute('type', 'text/javascript');
+                    script.setAttribute('src', url);
+                    let listener = function(event){
+                        script.removeEventListener('load', listener, true);
+                        callback();
+                    }
+                    script.addEventListener('load', listener, true);
+                    body.appendChild(script);
+                </body>
+            </method>
+            <method name="injectJS">
+                <parameter name="source" />
+                <body>
+                    let doc = this.browser.contentWindow.document;
+                    let body = doc.documentElement.getElementsByTagName("body")[0];
+                    let script = doc.createElement('script');
+                    script.setAttribute('type', 'text/javascript');
+                    script.textContent = source;
+                    body.appendChild(script);
+                </body>
+            </method>
         </implementation>
         <handlers>
         </handlers>
