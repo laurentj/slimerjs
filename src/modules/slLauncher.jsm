@@ -36,14 +36,12 @@ var mainLoader = null;
 
 var slLauncher = {
     launchMainScript: function (contentWindow, scriptFile) {
-
         sandbox = Cu.Sandbox(contentWindow,
                             {
                                 'sandboxName': 'slimerjs',
                                 'sandboxPrototype': contentWindow,
                                 'wantXrays': true
                             });
-
         // expose a console object that dump output into the shell console
         var console = {
             debug:function(str) { dump(str+"\n");},
@@ -67,9 +65,13 @@ var slLauncher = {
         let fileURI = Services.io.newFileURI(scriptFile).spec;
         let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;
         mainLoader = prepareLoader(fileURI, dirURI);
+
         Loader.main(mainLoader, 'main', sandbox);
     },
 
+    injectJs : function (source) {
+        Loader.inject(mainLoader, mainLoader.main, source);
+    },
     /**
      * the XUL elements containing all opened browsers
      * @var DOMElement

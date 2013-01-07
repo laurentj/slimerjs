@@ -23,7 +23,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 "use strict";
-var EXPORTED_SYMBOLS = ["dumpex", "dumpStack"];
+var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "getMozFile", "readSyncStringFromFile"];
 
 
 
@@ -54,4 +54,43 @@ function dumpStack(aStack) {
         stack = stack.caller;
     }
     dump(stackText);
+}
+
+/**
+ * @param string path
+ * @param nsIFile basepath
+ */
+function getMozFile(path, basepath) {
+    var file = basepath.clone();
+    try {
+      // if path is a relative path, there won't have exception
+      file.appendRelativePath(path);
+      return file;
+    }
+    catch(e) { }
+    // the given path is really an absolute path
+    file = Components.classes['@mozilla.org/file/local;1']
+              .createInstance(Components.interfaces.nsILocalFile);
+    file.initWithPath(path);
+    return file;
+}
+
+
+function readSyncStringFromFile (file) {
+    let fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
+                   createInstance(Components.interfaces.nsIFileInputStream);
+    let cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].
+                  createInstance(Components.interfaces.nsIConverterInputStream);
+    fstream.init(file, -1, 0, 0);
+    cstream.init(fstream, "UTF-8", 0, 0);
+    let data = '';
+    let (str = {}) {
+      let read = 0;
+      do {
+        read = cstream.readString(0xffffffff, str); // read as much as we can and put it in str.value
+        data += str.value;
+      } while (read != 0);
+    }
+    cstream.close(); // this closes fstream
+    return data;
 }

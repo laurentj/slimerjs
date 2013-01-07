@@ -33,7 +33,7 @@ Here is the compatibility table.
     <tr><td>args</td><td>deprecated in phantomjs: not implemented</td></tr>
     <tr><td>cookies</td><td></td></tr>
     <tr><td>cookiesEnabled</td><td></td></tr>
-    <tr><td>libraryPath</td><td></td></tr>
+    <tr><td>libraryPath</td><td>Implemented</td></tr>
     <tr><td>scriptName</td><td>deprecated in phantomjs: not implemented</td></tr>
     <tr><td>version</td><td>Implemented</td></tr>
 </table>
@@ -46,7 +46,7 @@ Here is the compatibility table.
     <tr><td>deleteCookie(cookieName)</td><td></td></tr>
     <tr><td>exit(returnValue)</td><td>Partial implementation. The exit code cannot be returned
       to the shell console because the Mozilla toolkit does not provide a way to return it.</td></tr>
-    <tr><td>injectJs(filename)</td><td></td></tr>
+    <tr><td>injectJs(filename)</td><td>Implemented</td></tr>
     <tr><td>onerror(msg, trace)</td><td></td></tr>
 </table>
 
@@ -82,7 +82,7 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
     <tr><td>frameContent</td><td></td></tr>
     <tr><td>framePlainText</td><td></td></tr>
     <tr><td>frameUrl</td><td></td></tr>
-    <tr><td>libraryPath</td><td></td></tr>
+    <tr><td>libraryPath</td><td>Implemented</td></tr>
     <tr><td>navigationLocked</td><td></td></tr>
     <tr><td>paperSize</td><td></td></tr>
     <tr><td>plainText</td><td>Implemented</td></tr>
@@ -103,7 +103,7 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
     <tr><td>evaluate(function, arg1, arg2,...)</td><td>implemented</td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td>implemented</td></tr>
     <tr><td>includeJs(url, callback)</td><td>implemented</td></tr>
-    <tr><td>injectJs(filename)</td><td></td></tr>
+    <tr><td>injectJs(filename)</td><td>Implemented</td></tr>
     <tr><td>open(url, callback)</td><td>Implemented</td></tr>
     <tr><td>release()</td><td></td></tr>
     <tr><td>render(filename)</td><td></td></tr>

@@ -11,6 +11,8 @@
  *  - the possibility to indicate the javascript version in the loader options
  *    to evaluate modules with this version.
  *  - the possiblity to indicate our own sandbox for the main module
+ *  - the possibility to indicate a source code for the main module
+ *  - new inject() method to inject javascript source code into an existing module
  * main contributor: Laurent Jouanneau
  */
 
@@ -174,7 +176,6 @@ const evaluate = iced(function evaluate(sandbox, uri, options) {
     version: '1.8',
     source: null
   }, options);
-
   return source ? Cu.evalInSandbox(source, sandbox, version, uri, line)
                 : loadSubScript(uri, sandbox, encoding);
 });
@@ -182,7 +183,7 @@ exports.evaluate = evaluate;
 
 // Populates `exports` of the given CommonJS `module` object, in the context
 // of the given `loader` by evaluating code associated with it.
-const load = iced(function load(loader, module, initialSandbox) {
+const load = iced(function load(loader, module, initialSandbox, src) {
   let { sandboxes, globals, javascriptVersion } = loader;
   let require = Require(loader, module);
 
@@ -234,7 +235,8 @@ const load = iced(function load(loader, module, initialSandbox) {
   sandboxes[module.uri] =  sandbox;
 
   let evalOptions =  {
-    version : javascriptVersion
+    version : javascriptVersion,
+    source: src
   }
   evaluate(sandbox, module.uri, evalOptions);
 
@@ -244,6 +246,20 @@ const load = iced(function load(loader, module, initialSandbox) {
   return module;
 });
 exports.load = load;
+
+
+const inject =  iced(function inject(loader, module, src) {
+  let { sandboxes, globals, javascriptVersion } = loader;
+  let sandbox = sandboxes[module.uri]
+
+  let evalOptions =  {
+    version : javascriptVersion,
+    source: src
+  }
+  evaluate(sandbox, module.uri, evalOptions);
+});
+exports.inject = inject;
+
 
 // Utility function to check if id is relative.
 function isRelative(id) { return id[0] === '.'; }
@@ -321,10 +337,10 @@ const Require = iced(function Require(loader, requirer) {
 });
 exports.Require = Require;
 
-const main = iced(function main(loader, id, sandbox) {
+const main = iced(function main(loader, id, sandbox, source) {
   let module = Module(id, resolveURI(id, loader.mapping));
   loader.main = module;
-  return load(loader, module, sandbox).exports;
+  return load(loader, module, sandbox, source).exports;
 });
 exports.main = main;
 

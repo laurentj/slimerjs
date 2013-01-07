@@ -25,12 +25,16 @@
 
 var EXPORTED_SYMBOLS = ["create"];
 Components.utils.import('resource://slimerjs/slLauncher.jsm');
+Components.utils.import('resource://slimerjs/slUtils.jsm');
+Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
 
 
 function create() {
     // private properties for the webpage object
     var navigator = null;
+
+    var libPath = slConfiguration.scriptFile.parent.clone();
 
     var webpage = {
 
@@ -143,17 +147,26 @@ function create() {
         },
         includeJs: function(url, callback) {
             if (navigator)
-                return navigator.includeJs(url, callback);
+                return navigator.includeJS(url, callback);
             throw "WebPage not opened";
         },
-        // FIXME: should be initialized with the provided script directory path
-        libraryPath : null,
+
+        get libraryPath () {
+            return libPath.path;
+        },
+        set libraryPath (path) {
+            libPath = Components.classes['@mozilla.org/file/local;1']
+                            .createInstance(Components.interfaces.nsILocalFile);
+            libPath.initWithPath(path);
+        },
+
         injectJs: function(filename) {
             // filename resolved against the libraryPath property
-            throw "Not Implemented"
-            /*if (navigator)
-                return navigator.injectJs(filename);
-            throw "WebPage not opened";*/
+            let f = getMozFile(filename, libPath);
+            let source = readSyncStringFromFile(f);
+            if (navigator) {
+                navigator.injectJS(source);
+            }
         },
         get onError() {
             throw "Not Implemented"

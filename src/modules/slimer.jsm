@@ -25,12 +25,16 @@
 
 var EXPORTED_SYMBOLS = ["slimer", "phantom"];
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
+Components.utils.import('resource://slimerjs/slUtils.jsm');
+Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
 
 var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
                  .getService(Components.interfaces.nsIXULAppInfo);
 
 var httpCookies = [];
+
+var libPath = slConfiguration.scriptFile.parent.clone();
 
 function Slimer(version) {
     let [major, minor, patch] = version.split('.');
@@ -110,13 +114,23 @@ Slimer.prototype = {
      * the path where injected script could be find
      * @var string
      */
-    libraryPath : '',
+    get libraryPath () {
+        return libPath.path;
+    },
+    set libraryPath (path) {
+        libPath = Components.classes['@mozilla.org/file/local;1']
+                        .createInstance(Components.interfaces.nsILocalFile);
+        libPath.initWithPath(path);
+    },
 
     /**
      * injects an external script into the SlimerJS sandbox runtime
      */
-    injectJs : function (filename) {
-        throw "Not Implemented";
+    injectJs: function(filename) {
+        // filename resolved against the libraryPath property
+        let f = getMozFile(filename, libPath);
+        let source = readSyncStringFromFile(f);
+        slLauncher.injectJs(source);
     },
 
     /**

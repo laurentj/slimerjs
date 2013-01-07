@@ -54,6 +54,13 @@ assertEquals("1", phantom.version.major, "phantom has the good major version");
 assertEquals("7", phantom.version.minor, "phantom has the good minor version");
 assertEquals("0", phantom.version.patch, "phantom has the good patch version");
 
+assertEquals(true, "require" in this, "there is a require object");
+assertEquals("function", typeof require, "require is a function");
+
+assertEquals(true, "module" in this, "there is a module property");
+assertNotEquals("", module.uri, "module uri");
+assertEquals("main", module.id, "module id");
+
 
 var ex = require('./requiredexample');
 assertExists(ex, "is 'ex' defined? ");
@@ -63,15 +70,21 @@ assertEquals(5, ex.myCalcFunc(2), "value of ex.myCalcFunc(2)");
 var m = require('./a/b');
 assertEquals("Laurent", m.identity.firstName, "value of m.identity.firstName");
 
+var injectedValue = '';
+phantom.injectJs('wwwfile/injectslimer.js');
+assertEquals("myvalue", injectedValue, "value of injectedValue");
+assertEquals("yes!", newinjectedvalue, "value of newinjectedvalue");
+
 var fs = require("fs");
 
 var system = require("system");
+
+console.log("\n------ check yourself if following values are ok")
 
 console.log("os.architecture="+system.os.architecture);
 console.log("os.name="+system.os.name);
 console.log("os.version="+system.os.version);
 
-console.log("\n------ check yourself if following values are ok")
 
 console.log("--- Environment variable:")
 console.log("  HOME="+system.env['HOME']);
@@ -109,6 +122,6 @@ setTimeout(function(){ // wait after the webserver init process
         webpage.close();
         webserver.close();
         console.log('\n------------------- END of tests');
-        slimer.exit()
+        phantom.exit()
     })
 }, 200);
