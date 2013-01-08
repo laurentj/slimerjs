@@ -36,6 +36,15 @@ var httpCookies = [];
 
 var libPath = slConfiguration.scriptFile.parent.clone();
 
+var errorHandler = function defaultErrorHandler(msg, stack) {
+    dump("\nScript Error: "+msg+"\n");
+    dump("       Stack:\n");
+    stack.forEach(function(t) {
+        dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
+    })
+    dump("\n");
+}
+
 function Slimer(version) {
     let [major, minor, patch] = version.split('.');
     this._version = { major: major, minor: minor, patch: patch, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
@@ -137,13 +146,13 @@ Slimer.prototype = {
      * set the handler for errors
      */
     set onError (val) {
-        throw "Not Implemented";
+        errorHandler = val;
     },
     /**
      * get the handler for errors
      */
     get onError () {
-        throw "Not Implemented";
+        return errorHandler;
     },
 
     __exposedProps__ : {

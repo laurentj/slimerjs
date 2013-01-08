@@ -106,13 +106,13 @@ var service = webserver.listen(8082, function(request, response) {
 });
 
 
-console.log('\n------ tests on webpage:');
 var webpage = require("webpage").create();
 var url = "http://127.0.0.1:8082/";
 
 setTimeout(function(){ // wait after the webserver init process
 
     webpage.open(url, function(success){
+        console.log('\n------ tests on webpage:');
         assertEquals("success", success, "Webpage loaded");
         assertEquals(url, webpage.url, "browser should have the right url");
         assertEquals("title: hello world", webpage.evaluate(function(prefix){
@@ -125,3 +125,16 @@ setTimeout(function(){ // wait after the webserver init process
         phantom.exit()
     })
 }, 200);
+
+console.log('\n------ tests on onerror support');
+
+phantom.onError = function(msg, stack) {
+    assertEquals("Test onerror listener", msg, "message of the exception")
+    assertEquals(2, stack.length, "length of the stack");
+    assertNotEquals(-1, stack[0].sourceURL.indexOf('requiredexample.js'), "filename is requiredexample.js")
+    assertEquals(9, stack[0].line, "line in requiredexample.js")
+    assertNotEquals(-1, stack[1].sourceURL.indexOf('initial-tests.js'), "filename is initial-tests.js")
+    assertEquals(140, stack[1].line, "line in initial-tests.js")
+}
+
+ex.throwExcept();

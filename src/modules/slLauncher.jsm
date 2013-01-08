@@ -66,7 +66,59 @@ var slLauncher = {
         let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;
         mainLoader = prepareLoader(fileURI, dirURI);
 
-        Loader.main(mainLoader, 'main', sandbox);
+        try {
+            Loader.main(mainLoader, 'main', sandbox);
+        }
+        catch(e) {
+            this.processException(e, fileURI);
+        }
+    },
+
+    processException : function (e, fileURI) {
+        let msg;
+        let stackRes = [];
+
+        if (typeof e == 'object' && 'stack' in e) {
+            msg = e.message;
+
+            let r = /^\s*(.*)@(.*):(\d+)\s*$/gm;
+            let m, a = [];
+            // exemple of stack
+            // bla@resource://slimerjs/addon-sdk/loader.jsm -> file:///home/laurent/projets/slimerjs/test/initial-tests.js:130
+            // @resource://slimerjs/addon-sdk/loader.jsm -> file:///home/laurent/projets/slimerjs/test/initial-tests.js:134
+            // evaluate@resource://slimerjs/addon-sdk/loader.jsm:180
+
+            while ((m = r.exec(e.stack))) {
+                let [full, funcName, sourceURL, lineNumber] = m;
+                if (sourceURL.indexOf('->') != -1) {
+                    sourceURL = sourceURL.split('->')[1].trim();
+                }
+                else if (sourceURL == 'resource://slimerjs/addon-sdk/loader.jsm') {
+                    break;
+                }
+
+                var line = {
+                    "sourceURL":sourceURL,
+                    "line": lineNumber,
+                    "function": funcName
+                }
+                stackRes.push(line);
+            }
+        }
+        else {
+            msg = e.toString();
+            var line = {
+                "sourceURL":fileURI,
+                "line": 0,
+                "function":null
+            }
+            stackRes.push(line);
+        }
+        if (sandbox.slimer.onError) {
+            sandbox.slimer.onError(msg, stackRes);
+        }
+        else
+            throw e;
     },
 
     injectJs : function (source) {
