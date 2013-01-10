@@ -47,7 +47,7 @@ Here is the compatibility table.
     <tr><td>exit(returnValue)</td><td>Partial implementation. The exit code cannot be returned
       to the shell console because the Mozilla toolkit does not provide a way to return it.</td></tr>
     <tr><td>injectJs(filename)</td><td>Implemented</td></tr>
-    <tr><td>onerror(msg, trace)</td><td></td></tr>
+    <tr><td>onerror(msg, trace)</td><td>Implemented</td></tr>
 </table>
 
 # phantom object
@@ -118,6 +118,7 @@ it returns the version of PhantomJS to which SlimerJS is compatible.
     <tr><td>onConfirm</td><td></td></tr>
     <tr><td>onConsoleMessage</td><td></td></tr>
     <tr><td>onError</td><td></td></tr>
+
     <tr><td>onInitialized</td><td></td></tr>
     <tr><td>onLoadFinished</td><td></td></tr>
     <tr><td>onLoadStarted</td><td></td></tr>

@@ -12,7 +12,7 @@
         <implementation>
             <constructor>
                 <![CDATA[
-                //this.browser.addProgressListener(this.mProgressListener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+                this.initProgressListener();
                 this.initMessageManager();
                 this.browser.messageManager.loadFrameScript('chrome://slimerjs/content/navigatorFrameScript.js', true);
                 this._sendReadyEvent();
@@ -27,12 +27,14 @@
             </field>
 
             <field name="onpageloaded">null</field>
-            
+            <field name="webPage">null</field>
+    
             <method name="resetBrowser">
                 <body>
                     this.onpageloaded = null;
                     this.browser.stop();
-                    //this.browser.removeProgressListener(this.mProgressListener);
+                    this.browser.removeProgressListener(this.mProgressListener);
+                    this.webPage = null;
                     //this.browser.sessionHistory.PurgeHistory(1000);
                     this.browser.destroy();
                 </body>
@@ -74,70 +76,121 @@
                 ]]></body>
             </method>
 
-            <field name="mProgressListener">
+            <method name="initProgressListener">
+                <body>
                 <![CDATA[
-                    {
+                    let ci = Components.interfaces;
+                    let WPL = ci.nsIWebProgressListener;
+                    let nav = this;
+                    this.mProgressListener = {
+                        _firstBlankLoad : true, // we should ignore the load of about:blank during initialization of <browser>
                         QueryInterface : function(aIID)
                         {
-                          if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
-                              aIID.equals(Components.interfaces.nsIWebProgressListener2) ||
-                              aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
-                              aIID.equals(Components.interfaces.nsISupports))
+                          if (aIID.equals(WPL) ||
+                              aIID.equals(ci.nsIWebProgressListener2) ||
+                              aIID.equals(ci.nsISupportsWeakReference) ||
+                              aIID.equals(ci.nsISupports))
                             return this;
                           throw Components.results.NS_NOINTERFACE;
                         },
 
-                        onProgressChange : function (aWebProgress, aRequest,
-                                aCurSelfProgress, aMaxSelfProgress,
-                                aCurTotalProgress, aMaxTotalProgress)
+                        onLocationChange : function(aWebProgress, aRequest, aLocation, aFlags)
                         {
+                            if (this._firstBlankLoad)
+                                return;
+//dump("onLocationChange "+aLocation.spec+"\n");
+                            let failure = aFlags & WPL.LOCATION_CHANGE_ERROR_PAGE;
+                            if (failure) {
+                                if (nav.onpageloaded)
+                                    nav.onpageloaded("fail");
+                                return;
+                            }
 
+                            let insidePage = aFlags & WPL.LOCATION_CHANGE_SAME_DOCUMENT;
+                            if (!failure && !insidePage) {
+                                if (nav.webPage && nav.webPage.onUrlChanged)
+                                    nav.webPage.onUrlChanged(aLocation.spec);
+                            }
                         },
-
-                        onProgressChange64 : function (aWebProgress, aRequest,
-                                aCurSelfProgress, aMaxSelfProgress,
-                                aCurTotalProgress, aMaxTotalProgress)
-                        {
-
-                        },
-
                         onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
                         {
+                            let uri = ''
+                            if (aRequest instanceof ci.nsIChannel || "URI" in aRequest) {
+                                if (this._firstBlankLoad) {
+                                    if (aRequest.URI.spec == "about:blank" && aStateFlags & WPL.STATE_STOP && aStateFlags & WPL.STATE_IS_WINDOW)
+                                        this._firstBlankLoad = false;
+                                    return;
+                                }
+                                uri = aRequest.URI.spec
+                            }
+                            else return;
+
+                            if (this._firstBlankLoad)
+                                return;
+
+//dump("onStateChange URI:"+uri);
                             if (aWebProgress.isLoadingDocument==true)
                             {
+//                                dump(" Docload");
                             }
                             else
                             {
                             }
+/*                            
+                            if (aStateFlags & WPL.STATE_START)
+                                dump( " START");
+                            if (aStateFlags & WPL.STATE_TRANSFERRING)
+                                dump( " TRANS");
+                            if (aStateFlags & WPL.STATE_NEGOTIATING)
+                                dump( " NEGO");
+                            if (aStateFlags & WPL.STATE_STOP)
+                                dump( " STOP");
+                            if (aStateFlags & WPL.STATE_IS_REQUEST)
+                                dump( " REQ");
+                            if (aStateFlags & WPL.STATE_IS_DOCUMENT)
+                                dump( " DOC");
+                            if (aStateFlags & WPL.STATE_IS_NETWORK)
+                                dump( " NET");
+                            if (aStateFlags & WPL.STATE_IS_WINDOW)
+                                dump( " WIN");
 
-                            const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
-                            if (aStateFlags & nsIWebProgressListener.STATE_START)
+dump("\n");*/
+                            // STATE_START, STATE_REDIRECTING, STATE_TRANSFERRING, STATE_NEGOTIATING, STATE_STOP
+                            // STATE_IS_REQUEST, STATE_IS_DOCUMENT, STATE_IS_NETWORK, STATE_IS_WINDOW
+                            /*if (aStateFlags & WPL.STATE_START)
                             {
                             }
-                            else if (aStateFlags & nsIWebProgressListener.STATE_STOP)
+                            else if (aStateFlags & WPL.STATE_STOP)
                             {
-                            }
+                            }*/
                         },
 
-                        onLocationChange : function(aWebProgress, aRequest, aLocation)
-                        {
+
+
+                        onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){},
+                        onSecurityChange : function(aWebProgress, aRequest, aState) { },
+                        onRefreshAttempted : function(aWebProgress, aURI, aDelay, aSameURI){},
+
+                        debug : function(aWebProgress, aRequest) {
+                            //aWebProgress -> browser
+                            //aWebProgress.DOMWindow
+                            //aWebProgress.isLoadingDocument
+                            //arequest  cancel(), resume(), suspend(), isPending()
                         },
+                        onProgressChange : function (aWebProgress, aRequest,
+                                aCurSelfProgress, aMaxSelfProgress,
+                                aCurTotalProgress, aMaxTotalProgress)
+                        {},
+                        onProgressChange64 : function (aWebProgress, aRequest,
+                                aCurSelfProgress, aMaxSelfProgress,
+                                aCurTotalProgress, aMaxTotalProgress)
+                        {}
 
-                        onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
-                        {
-                        },
-
-                        onSecurityChange : function(aWebProgress, aRequest, aState)
-                        {
-
-                        },
-
-                        onRefreshAttempted : function(aWebProgress, aURI, aDelay, aSameURI)
-                        {
-                        }
                     }
+                    this.browser.addProgressListener(this.mProgressListener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
                 ]]>
-            </field>
+                </body>
+            </method>
 
             <method name="evaluate">
                 <parameter name="script" />

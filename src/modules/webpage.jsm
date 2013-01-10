@@ -79,6 +79,7 @@ function create() {
         open: function(url, callback) {
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
+                navigator.webPage = webpage;
                 navigator.onpageloaded = function (success) {
                     navigator.onpageloaded = null;
                     if (callback)
@@ -286,6 +287,7 @@ function create() {
         
         // ------------------------------ browsing callbacks
     
+        // This callback is invoked after the web page is created but before a URL is loaded. The callback may be used to change global objects (document...)
         get onInitialized() {
             throw "Not Implemented"
         },
@@ -293,7 +295,8 @@ function create() {
         set onInitialized(callback) {
             throw "Not Implemented"
         },
-    
+
+        //This callback is invoked when the page finishes the loading. It may accept a single argument indicating the page's status: 'success' if no network errors occurred, otherwise 'fail'.
         get onLoadFinished() {
             throw "Not Implemented"
         },
@@ -302,6 +305,7 @@ function create() {
             throw "Not Implemented"
         },
     
+        //This callback is invoked when the page starts the loading. There is no argument passed to the callback.
         get onLoadStarted() {
             throw "Not Implemented"
         },
@@ -341,14 +345,9 @@ function create() {
         set onResourceReceived(callback) {
             throw "Not Implemented"
         },
-    
-        get onUrlChanged() {
-            throw "Not Implemented"
-        },
-    
-        set onUrlChanged(callback) {
-            throw "Not Implemented"
-        }
+
+        //This callback is invoked when the URL changes, e.g. as it navigates away from the current URL.
+        onUrlChanged : null
     }
 
     return webpage;
