@@ -40,8 +40,10 @@ then
     exit 0
 fi
 
-
-SCRIPTDIR=$(dirname $0)
+#retrieve full path (firefox on macos needs it)
+pushd `dirname $0` > /dev/null
+SCRIPTDIR=`pwd`
+popd > /dev/null
 
 # retrieve list of existing environment variable, because Mozilla doesn't provide an API to get this
 # list

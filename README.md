@@ -32,10 +32,10 @@ Follow us on twitter: [@slimerjs](https://twitter.com/slimerjs)
 
 # Launching SlimerJS
 
-Open a terminal and go to the bin directory of SlimerJS. Then launch:
+Open a terminal and go to the bin/ directory of SlimerJS. Then launch:
 
 ```
-    slimerjs myscript.js
+    ./slimerjs myscript.js
 ```
 
 The given script myscripts.js is then executed in a window. If your script is
@@ -44,8 +44,11 @@ short, you probably won't see this window.
 You can for example launch some tests:
 
 ```
-    slimerjs ../test/initial-tests.js
+    ./slimerjs ../test/initial-tests.js
 ```
+
+Note: on MacOs, there is a known bug. You could have an error "script not found".
+Indicate the full path of the js script to avoid it.
 
 # Content of a script
 
