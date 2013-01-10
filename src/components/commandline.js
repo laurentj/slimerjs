@@ -136,6 +136,7 @@ slCommandLine.prototype = {
         if (cmdLine.length == 0) {
             Components.utils.reportError("script is missing");
             dump("script is missing\n");
+            cmdLine.preventDefault = true
             return;
         }
 
@@ -148,6 +149,7 @@ slCommandLine.prototype = {
         if (slConfiguration.args[0].substr(0,1) == '-') {
             Components.utils.reportError("unknown option");
             dump("unknown option\n");
+            cmdLine.preventDefault = true
             return;
         }
 
@@ -157,6 +159,7 @@ slCommandLine.prototype = {
         catch(e) {
             Components.utils.reportError("script not found");
             dump("script not found\n");
+            cmdLine.preventDefault = true
             return;
         }
     },
