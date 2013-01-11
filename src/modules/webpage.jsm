@@ -288,32 +288,14 @@ function create() {
         // ------------------------------ browsing callbacks
     
         // This callback is invoked after the web page is created but before a URL is loaded. The callback may be used to change global objects (document...)
-        get onInitialized() {
-            throw "Not Implemented"
-        },
-    
-        set onInitialized(callback) {
-            throw "Not Implemented"
-        },
+        onInitialized: null,
 
         //This callback is invoked when the page finishes the loading. It may accept a single argument indicating the page's status: 'success' if no network errors occurred, otherwise 'fail'.
-        get onLoadFinished() {
-            throw "Not Implemented"
-        },
-    
-        set onLoadFinished(callback) {
-            throw "Not Implemented"
-        },
+        onLoadFinished: null,
     
         //This callback is invoked when the page starts the loading. There is no argument passed to the callback.
-        get onLoadStarted() {
-            throw "Not Implemented"
-        },
-    
-        set onLoadStarted(callback) {
-            throw "Not Implemented"
-        },
-    
+        onLoadStarted: null,
+
         get onNavigationRequested() {
             throw "Not Implemented"
         },
@@ -322,6 +304,7 @@ function create() {
             throw "Not Implemented"
         },
     
+        // This callback is invoked when a new child window (but not deeper descendant windows) is created by the page, e.g. using window.open
         get onPageCreated() {
             throw "Not Implemented"
         },
@@ -330,21 +313,9 @@ function create() {
             throw "Not Implemented"
         },
     
-        get onResourceRequested() {
-            throw "Not Implemented"
-        },
+        onResourceRequested : null,
     
-        set onResourceRequested(callback) {
-            throw "Not Implemented"
-        },
-    
-        get onResourceReceived() {
-            throw "Not Implemented"
-        },
-    
-        set onResourceReceived(callback) {
-            throw "Not Implemented"
-        },
+        onResourceReceived : null,
 
         //This callback is invoked when the URL changes, e.g. as it navigates away from the current URL.
         onUrlChanged : null

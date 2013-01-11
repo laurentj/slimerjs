@@ -70,6 +70,9 @@
                         success = channel.requestSucceeded?"success":"fail";
                     }
 
+                    if (me.webPage && me.webPage.onLoadFinished)
+                        me.webPage.onLoadFinished(success)
+
                     if (me.onpageloaded)
                         me.onpageloaded(success);
                 });
@@ -84,6 +87,7 @@
                     let nav = this;
                     this.mProgressListener = {
                         _firstBlankLoad : true, // we should ignore the load of about:blank during initialization of <browser>
+                        _mainPageLoading : false,
                         QueryInterface : function(aIID)
                         {
                           if (aIID.equals(WPL) ||
@@ -106,8 +110,8 @@
                                 return;
                             }
 
-                            let insidePage = aFlags & WPL.LOCATION_CHANGE_SAME_DOCUMENT;
-                            if (!failure && !insidePage) {
+                            //let insidePage = aFlags & WPL.LOCATION_CHANGE_SAME_DOCUMENT;
+                            if (!failure) {
                                 if (nav.webPage && nav.webPage.onUrlChanged)
                                     nav.webPage.onUrlChanged(aLocation.spec);
                             }
@@ -115,57 +119,90 @@
                         onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
                         {
                             let uri = ''
-                            if (aRequest instanceof ci.nsIChannel || "URI" in aRequest) {
+                            if ((aRequest instanceof ci.nsIChannel || "URI" in aRequest)) {
                                 if (this._firstBlankLoad) {
                                     if (aRequest.URI.spec == "about:blank" && aStateFlags & WPL.STATE_STOP && aStateFlags & WPL.STATE_IS_WINDOW)
                                         this._firstBlankLoad = false;
                                     return;
                                 }
+                                if (!nav.webPage)
+                                    return;
                                 uri = aRequest.URI.spec
                             }
-                            else return;
+                            else {
+                                //uri ="none"
+                                return;
+                            }
 
                             if (this._firstBlankLoad)
                                 return;
-
 //dump("onStateChange URI:"+uri);
-                            if (aWebProgress.isLoadingDocument==true)
-                            {
-//                                dump(" Docload");
+                            if (this._mainPageLoading) {
+                                // see if this is a request for frame of the page
+                                // we should ignore them
+                                if (aRequest.loadGroup) {
+                                    var lg = aRequest.loadGroup
+//dump(" LGc="+lg.activeCount);
+                                    if (lg.defaultLoadRequest && lg.defaultLoadRequest instanceof ci.nsIChannel) {
+                                        let groupUri = lg.defaultLoadRequest.URI.spec;
+//dump(" dlr="+lg.defaultLoadRequest.URI.spec);
+                                        if (groupUri != this._mainPageLoading) {
+//dump(" IGNORED\n");
+                                            return;
+                                        }
+                                        else if (groupUri != uri) {
+                                            if (aStateFlags & WPL.STATE_START) {
+//dump(" RESREQ");
+                                                if (nav.webPage.onResourceRequested)
+                                                    nav.webPage.onResourceRequested();
+                                            }
+                                            if (aStateFlags & WPL.STATE_STOP) {
+//dump(" RESREC");
+                                                if (nav.webPage.onResourceReceived)
+                                                    nav.webPage.onResourceReceived();
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                            else
-                            {
-                            }
-/*                            
-                            if (aStateFlags & WPL.STATE_START)
-                                dump( " START");
-                            if (aStateFlags & WPL.STATE_TRANSFERRING)
-                                dump( " TRANS");
-                            if (aStateFlags & WPL.STATE_NEGOTIATING)
-                                dump( " NEGO");
-                            if (aStateFlags & WPL.STATE_STOP)
-                                dump( " STOP");
-                            if (aStateFlags & WPL.STATE_IS_REQUEST)
-                                dump( " REQ");
-                            if (aStateFlags & WPL.STATE_IS_DOCUMENT)
-                                dump( " DOC");
-                            if (aStateFlags & WPL.STATE_IS_NETWORK)
-                                dump( " NET");
-                            if (aStateFlags & WPL.STATE_IS_WINDOW)
-                                dump( " WIN");
+/*
+if (aStateFlags & WPL.STATE_START)
+    dump( " START");
+if (aStateFlags & WPL.STATE_TRANSFERRING)
+    dump( " TRANS");
+if (aStateFlags & WPL.STATE_NEGOTIATING)
+    dump( " NEGO");
+if (aStateFlags & WPL.STATE_STOP)
+    dump( " STOP");
+if (aStateFlags & WPL.STATE_IS_REQUEST)
+    dump( " REQ");
+if (aStateFlags & WPL.STATE_IS_DOCUMENT)
+    dump( " DOC");
+if (aStateFlags & WPL.STATE_IS_NETWORK)
+    dump( " NET");
+if (aStateFlags & WPL.STATE_IS_WINDOW)
+    dump( " WIN");
+if ( (aStateFlags & WPL.STATE_STOP) && (aStateFlags & WPL.STATE_IS_WINDOW) && this._mainPageLoading != uri) {
+    dump(" IGNORED");
+}
+dump("\n")*/
 
-dump("\n");*/
+                            // aStateFlags:
                             // STATE_START, STATE_REDIRECTING, STATE_TRANSFERRING, STATE_NEGOTIATING, STATE_STOP
                             // STATE_IS_REQUEST, STATE_IS_DOCUMENT, STATE_IS_NETWORK, STATE_IS_WINDOW
-                            /*if (aStateFlags & WPL.STATE_START)
-                            {
+
+                            if ( (aStateFlags & WPL.STATE_START) && (aStateFlags & WPL.STATE_IS_WINDOW)) {
+                                this._mainPageLoading = uri;
+                                if (nav.webPage.onLoadStarted)
+                                    nav.webPage.onLoadStarted();
                             }
-                            else if (aStateFlags & WPL.STATE_STOP)
-                            {
-                            }*/
+
+                            if ( (aStateFlags & WPL.STATE_STOP) && (aStateFlags & WPL.STATE_IS_WINDOW) && this._mainPageLoading == uri) {
+                                this._mainPageLoading = null;
+                                if (nav.webPage.onInitialized)
+                                    nav.webPage.onInitialized();
+                            }
                         },
-
-
 
                         onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){},
                         onSecurityChange : function(aWebProgress, aRequest, aState) { },
