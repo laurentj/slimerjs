@@ -245,7 +245,12 @@ are part of the CommonJS FileSystem specification
 # WebServer object
 
 <table>
-    <tr><td>listen(port, callback)</td><td>Implemented</td></tr>
+    <tr><td>listen(port, callback)</td><td>Implemented. The callback is called for every http request. Don't give it if you
+    use one of register* methods (it calls <code>registerPrefixHandler("/", callback);</code>)</td></tr>
+    <tr><td>registerFile(path, filePath)</td><td>Implemented (SlimerJS only). Maps the given path to a file.</td></tr>
+    <tr><td>registerDirectory(path, directoryPath)</td><td>Implemented (SlimerJS only). Maps a path to a dir (directoryPath)</td></tr>
+    <tr><td>registerPathHandler(path, callback)</td><td>Implemented (SlimerJS only). Register a callback that will be called when an HTTP client request the given path.</td></tr>
+    <tr><td>registerPrefixHandler(prefixPath, callback)</td><td>Implemented (SlimerJS only). Register a callback that will be called when an HTTP client request a path starting with prefixPath.</td></tr>
 </table>
 
 ## request object

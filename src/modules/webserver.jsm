@@ -29,20 +29,11 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 function create() {
     var server = Components.classes["@mozilla.org/server/jshttp;1"]
                            .createInstance(Components.interfaces.nsIHttpServer);
-    var handlerCallback = null;
-
-    var requestHandler = {
-        handle : function (request, response) {
-            var req = new HttpRequest(request);
-            var resp = new HttpResponse(response);
-            handlerCallback(req, resp);
-        }
-    }
-    server.registerPrefixHandler("/", requestHandler);
-
     return {
         listen: function(port, callback) {
-            handlerCallback = callback;
+            if (callback) {
+                this.registerPrefixHandler("/", callback);
+            }
 
             if (typeof port === "string" && port.indexOf(':') != -1){
                 let host;
@@ -53,6 +44,37 @@ function create() {
             server.start(port);
             return true;
         },
+
+        registerFile: function(path, filePath) {
+            var file = Components.classes['@mozilla.org/file/local;1']
+                            .createInstance(Components.interfaces.nsILocalFile);
+            file.initWithPath(filePath);
+            return server.registerFile(path, file);
+        },
+
+        registerDirectory : function(path, directoryPath) {
+            var file = Components.classes['@mozilla.org/file/local;1']
+                            .createInstance(Components.interfaces.nsILocalFile);
+            file.initWithPath(directoryPath);
+            return server.registerDirectory(path, file);
+        },
+
+        registerPathHandler: function(path, handlerCallback) {
+            server.registerPathHandler(path, function (request, response) {
+                    var req = new HttpRequest(request);
+                    var resp = new HttpResponse(response);
+                    handlerCallback(req, resp);
+            });
+        },
+
+        registerPrefixHandler: function(prefix, handlerCallback) {
+            server.registerPrefixHandler(prefix, function (request, response) {
+                    var req = new HttpRequest(request);
+                    var resp = new HttpResponse(response);
+                    handlerCallback(req, resp);
+                });
+        },
+
         close: function(){
             server.stop(function(){});
         },
