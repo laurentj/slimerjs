@@ -3,11 +3,19 @@
     are released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
     These files comes from Firefox source code and Mozilla Addon-SDK source code
+    http://mxr.mozilla.org/mozilla-central/source/toolkit/addon-sdk/
+    https://github.com/laurentj/addon-sdk/tree/master/lib/sdk/io
+    
 
 * components/httpd.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
     These files comes from Mozilla source code
+    http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/
+
+* test/jasmine
+    is released under the MIT Licence. see test/jasmine/MIT.LICENCE
+    http://pivotal.github.com/jasmine/
 
 * All other files are released under this license:
 
