@@ -28,17 +28,22 @@ phantom.injectJs("./jasmine/jasmine-console.js");
 phantom.injectJs("./jasmine/jasmine.async.min.js");
 
 var slimerEnv = this;
+var webServerFactory = require("webserver");
 
 phantom.injectJs("./test-environment.js");
 phantom.injectJs("./test-require.js");
 phantom.injectJs("./test-system.js");
+phantom.injectJs("./test-webpage.js");
+
+
 
 /*
 phantom.injectJs("./requests-listeners.js");
-var webserver = require("webserver").create();
+
 webserver.registerDirectory("/", phantom.libraryPath+'/www/')
 var service = webserver.listen(8082);
 */
+
 
 
 
