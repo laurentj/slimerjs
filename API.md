@@ -269,8 +269,8 @@ are part of the CommonJS FileSystem specification
     <tr><td>headers                             </td><td>Implemented</td></tr>
     <tr><td>post                                </td><td>Implemented</td></tr>
     <tr><td>postRaw                             </td><td>Implemented</td></tr>
-    <tr><td>path                                </td><td>contains the path part of the URL. Readonly. (SlimerJS only)</td></tr>
-    <tr><td>queryString                         </td><td>contains the query part of the URL. Readonly. (SlimerJS only)</td></tr>
+    <tr><td>path                                </td><td>Implemented (SlimerJS only). Contains the path part of the URL (Readonly)</td></tr>
+    <tr><td>queryString                         </td><td>Implemented (SlimerJS only). Contains the query part of the URL (Readonly)</td></tr>
 </table>
 
 ## response object

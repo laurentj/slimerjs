@@ -38,7 +38,7 @@ var slimer =  {
      * return the version of SlimerJS
      */
     get version() {
-        return version;
+        return _version;
     },
 
     /**

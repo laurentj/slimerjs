@@ -60,6 +60,7 @@ var slLauncher = {
 
         // import the slimer/phantom API into the sandbox
         Cu.import('resource://slimerjs/slimer.jsm', sandbox);
+        Cu.import('resource://slimerjs/phantom.jsm', sandbox);
 
         // load and execute the provided script
         let fileURI = Services.io.newFileURI(scriptFile).spec;
@@ -114,8 +115,8 @@ var slLauncher = {
             }
             stackRes.push(line);
         }
-        if (sandbox.slimer.onError) {
-            sandbox.slimer.onError(msg, stackRes);
+        if (sandbox.phantom.onError) {
+            sandbox.phantom.onError(msg, stackRes);
         }
         else
             throw e;
