@@ -1,7 +1,7 @@
-SlimerJS will implement all [the API of Phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference) except
-deprecated API (at least in first releases).
+SlimerJS will implement all [the API of Phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference)
+except deprecated API (at least in first releases).
 
-Here is the compatibility table.
+Here are compatibility tables and other specific API to SlimerJS.
 
 
 # Command-line arguments and options
@@ -25,7 +25,7 @@ Here is the compatibility table.
     <tr><td>script arguments</td><td>Implemented</td></tr>
 </table>
 
-# slimer object
+# phantom object
 
 ## properties
 
@@ -35,13 +35,14 @@ Here is the compatibility table.
     <tr><td>cookiesEnabled</td><td></td></tr>
     <tr><td>libraryPath</td><td>Implemented</td></tr>
     <tr><td>scriptName</td><td>deprecated in phantomjs: not implemented</td></tr>
-    <tr><td>version</td><td>Implemented</td></tr>
+    <tr><td>version</td><td>Implemented. Gives the PhantomJS version which is compatible to
+         the SlimerJS implementation.</td></tr>
 </table>
 
 ## methods
 
 <table>
-    <tr><td>addCookie(cookie)</td><td></td></tr>
+    <tr><td>addCookie(cookie)       </td><td></td></tr>
     <tr><td>clearCookies()</td><td></td></tr>
     <tr><td>deleteCookie(cookieName)</td><td></td></tr>
     <tr><td>exit(returnValue)</td><td>Partial implementation. The exit code cannot be returned
@@ -50,10 +51,21 @@ Here is the compatibility table.
     <tr><td>onerror(msg, trace)</td><td>Implemented</td></tr>
 </table>
 
-# phantom object
+# slimer object
 
-It has the same properties as the slimer object, except the version property:
-it returns the version of PhantomJS to which SlimerJS is compatible.
+It will contain API that does not exists in PhantomJS.
+
+<table>
+    <tr><td>version</td><td>Implemented. Gives the version of SlimerJS</td></tr>
+</table>
+
+## methods
+
+<table>
+    <tr><td>exit()</td><td>Implemented.</td></tr>
+</table>
+
+
 
 # CommonJS API
 

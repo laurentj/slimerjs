@@ -52,7 +52,7 @@ describe("slimer object", function() {
     it("should have a right version", function(){
         expect(slimer.version.major).toEqual("0");
         expect(slimer.version.minor).toEqual("0");
-        expect(slimer.version.patch).toEqual("3");
+        expect(slimer.version.patch).toEqual("4");
     });
 
 });

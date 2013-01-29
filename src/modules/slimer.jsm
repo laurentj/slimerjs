@@ -23,85 +23,22 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-var EXPORTED_SYMBOLS = ["slimer", "phantom"];
-Components.utils.import('resource://slimerjs/slConfiguration.jsm');
-Components.utils.import('resource://slimerjs/slUtils.jsm');
-Components.utils.import('resource://slimerjs/slLauncher.jsm');
+var EXPORTED_SYMBOLS = ["slimer"];
 Components.utils.import("resource://gre/modules/Services.jsm");
 
 var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-                 .getService(Components.interfaces.nsIXULAppInfo);
+                           .getService(Components.interfaces.nsIXULAppInfo);
 
-var httpCookies = [];
+var [major, minor, patch] = xulAppInfo.version.split('.');
+var _version = { major: major, minor: minor, patch: patch, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
 
-var libPath = slConfiguration.scriptFile.parent.clone();
-
-var errorHandler = function defaultErrorHandler(msg, stack) {
-    dump("\nScript Error: "+msg+"\n");
-    dump("       Stack:\n");
-    stack.forEach(function(t) {
-        dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
-    })
-    dump("\n");
-}
-
-function Slimer(version) {
-    let [major, minor, patch] = version.split('.');
-    this._version = { major: major, minor: minor, patch: patch, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
-}
-
-Slimer.prototype = {
-
-    // ------------------------  cookies
-
-    /**
-     * set a list of cookies
-     * @param cookie[] val
-     */
-    set cookies (val) {
-        httpCookies = val;
-    },
-
-    /**
-     * retrieve the list of cookies
-     * @return cookie[]
-     */
-    get cookies () {
-        return httpCookies;
-    },
-
-    /**
-     * if set to true, cookies will be send in requests
-     */
-    cookiesEnabled : true,
-
-    /**
-     * add a cookie in the cookie jar
-     * @param cookie cookie
-     */
-    addCookie : function(cookie) {
-        throw "Not Implemented";
-    },
-
-    /**
-     * erase all cookies
-     */
-    clearCookies : function() {
-        httpCookies = [];
-    },
-
-    /**
-     * delete a cookie
-     */
-    deleteCookie : function(cookieName) {
-        throw "Not Implemented";
-    },
+var slimer =  {
 
     /**
      * return the version of SlimerJS
      */
     get version() {
-        return this._version;
+        return version;
     },
 
     /**
@@ -119,71 +56,8 @@ Slimer.prototype = {
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },
 
-    /**
-     * the path where injected script could be find
-     * @var string
-     */
-    get libraryPath () {
-        return libPath.path;
-    },
-    set libraryPath (path) {
-        libPath = Components.classes['@mozilla.org/file/local;1']
-                        .createInstance(Components.interfaces.nsILocalFile);
-        libPath.initWithPath(path);
-    },
-
-    /**
-     * injects an external script into the SlimerJS sandbox runtime
-     */
-    injectJs: function(filename) {
-        // filename resolved against the libraryPath property
-        let f = getMozFile(filename, libPath);
-        let source = readSyncStringFromFile(f);
-        slLauncher.injectJs(source);
-    },
-
-    /**
-     * set the handler for errors
-     */
-    set onError (val) {
-        errorHandler = val;
-    },
-    /**
-     * get the handler for errors
-     */
-    get onError () {
-        return errorHandler;
-    },
-
     __exposedProps__ : {
-        cookies: 'rw',
-        cookiesEnabled: 'rw',
-        libraryPath : 'rw',
         version : 'r',
-        addCookie : 'r',
-        clearCookies : 'r',
-        deleteCookie : 'r',
-        exit : 'r',
-        injectJs : 'r',
-        onError : 'rw'
+        exit : 'r'
     }
 }
-
-var slimer = new Slimer(xulAppInfo.version);
-var phantom = new Slimer("1.7.0");
-
-/**
- * cookie object for http requests
- */
-function cookie(name, value, domain, path) {
-    this.name = name;
-    this.value = value;
-    this.domain = domain || 'localhost';
-    this.path = path || '/';
-
-    this.httponly = true;
-
-    this.secure =  false;
-    this.expires = null;
-}
-

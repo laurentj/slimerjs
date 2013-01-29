@@ -57,18 +57,18 @@ blank page. Here are objects you can play with:
 
 - the [window object](https://developer.mozilla.org/en-US/docs/DOM/window) of the blank page and all of its functions
 - the [document object](https://developer.mozilla.org/en-US/docs/DOM/document) of the blank page
-- a console object, similar with the [DOM Console object](https://developer.mozilla.org/en-US/docs/DOM/console),
-  providing these methods: debug, log, info, warn, error, trace, clear, dir, dirxml, group, groupEnd
-- a slimer object (and a phantom object that is a reference to slimer for compatibility): it
-  will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
+- a **console** object, similar with the [DOM Console object](https://developer.mozilla.org/en-US/docs/DOM/console),
+  providing these methods: debug, log, info, warn, error
+- a **phantom** object that will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
   but all of its properties and methods are not implemented yet
-- a require function to load CommonJS modules
+- a **slimer** object that will contain additionnal API
+- a **require** function to load CommonJS modules
 - You can load and use the **system** module
 - You can load and use the **fs** module although its implementation is not finished
 - You can load and use the **webpage** module although its implementation is not finished
 - You can load and use the **webserver** module
 
-You can read the [compatibility table](API.md) to know the implementation progress.
+You can read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API.md) to know the implementation progress.
 
 To use all available APIs, read the [PhantomJS documentation](https://github.com/ariya/phantomjs/wiki/Quick-Start).
 
@@ -77,7 +77,7 @@ the window of SlimerJS won't be closed.
 
 # Roadmap
 
-The goal for  a first stable release is to have a full implementation of the API of PhantomJS 1.7 (or 1.8?).
+The goal for a first stable release is to have a full implementation of the API of PhantomJS 1.7 (or 1.8?).
 
 After this release, I'll try to hack XulRunner to run headless windows (very difficult I guess :-) )
 
@@ -90,5 +90,8 @@ After this release, I'll try to hack XulRunner to run headless windows (very dif
 - Why is it called "SlimerJs"?
    - Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox source code uses
     many references from this movie, and since PhantomJS, CasperJs and other related tools, is a matter of ghost... ;-)
+- Why are there no tests on the WebServer object?
+   - This module is based on the [httpd component](http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/)
+     of Mozilla used for their own unit tests, and that is already [heavily tested](http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/test/)
 
 
