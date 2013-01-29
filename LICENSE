@@ -13,13 +13,18 @@
     These files comes from Mozilla source code
     http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/
 
-* test/jasmine
+* test/jasmine/jasmine.js
     is released under the MIT Licence. see test/jasmine/MIT.LICENCE
     http://pivotal.github.com/jasmine/
 
+* test/jasmine/jasmine.async.min.js
+    is released under the MIT Licence.
+    https://github.com/derickbailey/jasmine.async
+
+
 * All other files are released under this license:
 
-Copyright (c) 2012 Laurent Jouanneau
+Copyright (c) 2012-2013 Laurent Jouanneau & Innophi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -25,6 +25,7 @@
 
 phantom.injectJs("./jasmine/jasmine.js");
 phantom.injectJs("./jasmine/jasmine-console.js");
+phantom.injectJs("./jasmine/jasmine.async.min.js");
 
 var slimerEnv = this;
 
