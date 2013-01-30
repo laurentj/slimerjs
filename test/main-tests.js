@@ -36,10 +36,6 @@ phantom.injectJs("./test-system.js");
 phantom.injectJs("./test-webpage.js");
 phantom.injectJs("./test-webpage-listeners.js");
 
-var webserver = webServerFactory.create();
-webserver.registerDirectory("/", phantom.libraryPath+'/www/')
-webserver.listen(8083);
-
 
 // Launch tests
 var jEnv = jasmine.getEnv();

@@ -1,6 +1,6 @@
 
 var webserverTestWebPage = webServerFactory.create();
-var serviceTestWebPage = webserverTestWebPage.listen(8082, function(request, response) {
+webserverTestWebPage.listen(8082, function(request, response) {
     response.statusCode = 200;
     response.write('<html><head><title>hello world</title></head><body>Hello!</body></html>');
     response.close();

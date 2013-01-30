@@ -137,6 +137,32 @@ It will contain API that does not exists in PhantomJS.
 </table>
 
 
+
+## request object received onResourceRequested
+
+<table>
+    <tr><td>id                                  </td><td></td></tr>
+    <tr><td>method                              </td><td></td></tr>
+    <tr><td>url                                 </td><td></td></tr>
+    <tr><td>time                                </td><td></td></tr>
+    <tr><td>headers                             </td><td></td></tr>
+</table>
+
+## response object received onResourceReceived
+
+<table>
+    <tr><td>id                                  </td><td></td></tr>
+    <tr><td>headers                             </td><td></td></tr>
+    <tr><td>bodySize                            </td><td></td></tr>
+    <tr><td>contentType                         </td><td></td></tr>
+    <tr><td>redirectURL                         </td><td></td></tr>
+    <tr><td>stage                               </td><td></td></tr>
+    <tr><td>status                              </td><td></td></tr>
+    <tr><td>statusText                          </td><td></td></tr>
+    <tr><td>time                                </td><td></td></tr>
+    <tr><td>url                                 </td><td></td></tr>
+</table>
+
 # Module: system
 
 # System object
