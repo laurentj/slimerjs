@@ -749,6 +749,8 @@ nsHttpServer.prototype =
     NS_ASSERT(this._stopCallback !== null, "double-notifying?");
     NS_ASSERT(!this._hasOpenConnections(), "should be done serving by now");
 
+    if (this._stopCallback === undefined)
+        return;
     //
     // NB: We have to grab this now, null out the member, *then* call the
     //     callback here, or otherwise the callback could (indirectly) futz with

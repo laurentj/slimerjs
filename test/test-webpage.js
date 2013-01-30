@@ -10,9 +10,10 @@ describe("WebPage object on hello world", function(){
     var webpage = require("webpage").create();
     var url = "http://127.0.0.1:8082/";
 
-    async = new AsyncSpec(this);
+    var async = new AsyncSpec(this);
     async.it("should be opened",function(done) {
         webpage.open(url, function(success){
+            expect(success).toEqual("success");
             done();
         });
     });

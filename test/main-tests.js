@@ -34,17 +34,11 @@ phantom.injectJs("./test-environment.js");
 phantom.injectJs("./test-require.js");
 phantom.injectJs("./test-system.js");
 phantom.injectJs("./test-webpage.js");
+phantom.injectJs("./test-webpage-listeners.js");
 
-
-
-/*
-phantom.injectJs("./requests-listeners.js");
-
+var webserver = webServerFactory.create();
 webserver.registerDirectory("/", phantom.libraryPath+'/www/')
-var service = webserver.listen(8082);
-*/
-
-
+webserver.listen(8083);
 
 
 // Launch tests
