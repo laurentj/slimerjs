@@ -131,7 +131,7 @@ var phantom = {
         // filename resolved against the libraryPath property
         let f = getMozFile(filename, libPath);
         let source = readSyncStringFromFile(f);
-        slLauncher.injectJs(source);
+        slLauncher.injectJs(source, Services.io.newFileURI(f).spec);
     },
 
     /**

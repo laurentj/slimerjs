@@ -248,7 +248,7 @@ const load = iced(function load(loader, module, initialSandbox, src) {
 exports.load = load;
 
 
-const inject =  iced(function inject(loader, module, src) {
+const inject =  iced(function inject(loader, module, src, uri) {
   let { sandboxes, globals, javascriptVersion } = loader;
   let sandbox = sandboxes[module.uri]
 
@@ -256,7 +256,7 @@ const inject =  iced(function inject(loader, module, src) {
     version : javascriptVersion,
     source: src
   }
-  evaluate(sandbox, module.uri, evalOptions);
+  evaluate(sandbox, uri, evalOptions);
 });
 exports.inject = inject;
 

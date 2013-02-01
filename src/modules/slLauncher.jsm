@@ -122,8 +122,8 @@ var slLauncher = {
             throw e;
     },
 
-    injectJs : function (source) {
-        Loader.inject(mainLoader, mainLoader.main, source);
+    injectJs : function (source, uri) {
+        Loader.inject(mainLoader, mainLoader.main, source, uri);
     },
     /**
      * the XUL elements containing all opened browsers
