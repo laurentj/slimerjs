@@ -164,9 +164,24 @@ function HttpResponse(response) {
     this.statusCode = 200;
     this._response = response;
     this._headersSent = false;
+    this._encoding = null;
 }
-
+const PR_UINT32_MAX = Math.pow(2, 32) - 1;
 HttpResponse.prototype = {
+
+    setEncoding: function(encoding) {
+        this._encoding = encoding;
+    },
+
+    header:function(name) {
+        if (name in this.headers)
+            return this.headers[name];
+        return '';
+    },
+
+    setHeader:function(name, value) {
+        this.headers[name] = value;
+    },
 
     write : function(data) {
         if (!this._headersSent) {
@@ -174,8 +189,34 @@ HttpResponse.prototype = {
             this._headersSent = true;
             this._response.processAsync();
         }
-        this._response.write(data);
+
+        if (data == '' || !this._encoding) {
+            this._response.write(data);
+        }
+        else if (this._encoding == 'binary') {
+            let pipe = Components.classes["@mozilla.org/pipe;1"].createInstance(Components.interfaces.nsIPipe);
+            pipe.init(true, false, 8192, PR_UINT32_MAX, null);
+
+            let binOutput = Components.classes["@mozilla.org/binaryoutputstream;1"].
+                           createInstance(Components.interfaces.nsIBinaryOutputStream);
+            binOutput.setOutputStream(pipe.outputStream);
+            binOutput.writeBytes(data, data.length);
+
+            this._response.bodyOutputStream.writeFrom(pipe.inputStream, data.length)
+        }
+        else {
+            let pipe = Components.classes["@mozilla.org/pipe;1"].createInstance(Components.interfaces.nsIPipe);
+            pipe.init(true, false, 8192, PR_UINT32_MAX, null);
+
+            var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+                        .createInstance(Components.interfaces.nsIConverterOutputStream);
+
+            os.init(pipe.outputStream, this._encoding, 0, 0x0000);
+            os.writeString(data);
+            this._response.bodyOutputStream.writeFrom(pipe.inputStream, data.length);
+        }
     },
+
     writeHead: function(statusCode, headers) {
         if (this._headersSent)
             throw "Header already sent";
@@ -184,13 +225,19 @@ HttpResponse.prototype = {
         sendHeaders(this);
         this._headersSent = true;
     },
+
     close : function() {
-        if (!this._headersSent) {
+        /*if (!this._headersSent) {
             sendHeaders(this);
             this._headersSent = true;
             this._response.processAsync();
             this._response.write('');
-        }
+        }*/
+        this._response.finish();
+    },
+
+    closeGracefully: function() {
+        this.write('');
         this._response.finish();
     }
 }

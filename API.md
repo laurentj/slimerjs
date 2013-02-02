@@ -303,9 +303,13 @@ are part of the CommonJS FileSystem specification
 
 <table>
     <tr><td>headers                             </td><td>Implemented</td></tr>
+    <tr><td>header(name)                        </td><td>Implemented</td></tr>
+    <tr><td>setHeader(name, value)              </td><td>Implemented</td></tr>
+    <tr><td>setEncoding(encoding)               </td><td>Implemented</td></tr>
     <tr><td>statusCode                          </td><td>Implemented</td></tr>
     <tr><td>write(data)                         </td><td>Implemented</td></tr>
     <tr><td>writeHead(statusCode, headers)      </td><td>Implemented</td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
+    <tr><td>closeGracefully()                   </td><td>Implemented</td></tr>
 </table>
 
