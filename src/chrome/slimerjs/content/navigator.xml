@@ -28,7 +28,7 @@
 
             <field name="onpageloaded">null</field>
             <field name="webPage">null</field>
-    
+            <field name="requestCounter">0</field>
             <method name="resetBrowser">
                 <body>
                     this.onpageloaded = null;
@@ -69,7 +69,6 @@
                     if (channel) {
                         success = channel.requestSucceeded?"success":"fail";
                     }
-
                     if (me.webPage && me.webPage.onLoadFinished)
                         me.webPage.onLoadFinished(success)
 
@@ -102,19 +101,18 @@
                         {
                             if (this._firstBlankLoad)
                                 return;
-//dump("onLocationChange "+aLocation.spec+"\n");
+
                             let failure = aFlags & WPL.LOCATION_CHANGE_ERROR_PAGE;
                             if (failure) {
                                 if (nav.onpageloaded)
                                     nav.onpageloaded("fail");
                                 return;
                             }
-
+                            if (!nav.webPage)
+                                return;
                             //let insidePage = aFlags & WPL.LOCATION_CHANGE_SAME_DOCUMENT;
-                            if (!failure) {
-                                if (nav.webPage && nav.webPage.onUrlChanged)
-                                    nav.webPage.onUrlChanged(aLocation.spec);
-                            }
+                            if (nav.webPage.onUrlChanged)
+                                nav.webPage.onUrlChanged(aLocation.spec);
                         },
                         onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
                         {
@@ -130,75 +128,76 @@
                                 uri = aRequest.URI.spec
                             }
                             else {
-                                //uri ="none"
+                                /*dump("onStateChange no URI");
+                                if (aStateFlags & WPL.STATE_START)
+                                    dump( " START");
+                                if (aStateFlags & WPL.STATE_TRANSFERRING)
+                                    dump( " TRANS");
+                                if (aStateFlags & WPL.STATE_NEGOTIATING)
+                                    dump( " NEGO");
+                                if (aStateFlags & WPL.STATE_STOP)
+                                    dump( " STOP");
+                                if (aStateFlags & WPL.STATE_IS_REQUEST)
+                                    dump( " REQ");
+                                if (aStateFlags & WPL.STATE_IS_DOCUMENT)
+                                    dump( " DOC");
+                                if (aStateFlags & WPL.STATE_IS_NETWORK)
+                                    dump( " NET");
+                                if (aStateFlags & WPL.STATE_IS_WINDOW)
+                                    dump( " WIN");
+                                dump("\n")*/
                                 return;
                             }
 
                             if (this._firstBlankLoad)
                                 return;
-//dump("onStateChange URI:"+uri);
-                            if (this._mainPageLoading) {
-                                // see if this is a request for frame of the page
-                                // we should ignore them
-                                if (aRequest.loadGroup) {
-                                    var lg = aRequest.loadGroup
-//dump(" LGc="+lg.activeCount);
-                                    if (lg.defaultLoadRequest && lg.defaultLoadRequest instanceof ci.nsIChannel) {
-                                        let groupUri = lg.defaultLoadRequest.URI.spec;
-//dump(" dlr="+lg.defaultLoadRequest.URI.spec);
-                                        if (groupUri != this._mainPageLoading) {
-//dump(" IGNORED\n");
-                                            return;
-                                        }
-                                        else if (groupUri != uri) {
-                                            if (aStateFlags & WPL.STATE_START) {
-//dump(" RESREQ");
-                                                if (nav.webPage.onResourceRequested)
-                                                    nav.webPage.onResourceRequested();
-                                            }
-                                            if (aStateFlags & WPL.STATE_STOP) {
-//dump(" RESREC");
-                                                if (nav.webPage.onResourceReceived)
-                                                    nav.webPage.onResourceReceived();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-/*
-if (aStateFlags & WPL.STATE_START)
-    dump( " START");
-if (aStateFlags & WPL.STATE_TRANSFERRING)
-    dump( " TRANS");
-if (aStateFlags & WPL.STATE_NEGOTIATING)
-    dump( " NEGO");
-if (aStateFlags & WPL.STATE_STOP)
-    dump( " STOP");
-if (aStateFlags & WPL.STATE_IS_REQUEST)
-    dump( " REQ");
-if (aStateFlags & WPL.STATE_IS_DOCUMENT)
-    dump( " DOC");
-if (aStateFlags & WPL.STATE_IS_NETWORK)
-    dump( " NET");
-if (aStateFlags & WPL.STATE_IS_WINDOW)
-    dump( " WIN");
-if ( (aStateFlags & WPL.STATE_STOP) && (aStateFlags & WPL.STATE_IS_WINDOW) && this._mainPageLoading != uri) {
-    dump(" IGNORED");
-}
-dump("\n")*/
 
                             // aStateFlags:
                             // STATE_START, STATE_REDIRECTING, STATE_TRANSFERRING, STATE_NEGOTIATING, STATE_STOP
                             // STATE_IS_REQUEST, STATE_IS_DOCUMENT, STATE_IS_NETWORK, STATE_IS_WINDOW
 
-                            if ( (aStateFlags & WPL.STATE_START) && (aStateFlags & WPL.STATE_IS_WINDOW)) {
-                                this._mainPageLoading = uri;
-                                if (nav.webPage.onLoadStarted)
-                                    nav.webPage.onLoadStarted();
+                            /*dump("onStateChange URI:"+uri);
+                            if (aStateFlags & WPL.STATE_START)
+                                dump( " START");
+                            if (aStateFlags & WPL.STATE_TRANSFERRING)
+                                dump( " TRANS");
+                            if (aStateFlags & WPL.STATE_NEGOTIATING)
+                                dump( " NEGO");
+                            if (aStateFlags & WPL.STATE_STOP)
+                                dump( " STOP");
+                            if (aStateFlags & WPL.STATE_IS_REQUEST)
+                                dump( " REQ");
+                            if (aStateFlags & WPL.STATE_IS_DOCUMENT)
+                                dump( " DOC");
+                            if (aStateFlags & WPL.STATE_IS_NETWORK)
+                                dump( " NET");
+                            if (aStateFlags & WPL.STATE_IS_WINDOW)
+                                dump( " WIN");*/
+
+                            if (!this._mainPageLoading) {
+                                //dump("\n")
+                                if ( (aStateFlags & WPL.STATE_START) && (aStateFlags & WPL.STATE_IS_WINDOW)) {
+                                    this._mainPageLoading = uri;
+
+                                    // phantomjs call onInitialized twice.. don't know why.
+                                    // let's imitate it
+                                    if (nav.webPage.onInitialized)
+                                        nav.webPage.onInitialized();
+
+                                    if (nav.webPage.onLoadStarted)
+                                        nav.webPage.onLoadStarted();
+                                }
+                                return;
                             }
 
-                            if ( (aStateFlags & WPL.STATE_STOP) && (aStateFlags & WPL.STATE_IS_WINDOW) && this._mainPageLoading == uri) {
-                                this._mainPageLoading = null;
+                            // ignore all request that are not the main request
+                            if (this._mainPageLoading != uri) {
+                                //dump(" IGNORED\n");
+                                return;
+                            }
+                            //dump("\n")
+
+                            if ( (aStateFlags & WPL.STATE_STOP) && (aStateFlags & WPL.STATE_IS_REQUEST)) {
                                 if (nav.webPage.onInitialized)
                                     nav.webPage.onInitialized();
                             }

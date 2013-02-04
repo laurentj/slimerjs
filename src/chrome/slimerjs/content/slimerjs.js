@@ -31,16 +31,21 @@ Services.prefs.setBoolPref('browser.dom.window.dump.enabled', true);
 Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import('resource://slimerjs/slUtils.jsm');
+Components.utils.import('resource://slimerjs/slHttpListener.jsm');
 
 /**
  * reference the iframe where scripts are executed
  */
 var runtimeIframe = null;
 
+var listener = null;
+
 function startup() {
 
     var runtimeIframe = document.getElementById('runtime');
     slLauncher.browserElements = document.getElementById('browsers');
+
+    listener = new slHttpListener(slLauncher.browserElements);
 
     try {
         slLauncher.launchMainScript(runtimeIframe.contentWindow, slConfiguration.scriptFile);
