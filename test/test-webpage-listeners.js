@@ -1,17 +1,50 @@
 
 var webserverTestWebPageListener = webServerFactory.create();
 webserverTestWebPageListener.listen(8083, function(request, response) {
-    response.statusCode = 200;
-    response.write('<html><head><title>hello world</title></head><body>Hello!</body></html>');
-    response.close();
+
+    var filepath = phantom.libraryPath+'/www'+request.url;
+    if (fs.exists(filepath)){
+        if (fs.isFile(filepath)) {
+            response.statusCode = 200;
+            var str = fs.read(filepath, "b")
+            var h = {};
+            var enc = '';
+            if (filepath.match(/\.png$/)) {
+                response.setEncoding("binary");
+                h['Content-Type'] = 'image/png';
+            }
+            else if (filepath.match(/\.css$/))
+                h['Content-Type'] = 'text/css';
+            else if (filepath.match(/\.js$/))
+                h['Content-Type'] = 'text/javascript';
+            else {
+                h['Content-Type'] = 'text/html';
+            }
+            h['Content-Length'] = str.length;
+            response.headers = h;
+            response.write(str);
+            response.close();
+        }
+        else {
+            response.statusCode = 200;
+            response.headers['Content-type'] = 'text/html';
+            response.write('<html><head><title>directory</title></head><body>directory</body></html>');
+            response.close();
+        }
+    }
+    else {
+        response.statusCode = 404;
+        response.headers['Content-type'] = 'text/html';
+        response.write('<html><head><title>error</title></head><body>File Not Found</body></html>');
+        response.close();
+    }
 });
 
 describe("webpage with listeners", function() {
 
     var webpage = require("webpage").create();
     var trace = '';
-    var requestMetadataObject = null;
-    var receivedResponses = [];
+    var receivedRequest = [];
     
     webpage.onLoadStarted = function() {
         var currentUrl = webpage.evaluate(function() {
@@ -29,74 +62,66 @@ describe("webpage with listeners", function() {
     };
 
     webpage.onResourceRequested = function(request) {
-        requestMetadataObject = request;
-        trace +="RESREQUESTED:"+request.id+" - "+request.url+"\n";
+        if (receivedRequest[request.id] == undefined ) {
+            receivedRequest[request.id] = { req:null, start:null, end:null}
+        }
+        receivedRequest[request.id].req = request;
+        //console.log("onResourceRequested "+ request.id + " " + request.url);
     };
 
     webpage.onResourceReceived = function(response) {
-        receivedResponses.push(response);
-        trace +="RESRECEIVED:"+response.id+" - "+response.stage+"\n";
+        if (receivedRequest[response.id] == undefined ) {
+            receivedRequest[response.id] = { req:null, start:null, end:null}
+        }
+        receivedRequest[response.id][response.stage] = response;
+        //console.log("onResourceReceived "+ response.id + " " + response.url + " "+response.stage);
     };
     
     webpage.onLoadFinished = function(status) {
-        trace += "LOADFINISHED:"+status+"\n";
+        var currentUrl = webpage.evaluate(function() {
+            return window.location.href;
+        });
+        trace += "LOADFINISHED:"+currentUrl+" "+status+"\n";
     };
 
     var async = new AsyncSpec(this);
     async.it("should be opened",function(done) {
         webpage.open('http://localhost:8083/hello.html', function(success){
+            trace += "CALLBACK:"+success+"\n";
             expect(success).toEqual("success");
             done();
         });
     });
 
     async.it("should generate the expected trace", function(done){
-        console.log(trace);
-        
-        var expectedTrace = "RESREQUESTED:1 - http://localhost:8083/hello.html\n"
+        //console.log(trace);
+        var expectedTrace = ""
         expectedTrace += "INITIALIZED\n";
         expectedTrace += "LOADSTARTED:about:blank\n";
-        expectedTrace += "RESRECEIVED:1 - start\n";
-        expectedTrace += "RESRECEIVED:1 - end\n";
         expectedTrace += "URLCHANGED:http://localhost:8083/hello.html\n";
         expectedTrace += "INITIALIZED\n";
-        expectedTrace += "LOADFINISHED:success\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/hello.html success\n";
+        expectedTrace += "CALLBACK:success\n";
         expect(trace).toEqual(expectedTrace);
         done();
     });
 
-    async.it("should have a request object", function(done){
-        expect(requestMetadataObject.id).toEqual(1);
-        expect(requestMetadataObject.method).toEqual('GET');
-        expect(requestMetadataObject.url).toEqual('http://localhost:8083/hello.html');
-        expect(requestMetadataObject.time instanceof Date).toBeTruthy();
+    async.it("should have a expected request objects", function(done){
+        expect(receivedRequest.length).toEqual(6);
+        for (var i=1; i < receivedRequest.length; i++) {
+            var r= receivedRequest[i];
+            expect(r.req.id).toEqual(i);
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(200);
+            expect(r.start.statusText).toEqual('OK');
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual('OK');
+        }
         done();
     });
-
-    async.it("should have response objects", function(done){
-        expect(receivedResponses.length).toEqual(2);
-        var resp = receivedResponses[0];
-        expect(resp.id).toEqual(1);
-        expect(resp.url).toEqual('http://localhost:8083/hello.html');
-        expect(resp.time instanceof Date).toBeTruthy();
-        expect(resp.bodySize).toEqual(71);
-        expect(resp.contentType).toEqual(null);
-        expect(resp.redirectURL).toEqual(null);
-        expect(resp.stage).toEqual('start');
-        expect(resp.status).toEqual(200);
-        expect(resp.statusText).toEqual('OK');
-
-        resp = receivedResponses[1];
-        expect(resp.id).toEqual(1);
-        expect(resp.url).toEqual('http://localhost:8083/hello.html');
-        expect(resp.time instanceof Date).toBeTruthy();
-        expect(resp.contentType).toEqual(null);
-        expect(resp.redirectURL).toEqual(null);
-        expect(resp.stage).toEqual('end');
-        expect(resp.status).toEqual(200);
-        expect(resp.statusText).toEqual('OK');
-
-        done();
-    });
-
 });

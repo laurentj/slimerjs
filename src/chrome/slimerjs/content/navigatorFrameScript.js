@@ -34,5 +34,6 @@
 
 
 addEventListener('load', function(event) {
-    sendAsyncMessage('pageloaded', "");
+    if (event.target == content.document)
+        sendAsyncMessage('pageloaded', "");
 }, true)

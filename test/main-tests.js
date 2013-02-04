@@ -29,15 +29,19 @@ phantom.injectJs("./jasmine/jasmine.async.min.js");
 
 var slimerEnv = this;
 var webServerFactory = require("webserver");
+var fs = require("fs");
+
 
 phantom.injectJs("./test-environment.js");
 phantom.injectJs("./test-require.js");
 phantom.injectJs("./test-system.js");
 phantom.injectJs("./test-webpage.js");
+
 phantom.injectJs("./test-webpage-listeners.js");
 
 
 // Launch tests
+
 var jEnv = jasmine.getEnv();
 var reporter = new jasmine.ConsoleReporter(
                                 function(msg){

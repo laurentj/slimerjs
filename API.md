@@ -125,15 +125,15 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onConsoleMessage                    </td><td></td></tr>
     <tr><td>onError                             </td><td></td></tr>
 
-    <tr><td>onInitialized                       </td><td></td></tr>
-    <tr><td>onLoadFinished                      </td><td></td></tr>
-    <tr><td>onLoadStarted                       </td><td></td></tr>
+    <tr><td>onInitialized                       </td><td>Implemented</td></tr>
+    <tr><td>onLoadFinished                      </td><td>Implemented</td></tr>
+    <tr><td>onLoadStarted                       </td><td>Implemented</td></tr>
     <tr><td>onNavigationRequested               </td><td></td></tr>
     <tr><td>onPageCreated                       </td><td></td></tr>
     <tr><td>onPrompt                            </td><td></td></tr>
-    <tr><td>onResourceRequested                 </td><td></td></tr>
-    <tr><td>onResourceReceived                  </td><td></td></tr>
-    <tr><td>onUrlChanged                        </td><td></td></tr>
+    <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
+    <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>
+    <tr><td>onUrlChanged                        </td><td>Implemented</td></tr>
 </table>
 
 
@@ -141,26 +141,26 @@ It will contain API that does not exists in PhantomJS.
 ## request object received onResourceRequested
 
 <table>
-    <tr><td>id                                  </td><td></td></tr>
-    <tr><td>method                              </td><td></td></tr>
-    <tr><td>url                                 </td><td></td></tr>
-    <tr><td>time                                </td><td></td></tr>
+    <tr><td>id                                  </td><td>Implemented</td></tr>
+    <tr><td>method                              </td><td>Implemented</td></tr>
+    <tr><td>url                                 </td><td>Implemented</td></tr>
+    <tr><td>time                                </td><td>Implemented</td></tr>
     <tr><td>headers                             </td><td></td></tr>
 </table>
 
 ## response object received onResourceReceived
 
 <table>
-    <tr><td>id                                  </td><td></td></tr>
+    <tr><td>id                                  </td><td>Implemented</td></tr>
     <tr><td>headers                             </td><td></td></tr>
-    <tr><td>bodySize                            </td><td></td></tr>
+    <tr><td>bodySize                            </td><td>Implemented</td></tr>
     <tr><td>contentType                         </td><td></td></tr>
     <tr><td>redirectURL                         </td><td></td></tr>
-    <tr><td>stage                               </td><td></td></tr>
-    <tr><td>status                              </td><td></td></tr>
-    <tr><td>statusText                          </td><td></td></tr>
-    <tr><td>time                                </td><td></td></tr>
-    <tr><td>url                                 </td><td></td></tr>
+    <tr><td>stage                               </td><td>Implemented</td></tr>
+    <tr><td>status                              </td><td>Implemented</td></tr>
+    <tr><td>statusText                          </td><td>Implemented</td></tr>
+    <tr><td>time                                </td><td>Implemented</td></tr>
+    <tr><td>url                                 </td><td>Implemented</td></tr>
 </table>
 
 # Module: system
