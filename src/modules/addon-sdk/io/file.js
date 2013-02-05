@@ -90,6 +90,26 @@ exports.isFile = function isFile(filename) {
   return MozFile(filename).isFile();
 };
 
+exports.isDirectory = function isDirectory(filename) {
+  return MozFile(filename).isDirectory();
+};
+
+exports.isReadable = function isReadable(filename) {
+    return MozFile(filename).isReadable();
+}
+
+exports.isWritable = function isWritable(filename) {
+    return MozFile(filename).isWritable();
+}
+
+exports.isLink = function isLink(filename) {
+    return MozFile(filename).isSymLink();
+}
+
+exports.size = function size(filename) {
+    return MozFile(filename).fileSize();
+}
+
 exports.read = function read(filename, mode) {
   if (typeof(mode) !== "string")
     mode = "";
@@ -210,15 +230,22 @@ exports.remove = function remove(path) {
   file.remove(false);
 };
 
-exports.mkpath = function mkpath(path) {
+exports.makeDirectory = function makeDirectory(path) {
   var file = MozFile(path);
   if (!file.exists())
     file.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755")); // u+rwx go+rx
   else if (!file.isDirectory())
     throw new Error("The path already exists and is not a directory: " + path);
+}
+
+/**
+ * @deprecated
+ */
+exports.mkpath = function mkpath(path) {
+    return exports.makeDirectory(path);
 };
 
-exports.rmdir = function rmdir(path) {
+exports.removeDirectory = function removeDirectory(path) {
   var file = MozFile(path);
   ensureDir(file);
   try {
@@ -230,6 +257,12 @@ exports.rmdir = function rmdir(path) {
   }
 };
 
+/**
+ * @deprecated
+ */
+exports.rmdir = function rmdir(path) {
+    exports.removeDirectory(path);
+};
 
 exports.copy = function copy(sourceFileName, targetFileName) {
   var sourceFile = MozFile(sourceFileName);

@@ -202,8 +202,8 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>touch(path)                         </td><td>Implemented</td></tr>
 
 
-    <tr><td>makeDirectory(path)                 </td><td></td></tr>
-    <tr><td>removeDirectory(path)               </td><td></td></tr>
+    <tr><td>makeDirectory(path)                 </td><td>Implemented</td></tr>
+    <tr><td>removeDirectory(path)               </td><td>Implemented</td></tr>
     <tr><td>makeTree(path)                      </td><td></td></tr>
     <tr><td>removeTree(path)                    </td><td></td></tr>
     <tr><td>copyTree(source, destination)       </td><td></td></tr>
@@ -214,14 +214,14 @@ It will contain API that does not exists in PhantomJS.
 
     <tr><td>exists(path)                        </td><td>Implemented</td></tr>
     <tr><td>isFile(path)                        </td><td>Implemented</td></tr>
-    <tr><td>isDirectory(path)                   </td><td></td></tr>
-    <tr><td>isLink(path)                        </td><td></td></tr>
-    <tr><td>isReadable(path)                    </td><td></td></tr>
-    <tr><td>isWritable(path)                    </td><td></td></tr>
+    <tr><td>isDirectory(path)                   </td><td>Implemented</td></tr>
+    <tr><td>isLink(path)                        </td><td>Implemented</td></tr>
+    <tr><td>isReadable(path)                    </td><td>Implemented</td></tr>
+    <tr><td>isWritable(path)                    </td><td>Implemented</td></tr>
 
     <tr><td>absolute(path)                      </td><td></td></tr>
 
-    <tr><td>size(path)                          </td><td></td></tr>
+    <tr><td>size(path)                          </td><td>Implemented</td></tr>
 
     <tr><td>isAbsolute(path)                    </td><td>(not a CommonJS FileSystem method)</td></tr>
     <tr><td>isExecutable(path)                  </td><td>(not a CommonJS FileSystem method)</td></tr>
