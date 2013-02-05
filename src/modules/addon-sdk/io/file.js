@@ -197,7 +197,7 @@ exports.open = function open(filename, mode) {
     var openFlags = OPEN_FLAGS.WRONLY |
                     OPEN_FLAGS.CREATE_FILE |
                     OPEN_FLAGS.TRUNCATE;
-    var permFlags = parseInt("0644"); // u+rw go+r
+    var permFlags = parseInt("0644", 8); // u+rw go+r
     try {
       stream.init(file, openFlags, permFlags, 0);
     }
@@ -233,7 +233,7 @@ exports.remove = function remove(path) {
 exports.makeDirectory = function makeDirectory(path) {
   var file = MozFile(path);
   if (!file.exists())
-    file.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755")); // u+rwx go+rx
+    file.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755", 8)); // u+rwx go+rx
   else if (!file.isDirectory())
     throw new Error("The path already exists and is not a directory: " + path);
 }
