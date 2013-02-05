@@ -14,5 +14,5 @@ SET LISTVAR=
 SETLOCAL EnableDelayedExpansion
 FOR /F "usebackq delims==" %%i IN (`set`) DO set LISTVAR=!LISTVAR!,%%i
 
-Start "Starting XUL Runner app" %SLIMERJSLAUNCHER% -app "%SCRIPTDIR%../src/application.ini" -console -purgecaches --envs "%LISTVAR%" %*
+Start "Starting XUL Runner app" %SLIMERJSLAUNCHER% -app "%SCRIPTDIR%../src/application.ini" -console -purgecaches -envs "%LISTVAR%" %*
 ENDLOCAL
