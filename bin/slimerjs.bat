@@ -6,6 +6,11 @@ REM ~ strips quotes from the argument
 SET SCRIPTDIR=%~dp0
 SET LISTVAR=
 
+if ["%~1"]==["/?"] (
+    call :helpMessage
+	pause
+	exit 0
+)
 if ["%~1"]==["--help"] (
     call :helpMessage
     pause
