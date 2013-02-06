@@ -110,6 +110,10 @@ exports.size = function size(filename) {
     return MozFile(filename).fileSize();
 }
 
+exports.lastModified = function lastModified(filename) {
+    return new Date(MozFile(filename).lastModifiedTime);
+}
+
 exports.read = function read(filename, mode) {
   if (typeof(mode) !== "string")
     mode = "";
@@ -154,18 +158,36 @@ exports.join = function join(base) {
   return base.path;
 };
 
-exports.dirname = function dirname(path) {
+exports.directory = function directory(path) {
   var parent = MozFile(path).parent;
   return parent ? parent.path : "";
 };
 
-exports.basename = function basename(path) {
+// @deprecated
+exports.dirname = function dirname(path) {
+    return exports.directory(path);
+};
+
+exports.base = function base(path) {
   var leafName = MozFile(path).leafName;
 
   // On Windows, leafName when the path is a volume letter and colon ("c:") is
   // the path itself.  But such a path has no basename, so we want the empty
   // string.
   return leafName == path ? "" : leafName;
+};
+
+// @deprecated
+exports.basename = function basename(path) {
+    return exports.base(path);
+};
+
+exports.extension = function extension(path) {
+  var leafName = exports.base(path);
+  var m = leafName.match(/\.([^\.]+)$/);
+  if (m)
+    return m[1];
+  return '';
 };
 
 exports.list = function list(path) {
