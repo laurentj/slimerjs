@@ -244,7 +244,7 @@ are part of the CommonJS FileSystem specification
 
     <tr><td>same(source, target)                </td><td></td></tr>
 
-    <tr><td>lastModified(path) Date             </td><td></td></tr>
+    <tr><td>lastModified(path) Date             </td><td>Implemented</td></tr>
 
     <tr><td>workingDirectoryPath()              </td><td></td></tr>
 
@@ -252,9 +252,9 @@ are part of the CommonJS FileSystem specification
     <tr><td>split(path)                         </td><td></td></tr>
     <tr><td>normal(path)                        </td><td></td></tr>
     <tr><td>canonical(path)                     </td><td></td></tr>
-    <tr><td>directory(path)                     </td><td></td></tr>
-    <tr><td>base(path)                          </td><td></td></tr>
-    <tr><td>extension(path)                     </td><td></td></tr>
+    <tr><td>directory(path)                     </td><td>Implemented</td></tr>
+    <tr><td>base(path)                          </td><td>Implemented</td></tr>
+    <tr><td>extension(path)                     </td><td>Implemented</td></tr>
 </table>
 
 
