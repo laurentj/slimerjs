@@ -49,6 +49,7 @@ setTimeout(function(){ // wait after the webserver init process
         webpage.close();
         webserver.close();
         console.log('\n------------------- END of tests\n');
-        phantom.exit()
+        // Why exit, how will you see results?
+        //phantom.exit()
     })
 },100);

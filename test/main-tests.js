@@ -48,7 +48,8 @@ var reporter = new jasmine.ConsoleReporter(
                                     console.log(msg.replace('\n', ''));
                                 },
                                 function(rep){
-                                    phantom.exit();
+                                    // Why exit, how will you see results?
+                                    //phantom.exit();
                                 },
                                 true);
 jEnv.addReporter(reporter);
