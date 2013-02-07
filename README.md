@@ -17,18 +17,21 @@ Follow us on twitter: [@slimerjs](https://twitter.com/slimerjs)
 
 # Install
 
-- Install Firefox 17 or higher
-- For Windows users: install [Cygwin](http://www.cygwin.com/) or any other unix
-  environment with a true console ;-). A .bat is not povided yet.
+- Install [Firefox 18](http://getfirefox.com) or higher,
+  or [XulRunner 18](http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/18.0.2/runtimes/) or higher
 - [download the source code of SlimerJS](https://github.com/laurentj/slimerjs/archive/master.zip) if you didn't it yet
-- Open a terminal
-- Set the environment variable SLIMERJSLAUNCHER, which should contain the full
-  path to the firefox binary :
+- On windows, a .bat is provided, but you can also launch slimer from a "true" console. In this case, you should install
+  [Cygwin](http://www.cygwin.com/) or any other unix environment to launch slimerjs. Note
+  that some issues are known with Cygwin.
+- SlimerJS needs to know where Firefox or XulRunner is stored. It tries to discover
+  itself the path but can fail. You must then set the environment variable
+  SLIMERJSLAUNCHER, which should contain the full path to the firefox binary:
    - On linux: ```export SLIMERJSLAUNCHER=/usr/bin/firefox```
-   - On windows, with cygwin, something like that: ```export SLIMERJSLAUNCHER="/cygdrive/c/program files/mozilla firefox/firefox.exe"```
+   - on Windows: ```SET SLIMERJSLAUNCHER="c:\Program Files\Mozilla Firefox\firefox.exe```
+   - On windows with cygwin : ```export SLIMERJSLAUNCHER="/cygdrive/c/program files/mozilla firefox/firefox.exe"```
    - On MacOS: ```export SLIMERJSLAUNCHER=/Applications/Firefox.app/Contents/MacOS/firefox```
-- You can set this variable in your .bashrc or .profile of course.
-
+- You can of course set this variable in your .bashrc, .profile or in the computer
+   properties on Windows.
 
 # Launching SlimerJS
 
@@ -37,6 +40,13 @@ Open a terminal and go to the bin/ directory of SlimerJS. Then launch:
 ```
     ./slimerjs myscript.js
 ```
+
+In the Windows commands console:
+
+```
+    slimerjs.bat myscript.js
+```
+
 
 The given script myscripts.js is then executed in a window. If your script is
 short, you probably won't see this window.
@@ -93,5 +103,6 @@ After this release, I'll try to hack XulRunner to run headless windows (very dif
 - Why are there no tests on the WebServer object?
    - This module is based on the [httpd component](http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/)
      of Mozilla used for their own unit tests, and that is already [heavily tested](http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/test/)
-
-
+- Why are there no tests on the FileSystem object?
+   - This module is based on the [file module provided in the Mozilla Addons SDK](https://github.com/laurentj/addon-sdk/blob/master/lib/sdk/io/file.js),
+     and [is already tested](https://github.com/laurentj/addon-sdk/blob/master/test/test-file.js).
