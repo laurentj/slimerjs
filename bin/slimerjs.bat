@@ -4,45 +4,54 @@ SET SLIMERJSLAUNCHER=%SLIMERJSLAUNCHER%
 REM % ~ d[rive] p[ath] 0[script name] is the absolute path to this bat file, without quotes, always.
 REM ~ strips quotes from the argument
 SET SCRIPTDIR=%~dp0
+REM %* is every argument passed to this script.
+SET ARGS=%*
 SET LISTVAR=
 
 if ["%~1"]==["/?"] (
     call :helpMessage
-	pause
-	exit 0
+    pause
+    exit 0
 )
 if ["%~1"]==["--help"] (
     call :helpMessage
     pause
-	exit 0
+    exit 0
 )
 if ["%~1"]==["-h"] (
     call :helpMessage
-	pause
-	exit 0
+    pause
+    exit 0
 )
 if not exist %SLIMERJSLAUNCHER% (
     call :findFirefox
 )
 if not exist %SLIMERJSLAUNCHER% (
     echo SLIMERJSLAUNCHER environment variable is missing or the path is invalid.
-	echo Set it with the path to Firefox or xulrunner.
-	echo The current value of SLIMERJSLAUNCHER is: %SLIMERJSLAUNCHER%
-	REM %% escapes the percent sign so it displays literally
-	echo SET SLIMERJSLAUNCHER="%%programfiles%%\Mozilla Firefox\firefox.exe"
-	echo SET SLIMERJSLAUNCHER="%%programfiles%%\XULRunner\xulrunner.exe"
+    echo Set it with the path to Firefox or xulrunner.
+    echo The current value of SLIMERJSLAUNCHER is: %SLIMERJSLAUNCHER%
+    REM %% escapes the percent sign so it displays literally
+    echo SET SLIMERJSLAUNCHER="%%programfiles%%\Mozilla Firefox\firefox.exe"
+    echo SET SLIMERJSLAUNCHER="%%programfiles%%\XULRunner\xulrunner.exe"
     pause
     exit 1
 )
 
-echo SLIMERJSLAUNCHER is set to %SLIMERJSLAUNCHER%
-
-REM %* is every argument passed to this script.
 SETLOCAL EnableDelayedExpansion
 FOR /F "usebackq delims==" %%i IN (`set`) DO set LISTVAR=!LISTVAR!,%%i
 
-Start "Starting XUL Runner app" %SLIMERJSLAUNCHER% -app "%SCRIPTDIR%../src/application.ini" -console -purgecaches -envs "%LISTVAR%" %*
+REM Firefox console output is done to NUL or something like that.
+REM So we have to redirect output to a file and then output this file
+REM FIXME: This solution is not optimal, since we cannot see messages at realtime
+REM FIXME: an other solution to redirect directly to the console ?
+set TMPFILE=%TMP%\slimer-output-%RANDOM%.tmp
+
+%SLIMERJSLAUNCHER% -app "%SCRIPTDIR%../src/application.ini" -purgecaches -envs "%LISTVAR%" %ARGS% >%TMPFILE% 2>&1
+
+TYPE %TMPFILE%
+DEL %TMPFILE%
 ENDLOCAL
+
 goto :eof
 
 
@@ -85,4 +94,5 @@ if exist "%programfiles%\Mozilla Firefox\firefox.exe" (
 if exist "%programfiles% (x86)\Mozilla Firefox\firefox.exe" (
     SET SLIMERJSLAUNCHER="%programfiles% (x86)\Mozilla Firefox\firefox.exe"
 )
+echo SLIMERJSLAUNCHER is set to %SLIMERJSLAUNCHER%
 goto :eof
