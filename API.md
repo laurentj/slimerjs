@@ -82,20 +82,36 @@ It will contain API that does not exists in PhantomJS.
 
 <table>
     <tr><td>clipRect                            </td><td></td></tr>
+    <tr><td>canGoBack                           </td><td></td></tr>
+    <tr><td>canGoForward                        </td><td></td></tr>
+    <tr><td>clipRect                            </td><td></td></tr>
     <tr><td>content                             </td><td>Implemented. Setter not implemented yet</td></tr>
     <tr><td>cookies                             </td><td></td></tr>
     <tr><td>customHeaders                       </td><td></td></tr>
+    <tr><td>event                               </td><td></td></tr>
+    <tr><td>focusedFrameName                    </td><td></td></tr>
     <tr><td>frameContent                        </td><td></td></tr>
+    <tr><td>frameName                           </td><td></td></tr>
     <tr><td>framePlainText                      </td><td></td></tr>
+    <tr><td>frameTitle                          </td><td></td></tr>
     <tr><td>frameUrl                            </td><td></td></tr>
+    <tr><td>framesCount                         </td><td></td></tr>
+    <tr><td>framesName                          </td><td></td></tr>
     <tr><td>libraryPath                         </td><td>Implemented</td></tr>
     <tr><td>navigationLocked                    </td><td></td></tr>
+    <tr><td>offlineStoragePath                  </td><td></td></tr>
+    <tr><td>offlineStorageQuota                 </td><td></td></tr>
+    <tr><td>ownsPages                           </td><td></td></tr>
+    <tr><td>pages                               </td><td></td></tr>
+    <tr><td>pagesWindowName                     </td><td></td></tr>
     <tr><td>paperSize                           </td><td></td></tr>
     <tr><td>plainText                           </td><td>Implemented</td></tr>
     <tr><td>scrollPosition                      </td><td></td></tr>
     <tr><td>settings                            </td><td></td></tr>
+    <tr><td>title                               </td><td></td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>viewportSize                        </td><td></td></tr>
+    <tr><td>windowName                          </td><td></td></tr>
     <tr><td>zoomFactor                          </td><td></td></tr>
 </table>
 
@@ -103,28 +119,51 @@ It will contain API that does not exists in PhantomJS.
 
 <table>
     <tr><td>addCookie(Cookie)                   </td><td></td></tr>
+    <tr><td>childFramesCount()                  </td><td>deprecated</td></tr>
+    <tr><td>childFramesName()                   </td><td>deprecated</td></tr>
     <tr><td>clearCookies()                      </td><td></td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
+    <tr><td>currentFrameName()                  </td><td>deprecated</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td></td></tr>
+    <tr><td>evaluateJavascript(str)             </td><td></td></tr>
     <tr><td>evaluate(function, arg1, arg2,...)  </td><td>implemented</td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td>implemented</td></tr>
+    <tr><td>getPage(windowName)                 </td><td></td></tr>
+    <tr><td>go(index)                           </td><td></td></tr>
+    <tr><td>goBack()                            </td><td></td></tr>
+    <tr><td>goForward()                         </td><td></td></tr>
     <tr><td>includeJs(url, callback)            </td><td>implemented</td></tr>
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
     <tr><td>open(url, callback)                 </td><td>Implemented</td></tr>
+    <tr><td>openUrl(url, httpConf, settings)    </td><td></td></tr>
     <tr><td>release()                           </td><td></td></tr>
+    <tr><td>reload()                            </td><td></td></tr>
     <tr><td>render(filename)                    </td><td></td></tr>
     <tr><td>renderBase64(format)                </td><td></td></tr>
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td></td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td></td></tr>
     <tr><td>setContent(content, url)            </td><td></td></tr>
+    <tr><td>stop()                              </td><td></td></tr>
+    <tr><td>switchToFocusedFrame()              </td><td></td></tr>
+    <tr><td>switchToFrame(frameName)            </td><td></td></tr>
+    <tr><td>switchToFrame(framePosition)        </td><td></td></tr>
+    <tr><td>switchToChildFrame(frameName)       </td><td>deprecated</td></tr>
+    <tr><td>switchToChildFrame(framePosition)   </td><td>deprecated</td></tr>
+    <tr><td>switchToMainFrame()                 </td><td></td></tr>
+    <tr><td>switchToParentFrame()               </td><td></td></tr>
     <tr><td>uploadFile(selector, filename)      </td><td></td></tr>
+</table>
+
+## callbacks
+
+<table>
     <tr><td>onalert                             </td><td></td></tr>
     <tr><td>onCallback                          </td><td></td></tr>
     <tr><td>onClosing                           </td><td></td></tr>
     <tr><td>onConfirm                           </td><td></td></tr>
     <tr><td>onConsoleMessage                    </td><td></td></tr>
     <tr><td>onError                             </td><td></td></tr>
-
+    <tr><td>onFilePicker                         </td><td></td></tr>
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented</td></tr>
     <tr><td>onLoadStarted                       </td><td>Implemented</td></tr>
@@ -136,7 +175,21 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onUrlChanged                        </td><td>Implemented</td></tr>
 </table>
 
+Methods that send signals:
 
+<table>
+    <tr><td>closing(page)                       </td><td></td></tr>
+    <tr><td>initialized()                       </td><td></td></tr>
+    <tr><td>javaScriptAlertSent(message)        </td><td></td></tr>
+    <tr><td>javaScriptConsoleMessageSent(message)</td><td></td></tr>
+    <tr><td>loadFinished(status)                </td><td></td></tr>
+    <tr><td>loadStarted()                       </td><td></td></tr>
+    <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td></td></tr>
+    <tr><td>rawPageCreated(page)                </td><td></td></tr>
+    <tr><td>resourceReceived(request)           </td><td></td></tr>
+    <tr><td>resourceRequested(resource)         </td><td></td></tr>
+    <tr><td>urlChanged(url)                     </td><td></td></tr>
+</table>
 
 ## request object received onResourceRequested
 
