@@ -2,8 +2,16 @@
 
 if [ "$SLIMERJSLAUNCHER" == "" ]
 then
-    echo "SLIMERJSLAUNCHER environment variable is missing. Set it with the path to Firefox"
-    exit 1
+    SLIMERJSLAUNCHER=`command -v firefox`
+    if [ "$SLIMERJSLAUNCHER" == "" ]
+    then
+        SLIMERJSLAUNCHER=`command -v xulrunner`
+        if [ "$SLIMERJSLAUNCHER" == "" ]
+        then
+            echo "SLIMERJSLAUNCHER environment variable is missing. Set it with the path to Firefox or XulRunner"
+            exit 1
+        fi
+    fi
 fi
 
 if [ ! -x "$SLIMERJSLAUNCHER" ]
@@ -11,7 +19,6 @@ then
     echo "SLIMERJSLAUNCHER environment variable does not contain an executable path. Set it with the path to Firefox"
     exit 1
 fi
-
 
 if [ "$1" == "--help" -o "$1" == "-h" ]
 then
@@ -56,5 +63,3 @@ done
 
 "$SLIMERJSLAUNCHER" -app $SCRIPTDIR/../src/application.ini -purgecaches --envs "$LISTVAR" "$@"
 
-
- 
