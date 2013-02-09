@@ -2,6 +2,7 @@
 @echo off
 
 SET SLIMERJSLAUNCHER=%SLIMERJSLAUNCHER%
+
 REM % ~ d[rive] p[ath] 0[script name] is the absolute path to this bat file, without quotes, always.
 REM ~ strips quotes from the argument
 SET SCRIPTDIR=%~dp0
@@ -23,6 +24,10 @@ if ["%~1"]==["-h"] (
     call :helpMessage
     pause
     exit 0
+)
+
+if [%SLIMERJSLAUNCHER%]==[] (
+    SET SLIMERJSLAUNCHER=""
 )
 if not exist %SLIMERJSLAUNCHER% (
     call :findFirefox
@@ -61,8 +66,8 @@ REM in echo statements the escape character is ^
 REM escape < > | and &
 REM the character % is escaped by doubling it to %%
 REM if delayed variable expansion is turned on then the character ! needs to be escaped as ^^!
-	echo   Available options are:
-	echo.
+    echo   Available options are:
+    echo.
     echo   --cookies-file=^<file^>                 specifies the file name to store
     echo                                         the persistent Cookies
     echo   --disk-cache=[yes^|no]                 enables disk cache (default is no)
