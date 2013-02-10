@@ -101,7 +101,10 @@ var webserver = require("webserver").create();
 
 var service = webserver.listen(8082, function(request, response) {
     response.statusCode = 200;
-    response.write('<html><head><title>hello world</title></head><body>Hello!</body></html>');
+    var str = '<html><head><meta charset="utf-8"><title>hello world</title>';
+    str += '<script type="text/javascript">var foo="bar";</script></head>';
+    str += '<body>Hello! <script type="text/javascript">document.write("world")</script></body></html>'
+    response.write(str);
     response.close();
 });
 
@@ -115,8 +118,12 @@ setTimeout(function(){ // wait after the webserver init process
         console.log('\n------ tests on webpage:');
         assertEquals("success", success, "Webpage loaded");
         assertEquals(url, webpage.url, "browser should have the right url");
-        assertEquals("title: hello world", webpage.evaluate(function(prefix){
-                        return prefix+document.title;
+        assertEquals("Hello! document.write(\"world\")world", webpage.evaluate(function(){
+                        return document.body.textContent;
+                    }), "retrieve body content");
+
+        assertEquals("title: hello world bar", webpage.evaluate(function(prefix){
+                        return prefix+document.title+" "+foo;
                     }, "title: "), "retrieve title page");
 
         webpage.close();
@@ -134,7 +141,7 @@ phantom.onError = function(msg, stack) {
     assertNotEquals(-1, stack[0].sourceURL.indexOf('requiredexample.js'), "filename is requiredexample.js")
     assertEquals(9, stack[0].line, "line in requiredexample.js")
     assertNotEquals(-1, stack[1].sourceURL.indexOf('initial-tests.js'), "filename is initial-tests.js")
-    assertEquals(140, stack[1].line, "line in initial-tests.js")
+    assertEquals(147, stack[1].line, "line in initial-tests.js")
 }
 
 ex.throwExcept();

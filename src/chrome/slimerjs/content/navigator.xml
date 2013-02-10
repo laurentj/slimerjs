@@ -233,14 +233,16 @@
                 <parameter name="args" />
                 <body><![CDATA[
                 // FIXME: should the sandbox be created each time or only after the page is loaded?
-                let sandbox = Components.utils.Sandbox(this.browser.contentWindow,
+                //let unsafeWin = this.browser.contentWindow.wrappedJSObject;
+                let win = this.browser.contentWindow;
+                let sandbox = Components.utils.Sandbox(win,
                             {
                                 'sandboxName': this.browser.currentURI.spec,
-                                'sandboxPrototype': this.browser.contentWindow,
-                                'wantXrays': true
+                                'sandboxPrototype': win,
+                                'wantXrays': false
                             });
                 sandbox.__slimer_args = Array.isArray(args)?args:[args];
-                script = '('+script.toSource()+').apply(null, __slimer_args);';
+                script = '('+script.toSource()+').apply(this, __slimer_args);';
                 return Components.utils.evalInSandbox(script, sandbox);
                 ]]></body>
             </method>
@@ -249,11 +251,12 @@
                 <parameter name="script" />
                 <body><![CDATA[
                 // FIXME: should the sandbox be created each time or only after the page is loaded?
-                let sandbox = Components.utils.Sandbox(this.browser.contentWindow,
+                let win = this.browser.contentWindow;
+                let sandbox = Components.utils.Sandbox(win,
                             {
                                 'sandboxName': this.browser.currentURI.spec,
-                                'sandboxPrototype': this.browser.contentWindow,
-                                'wantXrays': true
+                                'sandboxPrototype': win,
+                                'wantXrays': false
                             });
                 script = '('+script.toSource()+')();';
                 window.setTimeout(function() {
