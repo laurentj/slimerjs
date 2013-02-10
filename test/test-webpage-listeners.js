@@ -1,44 +1,4 @@
 
-var webserverTestWebPageListener = webServerFactory.create();
-webserverTestWebPageListener.listen(8083, function(request, response) {
-
-    var filepath = phantom.libraryPath+'/www'+request.url;
-    if (fs.exists(filepath)){
-        if (fs.isFile(filepath)) {
-            response.statusCode = 200;
-            var str = fs.read(filepath, "b")
-            var h = {};
-            var enc = '';
-            if (filepath.match(/\.png$/)) {
-                response.setEncoding("binary");
-                h['Content-Type'] = 'image/png';
-            }
-            else if (filepath.match(/\.css$/))
-                h['Content-Type'] = 'text/css';
-            else if (filepath.match(/\.js$/))
-                h['Content-Type'] = 'text/javascript';
-            else {
-                h['Content-Type'] = 'text/html';
-            }
-            h['Content-Length'] = str.length;
-            response.headers = h;
-            response.write(str);
-            response.close();
-        }
-        else {
-            response.statusCode = 200;
-            response.headers['Content-type'] = 'text/html';
-            response.write('<html><head><title>directory</title></head><body>directory</body></html>');
-            response.close();
-        }
-    }
-    else {
-        response.statusCode = 404;
-        response.headers['Content-type'] = 'text/html';
-        response.write('<html><head><title>error</title></head><body>File Not Found</body></html>');
-        response.close();
-    }
-});
 
 describe("webpage with listeners", function() {
 

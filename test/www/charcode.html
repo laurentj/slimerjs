@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>test key event</title>
+
+        <script type="text/javascript">
+ 
+var result = {
+    keypressK:-1,
+    keypressC:-1,
+    keyupK:-1,
+    keyupC:-1,
+    keydownK:-1,
+    keydownC:-1
+}
+
+function showEventProperties(e)
+{
+    var k = result[e.type+"K"];
+    if ((typeof k ) == 'number') {
+        if (k == -1)
+            result[e.type+"K"] = e.keyCode;
+        else {
+            result[e.type+"K"] = new Array();
+            result[e.type+"K"].push(k)
+            result[e.type+"K"].push(e.keyCode)
+        }
+    }
+    else {
+        result[e.type+"K"].push(e.keyCode);
+    }
+
+    k = result[e.type+"C"];
+    if (typeof k == 'number') {
+        if (k == -1)
+            result[e.type+"C"] = e.charCode;
+        else {
+            result[e.type+"C"] = new Array();
+            result[e.type+"C"].push(k)
+            result[e.type+"C"].push(e.charCode)
+        }
+    }
+    else {
+        result[e.type+"C"].push(e.charCode);
+    }
+}
+
+function clearK(){
+    result.keypressK = -1;
+    result.keypressC = -1;
+    result.keyupK = -1;
+    result.keyupC = -1;
+    result.keydownK = -1;
+    result.keydownC = -1;
+    document.getElementById('txt').value = '';
+    document.getElementById('txt').focus();
+}
+
+window.onload = function(event){
+    var t = document.getElementById('txt');
+    t.addEventListener("keydown", showEventProperties, true);
+    t.addEventListener("keyup", showEventProperties, true);
+    t.addEventListener("keypress", showEventProperties, true);
+    t.focus();
+    document.getElementById('tt').textContent= 'example'
+}
+        </script>
+    </head>
+    <body>
+        <h1 id="tt"></h1>
+        <input type="text" value="" id="txt" />
+    </body>
+</html>
+
+
+

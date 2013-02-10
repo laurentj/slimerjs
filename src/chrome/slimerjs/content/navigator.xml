@@ -292,6 +292,32 @@
                     body.appendChild(script);
                 </body>
             </method>
+            <method name="sendMouseEvent">
+                <parameter name="type" />
+                <parameter name="x" />
+                <parameter name="y" />
+                <parameter name="button" />
+                <parameter name="clickCount" />
+                <parameter name="modifier" />
+                <body>
+                    let domWindowUtils = this.browser.contentWindow
+                                                .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                                                .getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.sendMouseEvent(type, x, y, button, clickCount, modifier);
+                </body>
+            </method>
+            <method name="sendKeyEvent">
+                <parameter name="type" />
+                <parameter name="keyCode" />
+                <parameter name="charCode" />
+                <parameter name="modifier" />
+                <body>
+                    let domWindowUtils = this.browser.contentWindow
+                                                .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                                                .getInterface(Components.interfaces.nsIDOMWindowUtils);
+                    domWindowUtils.sendKeyEvent(type, keyCode, charCode, modifier);
+                </body>
+            </method>
         </implementation>
         <handlers>
         </handlers>
