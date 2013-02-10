@@ -35,30 +35,35 @@ describe("phantom object", function() {
     });
 
     it("should have a right version", function(){
-        expect(phantom.version.major).toEqual("1");
-        expect(phantom.version.minor).toEqual("8");
-        expect(phantom.version.patch).toEqual("1");
+        expect(phantom.version.major).toEqual(1);
+        expect(phantom.version.minor).toEqual(8);
+        expect(phantom.version.patch).toEqual(1);
     });
 
 });
 
 if ("slimer" in this) {
-describe("slimer object", function() {
+    describe("slimer object", function() {
 
-    it("should exists", function(){
-        expect('slimer' in slimerEnv).toBeTruthy();
+        it("should exists", function(){
+            expect('slimer' in slimerEnv).toBeTruthy();
+        });
+
+        it("should have a right version", function(){
+            expect(slimer.version.major).toEqual(0);
+            expect(slimer.version.minor).toEqual(0);
+            expect(slimer.version.patch).toEqual(4);
+        });
+
     });
-
-    it("should have a right version", function(){
-        expect(slimer.version.major).toEqual("0");
-        expect(slimer.version.minor).toEqual("0");
-        expect(slimer.version.patch).toEqual("4");
-    });
-
-});
 }
-else
-    console.warn("==> No slimer object!");
+else {
+    xdescribe("slimer object", function() {
+        xit("should exists", function(){
+            expect('slimer' in slimerEnv).toBeTruthy();
+        });
+    });
+}
 
 
 

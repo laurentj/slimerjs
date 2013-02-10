@@ -30,7 +30,7 @@ var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
                            .getService(Components.interfaces.nsIXULAppInfo);
 
 var [major, minor, patch] = xulAppInfo.version.split('.');
-var _version = { major: major, minor: minor, patch: patch, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+var _version = { major: parseInt(major), minor: parseInt(minor), patch: parseInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
 
 var slimer =  {
 

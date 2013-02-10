@@ -93,7 +93,7 @@ var phantom = {
      * return the version of SlimerJS
      */
     get version() {
-        return { major: "1", minor: "8", patch: "1", __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+        return { major: 1, minor: 8, patch: 1, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
     },
 
     /**

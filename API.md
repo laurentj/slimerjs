@@ -81,7 +81,6 @@ It will contain API that does not exists in PhantomJS.
 ## properties
 
 <table>
-    <tr><td>clipRect                            </td><td></td></tr>
     <tr><td>canGoBack                           </td><td></td></tr>
     <tr><td>canGoForward                        </td><td></td></tr>
     <tr><td>clipRect                            </td><td></td></tr>
