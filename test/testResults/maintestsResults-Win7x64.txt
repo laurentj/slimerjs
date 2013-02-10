@@ -1,0 +1,179 @@
+SLIMERJSLAUNCHER environment variable is not set.
+Could not find a file at SLIMERJSLAUNCHER : 
+
+Searching for Gecko runtime
+Using Firefox located at: "<...>"
+Started
+
+#0 web objects: should have a window object
+PASS
+#1 web objects: should have a document object
+PASS
+#2 web objects: should have a window.document object
+PASS
+#3 web objects: should have a console object
+PASS
+#4 web objects: should have a alert object
+PASS
+#5 web objects: should have a confirm object
+PASS
+#6 phantom object: should exists
+PASS
+#7 phantom object: should have a right version
+PASS
+#8 slimer object: should exists
+PASS
+#9 slimer object: should have a right version
+PASS
+#10 CommonJS module: should have a require function
+PASS
+#11 CommonJS module: should have a module object
+PASS
+#12 require function: should import exported variable of requiredexample module
+PASS
+#13 require function: should import exported variable of a/b module
+PASS
+#14 system module: should be in a system object
+PASS
+#15 system module: should have a platform property
+PASS
+#16 system module: should have a pid property
+PASS
+#17 system module: should have a os object
+PASS
+#18 system module: should handle command line arguments
+PASS
+#19 WebPage object on hello world: should be opened
+PASS
+#20 WebPage object on hello world: should have right url
+PASS
+#21 WebPage object on hello world: should be able to evaluate code
+PASS
+#22 WebPage object on hello world: should be able to be closed
+PASS
+#23 webpage with listeners: should be opened
+FAIL
+#24 webpage with listeners: should generate the expected trace
+FAIL
+#25 webpage with listeners: should have a expected request objects
+FAIL
+
+webpage with listeners should be opened
+  jasmine.ExpectationResult@<...>slimerjs/test/jasmine/jasmine.js:114  jasmine.Matchers.matcherFn_/<@<...>slimerjs/test/jasmine/jasmine.js:1240
+  @<...>slimerjs/test/test-webpage-listeners.js:91
+  webpage.open/</navigator.onpageloaded@resource://slimerjs/webpage.jsm:86
+  @chrome://slimerjs/content/navigator.xml:76
+  
+
+webpage with listeners should generate the expected trace
+  jasmine.ExpectationResult@<...>slimerjs/test/jasmine/jasmine.js:114  jasmine.Matchers.matcherFn_/<@<...>slimerjs/test/jasmine/jasmine.js:1240
+  @<...>slimerjs/test/test-webpage-listeners.js:105
+  @<...>slimerjs/test/jasmine/jasmine.async.min.js:5
+  jasmine.Block.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:1064
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.start@<...>slimerjs/test/jasmine/jasmine.js:2049
+  jasmine.Spec.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2376
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.Spec.prototype.finish@<...>slimerjs/test/jasmine/jasmine.js:2350
+  jasmine.Spec.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2377
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2106
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.WaitsForBlock.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2576
+  jasmine.WaitsForBlock.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2590
+  
+
+webpage with listeners should have a expected request objects
+  jasmine.ExpectationResult@<...>slimerjs/test/jasmine/jasmine.js:114  jasmine.Matchers.matcherFn_/<@<...>slimerjs/test/jasmine/jasmine.js:1240
+  @<...>slimerjs/test/test-webpage-listeners.js:110
+  @<...>slimerjs/test/jasmine/jasmine.async.min.js:5
+  jasmine.Block.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:1064
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.start@<...>slimerjs/test/jasmine/jasmine.js:2049
+  jasmine.Spec.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2376
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.Spec.prototype.finish@<...>slimerjs/test/jasmine/jasmine.js:2350
+  jasmine.Spec.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2377
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2106
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.WaitsForBlock.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2576
+  jasmine.WaitsForBlock.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2590
+  
+  
+  
+  
+  
+  
+  
+  
+  jasmine.ExpectationResult@<...>slimerjs/test/jasmine/jasmine.js:114  jasmine.Matchers.matcherFn_/<@<...>slimerjs/test/jasmine/jasmine.js:1240
+  @<...>slimerjs/test/test-webpage-listeners.js:120
+  @<...>slimerjs/test/jasmine/jasmine.async.min.js:5
+  jasmine.Block.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:1064
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.start@<...>slimerjs/test/jasmine/jasmine.js:2049
+  jasmine.Spec.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2376
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.Spec.prototype.finish@<...>slimerjs/test/jasmine/jasmine.js:2350
+  jasmine.Spec.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2377
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2106
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.WaitsForBlock.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2576
+  jasmine.WaitsForBlock.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2590
+  
+  jasmine.ExpectationResult@<...>slimerjs/test/jasmine/jasmine.js:114  jasmine.Matchers.matcherFn_/<@<...>slimerjs/test/jasmine/jasmine.js:1240
+  @<...>slimerjs/test/test-webpage-listeners.js:121
+  @<...>slimerjs/test/jasmine/jasmine.async.min.js:5
+  jasmine.Block.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:1064
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.start@<...>slimerjs/test/jasmine/jasmine.js:2049
+  jasmine.Spec.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2376
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.Spec.prototype.finish@<...>slimerjs/test/jasmine/jasmine.js:2350
+  jasmine.Spec.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2377
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2106
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.WaitsForBlock.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2576
+  jasmine.WaitsForBlock.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2590
+  
+  jasmine.ExpectationResult@<...>slimerjs/test/jasmine/jasmine.js:114  jasmine.Matchers.matcherFn_/<@<...>slimerjs/test/jasmine/jasmine.js:1240
+  @<...>slimerjs/test/test-webpage-listeners.js:122
+  @<...>slimerjs/test/jasmine/jasmine.async.min.js:5
+  jasmine.Block.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:1064
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.start@<...>slimerjs/test/jasmine/jasmine.js:2049
+  jasmine.Spec.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2376
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.Spec.prototype.finish@<...>slimerjs/test/jasmine/jasmine.js:2350
+  jasmine.Spec.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2377
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2106
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.WaitsForBlock.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2576
+  jasmine.WaitsForBlock.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2590
+  
+  jasmine.ExpectationResult@<...>slimerjs/test/jasmine/jasmine.js:114  jasmine.Matchers.matcherFn_/<@<...>slimerjs/test/jasmine/jasmine.js:1240
+  @<...>slimerjs/test/test-webpage-listeners.js:123
+  @<...>slimerjs/test/jasmine/jasmine.async.min.js:5
+  jasmine.Block.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:1064
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.start@<...>slimerjs/test/jasmine/jasmine.js:2049
+  jasmine.Spec.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2376
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2096
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.Spec.prototype.finish@<...>slimerjs/test/jasmine/jasmine.js:2350
+  jasmine.Spec.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2377
+  jasmine.Queue.prototype.next_@<...>slimerjs/test/jasmine/jasmine.js:2106
+  jasmine.Queue.prototype.next_/onComplete@<...>slimerjs/test/jasmine/jasmine.js:2092
+  jasmine.WaitsForBlock.prototype.execute@<...>slimerjs/test/jasmine/jasmine.js:2576
+  jasmine.WaitsForBlock.prototype.execute/<@<...>slimerjs/test/jasmine/jasmine.js:2590
+  
+
+Finished in 0.897 seconds
+
+26 specs, 7 failures
+
+

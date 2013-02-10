@@ -1,0 +1,64 @@
+SLIMERJSLAUNCHER environment variable is not set.
+Could not find a file at SLIMERJSLAUNCHER : 
+
+Searching for Gecko runtime
+Using Firefox located at: "<...>"
+Initial tests
+has window object? 	OK
+has document object? 	OK
+has window.document object? 	OK
+has console object? 	OK
+has alert object? 	OK
+has alert object? 	OK
+Message console should be "log ok": 
+log ok
+has phantom object? 	OK
+has slimer object? 	OK
+has slimer.version object? 	OK
+slimer has the good major version	OK
+slimer has the good minor version	OK
+slimer has the good patch version	OK
+phantom has the good major version	OK
+phantom has the good minor version	OK
+phantom has the good patch version	OK
+there is a require object	OK
+require is a function	OK
+there is a module property	OK
+module uri	OK
+module id	OK
+is 'ex' defined? 	OK
+value of ex.myExample	OK
+value of ex.myCalcFunc(2)	OK
+value of m.identity.firstName	OK
+value of ex.myExample inside injectslimer.js	OK
+value of injectedValue	OK
+value of newinjectedvalue	OK
+
+------ check yourself if following values are ok
+os.architecture=64bit
+os.name=winnt
+os.version=6.1
+--- Environment variable:
+  HOME=
+  LOGNAME=
+--- Command line arguments:
+   0: ../test/initial-tests.js
+
+------ test webserver
+
+------ tests on onerror support
+message of the exception	OK
+length of the stack	OK
+filename is requiredexample.js	OK
+line in requiredexample.js	OK
+filename is initial-tests.js	OK
+line in initial-tests.js	OK
+
+------ tests on webpage:
+Webpage loaded	OK
+browser should have the right url	OK
+retrieve title page	OK
+
+------------------- END of tests
+
+

@@ -50,7 +50,7 @@ var reporter = new jasmine.ConsoleReporter(
                                 function(rep){
                                     phantom.exit();
                                 },
-                                true);
+                                false);
 jEnv.addReporter(reporter);
 jEnv.updateInterval = 1000;
 jEnv.execute();
