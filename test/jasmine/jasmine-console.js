@@ -168,7 +168,7 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
 
     print("------------------------");
     newline();
-    print("Finished in " + (this.now() - this.runnerStartTime / 1000) + " seconds");
+    print("Finished in " + ((this.now() - this.runnerStartTime) / 1000) + " seconds");
 
     var results = runner.results();
     var summaryFunction = results.failedCount === 0 ? greenSummary : redSummary;
