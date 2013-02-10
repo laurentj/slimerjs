@@ -1,6 +1,12 @@
+
+// This console reporter comes from the PhantomJS project.
+// LICENCE ?
+// author: ivan.de.marino@gmail.com ?
+//     inspired by mhevery's jasmine-node reporter
+//     https://github.com/mhevery/jasmine-node
+// contributor: Laurent Jouanneau (changed the output & fixed some issues)
+
 jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
-  //inspired by mhevery's jasmine-node reporter
-  //https://github.com/mhevery/jasmine-node
 
   doneCallback = doneCallback || function() {};
 
@@ -35,19 +41,6 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
     print("\n");
   }
 
-  function started() {
-    print("Started");
-    newline();
-  }
-
-  function greenPass() {
-    print(greenStr("PASS"));
-  }
-
-  function redFail() {
-    print(redStr("FAIL"));
-  }
-
   function yellowStar() {
     print(yellowStr("*"));
   }
@@ -73,21 +66,7 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
     return newArr.join("\n");
   }
 
-  function specFailureDetails(suiteDescription, specDescription, stackTraces) {
-    newline();
-    print(suiteDescription + " " + specDescription);
-    for (var i = 0; i < stackTraces.length; i++) {
-      print(indent(stackTraces[i], 2));
-    }
-  }
-
-  function finished(elapsed) {
-    newline();
-    print("Finished in " + elapsed / 1000 + " seconds");
-  }
-
   function summary(colorF, specs, failed) {
-    newline();
     print(colorF(specs + " " + plural(language.spec, specs) + ", " +
       failed + " " + plural(language.failure, failed)));
   }
@@ -112,23 +91,31 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
 
   this.reportRunnerStarting = function() {
     this.runnerStartTime = this.now();
-    started();
+    print("Started");
+    newline();
   };
 
   this.reportSpecStarting = function() { /* do nothing */
   };
 
+
   this.reportSpecResults = function(spec) {
     var results = spec.results();
+    var title = ' ' + spec.suite.description + ': ' + spec.description;
     if (results.skipped) {
-      yellowStar();
+        print(yellowStr( '*' + spec.id + ' SKIPPED') + title);
     } else {
-	  if (results.passed()) {
-		print('#' + spec.id + ' ' + spec.suite.description + ': ' + spec.description);
-        greenPass();
+      if (results.passed()) {
+        print(greenStr( '#' + spec.id + ' PASS') + title + ' ('+results.passedCount+'/'+results.totalCount+')');
       } else {
-		print(redStr('#' + spec.id + ' ' + spec.suite.description + ': ' + spec.description));
-        redFail();
+        print(redStr('#' + spec.id + ' FAIL' + title + ' ('+results.passedCount+'/'+results.totalCount+')'));
+        results.getItems().forEach(function(result, i){
+          if (result.passed_) {
+            //print(indent((i+1)+': ' + greenStr(result.message), 2));
+          }else {
+            print(indent((i+1)+': ' + redStr(result.message), 2));
+          }
+        })
       }
     }
   };
@@ -142,10 +129,11 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
     };
 
     suite.results().items_.forEach(function(spec) {
-      if (spec.failedCount > 0 && spec.description) suiteResult.failedSpecResults.push(spec);
+      if (spec.failedCount > 0 && spec.description)
+        suiteResult.failedSpecResults.push(spec);
     });
-
-    this.suiteResults.push(suiteResult);
+    if (suiteResult.failedSpecResults.length)
+        this.suiteResults.push(suiteResult);
   };
 
   function eachSpecFailure(suiteResults, callback) {
@@ -153,19 +141,34 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
       var suiteResult = suiteResults[i];
       for (var j = 0; j < suiteResult.failedSpecResults.length; j++) {
         var failedSpecResult = suiteResult.failedSpecResults[j];
-        var stackTraces = [];
-        for (var k = 0; k < failedSpecResult.items_.length; k++) stackTraces.push(failedSpecResult.items_[k].trace.stack);
-        callback(suiteResult.description, failedSpecResult.description, stackTraces);
+        print(redStr(suiteResult.description + " " + failedSpecResult.description));
+        failedSpecResult.getItems().forEach(function(failedResult, k){
+            if (failedResult.passed_)
+                return
+            print(indent(failedResult.message, 2));
+            var stack = failedResult.trace.stack;
+            if (stack) {
+                print(indent(stack, 4));
+            }
+            else {
+                print(indent("Sorry, no stack",4))
+            }
+        })
       }
     }
   }
 
   this.reportRunnerResults = function(runner) {
-    eachSpecFailure(this.suiteResults, function(suiteDescription, specDescription, stackTraces) {
-      specFailureDetails(suiteDescription, specDescription, stackTraces);
-    });
 
-    finished(this.now() - this.runnerStartTime);
+    if (this.suiteResults.length) {
+        newline();
+        print("------------------------ failures details");
+        eachSpecFailure(this.suiteResults);
+    }
+
+    print("------------------------");
+    newline();
+    print("Finished in " + (this.now() - this.runnerStartTime / 1000) + " seconds");
 
     var results = runner.results();
     var summaryFunction = results.failedCount === 0 ? greenSummary : redSummary;
