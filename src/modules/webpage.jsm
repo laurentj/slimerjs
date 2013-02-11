@@ -79,6 +79,16 @@ function create() {
          *                           receives "success" or "fail" as parameter.
          */
         open: function(url, callback) {
+            if (navigator) {
+                // don't recreate a browser if already opened.
+                navigator.onpageloaded = function (success) {
+                    navigator.onpageloaded = null;
+                    if (callback)
+                        callback(success);
+                }
+                navigator.browser.loadURI(url);
+                return;
+            }
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
                 navigator.webPage = webpage;
@@ -179,7 +189,7 @@ function create() {
         },
     
         // --------------------------------- content manipulation
-    
+
         get content () {
             if (!navigator)
                 throw "WebPage not opened";
@@ -192,23 +202,23 @@ function create() {
             encoder.setNode(doc);
             return encoder.encodeToString();
         },
-        
+
         set content(val) {
             throw "Not Implemented"
         },
-        
+
         get frameContent() {
             throw "Not Implemented"
         },
-    
+
         set frameContent(val) {
             throw "Not Implemented"
         },
-    
+
         get framePlainText() {
             throw "Not Implemented"
         },
-    
+
         get plainText() {
             if (!navigator)
                 throw "WebPage not opened";
@@ -221,19 +231,20 @@ function create() {
             encoder.setNode(doc);
             return encoder.encodeToString();
         },
-    
-        sendEvent: function(eventType, variant1, variant2, button, modifier) {
-            if (!navigator)
-                throw "WebPage not opened";
 
+        sendEvent: function(eventType, arg1, arg2, button, modifier) {
+            if (!navigator)
+                throw new Error("WebPage not opened");
+// TODO: process modifier
             if (eventType == 'keydown' || eventType == 'keyup') {
-                var key = variant1;
-                if (typeof key != "number") {
-                    if (key.length == 0)
+                var keyCode = arg1;
+                if ((typeof keyCode) != "number") {
+                    if (keyCode.length == 0)
                         return;
-                    key = key.charCodeAt(0);
+                    keyCode = keyCode.charCodeAt(0);
                 }
-                let DOMKeyCode = convertQTKeyCode(key);
+
+                let DOMKeyCode = convertQTKeyCode(keyCode);
                 navigator.sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, DOMKeyCode.modifier);
                 return;
             }
@@ -241,9 +252,9 @@ function create() {
                 let key = variant1;
                 if (typeof key == "number") {
                     let DOMKeyCode = convertQTKeyCode(key);
-                    navigator.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
+                    //navigator.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
                     navigator.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
-                    navigator.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
+                    //navigator.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
                 }
                 else {
                     for(let i=0; i < key.length;i++) {

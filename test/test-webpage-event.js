@@ -55,29 +55,31 @@ describe("webpage.sendEvent", function() {
             expect(input).toEqual("");
 
             webpage.sendEvent("keydown", webpage.event.key.A);
-            readResult()
+            readResult();
             expect(key.keydownK).toEqual(65);
             expect(key.keydownC).toEqual(0);
-            expect(key.keypressK).toEqual(65);
-            expect(key.keypressC).toEqual(65);
+            expect(key.keypressK).toEqual(-1); // value with phantomjs is 65
+            expect(key.keypressC).toEqual(-1); // value with phantomjs is 65
+                // -> it seems phantomjs generates a keypress event when we send a keydown event??
             expect(key.keyupK).toEqual(-1);
             expect(key.keyupC).toEqual(-1);
-            expect(input).toEqual("A");
+            expect(input).toEqual(""); // phantomjs generate "A" (because of keypresse event..)
 
             webpage.evaluate(resetKeyCode);
             webpage.sendEvent("keypress", webpage.event.key.A);
-            readResult()
-            expect(key.keydownK).toEqual(65);
-            expect(key.keydownC).toEqual(0);
-            expect(key.keypressK).toEqual(65);
+            readResult();
+            expect(key.keydownK).toEqual(-1); // value with phantomjs is 65
+            expect(key.keydownC).toEqual(-1); // value with phantomjs is  0
+            expect(key.keypressK).toEqual(0); // value with phantomjs is  65
             expect(key.keypressC).toEqual(65);
-            expect(key.keyupK).toEqual(65);
-            expect(key.keyupC).toEqual(0);
+            expect(key.keyupK).toEqual(-1);// value with phantomjs is 65
+            expect(key.keyupC).toEqual(-1);// value with phantomjs is 0
+              // --> phantomjs generates a keydown + keyup event when we send a keypress event
             expect(input).toEqual("A");
 
             webpage.evaluate(resetKeyCode);
             webpage.sendEvent("keyup", webpage.event.key.A);
-            readResult()
+            readResult();
             expect(key.keydownK).toEqual(-1);
             expect(key.keydownC).toEqual(-1);
             expect(key.keypressK).toEqual(-1);
@@ -87,7 +89,7 @@ describe("webpage.sendEvent", function() {
             expect(input).toEqual("");
         });
     });
-/*
+
     it("send key event with a keycode of a non-printable char",function(done) {
         var loaded = false;
         runs(function() {
@@ -117,17 +119,17 @@ describe("webpage.sendEvent", function() {
             expect(key.keypressC).toEqual(-1);
             expect(key.keyupK).toEqual(-1);
             expect(key.keyupC).toEqual(-1);
-            expect(input).toEqual("ac");
+            expect(input).toEqual("abc"); // value with phantomjs is ac
 
             webpage.evaluate(resetKeyCodeAndInit);
             webpage.sendEvent("keypress", webpage.event.key.Delete);
             readResult()
-            expect(key.keydownK).toEqual(46);
-            expect(key.keydownC).toEqual(0);
-            expect(key.keypressK).toEqual(-1);
-            expect(key.keypressC).toEqual(-1);
-            expect(key.keyupK).toEqual(46);
-            expect(key.keyupC).toEqual(0);
+            expect(key.keydownK).toEqual(-1); // value with phantomjs is 46
+            expect(key.keydownC).toEqual(-1); // value with phantomjs is 0
+            expect(key.keypressK).toEqual(46);// value with phantomjs is -1
+            expect(key.keypressC).toEqual(0); // value with phantomjs is -1
+            expect(key.keyupK).toEqual(-1);   // value with phantomjs is 46
+            expect(key.keyupC).toEqual(-1);   // value with phantomjs is 0
             expect(input).toEqual("ac");
 
             webpage.evaluate(resetKeyCodeAndInit);
@@ -176,13 +178,13 @@ describe("webpage.sendEvent", function() {
             webpage.evaluate(resetKeyCode);
             webpage.sendEvent("keypress", webpage.event.key.Ocircumflex);
             readResult()
-            expect(key.keydownK).toEqual(0);
-            expect(key.keydownC).toEqual(0);
-            expect(key.keypressK).toEqual(-1);
-            expect(key.keypressC).toEqual(-1);
-            expect(key.keyupK).toEqual(0);
-            expect(key.keyupC).toEqual(0);
-            expect(input).toEqual("");
+            expect(key.keydownK).toEqual(-1); // value with phantomjs is 0
+            expect(key.keydownC).toEqual(-1); // value with phantomjs is 0
+            expect(key.keypressK).toEqual(0); // value with phantomjs is -1
+            expect(key.keypressC).toEqual(212); // value with phantomjs is -1
+            expect(key.keyupK).toEqual(-1); // value with phantomjs is 0
+            expect(key.keyupC).toEqual(-1); // value with phantomjs is 0
+            expect(input).toEqual("Ô"); // value with phantomjs is ""
 
             webpage.evaluate(resetKeyCode);
             webpage.sendEvent("keyup", webpage.event.key.Ocircumflex);
@@ -197,7 +199,8 @@ describe("webpage.sendEvent", function() {
         });
     });
 
-    it("send key event with a string of a printable char",function(done) {
+    /*
+    it("send key event with a string of a printable char that don't match a DOM keycode",function(done) {
         var loaded = false;
         runs(function() {
             webpage.open(url, function(success){
