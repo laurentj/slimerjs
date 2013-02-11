@@ -300,6 +300,7 @@
                 <parameter name="clickCount" />
                 <parameter name="modifier" />
                 <body>
+                    this.browser.contentWindow.focus();
                     let domWindowUtils = this.browser.contentWindow
                                                 .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                                                 .getInterface(Components.interfaces.nsIDOMWindowUtils);
@@ -312,6 +313,7 @@
                 <parameter name="charCode" />
                 <parameter name="modifier" />
                 <body>
+                    this.browser.contentWindow.focus();
                     let domWindowUtils = this.browser.contentWindow
                                                 .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                                                 .getInterface(Components.interfaces.nsIDOMWindowUtils);
