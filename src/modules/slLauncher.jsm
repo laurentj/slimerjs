@@ -166,14 +166,14 @@ function prepareLoader(fileURI, dirURI) {
         paths: {
           'main': fileURI,
           '': dirURI,
-          'sdk/': 'resource://slimerjs/addon-sdk/'
+          'sdk/': 'resource://slimerjs/addon-sdk/',
+          'webpage' : 'resource://slimerjs/webpage'
         },
         globals: {
         },
         modules: {
           "webserver": Cu.import("resource://slimerjs/webserver.jsm", {}),
           "system": Cu.import("resource://slimerjs/system.jsm", {}),
-          "webpage": Cu.import("resource://slimerjs/webpage.jsm", {}),
         },
         resolve: function(id, requirer) {
             // we have some aliases, let's resolve them
