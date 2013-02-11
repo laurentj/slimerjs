@@ -162,6 +162,10 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onConfirm                           </td><td></td></tr>
     <tr><td>onConsoleMessage                    </td><td></td></tr>
     <tr><td>onError                             </td><td></td></tr>
+
+    <tr><td>onInitialized                       </td><td></td></tr>
+    <tr><td>onLoadFinished                      </td><td></td></tr>
+    <tr><td>onLoadStarted                       </td><td></td></tr>
     <tr><td>onFilePicker                         </td><td></td></tr>
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented</td></tr>
@@ -169,6 +173,9 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onNavigationRequested               </td><td></td></tr>
     <tr><td>onPageCreated                       </td><td></td></tr>
     <tr><td>onPrompt                            </td><td></td></tr>
+    <tr><td>onResourceRequested                 </td><td></td></tr>
+    <tr><td>onResourceReceived                  </td><td></td></tr>
+    <tr><td>onUrlChanged                        </td><td></td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
     <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>
     <tr><td>onUrlChanged                        </td><td>Implemented</td></tr>
@@ -193,6 +200,10 @@ Methods that send signals:
 ## request object received onResourceRequested
 
 <table>
+    <tr><td>id                                  </td><td></td></tr>
+    <tr><td>method                              </td><td></td></tr>
+    <tr><td>url                                 </td><td></td></tr>
+    <tr><td>time                                </td><td></td></tr>
     <tr><td>id                                  </td><td>Implemented</td></tr>
     <tr><td>method                              </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
@@ -203,11 +214,18 @@ Methods that send signals:
 ## response object received onResourceReceived
 
 <table>
+    <tr><td>id                                  </td><td></td></tr>
     <tr><td>id                                  </td><td>Implemented</td></tr>
     <tr><td>headers                             </td><td></td></tr>
+    <tr><td>bodySize                            </td><td></td></tr>
     <tr><td>bodySize                            </td><td>Implemented</td></tr>
     <tr><td>contentType                         </td><td></td></tr>
     <tr><td>redirectURL                         </td><td></td></tr>
+    <tr><td>stage                               </td><td></td></tr>
+    <tr><td>status                              </td><td></td></tr>
+    <tr><td>statusText                          </td><td></td></tr>
+    <tr><td>time                                </td><td></td></tr>
+    <tr><td>url                                 </td><td></td></tr>
     <tr><td>stage                               </td><td>Implemented</td></tr>
     <tr><td>status                              </td><td>Implemented</td></tr>
     <tr><td>statusText                          </td><td>Implemented</td></tr>
@@ -254,6 +272,8 @@ Methods that send signals:
     <tr><td>touch(path)                         </td><td>Implemented</td></tr>
 
 
+    <tr><td>makeDirectory(path)                 </td><td></td></tr>
+    <tr><td>removeDirectory(path)               </td><td></td></tr>
     <tr><td>makeDirectory(path)                 </td><td>Implemented</td></tr>
     <tr><td>removeDirectory(path)               </td><td>Implemented</td></tr>
     <tr><td>makeTree(path)                      </td><td></td></tr>
@@ -266,6 +286,10 @@ Methods that send signals:
 
     <tr><td>exists(path)                        </td><td>Implemented</td></tr>
     <tr><td>isFile(path)                        </td><td>Implemented</td></tr>
+    <tr><td>isDirectory(path)                   </td><td></td></tr>
+    <tr><td>isLink(path)                        </td><td></td></tr>
+    <tr><td>isReadable(path)                    </td><td></td></tr>
+    <tr><td>isWritable(path)                    </td><td></td></tr>
     <tr><td>isDirectory(path)                   </td><td>Implemented</td></tr>
     <tr><td>isLink(path)                        </td><td>Implemented</td></tr>
     <tr><td>isReadable(path)                    </td><td>Implemented</td></tr>
@@ -273,6 +297,7 @@ Methods that send signals:
 
     <tr><td>absolute(path)                      </td><td></td></tr>
 
+    <tr><td>size(path)                          </td><td></td></tr>
     <tr><td>size(path)                          </td><td>Implemented</td></tr>
 
     <tr><td>isAbsolute(path)                    </td><td>(not a CommonJS FileSystem method)</td></tr>
@@ -296,6 +321,7 @@ are part of the CommonJS FileSystem specification
 
     <tr><td>same(source, target)                </td><td></td></tr>
 
+    <tr><td>lastModified(path) Date             </td><td></td></tr>
     <tr><td>lastModified(path) Date             </td><td>Implemented</td></tr>
 
     <tr><td>workingDirectoryPath()              </td><td></td></tr>
@@ -304,6 +330,9 @@ are part of the CommonJS FileSystem specification
     <tr><td>split(path)                         </td><td></td></tr>
     <tr><td>normal(path)                        </td><td></td></tr>
     <tr><td>canonical(path)                     </td><td></td></tr>
+    <tr><td>directory(path)                     </td><td></td></tr>
+    <tr><td>base(path)                          </td><td></td></tr>
+    <tr><td>extension(path)                     </td><td></td></tr>
     <tr><td>directory(path)                     </td><td>Implemented</td></tr>
     <tr><td>base(path)                          </td><td>Implemented</td></tr>
     <tr><td>extension(path)                     </td><td>Implemented</td></tr>
