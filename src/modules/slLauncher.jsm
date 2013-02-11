@@ -183,7 +183,8 @@ function prepareLoader(fileURI, dirURI) {
 
             // the chrome module is only allowed in emmbedded modules
             if (id == 'chrome') {
-                if (requirer.indexOf('sdk/') === 0) {
+                if (requirer.indexOf('sdk/') === 0
+                    || requirer == "webpage") {
                     return 'chrome';
                 }
                 throw Error("Module "+ requirer+ " is not allowed to require the chrome module");

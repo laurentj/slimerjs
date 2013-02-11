@@ -23,13 +23,13 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-var EXPORTED_SYMBOLS = ["create"];
-Components.utils.import('resource://slimerjs/slLauncher.jsm');
-Components.utils.import('resource://slimerjs/slUtils.jsm');
-Components.utils.import('resource://slimerjs/slConfiguration.jsm');
-Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
-Components.utils.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
+const { Cc, Ci, Cu } = require('chrome');
+Cu.import('resource://slimerjs/slLauncher.jsm');
+Cu.import('resource://slimerjs/slUtils.jsm');
+Cu.import('resource://slimerjs/slConfiguration.jsm');
+Cu.import("resource://gre/modules/Services.jsm");
+Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
+Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 
 
 function create() {
@@ -168,8 +168,8 @@ function create() {
             return libPath.path;
         },
         set libraryPath (path) {
-            libPath = Components.classes['@mozilla.org/file/local;1']
-                            .createInstance(Components.interfaces.nsILocalFile);
+            libPath = Cc['@mozilla.org/file/local;1']
+                            .createInstance(Ci.nsILocalFile);
             libPath.initWithPath(path);
         },
 
@@ -194,9 +194,9 @@ function create() {
             if (!navigator)
                 throw "WebPage not opened";
 
-            const de = Components.interfaces.nsIDocumentEncoder
-            let encoder = Components.classes["@mozilla.org/layout/documentEncoder;1?type=text/html"]
-                            .createInstance(Components.interfaces.nsIDocumentEncoder);
+            const de = Ci.nsIDocumentEncoder
+            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
+                            .createInstance(Ci.nsIDocumentEncoder);
             let doc = navigator.browser.contentDocument;
             encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
             encoder.setNode(doc);
@@ -223,9 +223,9 @@ function create() {
             if (!navigator)
                 throw "WebPage not opened";
 
-            const de = Components.interfaces.nsIDocumentEncoder
-            let encoder = Components.classes["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
-                            .createInstance(Components.interfaces.nsIDocumentEncoder);
+            const de = Ci.nsIDocumentEncoder
+            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
+                            .createInstance(Ci.nsIDocumentEncoder);
             let doc = navigator.browser.contentDocument;
             encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly);
             encoder.setNode(doc);
@@ -249,7 +249,7 @@ function create() {
                 return;
             }
             else if (eventType == 'keypress') {
-                let key = variant1;
+                let key = arg1;
                 if (typeof key == "number") {
                     let DOMKeyCode = convertQTKeyCode(key);
                     //navigator.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
@@ -382,6 +382,7 @@ function create() {
 
     return webpage;
 }
+exports.create = create;
 
 /*
 function WebPage() {
