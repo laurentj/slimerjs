@@ -20,6 +20,10 @@
 * test/jasmine/jasmine.async.min.js
     is released under the MIT Licence.
     https://github.com/derickbailey/jasmine.async
+	
+* bin/GeckoLib.dll, bin/Redirector.dll, bin/SlimerJsRun.exe
+	are released under the GPLv3 License
+	Source code is available at http://github.com/matthewkastor/Redirector
 
 
 * All other files are released under this license:
