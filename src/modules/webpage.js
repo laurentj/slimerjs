@@ -256,6 +256,11 @@ function create() {
                     navigator.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
                     //navigator.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
                 }
+                else if (key.length == 1) {
+                    let charCode = key.charCodeAt(0);
+                    let DOMKeyCode = convertQTKeyCode(charCode);
+                    navigator.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, 0);
+                }
                 else {
                     for(let i=0; i < key.length;i++) {
                         let charCode = key.charCodeAt(i);

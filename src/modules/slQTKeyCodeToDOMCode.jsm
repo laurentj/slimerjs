@@ -39,6 +39,9 @@ function convertQTKeyCode(QTKeyCode){
     if (k in QtKeys) {
         return QtKeys[k];
     }
+    else if (QTKeyCode >= 0x61 && QTKeyCode <= 0x7c) {
+        return {keyCode:QTKeyCode - 0x20, charCode:QTKeyCode}
+    }
     else if (QTKeyCode >= 0x20 && QTKeyCode <= 0xff) {
         return {keyCode:0, charCode:QTKeyCode}
     }
