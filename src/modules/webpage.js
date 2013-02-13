@@ -46,32 +46,71 @@ function create() {
         get cookies() {
             throw "Not Implemented"
         },
-    
+
         set cookies(val) {
             throw "Not Implemented"
         },
-    
+
         get customHeaders() {
             throw "Not Implemented"
         },
-    
+
         set customHeaders(val) {
             throw "Not Implemented"
         },
-        
+
         addCookie: function(cookie) {
             throw "Not Implemented"
         },
-        
+
         clearCookies: function() {
             throw "Not Implemented"
         },
-    
+
         deleteCookie: function(cookieName) {
             throw "Not Implemented"
         },
-    
+
+        // -------------------------------- History
+
+        get canGoBack () {
+            throw "Not Implemented"
+        },
+
+        get canGoForward () {
+            throw "Not Implemented"
+        },
+
+        go : function(index) {
+            throw "Not Implemented"
+        },
+
+        goBack : function() {
+            throw "Not Implemented"
+        },
+
+        goForward : function() {
+            throw "Not Implemented"
+        },
+
+        get navigationLocked() {
+            throw "Not Implemented"
+        },
+
+        set navigationLocked(val) {
+            throw "Not Implemented"
+        },
+
+        reload : function() {
+            throw "Not Implemented"
+        },
+
+        stop : function() {
+            throw "Not Implemented"
+        },
+
         // -------------------------------- Window manipulation
+
         /**
          * Open a web page in a browser
          * @param string url    the url of the page to open
@@ -101,6 +140,10 @@ function create() {
             }, navigator);
         },
 
+        openUrl: function(url, httpConf, settings) {
+            throw "Not Implemented"
+        },
+
         /**
          * close the browser
          */
@@ -119,16 +162,79 @@ function create() {
          */
         onClosing: null,
 
+        childFramesCount: function () {
+            throw "Not Implemented"
+        },
+
+        childFramesName : function () {
+            throw "Not Implemented"
+        },
+
+        currentFrameName : function () {
+            throw "Not Implemented"
+        },
+
         get frameUrl() {
             throw "Not Implemented"
         },
-    
-    
-        get navigationLocked() {
+
+        get focusedFrameName () {
             throw "Not Implemented"
         },
-    
-        set navigationLocked(val) {
+
+        get frameCount () {
+            throw "Not Implemented"
+        },
+
+        get framesName () {
+            throw "Not Implemented"
+        },
+
+        get ownsPages () {
+            throw "Not Implemented"
+        },
+
+        getPage: function (windowName) {
+            throw "Not Implemented"
+        },
+
+        get pages () {
+            throw "Not Implemented"
+        },
+
+        get pagesWindowName () {
+            throw "Not Implemented"
+        },
+
+        release : function() {
+            throw "Not Implemented"
+        },
+
+        get scrollPosition() {
+            throw "Not Implemented"
+        },
+
+        set scrollPosition(val) {
+            throw "Not Implemented"
+        },
+
+        switchToFocusedFrame: function() {
+            throw "Not Implemented"
+        },
+
+        switchToFrame: function(frame) {
+            throw "Not Implemented"
+        },
+
+        switchToChildFrame: function(frame) {
+            throw "Not Implemented"
+        },
+
+        switchToMainFrame: function() {
+            throw "Not Implemented"
+        },
+
+        switchToParentFrame: function() {
             throw "Not Implemented"
         },
 
@@ -141,18 +247,28 @@ function create() {
         get viewportSize() {
             throw "Not Implemented"
         },
-    
+
         set viewportSize(val) {
             throw "Not Implemented"
         },
-    
+
+
+        get windowName () {
+            throw "Not Implemented"
+        },
+
         // -------------------------------- Javascript evaluation
-    
+
         evaluate: function(func, arg) {
             if (navigator)
                 return navigator.evaluate(func, arg);
             throw "WebPage not opened";
         },
+
+        evaluateJavascript: function(src) {
+            throw "Not Implemented"
+        },
+
         evaluateAsync: function(func) {
             if (navigator)
                 return navigator.evaluateAsync(func);
@@ -187,7 +303,7 @@ function create() {
         set onError(callback) {
             throw "Not Implemented"
         },
-    
+
         // --------------------------------- content manipulation
 
         get content () {
@@ -218,6 +334,27 @@ function create() {
         get framePlainText() {
             throw "Not Implemented"
         },
+
+        get frameTitle() {
+            throw "Not Implemented"
+        },
+
+        get offlineStoragePath() {
+            throw "Not Implemented"
+        },
+
+        set offlineStoragePath(val) {
+            throw "Not Implemented"
+        },
+
+        get offlineStorageQuota() {
+            throw "Not Implemented"
+        },
+
+        set offlineStorageQuota(val) {
+            throw "Not Implemented"
+        },
+
 
         get plainText() {
             if (!navigator)
@@ -276,9 +413,26 @@ function create() {
             // mouse events: mousedown, mouseup mousemove, doubleclick click
             // button: left, right, middle
         },
+
+        event : {
+            modifiers : {
+                shift:  0x02000000,
+                ctrl:   0x04000000,
+                alt:    0x08000000,
+                meta:   0x10000000,
+                keypad: 0x20000000
+            },
+            key : phantomJSKeyCodeList.key // unicode values
+        },
+
+        get title() {
+            throw "Not Implemented"
+        },
+
         setContent: function(content, url) {
             throw "Not Implemented"
         },
+
         uploadFile: function(selector, filename) {
             throw "Not Implemented"
         },
@@ -329,6 +483,14 @@ function create() {
             throw "Not Implemented"
         },
 
+        get onFilePicker() {
+            throw "Not Implemented"
+        },
+
+        set onFilePicker(callback) {
+            throw "Not Implemented"
+        },
+
         get onPrompt() {
             throw "Not Implemented"
         },
@@ -337,7 +499,7 @@ function create() {
             throw "Not Implemented"
         },
 
-        
+
         // ------------------------------ browsing callbacks
 
         // This callback is invoked after the web page is created but before a URL is loaded. The callback may be used to change global objects (document...)
@@ -345,7 +507,7 @@ function create() {
 
         //This callback is invoked when the page finishes the loading. It may accept a single argument indicating the page's status: 'success' if no network errors occurred, otherwise 'fail'.
         onLoadFinished: null,
-    
+
         //This callback is invoked when the page starts the loading. There is no argument passed to the callback.
         onLoadStarted: null,
 
@@ -373,15 +535,49 @@ function create() {
         //This callback is invoked when the URL changes, e.g. as it navigates away from the current URL.
         onUrlChanged : null,
 
-        event : {
-            modifiers : {
-                shift:  0x02000000,
-                ctrl:   0x04000000,
-                alt:    0x08000000,
-                meta:   0x10000000,
-                keypad: 0x20000000
-            },
-            key : phantomJSKeyCodeList.key // unicode values
+        // -------------------------------- private methods to send some events
+        closing:function (page) {
+            throw "Not Implemented"
+        },
+
+        initialized: function() {
+            throw "Not Implemented"
+        },
+
+        javaScriptAlertSent: function(message) {
+            throw "Not Implemented"
+        },
+
+        javaScriptConsoleMessageSent: function(message) {
+            throw "Not Implemented"
+        },
+
+        loadFinished: function(status) {
+            throw "Not Implemented"
+        },
+
+        loadStarted: function() {
+            throw "Not Implemented"
+        },
+
+        navigationRequested: function(url, navigationType, navigationLocked, isMainFrame) {
+            throw "Not Implemented"
+        },
+
+        rawPageCreated: function(page) {
+            throw "Not Implemented"
+        },
+
+        resourceReceived: function(request) {
+            throw "Not Implemented"
+        },
+
+        resourceRequested: function(resource) {
+            throw "Not Implemented"
+        },
+
+        urlChanged: function(url) {
+            throw "Not Implemented"
         }
     };
 
