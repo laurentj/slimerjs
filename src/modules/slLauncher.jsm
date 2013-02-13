@@ -123,7 +123,13 @@ var slLauncher = {
     },
 
     injectJs : function (source, uri) {
-        Loader.inject(mainLoader, mainLoader.main, source, uri);
+        let sandbox = mainLoader.sandboxes[mainLoader.main.uri];
+
+        let evalOptions =  {
+          version : mainLoader.javascriptVersion,
+          source: source
+        }
+        Loader.evaluate(sandbox, uri, evalOptions);
     },
     /**
      * the XUL elements containing all opened browsers

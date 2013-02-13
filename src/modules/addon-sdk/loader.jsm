@@ -12,7 +12,6 @@
  *    to evaluate modules with this version.
  *  - the possiblity to indicate our own sandbox for the main module
  *  - the possibility to indicate a source code for the main module
- *  - new inject() method to inject javascript source code into an existing module
  * main contributor: Laurent Jouanneau
  */
 
@@ -246,20 +245,6 @@ const load = iced(function load(loader, module, initialSandbox, src) {
   return module;
 });
 exports.load = load;
-
-
-const inject =  iced(function inject(loader, module, src, uri) {
-  let { sandboxes, globals, javascriptVersion } = loader;
-  let sandbox = sandboxes[module.uri]
-
-  let evalOptions =  {
-    version : javascriptVersion,
-    source: src
-  }
-  evaluate(sandbox, uri, evalOptions);
-});
-exports.inject = inject;
-
 
 // Utility function to check if id is relative.
 function isRelative(id) { return id[0] === '.'; }
