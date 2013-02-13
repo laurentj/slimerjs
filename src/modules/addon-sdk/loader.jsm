@@ -28,6 +28,8 @@
       return imports;
     }, this[factory.name], { uri: __URI__, id: id });
     this.EXPORTED_SYMBOLS = [factory.name];
+  } else if (~String(this).indexOf('Sandbox')) { // Sandbox
+    factory(function require(uri) {}, this, { uri: __URI__, id: id });
   } else {  // Browser or alike
     var globals = this
     factory(function require(id) {
@@ -37,6 +39,10 @@
 }).call(this, 'loader', function Loader(require, exports, module) {
 
 'use strict';
+
+module.metadata = {
+  "stability": "unstable"
+};
 
 const { classes: Cc, Constructor: CC, interfaces: Ci, utils: Cu,
         results: Cr, manager: Cm } = Components;
@@ -114,6 +120,42 @@ const override = iced(function override(target, source) {
 });
 exports.override = override;
 
+
+function sourceURI(uri) { return String(uri).split(" -> ").pop(); }
+exports.sourceURI = iced(sourceURI);
+
+function isntLoaderFrame(frame) { return frame.fileName !== module.uri }
+
+var parseStack = iced(function parseStack(stack) {
+  let lines = String(stack).split("\n");
+  return lines.reduce(function(frames, line) {
+    if (line) {
+      let atIndex = line.indexOf("@");
+      let columnIndex = line.lastIndexOf(":");
+      let fileName = sourceURI(line.slice(atIndex + 1, columnIndex));
+      let lineNumber = parseInt(line.slice(columnIndex + 1));
+      let name = line.slice(0, atIndex).split("(").shift();
+      frames.unshift({
+        fileName: fileName,
+        name: name,
+        lineNumber: lineNumber
+      });
+    }
+    return frames;
+  }, []);
+})
+exports.parseStack = parseStack
+
+var serializeStack = iced(function serializeStack(frames) {
+  return frames.reduce(function(stack, frame) {
+    return frame.name + "@" +
+           frame.fileName + ":" +
+           frame.lineNumber + "\n" +
+           stack;
+  }, "");
+})
+exports.serializeStack = serializeStack
+
 // Function takes set of options and returns a JS sandbox. Function may be
 // passed set of options:
 //  - `name`: A string value which identifies the sandbox in about:memory. Will
@@ -175,6 +217,8 @@ const evaluate = iced(function evaluate(sandbox, uri, options) {
     version: '1.8',
     source: null
   }, options);
+
+
   return source ? Cu.evalInSandbox(source, sandbox, version, uri, line)
                 : loadSubScript(uri, sandbox, encoding);
 });
@@ -237,7 +281,38 @@ const load = iced(function load(loader, module, initialSandbox, src) {
     version : javascriptVersion,
     source: src
   }
-  evaluate(sandbox, module.uri, evalOptions);
+
+  try {
+    evaluate(sandbox, module.uri, evalOptions);
+  } catch (error) {
+    let { message, fileName, lineNumber } = error;
+    let stack = error.stack || Error().stack;
+    let frames = parseStack(stack).filter(isntLoaderFrame);
+    let toString = String(error);
+
+    // Note that `String(error)` where error is from subscript loader does
+    // not puts `:` after `"Error"` unlike regular errors thrown by JS code.
+    // If there is a JS stack then this error has already been handled by an
+    // inner module load.
+    if (String(error) === "Error opening input stream (invalid filename?)") {
+      let caller = frames.slice(0).pop();
+      fileName = caller.fileName;
+      lineNumber = caller.lineNumber;
+      message = "Module `" + module.id + "` is not found at " + module.uri;
+      toString = message;
+    }
+
+    let prototype = typeof(error) === "object" ? error.constructor.prototype :
+                    Error.prototype;
+
+    throw create(prototype, {
+      message: { value: message, writable: true, configurable: true },
+      fileName: { value: fileName, writable: true, configurable: true },
+      lineNumber: { value: lineNumber, writable: true, configurable: true },
+      stack: { value: serializeStack(frames), writable: true, configurable: true },
+      toString: { value: function() toString, writable: true, configurable: true },
+    });
+  }
 
   if (module.exports && typeof(module.exports) === 'object')
     freeze(module.exports);
@@ -283,7 +358,7 @@ exports.resolveURI = resolveURI;
 // of `require` that is allowed to load only a modules that are associated
 // with it during link time.
 const Require = iced(function Require(loader, requirer) {
-  let { modules, mapping, resolve } = loader;
+  let { modules, mapping, resolve, load } = loader;
 
   function require(id) {
     if (!id) // Throw if `id` is not passed.
@@ -296,7 +371,6 @@ const Require = iced(function Require(loader, requirer) {
 
     // Resolves `uri` of module using loaders resolve function.
     let uri = resolveURI(requirement, mapping);
-
 
     if (!uri) // Throw if `uri` can not be resolved.
       throw Error('Module: Can not resolve "' + id + '" module required by ' +
@@ -323,8 +397,8 @@ const Require = iced(function Require(loader, requirer) {
 exports.Require = Require;
 
 const main = iced(function main(loader, id, sandbox, source) {
-  let module = Module(id, resolveURI(id, loader.mapping));
-  loader.main = module;
+  let uri = resolveURI(id, loader.mapping)
+  let module = loader.main = loader.modules[uri] = Module(id, uri);
   return load(loader, module, sandbox, source).exports;
 });
 exports.main = main;
@@ -397,7 +471,11 @@ const Loader = iced(function Loader(options) {
     '@loader/unload': destructor,
     '@loader/options': options,
     'chrome': { Cc: Cc, Ci: Ci, Cu: Cu, Cr: Cr, Cm: Cm,
-                CC: bind(CC, Components), components: Components }
+                CC: bind(CC, Components), components: Components,
+                // `ChromeWorker` has to be inject in loader global scope.
+                // It is done by bootstrap.js:loadSandbox for the SDK.
+                ChromeWorker: ChromeWorker
+    }
   }, modules);
 
   modules = keys(modules).reduce(function(result, id) {
@@ -421,6 +499,7 @@ const Loader = iced(function Loader(options) {
     // Map of module sandboxes indexed by module URIs.
     sandboxes: { enumerable: false, value: {} },
     resolve: { enumerable: false, value: resolve },
+    load: { enumerable: false, value: options.load || load },
     javascriptVersion : { enumerable: false, value: javascriptVersion },
     // Main (entry point) module, it can be set only once, since loader
     // instance can have only one main module.
@@ -438,3 +517,4 @@ const Loader = iced(function Loader(options) {
 exports.Loader = Loader;
 
 });
+

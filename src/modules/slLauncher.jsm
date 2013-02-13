@@ -94,7 +94,8 @@ var slLauncher = {
                 if (sourceURL.indexOf('->') != -1) {
                     sourceURL = sourceURL.split('->')[1].trim();
                 }
-                else if (sourceURL == 'resource://slimerjs/addon-sdk/loader.jsm') {
+                else if (sourceURL == 'resource://slimerjs/addon-sdk/loader.jsm'
+                         || sourceURL == 'resource://slimerjs/slLauncher.jsm' ) {
                     break;
                 }
 
