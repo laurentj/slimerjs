@@ -37,6 +37,20 @@ function create() {
     var navigator = null;
 
     var libPath = slConfiguration.scriptFile.parent.clone();
+    
+    function createSandBox() {
+        let win = navigator.browser.contentWindow;
+        let sandbox = Cu.Sandbox(win,
+            {
+                'sandboxName': navigator.browser.currentURI.spec,
+                'sandboxPrototype': win,
+                'wantXrays': false
+            });
+        return sandbox;
+    }
+    
+    
+    
 
     var webpage = {
 
@@ -259,10 +273,14 @@ function create() {
 
         // -------------------------------- Javascript evaluation
 
-        evaluate: function(func, arg) {
-            if (navigator)
-                return navigator.evaluate(func, arg);
-            throw "WebPage not opened";
+        evaluate: function(func, args) {
+            if (!navigator)
+                throw "WebPage not opened";
+            // FIXME: should the sandbox be created each time or only after the page is loaded?
+            let sandbox = createSandBox();
+            sandbox.__slimer_args = Array.isArray(args)?args:[args];
+            func = '('+func.toSource()+').apply(this, __slimer_args);';
+            return Cu.evalInSandbox(func, sandbox);
         },
 
         evaluateJavascript: function(src) {
@@ -270,14 +288,29 @@ function create() {
         },
 
         evaluateAsync: function(func) {
-            if (navigator)
-                return navigator.evaluateAsync(func);
-            throw "WebPage not opened";
+            if (!navigator)
+                throw "WebPage not opened";
+            // FIXME: should the sandbox be created each time or only after the page is loaded?
+            let sandbox = createSandBox();
+            func = '('+func.toSource()+')();';
+            navigator.browser.contentWindow.setTimeout(function() {
+                Cu.evalInSandbox(func, sandbox);
+            }, 0)
         },
         includeJs: function(url, callback) {
-            if (navigator)
-                return navigator.includeJS(url, callback);
-            throw "WebPage not opened";
+            if (!navigator)
+                throw "WebPage not opened";
+            let doc = navigator.browser.contentWindow.document;
+            let body = doc.documentElement.getElementsByTagName("body")[0];
+            let script = doc.createElement('script');
+            script.setAttribute('type', 'text/javascript');
+            script.setAttribute('src', url);
+            let listener = function(event){
+                script.removeEventListener('load', listener, true);
+                callback();
+            }
+            script.addEventListener('load', listener, true);
+            body.appendChild(script);
         },
 
         get libraryPath () {
@@ -290,12 +323,18 @@ function create() {
         },
 
         injectJs: function(filename) {
+            if (!navigator) {
+                throw "WebPage not opened";
+            }
             // filename resolved against the libraryPath property
             let f = getMozFile(filename, libPath);
             let source = readSyncStringFromFile(f);
-            if (navigator) {
-                navigator.injectJS(source);
-            }
+            let doc = navigator.browser.contentWindow.document;
+            let body = doc.documentElement.getElementsByTagName("body")[0];
+            let script = doc.createElement('script');
+            script.setAttribute('type', 'text/javascript');
+            script.textContent = source;
+            body.appendChild(script);
         },
         get onError() {
             throw "Not Implemented"
@@ -373,6 +412,11 @@ function create() {
             if (!navigator)
                 throw new Error("WebPage not opened");
 // TODO: process modifier
+            navigator.browser.contentWindow.focus();
+            let domWindowUtils = navigator.browser.contentWindow
+                                        .QueryInterface(Ci.nsIInterfaceRequestor)
+                                        .getInterface(Ci.nsIDOMWindowUtils);
+
             if (eventType == 'keydown' || eventType == 'keyup') {
                 var keyCode = arg1;
                 if ((typeof keyCode) != "number") {
@@ -382,7 +426,7 @@ function create() {
                 }
 
                 let DOMKeyCode = convertQTKeyCode(keyCode);
-                navigator.sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, DOMKeyCode.modifier);
+                domWindowUtils.sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, DOMKeyCode.modifier);
                 return;
             }
             else if (eventType == 'keypress') {
@@ -390,21 +434,21 @@ function create() {
                 if (typeof key == "number") {
                     let DOMKeyCode = convertQTKeyCode(key);
                     //navigator.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
-                    navigator.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
+                    domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
                     //navigator.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
                 }
                 else if (key.length == 1) {
                     let charCode = key.charCodeAt(0);
                     let DOMKeyCode = convertQTKeyCode(charCode);
-                    navigator.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, 0);
+                    domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, 0);
                 }
                 else {
                     for(let i=0; i < key.length;i++) {
                         let charCode = key.charCodeAt(i);
                         let DOMKeyCode = convertQTKeyCode(charCode);
-                        navigator.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
-                        navigator.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, 0);
-                        navigator.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
+                        domWindowUtils.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
+                        domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, 0);
+                        domWindowUtils.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
                     }
                 }
                 return;
@@ -412,6 +456,8 @@ function create() {
             throw "Not implemented";
             // mouse events: mousedown, mouseup mousemove, doubleclick click
             // button: left, right, middle
+
+            //domWindowUtils.sendMouseEvent(type, x, y, button, clickCount, modifier);
         },
 
         event : {
