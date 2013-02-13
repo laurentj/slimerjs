@@ -108,6 +108,14 @@ var service = webserver.listen(8082, function(request, response) {
     response.close();
 });
 
+var webserver2 = require("webserver").create();
+var service = webserver2.listen(8083, function(request, response) {
+    response.statusCode = 200;
+    response.write('<html><head><title>Inject test</title></head>');
+    response.write('<body><p id="test">example</p></body></html>');
+    response.close();
+});
+
 
 var webpage = require("webpage").create();
 var url = "http://127.0.0.1:8082/";
@@ -128,8 +136,23 @@ setTimeout(function(){ // wait after the webserver init process
 
         webpage.close();
         webserver.close();
-        console.log('\n------------------- END of tests');
-        phantom.exit()
+        
+        
+        var webpage2 = require("webpage").create();
+        webpage2.libraryPath += '/wwwfile';
+        url = "http://127.0.0.1:8083/";
+        webpage2.open(url, function(success){
+            console.log('\n------ tests on webpage2:');
+            webpage2.injectJs('inject.js');
+            assertEquals("foo", webpage2.evaluate(function(){
+                            return document.getElementById("test").getAttribute('class');
+                        }), "retrieve change after injection")
+            webpage2.close();
+            webserver2.close();
+
+            console.log('\n------------------- END of tests\n');
+            phantom.exit()
+        })
     })
 }, 200);
 
@@ -141,7 +164,7 @@ phantom.onError = function(msg, stack) {
     assertNotEquals(-1, stack[0].sourceURL.indexOf('requiredexample.js'), "filename is requiredexample.js")
     assertEquals(9, stack[0].line, "line in requiredexample.js")
     assertNotEquals(-1, stack[1].sourceURL.indexOf('initial-tests.js'), "filename is initial-tests.js")
-    assertEquals(147, stack[1].line, "line in initial-tests.js")
+    assertEquals(170, stack[1].line, "line in initial-tests.js")
 }
 
 ex.throwExcept();
