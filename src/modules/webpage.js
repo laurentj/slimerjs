@@ -88,23 +88,27 @@ function create() {
         // -------------------------------- History
 
         get canGoBack () {
-            throw "Not Implemented"
+            return navigator.browser.canGoBack;
         },
 
         get canGoForward () {
-            throw "Not Implemented"
+            return navigator.browser.canGoForward;
         },
 
-        go : function(index) {
-            throw "Not Implemented"
+        go : function(indexIncrement) {
+            let h = navigator.browser.sessionHistory;
+            let index = h.index + indexIncrement;
+            if (index >= h.count || index < 0)
+                return;
+            navigator.browser.gotoIndex(index);
         },
 
         goBack : function() {
-            throw "Not Implemented"
+            navigator.browser.goBack();
         },
 
         goForward : function() {
-            throw "Not Implemented"
+            navigator.browser.goForward();
         },
 
         get navigationLocked() {
@@ -116,11 +120,11 @@ function create() {
         },
 
         reload : function() {
-            throw "Not Implemented"
+            navigator.browser.reload();
         },
 
         stop : function() {
-            throw "Not Implemented"
+            navigator.browser.stop();
         },
 
         // -------------------------------- Window manipulation

@@ -81,8 +81,8 @@ It will contain API that does not exists in PhantomJS.
 ## properties
 
 <table>
-    <tr><td>canGoBack                           </td><td></td></tr>
-    <tr><td>canGoForward                        </td><td></td></tr>
+    <tr><td>canGoBack                           </td><td>Implemented</td></tr>
+    <tr><td>canGoForward                        </td><td>Implemented</td></tr>
     <tr><td>clipRect                            </td><td></td></tr>
     <tr><td>content                             </td><td>Implemented. Setter not implemented yet</td></tr>
     <tr><td>cookies                             </td><td></td></tr>
@@ -128,21 +128,21 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>evaluate(function, arg1, arg2,...)  </td><td>implemented</td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td>implemented</td></tr>
     <tr><td>getPage(windowName)                 </td><td></td></tr>
-    <tr><td>go(index)                           </td><td></td></tr>
-    <tr><td>goBack()                            </td><td></td></tr>
-    <tr><td>goForward()                         </td><td></td></tr>
+    <tr><td>go(index)                           </td><td>Implemented</td></tr>
+    <tr><td>goBack()                            </td><td>Implemented</td></tr>
+    <tr><td>goForward()                         </td><td>Implemented</td></tr>
     <tr><td>includeJs(url, callback)            </td><td>implemented</td></tr>
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
     <tr><td>open(url, callback)                 </td><td>Implemented</td></tr>
     <tr><td>openUrl(url, httpConf, settings)    </td><td></td></tr>
     <tr><td>release()                           </td><td></td></tr>
-    <tr><td>reload()                            </td><td></td></tr>
+    <tr><td>reload()                            </td><td>Implemented</td></tr>
     <tr><td>render(filename)                    </td><td></td></tr>
     <tr><td>renderBase64(format)                </td><td></td></tr>
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td></td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td></td></tr>
     <tr><td>setContent(content, url)            </td><td></td></tr>
-    <tr><td>stop()                              </td><td></td></tr>
+    <tr><td>stop()                              </td><td>Implemented</td></tr>
     <tr><td>switchToFocusedFrame()              </td><td></td></tr>
     <tr><td>switchToFrame(frameName)            </td><td></td></tr>
     <tr><td>switchToFrame(framePosition)        </td><td></td></tr>
