@@ -49,6 +49,20 @@ describe("webpage.sendEvent", function() {
             expect(key.keypressC).toEqual(-1);
             expect(key.keyupK).toEqual(-1);
             expect(key.keyupC).toEqual(-1);
+            
+            expect(key.keypressAlt).toEqual(false);
+            expect(key.keypressShift).toEqual(false);
+            expect(key.keypressCtrl).toEqual(false);
+            expect(key.keypressMeta).toEqual(false);
+            expect(key.keyupAlt).toEqual(false);
+            expect(key.keyupShift).toEqual(false);
+            expect(key.keyupCtrl).toEqual(false);
+            expect(key.keyupMeta).toEqual(false);
+            expect(key.keydownAlt).toEqual(false);
+            expect(key.keydownShift).toEqual(false);
+            expect(key.keydownCtrl).toEqual(false);
+            expect(key.keydownMeta).toEqual(false);
+
             expect(input).toEqual("");
         })
     });
@@ -68,6 +82,19 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(-1);
         expect(key.keyupC).toEqual(-1);
         expect(input).toEqual(""); // phantomjs generate "A" (because of keypress event..)
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
+
     });
 
     it("send keypress event with a keycode of a printable char",function(done) {
@@ -82,6 +109,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupC).toEqual(-1);// value with phantomjs is 0
           // --> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent for a single char
         expect(input).toEqual("A");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keyup event with a keycode of a printable char",function(done) {
@@ -95,6 +134,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(65);
         expect(key.keyupC).toEqual(0);
         expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keydown event with a keycode of a non-printable char",function(done) {
@@ -109,6 +160,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupC).toEqual(-1);
         expect(input).toEqual("abc"); // value with phantomjs is ac
                             // -> it should not delete the character since keypress is not already sent
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keypress event with a keycode of a non-printable char",function(done) {
@@ -124,6 +187,18 @@ describe("webpage.sendEvent", function() {
         // -> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent
 
         expect(input).toEqual("ac");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keyup event with a keycode of a non-printable char",function(done) {
@@ -137,6 +212,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(46);
         expect(key.keyupC).toEqual(0);
         expect(input).toEqual("abc");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keydown event with a keycode that don't match DOM keycode",function(done) {
@@ -150,6 +237,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(-1);
         expect(key.keyupC).toEqual(-1);
         expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keypress event with a keycode that don't match DOM keycode",function(done) {
@@ -164,6 +263,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupC).toEqual(-1); // value with phantomjs is 0
         expect(input).toEqual("Ô"); // value with phantomjs is ""
             // -> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
 
@@ -178,6 +289,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(0); // FIXME it should equal to a keycode, depending of the keyboard layout
         expect(key.keyupC).toEqual(0);
         expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keydown event with a string of a printable char that don't match a DOM keycode",function(done) {
@@ -192,6 +315,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(-1);
         expect(key.keyupC).toEqual(-1);
         expect(input).toEqual("");  // value with phantomjs is "a"
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keypress event with a string of a printable char that don't match a DOM keycode",function(done) {
@@ -207,6 +342,18 @@ describe("webpage.sendEvent", function() {
             // -> phantomjs generates a keydown + keypress + keyup event when we send a keypress event: inconsistent for a single char
 
         expect(input).toEqual("a");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keyup event with a string of a printable char that don't match a DOM keycode",function(done) {
@@ -220,6 +367,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(65);
         expect(key.keyupC).toEqual(0);
         expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keydown event with a string of an accentued printable char",function(done) {
@@ -234,6 +393,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupC).toEqual(-1);
             // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
         expect(input).toEqual(""); // value with phantomjs is "é"
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keypress event with a string of an accentued printable char",function(done) {
@@ -247,6 +418,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(-1); // value with phantomjs is 0 
         expect(key.keyupC).toEqual(-1); // value with phantomjs is 0
         expect(input).toEqual("é");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
     it("send keyup event with a string of an accentued printable char",function(done) {
@@ -260,9 +443,21 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(0);// it should equal to a keycode, depending of the keyboard layout
         expect(key.keyupC).toEqual(0);
         expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send key event with a string",function(done) {
+    it("send keydown event with a string",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "aBè");
         readResult()
@@ -273,10 +468,22 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(-1);
         expect(key.keyupC).toEqual(-1);
             // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
-        expect(input).toEqual(""); // value with phantomjs is "aBé"
+        expect(input).toEqual(""); // value with phantomjs is "aBé".
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send key event with a string",function(done) {
+    it("send keypress event with a string",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "aBè");
         readResult()
@@ -287,9 +494,21 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual([65,66,0]);
         expect(key.keyupC).toEqual([0,0,0]);
         expect(input).toEqual("aBè");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send key event with a string",function(done) {
+    it("send keyup event with a string",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "aBè");
         readResult()
@@ -300,10 +519,19 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(65);
         expect(key.keyupC).toEqual(0);
         expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(false);
+        expect(key.keyupShift).toEqual(false);
+        expect(key.keyupCtrl).toEqual(false);
+        expect(key.keyupMeta).toEqual(false);
+        expect(key.keydownAlt).toEqual(false);
+        expect(key.keydownShift).toEqual(false);
+        expect(key.keydownCtrl).toEqual(false);
+        expect(key.keydownMeta).toEqual(false);
     });
-
-    // ----------------------------------------------- shift + keycode/char
-
 
 });
 

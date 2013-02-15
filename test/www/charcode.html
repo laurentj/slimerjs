@@ -9,10 +9,22 @@
 var result = {
     keypressK:-1,
     keypressC:-1,
+    keypressAlt: false,
+    keypressShift: false,
+    keypressCtrl: false,
+    keypressMeta: false,
     keyupK:-1,
     keyupC:-1,
+    keyupAlt: false,
+    keyupShift: false,
+    keyupCtrl: false,
+    keyupMeta: false,
     keydownK:-1,
-    keydownC:-1
+    keydownC:-1,
+    keydownAlt: false,
+    keydownShift: false,
+    keydownCtrl: false,
+    keydownMeta: false
 }
 
 function showEventProperties(e)
@@ -44,6 +56,10 @@ function showEventProperties(e)
     else {
         result[e.type+"C"].push(e.charCode);
     }
+    result[e.type+"Alt"] = e.altKey;
+    result[e.type+"Shift"] = e.shiftKey;
+    result[e.type+"Ctrl"] = e.ctrlKey;
+    result[e.type+"Meta"] = e.metaKey;
 }
 
 function clearK(){
@@ -53,6 +69,18 @@ function clearK(){
     result.keyupC = -1;
     result.keydownK = -1;
     result.keydownC = -1;
+    result.keypressAlt= false;
+    result.keypressShift= false;
+    result.keypressCtrl= false;
+    result.keypressMeta= false;
+    result.keyupAlt= false;
+    result.keyupShift= false;
+    result.keyupCtrl= false;
+    result.keyupMeta= false;
+    result.keydownAlt= false;
+    result.keydownShift= false;
+    result.keydownCtrl= false;
+    result.keydownMeta= false;
     document.getElementById('txt').value = '';
     document.getElementById('txt').focus();
 }
