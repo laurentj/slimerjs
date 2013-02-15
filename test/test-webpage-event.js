@@ -314,7 +314,7 @@ describe("webpage.sendEvent", function() {
             // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
         expect(key.keyupK).toEqual(-1);
         expect(key.keyupC).toEqual(-1);
-        expect(input).toEqual("");  // value with phantomjs is "a"
+        expect(input).toEqual("");  // value with phantomjs is "a" because of the keypress event
         expect(key.keypressAlt).toEqual(false);
         expect(key.keypressShift).toEqual(false);
         expect(key.keypressCtrl).toEqual(false);
@@ -339,7 +339,8 @@ describe("webpage.sendEvent", function() {
         expect(key.keypressC).toEqual(97);
         expect(key.keyupK).toEqual(-1); // value with phantomjs is 65 
         expect(key.keyupC).toEqual(-1); // value with phantomjs is 0
-            // -> phantomjs generates a keydown + keypress + keyup event when we send a keypress event: inconsistent for a single char
+            // -> phantomjs generates a keydown + keypress + keyup event when
+            // we send a keypress event: inconsistent for a single char
 
         expect(input).toEqual("a");
         expect(key.keypressAlt).toEqual(false);
@@ -391,8 +392,9 @@ describe("webpage.sendEvent", function() {
         expect(key.keypressC).toEqual(-1); // value with phantomjs is 233
         expect(key.keyupK).toEqual(-1);
         expect(key.keyupC).toEqual(-1);
-            // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
-        expect(input).toEqual(""); // value with phantomjs is "é"
+            // -> phantomjs generates a keypress event when we send a keydown
+            // event: inconsistent
+        expect(input).toEqual(""); // value with phantomjs is "é" because of the keypress event
         expect(key.keypressAlt).toEqual(false);
         expect(key.keypressShift).toEqual(false);
         expect(key.keypressCtrl).toEqual(false);
@@ -417,6 +419,8 @@ describe("webpage.sendEvent", function() {
         expect(key.keypressC).toEqual(233);
         expect(key.keyupK).toEqual(-1); // value with phantomjs is 0 
         expect(key.keyupC).toEqual(-1); // value with phantomjs is 0
+            // -> phantomjs generates a keydown+keyup event (with 0 as charcode/keycode)
+            // -> inconsistent
         expect(input).toEqual("é");
         expect(key.keypressAlt).toEqual(false);
         expect(key.keypressShift).toEqual(false);
@@ -460,6 +464,9 @@ describe("webpage.sendEvent", function() {
     it("send keydown event with a string",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "aBè");
+        // let's assume that we send only a character for a given string
+        // since it does not make sens to send several keydown without
+        // keypress/keyup DOM event
         readResult()
         expect(key.keydownK).toEqual(65);
         expect(key.keydownC).toEqual(0);
@@ -467,8 +474,10 @@ describe("webpage.sendEvent", function() {
         expect(key.keypressC).toEqual(-1); // value with phantomjs is 97
         expect(key.keyupK).toEqual(-1);
         expect(key.keyupC).toEqual(-1);
-            // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
+            // -> phantomjs generates a keypress event when we send a
+            // keydown event: inconsistent
         expect(input).toEqual(""); // value with phantomjs is "aBé".
+            // -> phantomJS generates some characters without key events ?!!
         expect(key.keypressAlt).toEqual(false);
         expect(key.keypressShift).toEqual(false);
         expect(key.keypressCtrl).toEqual(false);
@@ -487,6 +496,8 @@ describe("webpage.sendEvent", function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "aBè");
         readResult()
+        // let's assume that for a whole string, we generate all key events
+        // for all characters
         expect(key.keydownK).toEqual([65,66,0]);
         expect(key.keydownC).toEqual([0,0,0]);
         expect(key.keypressK).toEqual([0,0,0]); // value with phantomjs is [97,66,232]
@@ -512,6 +523,9 @@ describe("webpage.sendEvent", function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "aBè");
         readResult()
+        // let's assume that we send only a character for a given string
+        // since it does not make sens to send several keyup without
+        // keypress/keydown DOM event
         expect(key.keydownK).toEqual(-1);
         expect(key.keydownC).toEqual(-1);
         expect(key.keypressK).toEqual(-1);
