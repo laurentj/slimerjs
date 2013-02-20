@@ -1,4 +1,3 @@
-
 # SlimerJS
 
 SlimerJS is a XulRunner application that can be launched with Firefox, allowing
@@ -14,6 +13,8 @@ For the moment, you can only run simple scripts that can use few functions from
 the **system** module, the **fs** module, the **webpage** module and the **webserver** module.
 
 Follow us on twitter: [@slimerjs](https://twitter.com/slimerjs)
+
+Ask your questions on the dedicated [mailing list](https://groups.google.com/forum/#!forum/slimerjs). 
 
 # Install
 
