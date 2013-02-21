@@ -415,11 +415,22 @@ function create() {
         sendEvent: function(eventType, arg1, arg2, button, modifier) {
             if (!navigator)
                 throw new Error("WebPage not opened");
-// TODO: process modifier
+
             navigator.browser.contentWindow.focus();
             let domWindowUtils = navigator.browser.contentWindow
                                         .QueryInterface(Ci.nsIInterfaceRequestor)
                                         .getInterface(Ci.nsIDOMWindowUtils);
+            if (modifier) {
+                let  m = 0;
+                let mod = this.event.modifiers;
+                if (modifier & mod.shift) m |= domWindowUtils.MODIFIER_SHIFT;
+                if (modifier & mod.alt) m |= domWindowUtils.MODIFIER_ALT;
+                if (modifier & mod.ctrl) m |= domWindowUtils.MODIFIER_CONTROL;
+                if (modifier & mod.meta) m |= domWindowUtils.MODIFIER_META;
+                modifier = m;
+            }
+            else
+                modifier = 0;
 
             if (eventType == 'keydown' || eventType == 'keyup') {
                 var keyCode = arg1;
@@ -430,29 +441,32 @@ function create() {
                 }
 
                 let DOMKeyCode = convertQTKeyCode(keyCode);
-                domWindowUtils.sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, DOMKeyCode.modifier);
+                if (DOMKeyCode.modifier && modifier == 0)
+                    modifier = DOMKeyCode.modifier;
+
+                domWindowUtils.sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 return;
             }
             else if (eventType == 'keypress') {
                 let key = arg1;
                 if (typeof key == "number") {
                     let DOMKeyCode = convertQTKeyCode(key);
-                    //navigator.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
-                    domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
-                    //navigator.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
+                    //navigator.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
+                    domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
+                    //navigator.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 }
                 else if (key.length == 1) {
                     let charCode = key.charCodeAt(0);
                     let DOMKeyCode = convertQTKeyCode(charCode);
-                    domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, 0);
+                    domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, modifier);
                 }
                 else {
                     for(let i=0; i < key.length;i++) {
                         let charCode = key.charCodeAt(i);
                         let DOMKeyCode = convertQTKeyCode(charCode);
-                        domWindowUtils.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
-                        domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, 0);
-                        domWindowUtils.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, 0);
+                        domWindowUtils.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
+                        domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, modifier);
+                        domWindowUtils.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                     }
                 }
                 return;

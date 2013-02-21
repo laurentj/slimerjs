@@ -9,22 +9,22 @@
 var result = {
     keypressK:-1,
     keypressC:-1,
-    keypressAlt: false,
-    keypressShift: false,
-    keypressCtrl: false,
-    keypressMeta: false,
+    keypressAlt: -1,
+    keypressShift: -1,
+    keypressCtrl: -1,
+    keypressMeta: -1,
     keyupK:-1,
     keyupC:-1,
-    keyupAlt: false,
-    keyupShift: false,
-    keyupCtrl: false,
-    keyupMeta: false,
+    keyupAlt: -1,
+    keyupShift: -1,
+    keyupCtrl: -1,
+    keyupMeta: -1,
     keydownK:-1,
     keydownC:-1,
-    keydownAlt: false,
-    keydownShift: false,
-    keydownCtrl: false,
-    keydownMeta: false
+    keydownAlt: -1,
+    keydownShift: -1,
+    keydownCtrl: -1,
+    keydownMeta: -1
 }
 
 function showEventProperties(e)
@@ -56,10 +56,57 @@ function showEventProperties(e)
     else {
         result[e.type+"C"].push(e.charCode);
     }
-    result[e.type+"Alt"] = e.altKey;
-    result[e.type+"Shift"] = e.shiftKey;
-    result[e.type+"Ctrl"] = e.ctrlKey;
-    result[e.type+"Meta"] = e.metaKey;
+
+    k = result[e.type+"Alt"];
+    if (typeof k == 'number') {
+         result[e.type+"Alt"] = e.altKey;
+    }
+    else if (typeof k == 'boolean') {
+        result[e.type+"Alt"] = [ k ];
+        result[e.type+"Alt"].push(e.altKey)
+    }
+    else {
+        result[e.type+"Alt"].push(e.altKey)
+    }
+    
+
+    k = result[e.type+"Shift"];
+    if (typeof k == 'number') {
+         result[e.type+"Shift"] = e.shiftKey;
+    }
+    else if (typeof k == 'boolean') {
+        result[e.type+"Shift"] = [ k ];
+        result[e.type+"Shift"].push(e.shiftKey)
+    }
+    else {
+        result[e.type+"Shift"].push(e.shiftKey)
+    } 
+
+
+    k = result[e.type+"Ctrl"];
+    if (typeof k == 'number') {
+         result[e.type+"Ctrl"] = e.ctrlKey;
+    }
+    else if (typeof k == 'boolean') {
+        result[e.type+"Ctrl"] = [ k ];
+        result[e.type+"Ctrl"].push(e.ctrlKey)
+    }
+    else {
+        result[e.type+"Ctrl"].push(e.ctrlKey)
+    } 
+
+
+    k = result[e.type+"Meta"];
+    if (typeof k == 'number') {
+         result[e.type+"Meta"] = e.metaKey;
+    }
+    else if (typeof k == 'boolean') {
+        result[e.type+"Meta"] = [ k ];
+        result[e.type+"Meta"].push(e.metaKey)
+    }
+    else {
+        result[e.type+"Meta"].push(e.metaKey)
+    }
 }
 
 function clearK(){
@@ -69,18 +116,18 @@ function clearK(){
     result.keyupC = -1;
     result.keydownK = -1;
     result.keydownC = -1;
-    result.keypressAlt= false;
-    result.keypressShift= false;
-    result.keypressCtrl= false;
-    result.keypressMeta= false;
-    result.keyupAlt= false;
-    result.keyupShift= false;
-    result.keyupCtrl= false;
-    result.keyupMeta= false;
-    result.keydownAlt= false;
-    result.keydownShift= false;
-    result.keydownCtrl= false;
-    result.keydownMeta= false;
+    result.keypressAlt= -1;
+    result.keypressShift= -1;
+    result.keypressCtrl= -1;
+    result.keypressMeta= -1;
+    result.keyupAlt= -1;
+    result.keyupShift= -1;
+    result.keyupCtrl= -1;
+    result.keyupMeta= -1;
+    result.keydownAlt= -1;
+    result.keydownShift= -1;
+    result.keydownCtrl= -1;
+    result.keydownMeta= -1;
     document.getElementById('txt').value = '';
     document.getElementById('txt').focus();
 }
@@ -91,7 +138,7 @@ window.onload = function(event){
     t.addEventListener("keyup", showEventProperties, true);
     t.addEventListener("keypress", showEventProperties, true);
     t.focus();
-    document.getElementById('tt').textContent= 'example'
+    document.getElementById('tt').textContent= 'example';
 }
         </script>
     </head>

@@ -26,6 +26,14 @@ describe("web objects", function() {
     it("should have a confirm object", function(){
         expect('confirm' in slimerEnv).toBeTruthy();
     });
+
+    it("should have a setTimeout object", function(){
+        expect('setTimeout' in slimerEnv).toBeTruthy();
+    });
+
+    it("should have a setInterval object", function(){
+        expect('setInterval' in slimerEnv).toBeTruthy();
+    });
 });
 
 describe("phantom object", function() {

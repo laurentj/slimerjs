@@ -49,14 +49,13 @@ function convertQTKeyCode(QTKeyCode){
         return {keyCode:0, charCode:0}
 }
 
-const SHIFT = 0x1;
-const ALT = 0x2;
+const wu = Components.interfaces.nsIDOMWindowUtils;
 const c = Components.interfaces.nsIDOMKeyEvent;
 
 var QtKeys = {
 /*Qt::Key_Escape*/                 'k1000000':    {keyCode:c.DOM_VK_ESCAPE,         charCode:0}, 
 /*Qt::Key_Tab*/                    'k1000001':    {keyCode:c.DOM_VK_TAB,            charCode:0}, 
-/*Qt::Key_Backtab*/                'k1000002':    {keyCode:c.DOM_VK_TAB,            charCode:0, modifier:SHIFT}, 
+/*Qt::Key_Backtab*/                'k1000002':    {keyCode:c.DOM_VK_TAB,            charCode:0, modifier:wu.MODIFIER_SHIFT}, 
 /*Qt::Key_Backspace*/              'k1000003':    {keyCode:c.DOM_VK_BACK_SPACE,     charCode:0}, 
 /*Qt::Key_Return*/                 'k1000004':    {keyCode:c.DOM_VK_RETURN,         charCode:0}, 
 /*Qt::Key_Enter*/                  'k1000005':    {keyCode:c.DOM_VK_ENTER,          charCode:0}, 
@@ -64,7 +63,7 @@ var QtKeys = {
 /*Qt::Key_Delete*/                 'k1000007':    {keyCode:c.DOM_VK_DELETE,         charCode:0}, 
 /*Qt::Key_Pause*/                  'k1000008':    {keyCode:c.DOM_VK_PAUSE,          charCode:0}, 
 /*Qt::Key_Print*/                  'k1000009':    {keyCode:c.DOM_VK_PRINTSCREEN,    charCode:0}, 
-/*Qt::Key_SysReq*/                 'k100000a':    {keyCode:c.DOM_VK_PRINTSCREEN,    charCode:0, modifier:SHIFT}, 
+/*Qt::Key_SysReq*/                 'k100000a':    {keyCode:c.DOM_VK_PRINTSCREEN,    charCode:0, modifier:wu.MODIFIER_SHIFT}, 
 /*Qt::Key_Clear*/                  'k100000b':    {keyCode:c.DOM_VK_CLEAR,          charCode:0}, 
 /*Qt::Key_Home*/                   'k1000010':    {keyCode:c.DOM_VK_HOME,           charCode:0}, 
 /*Qt::Key_End*/                    'k1000011':    {keyCode:c.DOM_VK_END,            charCode:0}, 
