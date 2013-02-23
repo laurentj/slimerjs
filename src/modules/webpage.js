@@ -416,6 +416,7 @@ function create() {
             if (!navigator)
                 throw new Error("WebPage not opened");
 
+            eventType = eventType.toLowerCase();
             navigator.browser.contentWindow.focus();
             let domWindowUtils = navigator.browser.contentWindow
                                         .QueryInterface(Ci.nsIInterfaceRequestor)
@@ -471,11 +472,49 @@ function create() {
                 }
                 return;
             }
-            throw "Not implemented";
-            // mouse events: mousedown, mouseup mousemove, doubleclick click
-            // button: left, right, middle
 
-            //domWindowUtils.sendMouseEvent(type, x, y, button, clickCount, modifier);
+            let btn = 0;
+            if (button == 'middle')
+                btn = 1;
+            else if (button == 'right')
+                btn = 2;
+
+            let x = arg1 || 0;
+            let y = arg2 || 0;
+
+            // mouse events
+            if (eventType == "mousedown" ||
+                eventType == "mouseup" ||
+                eventType == "mousemove") {
+
+                domWindowUtils.sendMouseEvent(eventType,
+                        x, y, btn, 1, modifier);
+                return;
+            }
+            else if (eventType == "mousedoubleclick") {
+                // this type allowed by phantomjs has no really equivalence
+                // and tests in phantomjs show that it is simply... buggy
+                // note that is undocumented (2013-02-22)
+                domWindowUtils.sendMouseEvent("mousedown",
+                        x, y, btn, 2, modifier);
+                return;
+            }
+            else if (eventType == "doubleclick") {
+                domWindowUtils.sendMouseEvent("mousedown",
+                        x, y, btn, 2, modifier);
+                domWindowUtils.sendMouseEvent("mouseup",
+                        x, y, btn, 2, modifier);
+                return;
+            }
+            else if (eventType == "click") {
+                domWindowUtils.sendMouseEventToWindow("mousedown",
+                        x, y, btn, 1, modifier);
+                domWindowUtils.sendMouseEventToWindow("mouseup",
+                        x, y, btn, 1, modifier);
+                return;
+            }
+
+            throw "Unknown event type";
         },
 
         event : {

@@ -39,6 +39,7 @@ phantom.injectJs("./test-webpage.js");
 phantom.injectJs("./test-webpage-listeners.js");
 phantom.injectJs("./test-webpage-keyevent.js");
 phantom.injectJs("./test-webpage-keyevent2.js");
+phantom.injectJs("./test-webpage-mouseevent.js");
 
 
 
