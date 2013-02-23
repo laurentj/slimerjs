@@ -148,7 +148,13 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
             print(indent(failedResult.message, 2));
             var stack = failedResult.trace.stack;
             if (stack) {
-                print(indent(stack, 4));
+                try {
+                    showStack(stack);
+                }
+                catch(e) {
+                    print(e)
+                }
+                
             }
             else {
                 print(indent("Sorry, no stack",4))
@@ -158,6 +164,25 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
     }
   }
 
+  function showStack(stack) {
+    var r = /^\s*(.*)@(.*):(\d+)\s*$/gm;
+    var m, a = [];
+    // exemple of stack with mozilla
+    // bla@resource://slimerjs/addon-sdk/loader.jsm -> file:///home/laurent/projets/slimerjs/test/initial-tests.js:130
+    // @resource://slimerjs/addon-sdk/loader.jsm -> file:///home/laurent/projets/slimerjs/test/initial-tests.js:134
+    // evaluate@resource://slimerjs/addon-sdk/loader.jsm:180
+
+    while ((m = r.exec(stack))) {
+        if (m[1].startsWith('jasmine.'))
+            continue;
+        if (m[2].indexOf('->') != -1) {
+            m[2] = m[2].split('->')[1].trim();
+        }
+        print(indent(m[0], 4));
+    }
+  }
+  
+  
   this.reportRunnerResults = function(runner) {
 
     if (this.suiteResults.length) {
