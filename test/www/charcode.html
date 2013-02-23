@@ -134,9 +134,9 @@ function clearK(){
 
 window.onload = function(event){
     var t = document.getElementById('txt');
-    t.addEventListener("keydown", showEventProperties, true);
-    t.addEventListener("keyup", showEventProperties, true);
-    t.addEventListener("keypress", showEventProperties, true);
+    document.addEventListener("keydown", showEventProperties, true);
+    document.addEventListener("keyup", showEventProperties, true);
+    document.addEventListener("keypress", showEventProperties, true);
     t.focus();
     document.getElementById('tt').textContent= 'example';
 }
