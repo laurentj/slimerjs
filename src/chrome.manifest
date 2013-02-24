@@ -6,4 +6,8 @@ component {00995ba2-223f-4efb-b656-ce98aff7019b} components/commandline.js
 contract @mozilla.org/commandlinehandler/general-startup;1?type=slimerjs {00995ba2-223f-4efb-b656-ce98aff7019b}
 category command-line-handler m-slimerjscli @mozilla.org/commandlinehandler/general-startup;1?type=slimerjs
 
+component {fe06cc0a-53d5-4004-a5af-c23b4d2e327d} components/ConsoleAPI.js
+contract @mozilla.org/console-api;1 {fe06cc0a-53d5-4004-a5af-c23b4d2e327d}
+category JavaScript-global-property console @mozilla.org/console-api;1
+
 manifest components/httpd.manifest
