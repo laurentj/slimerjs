@@ -36,3 +36,46 @@ describe("WebPage object on hello world", function(){
         done()
     })
 });
+
+
+describe("WebPage.injectJs", function(){
+    var webpage = require("webpage").create();
+    var url = "http://127.0.0.1:8083/inject.html";
+
+    it("can modifiy the page content",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open(url, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            webpage.libraryPath += '/wwwfile';
+            webpage.injectJs('inject.js');
+            var attrValue = webpage.evaluate(function(){
+                return document.getElementById("test").getAttribute('class');
+            })
+            expect(attrValue).toEqual("foo")
+
+            var pageVariableValue = webpage.evaluate(function(){
+                try {
+                    return pageVariable;
+                }catch(e) {
+                    return 'not found';
+                }
+            })
+            expect(pageVariableValue).toEqual("changed it")
+
+            var injectedVariableValue = webpage.evaluate(function(){
+                try {
+                    return injectedVariable;
+                }catch(e) {
+                    return 'not found';
+                }
+            })
+            expect(injectedVariableValue).toEqual("I am here")
+        })
+    });
+});
