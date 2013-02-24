@@ -102,13 +102,14 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
   this.reportSpecResults = function(spec) {
     var results = spec.results();
     var title = ' ' + spec.suite.description + ': ' + spec.description;
+    var id = spec.id +1;
     if (results.skipped) {
-        print(yellowStr( '*' + spec.id + ' SKIPPED') + title);
+        print(yellowStr( '*' + id + ' SKIPPED') + title);
     } else {
       if (results.passed()) {
-        print(greenStr( '#' + spec.id + ' PASS') + title + ' ('+results.passedCount+'/'+results.totalCount+')');
+        print(greenStr( '#' + id + ' PASS') + title + ' ('+results.passedCount+'/'+results.totalCount+')');
       } else {
-        print(redStr('#' + spec.id + ' FAIL' + title + ' ('+results.passedCount+'/'+results.totalCount+')'));
+        print(redStr('#' + id + ' FAIL' + title + ' ('+results.passedCount+'/'+results.totalCount+')'));
         results.getItems().forEach(function(result, i){
           if (result.passed_) {
             //print(indent((i+1)+': ' + greenStr(result.message), 2));
