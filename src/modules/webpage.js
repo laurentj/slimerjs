@@ -539,6 +539,10 @@ function create() {
             }
             else if (eventType == "doubleclick") {
                 domWindowUtils.sendMouseEvent("mousedown",
+                        x, y, btn, 1, modifier);
+                domWindowUtils.sendMouseEvent("mouseup",
+                        x, y, btn, 1, modifier);
+                domWindowUtils.sendMouseEvent("mousedown",
                         x, y, btn, 2, modifier);
                 domWindowUtils.sendMouseEvent("mouseup",
                         x, y, btn, 2, modifier);

@@ -49,7 +49,7 @@ function clearM(){
 function showEvent(e) {
     var s = e.type + ': '+e.target.id;
     prop.forEach(function(name){
-       s += ' - '+e[name];
+       s += ' - '+name+'='+e[name];
     })
     console.log(s)
 }

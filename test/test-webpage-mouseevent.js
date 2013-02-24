@@ -18,6 +18,10 @@ describe("webpage.sendEvent", function() {
     var webpage = require("webpage").create();
     var url = "http://127.0.0.1:8083/mouseevent.html";
 
+    /*webpage.onConsoleMessage = function(message, l, s) {
+        console.log(message);
+    }*/
+    
     function retrieveMouseInfo(){
         return result;
     }
@@ -76,6 +80,7 @@ describe("webpage.sendEvent", function() {
         expect(r.mousemove.altKey).toEqual(false);
         expect(r.mousemove.button).toEqual(0);
 */
+
     it("send mouse events outside the target",function(done) {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("mousedown", 5, 5, 'left', 0);
@@ -320,22 +325,65 @@ describe("webpage.sendEvent", function() {
     it("send doubleclick+ctrl event",function(done) {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("doubleclick", 20, 20, 'left', modifier.ctrl);
-        // modifier is ignored for doubleclick
+        // note that modifier is ignored for doubleclick in phantomjs
         readResult();
         expect(r.mousedown.length).toEqual(2)
-        expect(r.mousedown[0].ctrlKey).toEqual(false);
-        expect(r.mousedown[1].ctrlKey).toEqual(false);
+        expect(r.mousedown[0].clientX).toEqual(20);
+        expect(r.mousedown[0].clientY).toEqual(20);
+        expect(r.mousedown[0].ctrlKey).toEqual(true);
+        expect(r.mousedown[0].shiftKey).toEqual(false);
+        expect(r.mousedown[0].metaKey).toEqual(false);
+        expect(r.mousedown[0].altKey).toEqual(false);
+        expect(r.mousedown[0].button).toEqual(0);
+        expect(r.mousedown[1].clientX).toEqual(20);
+        expect(r.mousedown[1].clientY).toEqual(20);
+        expect(r.mousedown[1].ctrlKey).toEqual(true);
+        expect(r.mousedown[1].shiftKey).toEqual(false);
+        expect(r.mousedown[1].metaKey).toEqual(false);
+        expect(r.mousedown[1].altKey).toEqual(false);
+        expect(r.mousedown[1].button).toEqual(0);
 
         expect(r.mouseup.length).toEqual(2)
-        expect(r.mouseup[0].ctrlKey).toEqual(false);
-        expect(r.mouseup[1].ctrlKey).toEqual(false);
+        expect(r.mouseup[0].clientX).toEqual(20);
+        expect(r.mouseup[0].clientY).toEqual(20);
+        expect(r.mouseup[0].ctrlKey).toEqual(true);
+        expect(r.mouseup[0].shiftKey).toEqual(false);
+        expect(r.mouseup[0].metaKey).toEqual(false);
+        expect(r.mouseup[0].altKey).toEqual(false);
+        expect(r.mouseup[0].button).toEqual(0);
+        expect(r.mouseup[1].clientX).toEqual(20);
+        expect(r.mouseup[1].clientY).toEqual(20);
+        expect(r.mouseup[1].ctrlKey).toEqual(true);
+        expect(r.mouseup[1].shiftKey).toEqual(false);
+        expect(r.mouseup[1].metaKey).toEqual(false);
+        expect(r.mouseup[1].altKey).toEqual(false);
+        expect(r.mouseup[1].button).toEqual(0);
 
         expect(r.mousemove).toEqual(-1);
-        expect(r.click.length).toEqual(2)
-        expect(r.click[0].ctrlKey).toEqual(false);
-        expect(r.click[1].ctrlKey).toEqual(false);
 
-        expect(r.dblclick.ctrlKey).toEqual(false);
+        expect(r.click.length).toEqual(2)
+        expect(r.click[0].clientX).toEqual(20);
+        expect(r.click[0].clientY).toEqual(20);
+        expect(r.click[0].ctrlKey).toEqual(true);
+        expect(r.click[0].shiftKey).toEqual(false);
+        expect(r.click[0].metaKey).toEqual(false);
+        expect(r.click[0].altKey).toEqual(false);
+        expect(r.click[0].button).toEqual(0);
+        expect(r.click[1].clientX).toEqual(20);
+        expect(r.click[1].clientY).toEqual(20);
+        expect(r.click[1].ctrlKey).toEqual(true);
+        expect(r.click[1].shiftKey).toEqual(false);
+        expect(r.click[1].metaKey).toEqual(false);
+        expect(r.click[1].altKey).toEqual(false);
+        expect(r.click[1].button).toEqual(0);
+
+        expect(r.dblclick.clientX).toEqual(20);
+        expect(r.dblclick.clientY).toEqual(20);
+        expect(r.dblclick.ctrlKey).toEqual(true);
+        expect(r.dblclick.shiftKey).toEqual(false);
+        expect(r.dblclick.metaKey).toEqual(false);
+        expect(r.dblclick.altKey).toEqual(false);
+        expect(r.dblclick.button).toEqual(0);
     });
 
     it("send click event",function(done) {
@@ -393,13 +441,13 @@ describe("webpage.sendEvent", function() {
         
         // FIXME with the right button : no DOM click event :-/
         expect(r.click).toEqual(-1);
-        /*expect(r.click.clientX).toEqual(20);
-        expect(r.click.clientY).toEqual(20);
-        expect(r.click.ctrlKey).toEqual(false);
-        expect(r.click.shiftKey).toEqual(false);
-        expect(r.click.metaKey).toEqual(false);
-        expect(r.click.altKey).toEqual(false);
-        expect(r.click.button).toEqual(right);*/
+        //expect(r.click.clientX).toEqual(20);
+        //expect(r.click.clientY).toEqual(20);
+        //expect(r.click.ctrlKey).toEqual(false);
+        //expect(r.click.shiftKey).toEqual(false);
+        //expect(r.click.metaKey).toEqual(false);
+        //expect(r.click.altKey).toEqual(false);
+        //expect(r.click.button).toEqual(right);
         expect(r.dblclick).toEqual(-1);
     });
 
@@ -427,13 +475,13 @@ describe("webpage.sendEvent", function() {
         
         // FIXME with the middle button : no DOM click event :-/
         expect(r.click).toEqual(-1);
-        /*expect(r.click.clientX).toEqual(20);
-        expect(r.click.clientY).toEqual(20);
-        expect(r.click.ctrlKey).toEqual(false);
-        expect(r.click.shiftKey).toEqual(false);
-        expect(r.click.metaKey).toEqual(false);
-        expect(r.click.altKey).toEqual(false);
-        expect(r.click.button).toEqual(middle);*/
+        //expect(r.click.clientX).toEqual(20);
+        //expect(r.click.clientY).toEqual(20);
+        //expect(r.click.ctrlKey).toEqual(false);
+        //expect(r.click.shiftKey).toEqual(false);
+        //expect(r.click.metaKey).toEqual(false);
+        //expect(r.click.altKey).toEqual(false);
+        //expect(r.click.button).toEqual(middle);
         expect(r.dblclick).toEqual(-1);
     });
 
@@ -464,14 +512,14 @@ describe("webpage.sendEvent", function() {
 
         // FIXME with the middle or right button + alt + shift : no DOM click event
         expect(r.click).toEqual(-1);
-        /*expect(r.click.clientX).toEqual(20);
-        expect(r.click.clientY).toEqual(20);
-        expect(r.click.ctrlKey).toEqual(false);
-        expect(r.click.shiftKey).toEqual(true);
-        expect(r.click.metaKey).toEqual(false);
-        expect(r.click.altKey).toEqual(true);
-        expect(r.click.button).toEqual(middle);
-        expect(r.dblclick).toEqual(-1);*/
+        //expect(r.click.clientX).toEqual(20);
+        //expect(r.click.clientY).toEqual(20);
+        //expect(r.click.ctrlKey).toEqual(false);
+        //expect(r.click.shiftKey).toEqual(true);
+        //expect(r.click.metaKey).toEqual(false);
+        //expect(r.click.altKey).toEqual(true);
+        //expect(r.click.button).toEqual(middle);
+        //expect(r.dblclick).toEqual(-1);
 
         expect(r.dblclick).toEqual(-1);
     });

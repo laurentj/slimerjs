@@ -31,7 +31,7 @@ describe("webpage.onConsoleMessage", function() {
             message2 = m
     }
 
-    /*it("should receive the message",function() {
+    it("should receive the message",function() {
         message = null;
         message2 = null;
         runs(function() {
@@ -59,7 +59,7 @@ describe("webpage.onConsoleMessage", function() {
             expect(message.s).toEqual(url+'consolemessage.js'); // phantomjs doesn't use sourceId parameter, result is undefined
             expect(message2).toBeNull();
         })
-    });*/
+    });
 
     it("should receive the message of an iframe",function() {
         message = null;
@@ -71,7 +71,6 @@ describe("webpage.onConsoleMessage", function() {
         runs(function(){
             expect(message).toBeNull()
             expect(message2.length).toEqual(2);
-dump(JSON.stringify(message2))
             expect(message2[0].m).toEqual('message from consolemessage2');
             expect(message2[1].m).toEqual('message from consolemessageiframe');
         })

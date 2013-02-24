@@ -147,7 +147,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>reload()                            </td><td>Implemented</td></tr>
     <tr><td>render(filename)                    </td><td></td></tr>
     <tr><td>renderBase64(format)                </td><td></td></tr>
-    <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td></td></tr>
+    <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td>Implemented</td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
     <tr><td>setContent(content, url)            </td><td></td></tr>
     <tr><td>stop()                              </td><td>Implemented</td></tr>
