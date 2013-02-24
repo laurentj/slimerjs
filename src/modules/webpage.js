@@ -28,6 +28,7 @@ Cu.import('resource://slimerjs/slLauncher.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import('resource://slimerjs/slConfiguration.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 
@@ -35,7 +36,6 @@ Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 function create() {
     // private properties for the webpage object
     var navigator = null;
-
     var libPath = slConfiguration.scriptFile.parent.clone();
     
     function createSandBox() {
@@ -48,9 +48,43 @@ function create() {
             });
         return sandbox;
     }
+
+    /**
+     * an observer for the Observer Service
+     */
     
-    
-    
+    var webpageObserver = {
+        QueryInterface: XPCOMUtils.generateQI([Ci.nsISupportsWeakReference,Ci.nsIObserver]),
+
+        observe: function webpageobserver_observe(aSubject, aTopic, aData) {
+            if (aTopic == "console-api-log-event") {
+                if (!webpage.onConsoleMessage)
+                    return;
+                // aData == outer window id
+                // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js#254
+                let domWindowUtils = navigator.browser.contentWindow
+                            .QueryInterface(Ci.nsIInterfaceRequestor)
+                            .getInterface(Ci.nsIDOMWindowUtils);
+                var consoleEvent = aSubject.wrappedJSObject;
+                if (domWindowUtils.outerWindowID == aData) {
+                    webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
+                    return
+                }
+                // probably the window is an iframe of the webpage. check if this is
+                // the case
+                let iframe = domWindowUtils.getOuterWindowWithId(aData);
+                if (iframe) {
+                    let dwu = iframe.top.QueryInterface(Ci.nsIInterfaceRequestor)
+                            .getInterface(Ci.nsIDOMWindowUtils);
+                    if (dwu.outerWindowID == domWindowUtils.outerWindowID) {
+                        webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
+                        return;
+                    }
+                }
+                return;
+            }
+        }
+    }
 
     var webpage = {
 
@@ -146,8 +180,11 @@ function create() {
                 navigator.browser.loadURI(url);
                 return;
             }
+
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
+                Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
+
                 navigator.webPage = webpage;
                 navigator.onpageloaded = function (success) {
                     navigator.onpageloaded = null;
@@ -167,6 +204,7 @@ function create() {
          */
         close: function() {
             if (navigator) {
+                Services.obs.removeObserver(webpageObserver, "console-api-log-event");
                 if (this.onClosing)
                     this.onClosing(this);
                 slLauncher.closeBrowser(navigator);
@@ -578,13 +616,7 @@ function create() {
             throw "Not Implemented"
         },
 
-        get onConsoleMessage() {
-            throw "Not Implemented"
-        },
-
-        set onConsoleMessage(callback) {
-            throw "Not Implemented"
-        },
+        onConsoleMessage : null,
 
         get onFilePicker() {
             throw "Not Implemented"

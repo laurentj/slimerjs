@@ -40,6 +40,7 @@ phantom.injectJs("./test-webpage-listeners.js");
 phantom.injectJs("./test-webpage-keyevent.js");
 phantom.injectJs("./test-webpage-keyevent2.js");
 phantom.injectJs("./test-webpage-mouseevent.js");
+phantom.injectJs("./test-webpage-callbacks.js");
 
 
 

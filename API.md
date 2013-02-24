@@ -3,6 +3,14 @@ except deprecated API (at least in first releases).
 
 Here are compatibility tables and other specific API to SlimerJS.
 
+# Main differences with PhantomJS 1.8.1
+
+* You can load flash content if the plugin is installed in your Firefox installation
+* webpage.sendEvent() for key events is more consistent. In phantomJS, there are
+  [several issues](http://code.google.com/p/phantomjs/issues/detail?id=1094)
+* The webserver object has more methods to configure it easily
+* And of course, SlimerJS does not implement yet all the PhantomJS API
+
 
 # Command-line arguments and options
 
@@ -160,7 +168,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onCallback                          </td><td></td></tr>
     <tr><td>onClosing                           </td><td></td></tr>
     <tr><td>onConfirm                           </td><td></td></tr>
-    <tr><td>onConsoleMessage                    </td><td></td></tr>
+    <tr><td>onConsoleMessage                    </td><td>Implemented (SlimerJS only: the callback receives the lineNumber and the sourceID, contrary to PhantomJS)</td></tr>
     <tr><td>onError                             </td><td></td></tr>
     <tr><td>onFilePicker                         </td><td></td></tr>
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
