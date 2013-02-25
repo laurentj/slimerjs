@@ -132,7 +132,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>close()                             </td><td>Implemented</td></tr>
     <tr><td>currentFrameName()                  </td><td>deprecated</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td></td></tr>
-    <tr><td>evaluateJavascript(str)             </td><td></td></tr>
+    <tr><td>evaluateJavascript(str)             </td><td>implemented</td></tr>
     <tr><td>evaluate(function, arg1, arg2,...)  </td><td>implemented</td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td>implemented</td></tr>
     <tr><td>getPage(windowName)                 </td><td></td></tr>

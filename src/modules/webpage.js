@@ -37,7 +37,7 @@ function create() {
     // private properties for the webpage object
     var navigator = null;
     var libPath = slConfiguration.scriptFile.parent.clone();
-    
+
     function createSandBox() {
         let win = navigator.browser.contentWindow;
         let sandbox = Cu.Sandbox(win,
@@ -48,11 +48,17 @@ function create() {
             });
         return sandbox;
     }
+    var webPageSandbox = null;
+
+    // this listener is called each time a page is loaded in the
+    // browser. We then have the opportunity to do some cleanups
+    var loadListener = function(success) {
+        webPageSandbox = createSandBox();
+    }
 
     /**
      * an observer for the Observer Service
      */
-    
     var webpageObserver = {
         QueryInterface: XPCOMUtils.generateQI([Ci.nsISupportsWeakReference,Ci.nsIObserver]),
 
@@ -170,13 +176,17 @@ function create() {
          *                           receives "success" or "fail" as parameter.
          */
         open: function(url, callback) {
+
+            var onPageLoaded = function (success) {
+                loadListener(success);
+                navigator.onpageloaded = loadListener;
+                if (callback)
+                    callback(success);
+            }
+
             if (navigator) {
                 // don't recreate a browser if already opened.
-                navigator.onpageloaded = function (success) {
-                    navigator.onpageloaded = null;
-                    if (callback)
-                        callback(success);
-                }
+                navigator.onpageloaded = onPageLoaded;
                 navigator.browser.loadURI(url);
                 return;
             }
@@ -186,11 +196,7 @@ function create() {
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
 
                 navigator.webPage = webpage;
-                navigator.onpageloaded = function (success) {
-                    navigator.onpageloaded = null;
-                    if (callback)
-                        callback(success);
-                }
+                navigator.onpageloaded = onPageLoaded
                 navigator.browser.loadURI(url);
             }, navigator);
         },
@@ -209,6 +215,7 @@ function create() {
                     this.onClosing(this);
                 slLauncher.closeBrowser(navigator);
             }
+            webPageSandbox = null;
             navigator=null;
         },
 
@@ -315,33 +322,43 @@ function create() {
 
         // -------------------------------- Javascript evaluation
 
-        evaluate: function(func, args) {
+        /**
+         * FIXME: modifying a variable in a sandbox
+         * that inherits of the context of a window,
+         * does not propagate the modification into
+         * this context. We have same
+         * issue that https://bugzilla.mozilla.org/show_bug.cgi?id=783499
+         * the only solution is to do window.myvariable = something in the
+         * given function, instead of myvariable = something 
+         */
+        evaluate: function(func) {
             if (!navigator)
                 throw "WebPage not opened";
-            // FIXME: should the sandbox be created each time or only after the page is loaded?
-            let sandbox = createSandBox();
-            sandbox.__slimer_args = Array.isArray(args)?args:[args];
-            func = '('+func.toSource()+').apply(this, __slimer_args);';
-            return Cu.evalInSandbox(func, sandbox);
+            let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
+            func = '('+func.toSource()+').apply(this, ' + args + ');';
+            return Cu.evalInSandbox(func, webPageSandbox);
         },
 
         evaluateJavascript: function(src) {
-            throw "Not Implemented"
+            Cu.evalInSandbox(src, webPageSandbox);
         },
 
         evaluateAsync: function(func) {
             if (!navigator)
                 throw "WebPage not opened";
-            // FIXME: should the sandbox be created each time or only after the page is loaded?
-            let sandbox = createSandBox();
             func = '('+func.toSource()+')();';
             navigator.browser.contentWindow.setTimeout(function() {
-                Cu.evalInSandbox(func, sandbox);
+                Cu.evalInSandbox(func, webPageSandbox)
             }, 0)
         },
+
         includeJs: function(url, callback) {
             if (!navigator)
                 throw "WebPage not opened";
+            // we don't use the sandbox, because with it, scripts
+            // of the loaded page cannot access to variables/functions
+            // created by the injected script. And this behavior
+            // is necessary to be compatible with phantomjs.
             let doc = navigator.browser.contentWindow.document;
             let body = doc.documentElement.getElementsByTagName("body")[0];
             let script = doc.createElement('script');
@@ -358,12 +375,22 @@ function create() {
         get libraryPath () {
             return libPath.path;
         },
+
         set libraryPath (path) {
             libPath = Cc['@mozilla.org/file/local;1']
                             .createInstance(Ci.nsILocalFile);
             libPath.initWithPath(path);
         },
 
+        /**
+         * FIXME: modifying a variable in a sandbox
+         * that inherits of the context of a window,
+         * does not propagate the modification into
+         * this context. We have same
+         * issue that https://bugzilla.mozilla.org/show_bug.cgi?id=783499
+         * the only solution is to do window.myvariable = something in the
+         * given function, instead of myvariable = something 
+         */
         injectJs: function(filename) {
             if (!navigator) {
                 throw "WebPage not opened";
@@ -371,12 +398,7 @@ function create() {
             // filename resolved against the libraryPath property
             let f = getMozFile(filename, libPath);
             let source = readSyncStringFromFile(f);
-            let doc = navigator.browser.contentWindow.document;
-            let body = doc.documentElement.getElementsByTagName("body")[0];
-            let script = doc.createElement('script');
-            script.setAttribute('type', 'text/javascript');
-            script.textContent = source;
-            body.appendChild(script);
+            Cu.evalInSandbox(source, webPageSandbox)
         },
         get onError() {
             throw "Not Implemented"

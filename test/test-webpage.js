@@ -38,11 +38,81 @@ describe("WebPage object on hello world", function(){
 });
 
 
-describe("WebPage.injectJs", function(){
+
+
+describe("WebPage.evaluate()", function(){
     var webpage = require("webpage").create();
     var url = "http://127.0.0.1:8083/inject.html";
 
-    it("can modifiy the page content",function() {
+    it("can evaluate a given function",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open(url, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var r = webpage.evaluate(function(){
+                pageVariable = "hello";
+                window.pageVariable2 = "slimer";
+                window.injectedVariable = "bob";
+                modifyPageVariable();
+                modifyInjectedVariable();
+                return "okeval";
+            });
+            expect(r).toEqual("okeval");
+        });
+    });
+    
+    // FIXME: modifying a variable in a sandbox
+    // that inherits of the context of a window,
+    // does not propagate the modification into
+    // this context. We have same
+    // issue that https://bugzilla.mozilla.org/show_bug.cgi?id=783499
+    xit("can modify a global variable", function(){
+
+        var pageVariableValue = webpage.evaluate(function(){
+            try {
+                return getPageVariable();
+            }catch(e) {
+                return 'not found';
+            }
+        })
+        expect(pageVariableValue).toEqual("hellochange by modify")
+    });
+    
+    it("can modify a window variable", function(){
+        var pageVariableValue2 = webpage.evaluate(function(){
+            try {
+                return getPageVariable2();
+            }catch(e) {
+                return 'not found';
+            }
+        })
+        expect(pageVariableValue2).toEqual("slimerchange by modify")
+    });
+    
+    it("can create a window variable", function(){
+        var injectedVariableValue = webpage.evaluate(function(){
+            try {
+                return injectedVariable;
+            }catch(e) {
+                return 'not found';
+            }
+        })
+        expect(injectedVariableValue).toEqual("bobchange by modify")
+        webpage.close();
+    });
+});
+
+
+describe("WebPage.injectJs()", function(){
+    var webpage = require("webpage").create();
+    var url = "http://127.0.0.1:8083/inject.html";
+
+    it("can injects js",function() {
         var loaded = false;
         runs(function() {
             webpage.open(url, function(success){
@@ -54,28 +124,70 @@ describe("WebPage.injectJs", function(){
         runs(function(){
             webpage.libraryPath += '/wwwfile';
             webpage.injectJs('inject.js');
-            var attrValue = webpage.evaluate(function(){
-                return document.getElementById("test").getAttribute('class');
-            })
-            expect(attrValue).toEqual("foo")
+        });
+    });
 
-            var pageVariableValue = webpage.evaluate(function(){
-                try {
-                    return pageVariable;
-                }catch(e) {
-                    return 'not found';
-                }
-            })
-            expect(pageVariableValue).toEqual("changed it")
-
-            var injectedVariableValue = webpage.evaluate(function(){
-                try {
-                    return injectedVariable;
-                }catch(e) {
-                    return 'not found';
-                }
-            })
-            expect(injectedVariableValue).toEqual("I am here")
+    it("can modify DOM content",function() {
+        var attrValue = webpage.evaluate(function(){
+            return document.getElementById("test").getAttribute('class');
         })
+        expect(attrValue).toEqual("foo")
+    });
+
+    it("can modify an existing variable",function() {
+        var pageVariableValue = webpage.evaluate(function(){
+            try {
+                return pageVariable;
+            }catch(e) {
+                return 'not found';
+            }
+        })
+        expect(pageVariableValue).toEqual("changed it")
+    });
+
+    it("can create new variable in the window context",function() {
+        var injectedVariableValue = webpage.evaluate(function(){
+            try {
+                return injectedVariable;
+            }catch(e) {
+                return 'not found';
+            }
+        })
+        expect(injectedVariableValue).toEqual("I am here")
+    });
+
+    // FIXME: modifying a variable in a sandbox
+    // that inherits of the context of a window,
+    // does not propagate the modification into
+    // this context. We have same
+    // issue that https://bugzilla.mozilla.org/show_bug.cgi?id=783499
+    xit("can modify an existing variable and the new value is accessible from the window context",function() {
+        webpage.evaluate(function(){ modifyPageVariable();});
+        pageVariableValue = webpage.evaluate(function(){
+            try {
+                return pageVariable;
+            }catch(e) {
+                return 'not found';
+            }
+        })
+        expect(pageVariableValue).toEqual("changed itchange by modify")
+    });
+
+    // FIXME: modifying a variable in a sandbox
+    // that inherits of the context of a window,
+    // does not propagate the modification into
+    // this context. We have same
+    // issue that https://bugzilla.mozilla.org/show_bug.cgi?id=783499
+    xit("can modify an injected variable and the new value is accessible from the window context",function() {
+        webpage.evaluate(function(){ modifyInjectedVariable();});
+        injectedVariableValue = webpage.evaluate(function(){
+            try {
+                return injectedVariable;
+            }catch(e) {
+                return 'not found';
+            }
+        })
+        expect(injectedVariableValue).toEqual("I am herechange by modify");
+        webpage.close();
     });
 });

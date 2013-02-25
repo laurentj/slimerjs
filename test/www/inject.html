@@ -4,7 +4,21 @@
         <script type="text/javascript">
             
             var pageVariable = "ok";
-            
+            var pageVariable2 = "ok";
+
+            function modifyPageVariable() {
+                pageVariable += "change by modify"
+                pageVariable2 += "change by modify"
+            }
+            function modifyInjectedVariable() {
+                injectedVariable += "change by modify"
+            }
+            function getPageVariable() {
+                return pageVariable;
+            }
+            function getPageVariable2() {
+                return pageVariable2;
+            }
         </script>
     </head>
     <body>
