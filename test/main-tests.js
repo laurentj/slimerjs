@@ -32,15 +32,15 @@ var webServerFactory = require("webserver");
 var fs = require("fs");
 
 
-/*phantom.injectJs("./test-environment.js");
+phantom.injectJs("./test-environment.js");
 phantom.injectJs("./test-require.js");
-phantom.injectJs("./test-system.js");*/
+phantom.injectJs("./test-system.js");
 phantom.injectJs("./test-webpage.js");
-/*phantom.injectJs("./test-webpage-listeners.js");
+phantom.injectJs("./test-webpage-listeners.js");
 phantom.injectJs("./test-webpage-keyevent.js");
 phantom.injectJs("./test-webpage-keyevent2.js");
 phantom.injectJs("./test-webpage-mouseevent.js");
-phantom.injectJs("./test-webpage-callbacks.js");*/
+phantom.injectJs("./test-webpage-callbacks.js");
 
 
 
