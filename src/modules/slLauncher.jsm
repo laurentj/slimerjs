@@ -8,7 +8,7 @@ var EXPORTED_SYMBOLS = ["slLauncher"];
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import('resource://slimerjs/addon-sdk/loader.jsm'); //Sandbox, Require, main, Module, Loader
+Cu.import('resource://slimerjs/addon-sdk/toolkit/loader.js'); //Sandbox, Require, main, Module, Loader
 
 var sandbox = null;
 var mainLoader = null;
@@ -74,7 +74,7 @@ var slLauncher = {
                 if (sourceURL.indexOf('->') != -1) {
                     sourceURL = sourceURL.split('->')[1].trim();
                 }
-                else if (sourceURL == 'resource://slimerjs/addon-sdk/loader.jsm'
+                else if (sourceURL == 'resource://slimerjs/addon-sdk/toolkit/loader.js'
                          || sourceURL == 'resource://slimerjs/slLauncher.jsm' ) {
                     break;
                 }
@@ -153,8 +153,8 @@ function prepareLoader(fileURI, dirURI) {
         paths: {
           'main': fileURI,
           '': dirURI,
-          'sdk/': 'resource://slimerjs/addon-sdk/',
-          'webpage' : 'resource://slimerjs/webpage'
+          'sdk/': 'resource://slimerjs/addon-sdk/sdk/',
+          'webpage' : 'resource://slimerjs/slimer-sdk/webpage'
         },
         globals: {
         },
