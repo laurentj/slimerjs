@@ -44,7 +44,7 @@ slHttpListener.prototype = {
             //dump("slHttpListener: not context window\n");
             return;
         }
-        
+
         let browser = this._searchBrowser(contextWindow);
         if (!browser) {
             //dump("slHttpListener: not browser\n");

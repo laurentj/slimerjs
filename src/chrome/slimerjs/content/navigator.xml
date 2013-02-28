@@ -34,11 +34,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             </field>
 
             <field name="onpageloaded">null</field>
+            <field name="onloadstarted">null</field>
+            <field name="onloadfinished">null</field>
             <field name="webPage">null</field>
             <field name="requestCounter">0</field>
             <method name="resetBrowser">
                 <body>
                     this.onpageloaded = null;
+                    this.onloadstarted = null;
                     this.browser.stop();
                     this.browser.removeProgressListener(this.mProgressListener);
                     this.webPage = null;
@@ -76,6 +79,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                     if (channel) {
                         success = channel.requestSucceeded?"success":"fail";
                     }
+
+                    if (me.onloadfinished) {
+                        me.onloadfinished();
+                    }
+
                     if (me.webPage && me.webPage.onLoadFinished)
                         me.webPage.onLoadFinished(success)
 
@@ -190,6 +198,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                                     // let's imitate it
                                     if (nav.webPage.onInitialized)
                                         nav.webPage.onInitialized();
+
+                                    if (nav.onloadstarted)
+                                        nav.onloadstarted();
 
                                     if (nav.webPage.onLoadStarted)
                                         nav.webPage.onLoadStarted();

@@ -32,7 +32,7 @@ function create() {
 
     // this listener is called each time a page is loaded in the
     // browser. We then have the opportunity to do some cleanups
-    var loadListener = function(success) {
+    var loadListener = function() {
         webPageSandbox = createSandBox();
     }
 
@@ -158,14 +158,15 @@ function create() {
         open: function(url, callback) {
 
             var onPageLoaded = function (success) {
-                loadListener(success);
-                navigator.onpageloaded = loadListener;
+                navigator.onpageloaded = null;
                 if (callback)
                     callback(success);
             }
 
             if (navigator) {
                 // don't recreate a browser if already opened.
+                navigator.onloadstarted = loadListener;
+                navigator.onloadfinished = loadListener;
                 navigator.onpageloaded = onPageLoaded;
                 navigator.browser.loadURI(url);
                 return;
@@ -173,10 +174,11 @@ function create() {
 
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
+                navigator.onloadstarted = loadListener;
+                navigator.onloadfinished = loadListener;
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
-
                 navigator.webPage = webpage;
-                navigator.onpageloaded = onPageLoaded
+                navigator.onpageloaded = onPageLoaded;
                 navigator.browser.loadURI(url);
             }, navigator);
         },
