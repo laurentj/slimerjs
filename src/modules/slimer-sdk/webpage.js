@@ -12,6 +12,8 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 
+const netLog = require('net-log');
+netLog.startTracer();
 
 function create() {
     // private properties for the webpage object
@@ -75,6 +77,14 @@ function create() {
     var webpage = {
 
         settings : null,
+
+        /**
+         * list of regexp matching content types
+         * of resources for which you want to retrieve the content.
+         * The content is then set on the body property of the response
+         * object received by your onResourceReceived callback
+         */
+        captureContent : [],
 
         // ------------------------ cookies and headers
         get cookies() {
@@ -172,6 +182,7 @@ function create() {
                 return;
             }
 
+            var me = this;
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
                 navigator.onloadstarted = loadListener;
@@ -179,6 +190,11 @@ function create() {
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
                 navigator.webPage = webpage;
                 navigator.onpageloaded = onPageLoaded;
+                netLog.registerBrowser(navigator.browser, {
+                    onRequest: function(request) {me.resourceRequested(request);},
+                    onResponse:  function(res) {me.resourceReceived(res);},
+                    captureTypes: me.captureContent
+                });
                 navigator.browser.loadURI(url);
             }, navigator);
         },
@@ -712,11 +728,13 @@ function create() {
         },
 
         resourceReceived: function(request) {
-            throw "Not Implemented"
+            if (this.onResourceReceived)
+                this.onResourceReceived(request);
         },
 
         resourceRequested: function(resource) {
-            throw "Not Implemented"
+            if (this.onResourceRequested)
+                this.onResourceRequested(resource);
         },
 
         urlChanged: function(url) {

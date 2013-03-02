@@ -93,6 +93,11 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>canGoForward                        </td><td>Implemented</td></tr>
     <tr><td>clipRect                            </td><td></td></tr>
     <tr><td>content                             </td><td>Implemented. Setter not implemented yet</td></tr>
+    <tr><td>captureContent                      </td><td>Implemented. list of regexp matching content <br>
+                                                        types of resources for which you want to retrieve <br>
+                                                        the content. The content is then set on the body <br>
+                                                        property of the response object received by your <br>
+                                                        onResourceReceived callback (SlimerJS only)</td></tr>
     <tr><td>cookies                             </td><td></td></tr>
     <tr><td>customHeaders                       </td><td></td></tr>
     <tr><td>event                               </td><td></td></tr>
@@ -193,9 +198,9 @@ Methods that send signals:
     <tr><td>loadStarted()                       </td><td></td></tr>
     <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td></td></tr>
     <tr><td>rawPageCreated(page)                </td><td></td></tr>
-    <tr><td>resourceReceived(request)           </td><td></td></tr>
-    <tr><td>resourceRequested(resource)         </td><td></td></tr>
-    <tr><td>urlChanged(url)                     </td><td></td></tr>
+    <tr><td>resourceReceived(request)           </td><td>Implemented</td></tr>
+    <tr><td>resourceRequested(resource)         </td><td>Implemented</td></tr>
+    <tr><td>urlChanged(url)                     </td><td>Implemented</td></tr>
 </table>
 
 ## request object received onResourceRequested
@@ -205,23 +210,29 @@ Methods that send signals:
     <tr><td>method                              </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>time                                </td><td>Implemented</td></tr>
-    <tr><td>headers                             </td><td></td></tr>
+    <tr><td>headers                             </td><td>Implemented</td></tr>
 </table>
 
 ## response object received onResourceReceived
 
 <table>
     <tr><td>id                                  </td><td>Implemented</td></tr>
-    <tr><td>headers                             </td><td></td></tr>
+    <tr><td>headers                             </td><td>Implemented</td></tr>
+    <tr><td>body                                </td><td>Implemented (SlimerJS only. see webpage.captureContent)</td></tr>
     <tr><td>bodySize                            </td><td>Implemented</td></tr>
-    <tr><td>contentType                         </td><td></td></tr>
-    <tr><td>redirectURL                         </td><td></td></tr>
+    <tr><td>contentType                         </td><td>Implemented</td></tr>
+    <tr><td>contentCharset                      </td><td>Implemented (SlimerJS only)</td></tr>
+    <tr><td>imageInfo                           </td><td>Implemented (SlimerJS only, for images)</td></tr>
+    <tr><td>redirectURL                         </td><td>Implemented</td></tr>
+    <tr><td>referrer                            </td><td>Implemented (SlimerJS only)</td></tr>
     <tr><td>stage                               </td><td>Implemented</td></tr>
     <tr><td>status                              </td><td>Implemented</td></tr>
     <tr><td>statusText                          </td><td>Implemented</td></tr>
     <tr><td>time                                </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
+
 </table>
+
 
 # Module: system
 

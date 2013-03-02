@@ -10,17 +10,23 @@ their authors under the licenses listed alongside.
     http://mxr.mozilla.org/mozilla-central/source/toolkit/addon-sdk/
     https://github.com/laurentj/addon-sdk/tree/master/lib/sdk/io
 
-* components/httpd.js
+* src/components/httpd.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
     These files comes from Mozilla source code
     http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/
 
-* components/ConsoleAPI.js
+* src/components/ConsoleAPI.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
     This file comes originally from the source code of Firefox
     http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js
+
+* src/modules/slimer-sdk/net-log.js
+    is released under the Mozilla Public License, v. 2.0
+    see http://mozilla.org/MPL/2.0/
+    The author is Olivier Meunier and this file comes from
+    https://github.com/olivier-m/jetpack-net-log/
 
 * src/modules/slPhantomJSKeyCode.jsm
 
