@@ -329,6 +329,7 @@ function normalize(uri) { return uri.substr(-3) === '.js' ? uri : uri + '.js'; }
 // `requirer.uri` but in some cases it may be `baseURI`. In order to
 // avoid complexity we require `baseURI` with a trailing `/`.
 const resolve = iced(function resolve(id, base) {
+  if (!isRelative(id)) return id;
   let paths = id.split('/');
   let result = base.split('/');
   result.pop();

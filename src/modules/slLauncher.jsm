@@ -149,12 +149,14 @@ function prepareLoader(fileURI, dirURI) {
 
     return Loader.Loader({
         javascriptVersion : 'ECMAv5',
-
+        rootURI: dirURI,
+        metadata: {},
         paths: {
           'main': fileURI,
           '': dirURI,
           'sdk/': 'resource://slimerjs/addon-sdk/sdk/',
-          'webpage' : 'resource://slimerjs/slimer-sdk/webpage'
+          'webpage' : 'resource://slimerjs/slimer-sdk/webpage',
+          'net-log' : 'resource://slimerjs/slimer-sdk/net-log'
         },
         globals: {
         },
@@ -167,19 +169,19 @@ function prepareLoader(fileURI, dirURI) {
             if (id == 'fs') {
                 return 'sdk/io/file';
             }
-
-            // the chrome module is only allowed in emmbedded modules
-            if (id == 'chrome') {
+            if (id == 'chrome' || id.indexOf('@loader/') === 0) {
                 if (requirer.indexOf('sdk/') === 0
-                    || requirer == "webpage") {
-                    return 'chrome';
+                    || requirer == "webpage"
+                    || requirer == "net-log") {
+                    return id;
                 }
-                throw Error("Module "+ requirer+ " is not allowed to require the chrome module");
+                // the chrome module is only allowed in embedded modules
+                if (id == 'chrome') {
+                    throw Error("Module "+ requirer+ " is not allowed to require the chrome module");
+                }
+                else if (id.indexOf('@loader/') === 0)
+                    throw Error("Unknown "+ id +" module");
             }
-
-            if (id.indexOf('@loader/') === 0)
-                throw Error("Unknown "+ id +"module");
-
             // let's resolve other id module as usual
             let paths = id.split('/');
             let result = requirer.split('/');
@@ -191,7 +193,8 @@ function prepareLoader(fileURI, dirURI) {
               else if (path !== '.')
                 result.push(path);
             }
-            return result.join('/');
+            var finalpath = result.join('/');
+            return finalpath;
         }
     });
 }
