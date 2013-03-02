@@ -19,10 +19,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         <implementation>
             <constructor>
                 <![CDATA[
-                this.initProgressListener();
                 this.initMessageManager();
                 this.browser.messageManager.loadFrameScript('chrome://slimerjs/content/navigatorFrameScript.js', true);
-                this._sendReadyEvent();
             ]]>
             </constructor>
             <destructor>
@@ -50,34 +48,23 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                 </body>
             </method>
 
-            <method name="_sendReadyEvent">
-                <body>
-                    // before touching browser, we should wait that it is initialized,
-                    // however we don't have a simple way to know when it is finished
-                    // so let's trigger a timeout :-/ #uglyhack
-                    var me = this;
-                    window.setTimeout(function() {
-                        var evt = document.createEvent("Event");
-                        evt.initEvent("BrowserReady", true, false);
-                        me.dispatchEvent(evt);
-                    }, 100);
-                </body>
-            </method>
-
             <method name="initMessageManager">
                 <body><![CDATA[
                 var me = this;
                 var mm = this.browser.messageManager;
 
-                mm.addMessageListener("pageloaded", function(message){
+                var pageLoaderListener = function(message){
                     let channel = me.browser.docShell.currentDocumentChannel
-                    try {
-                        channel = channel.QueryInterface(Components.interfaces.nsIHttpChannel);
-                    }
-                    catch(e){}
                     let success = "success";
-                    if (channel) {
-                        success = channel.requestSucceeded?"success":"fail";
+                    try {
+                        if (channel.URI.spec != 'about:blank') {
+                            channel = channel.QueryInterface(Components.interfaces.nsIHttpChannel);
+                            success = channel.requestSucceeded?"success":"fail:"+channel.responseStatus+" "+channel.responseStatusText;
+                        }
+                    }
+                    catch(e){
+                        //dump("pageloaded: NOT HTTP CHANNEL\n"+channel.URI.spec+"\n")
+                        success = 'fail';
                     }
 
                     if (me.onloadfinished) {
@@ -89,7 +76,26 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
                     if (me.onpageloaded)
                         me.onpageloaded(success);
-                });
+                }
+
+                // listener for the first about:blank page load
+                var firstPageLoaderListener = function(message){
+                    let channel = me.browser.docShell.currentDocumentChannel
+                    if (channel.URI.spec != 'about:blank') {
+                        return;
+                    }
+                    // the initial about:blank is loaded, we can now
+                    // initialize progress listeners and so one,
+                    // and we can send the BrowserReady event.
+                    mm.removeMessageListener("pageloaded", firstPageLoaderListener);
+                    me.initProgressListener();
+                    mm.addMessageListener("pageloaded", pageLoaderListener);
+                    var evt = document.createEvent("Event");
+                    evt.initEvent("BrowserReady", true, false);
+                    me.dispatchEvent(evt);
+                }
+
+                mm.addMessageListener("pageloaded", firstPageLoaderListener);
                 ]]></body>
             </method>
 
@@ -100,7 +106,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                     let WPL = ci.nsIWebProgressListener;
                     let nav = this;
                     this.mProgressListener = {
-                        _firstBlankLoad : true, // we should ignore the load of about:blank during initialization of <browser>
                         _mainPageLoading : false,
                         QueryInterface : function(aIID)
                         {
@@ -114,9 +119,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
                         onLocationChange : function(aWebProgress, aRequest, aLocation, aFlags)
                         {
-                            if (this._firstBlankLoad)
-                                return;
-
                             let failure = aFlags & WPL.LOCATION_CHANGE_ERROR_PAGE;
                             if (failure) {
                                 if (nav.onpageloaded)
@@ -133,11 +135,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                         {
                             let uri = ''
                             if ((aRequest instanceof ci.nsIChannel || "URI" in aRequest)) {
-                                if (this._firstBlankLoad) {
-                                    if (aRequest.URI.spec == "about:blank" && aStateFlags & WPL.STATE_STOP && aStateFlags & WPL.STATE_IS_WINDOW)
-                                        this._firstBlankLoad = false;
-                                    return;
-                                }
                                 if (!nav.webPage)
                                     return;
                                 uri = aRequest.URI.spec
@@ -163,9 +160,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                                 dump("\n")*/
                                 return;
                             }
-
-                            if (this._firstBlankLoad)
-                                return;
 
                             // aStateFlags:
                             // STATE_START, STATE_REDIRECTING, STATE_TRANSFERRING, STATE_NEGOTIATING, STATE_STOP

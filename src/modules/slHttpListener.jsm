@@ -80,10 +80,15 @@ slHttpListener.prototype = {
     // ----- private interface
 
     _searchBrowser : function(aWindow) {
+        let browser =  aWindow.QueryInterface(Ci.nsIInterfaceRequestor)
+           .getInterface(Ci.nsIWebNavigation)
+           .QueryInterface(Ci.nsIDocShell)
+           .chromeEventHandler;
+
         var browsers = this.browsers.children;
         for (let i=1; i < browsers.length; i++) {
             let b = browsers[i];
-            if (b.browser.contentWindow == aWindow)
+            if (b.browser == browser)
                 return b;
         }
         return null;
@@ -105,8 +110,7 @@ slHttpListener.prototype = {
             let loadContext = notificationCallbacks.getInterface(Components.interfaces.nsILoadContext);
             // loadContext.isInBrowserElement == true si <browser>
             if (loadContext.isContent) 
-                return loadContext.topWindow; // .associatedWindow , .topFrameElement
-                //return loadContext.associatedWindow;
+                return loadContext.associatedWindow;
         }
         catch (e) {
         }
