@@ -22,19 +22,19 @@ describe("webpage with listeners", function() {
     };
 
     webpage.onResourceRequested = function(request) {
+        //console.log("--- webpage.onResourceRequested "+ request.id + " " + request.url);
         if (receivedRequest[request.id] == undefined ) {
             receivedRequest[request.id] = { req:null, start:null, end:null}
         }
         receivedRequest[request.id].req = request;
-        //console.log("onResourceRequested "+ request.id + " " + request.url);
     };
 
     webpage.onResourceReceived = function(response) {
+        //console.log("--- webpage.onResourceReceived "+ response.id + " " + response.url + " "+response.stage);
         if (receivedRequest[response.id] == undefined ) {
             receivedRequest[response.id] = { req:null, start:null, end:null}
         }
         receivedRequest[response.id][response.stage] = response;
-        //console.log("onResourceReceived "+ response.id + " " + response.url + " "+response.stage);
     };
     
     webpage.onLoadFinished = function(status) {
@@ -44,9 +44,11 @@ describe("webpage with listeners", function() {
         trace += "LOADFINISHED:"+currentUrl+" "+status+"\n";
     };
 
+    var domain = "http://localhost:8083/";
+
     var async = new AsyncSpec(this);
     async.it("should be opened",function(done) {
-        webpage.open('http://localhost:8083/hello.html', function(success){
+        webpage.open(domain + 'hello.html', function(success){
             trace += "CALLBACK:"+success+"\n";
             expect(success).toEqual("success");
             done();
@@ -54,7 +56,6 @@ describe("webpage with listeners", function() {
     });
 
     async.it("should generate the expected trace", function(done){
-        //console.log(trace);
         var expectedTrace = ""
         expectedTrace += "INITIALIZED\n";
         expectedTrace += "LOADSTARTED:about:blank\n";
@@ -66,22 +67,108 @@ describe("webpage with listeners", function() {
         done();
     });
 
-    async.it("should have a expected request objects", function(done){
-        expect(receivedRequest.length).toEqual(6);
-        for (var i=1; i < receivedRequest.length; i++) {
-            var r= receivedRequest[i];
-            expect(r.req.id).toEqual(i);
-            expect(r.req).toNotBe(null);
-            expect(r.start).toNotBe(null);
-            expect(r.end).toNotBe(null);
-            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
-            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
-            expect(r.req.method).toEqual("GET");
-            expect(r.start.status).toEqual(200);
-            expect(r.start.statusText).toEqual('OK');
-            expect(r.end.status).toEqual(200);
-            expect(r.end.statusText).toEqual('OK');
-        }
+    async.it("should have received hello.html", function(done){
+        let r;
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == (domain + 'hello.html');
+        })[0];
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toEqual(200);
+        expect(r.start.statusText).toEqual('OK');
+        expect(r.end.status).toEqual(200);
+        expect(r.end.statusText).toEqual('OK');
+        expect(r.start.contentType).toEqual("text/html");
+        expect(r.end.contentType).toEqual("text/html");
+        done();
+    });
+
+    async.it("should have received slimerjs.png", function(done){
+        let r;
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == (domain + 'slimerjs.png');
+        })[0];
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toEqual(200);
+        expect(r.start.statusText).toEqual('OK');
+        expect(r.end.status).toEqual(200);
+        expect(r.end.statusText).toEqual('OK');
+        expect(r.start.contentType).toEqual("image/png");
+        expect(r.end.contentType).toEqual("image/png");
+        done();
+    });
+
+    async.it("should have received helloframe.html", function(done){
+        let r;
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == (domain + 'helloframe.html');
+        })[0];
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toEqual(200);
+        expect(r.start.statusText).toEqual('OK');
+        expect(r.end.status).toEqual(200);
+        expect(r.end.statusText).toEqual('OK');
+        expect(r.start.contentType).toEqual("text/html");
+        expect(r.end.contentType).toEqual("text/html");
+        done();
+    });
+
+    async.it("should have received hello.js", function(done){
+        let r;
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == (domain + 'hello.js');
+        })[0];
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toEqual(200);
+        expect(r.start.statusText).toEqual('OK');
+        expect(r.end.status).toEqual(200);
+        expect(r.end.statusText).toEqual('OK');
+        expect(r.start.contentType).toEqual("text/javascript");
+        expect(r.end.contentType).toEqual("text/javascript");
+        done();
+    });
+
+    async.it("should have received helloframe.css", function(done){
+        let r;
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == (domain + 'helloframe.css');
+        })[0];
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toEqual(200);
+        expect(r.start.statusText).toEqual('OK');
+        expect(r.end.status).toEqual(200);
+        expect(r.end.statusText).toEqual('OK');
+        expect(r.start.contentType).toEqual("text/css");
+        expect(r.end.contentType).toEqual("text/css");
         done();
     });
 });
