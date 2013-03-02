@@ -90,13 +90,16 @@ var slLauncher = {
 
 
 function prepareLoader(fileURI, dirURI) {
+    var metadata ={
+            permissions : {}
+    };
 
     return Loader.Loader({
         javascriptVersion : 'ECMAv5',
         id:'slimerjs@innophi.com',
         name: 'SlimerJs',
         rootURI: dirURI,
-        metadata: {},
+        metadata: Object.freeze(metadata),
         paths: {
           'main': fileURI,
           '': dirURI,
