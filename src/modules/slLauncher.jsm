@@ -9,10 +9,10 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/addon-sdk/toolkit/loader.js'); //Sandbox, Require, main, Module, Loader
+Cu.import('resource://slimerjs/slConsole.jsm');
 
 var sandbox = null;
 var mainLoader = null;
-
 
 var slLauncher = {
     launchMainScript: function (contentWindow, scriptFile) {
@@ -22,25 +22,12 @@ var slLauncher = {
                                 'sandboxPrototype': contentWindow,
                                 'wantXrays': true
                             });
-        // expose a console object that dump output into the shell console
-        var console = {
-            debug:function(str) { dump(str+"\n");},
-            log:function(str) { dump(str+"\n");},
-            info:function(str) { dump(str+"\n");},
-            warn:function(str) { dump(str+"\n");},
-            error:function(str) { dump(str+"\n");},
-            __exposedProps__ : {
-                debug:'r', log:'r', info:'r', warn:'r',
-                error:'r', trace:'r'
-                /*clear:'r',
-                dir:'r', dirxml:'r', group:'r', groupEnd:'r'*/
-            }
-        }
-        sandbox.console = console;
 
         // import the slimer/phantom API into the sandbox
         Cu.import('resource://slimerjs/slimer.jsm', sandbox);
         Cu.import('resource://slimerjs/phantom.jsm', sandbox);
+
+        sandbox.console = new slConsole();
 
         // load and execute the provided script
         let fileURI = Services.io.newFileURI(scriptFile).spec;
@@ -51,56 +38,13 @@ var slLauncher = {
             Loader.main(mainLoader, 'main', sandbox);
         }
         catch(e) {
-            this.processException(e, fileURI);
-        }
-    },
-
-    processException : function (e, fileURI) {
-        let msg;
-        let stackRes = [];
-
-        if (typeof e == 'object' && 'stack' in e) {
-            msg = e.message;
-
-            let r = /^\s*(.*)@(.*):(\d+)\s*$/gm;
-            let m, a = [];
-            // exemple of stack
-            // bla@resource://slimerjs/addon-sdk/loader.jsm -> file:///home/laurent/projets/slimerjs/test/initial-tests.js:130
-            // @resource://slimerjs/addon-sdk/loader.jsm -> file:///home/laurent/projets/slimerjs/test/initial-tests.js:134
-            // evaluate@resource://slimerjs/addon-sdk/loader.jsm:180
-
-            while ((m = r.exec(e.stack))) {
-                let [full, funcName, sourceURL, lineNumber] = m;
-                if (sourceURL.indexOf('->') != -1) {
-                    sourceURL = sourceURL.split('->')[1].trim();
-                }
-                else if (sourceURL == 'resource://slimerjs/addon-sdk/toolkit/loader.js'
-                         || sourceURL == 'resource://slimerjs/slLauncher.jsm' ) {
-                    break;
-                }
-
-                var line = {
-                    "sourceURL":sourceURL,
-                    "line": lineNumber,
-                    "function": funcName
-                }
-                stackRes.push(line);
+            if (sandbox.phantom.onError) {
+                let [msg, stackRes] = getTraceException(e, fileURI);
+                sandbox.phantom.onError(msg, stackRes);
             }
+            else
+                throw e;
         }
-        else {
-            msg = e.toString();
-            var line = {
-                "sourceURL":fileURI,
-                "line": 0,
-                "function":null
-            }
-            stackRes.push(line);
-        }
-        if (sandbox.phantom.onError) {
-            sandbox.phantom.onError(msg, stackRes);
-        }
-        else
-            throw e;
     },
 
     injectJs : function (source, uri) {
@@ -149,6 +93,8 @@ function prepareLoader(fileURI, dirURI) {
 
     return Loader.Loader({
         javascriptVersion : 'ECMAv5',
+        id:'slimerjs@innophi.com',
+        name: 'SlimerJs',
         rootURI: dirURI,
         metadata: {},
         paths: {
@@ -159,6 +105,7 @@ function prepareLoader(fileURI, dirURI) {
           'net-log' : 'resource://slimerjs/slimer-sdk/net-log'
         },
         globals: {
+            console: new slConsole()
         },
         modules: {
           "webserver": Cu.import("resource://slimerjs/webserver.jsm", {}),
