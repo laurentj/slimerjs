@@ -167,30 +167,41 @@ function create() {
          */
         open: function(url, callback) {
 
-            var onPageLoaded = function (success) {
-                navigator.onpageloaded = null;
-                if (callback)
-                    callback(success);
+            var me = this;
+            var options = {
+                onRequest: function(request) {me.resourceRequested(request);},
+                onResponse:  function(res) {me.resourceReceived(res);},
+                captureTypes: me.captureContent,
+                onLoadStarted: function(){ me.loadStarted(); },
+                onURLChanged: function(url){ me.urlChanged(url);},
+                onTransferStarted :null,
+                onContentLoaded: function(){
+                    // phantomjs call onInitialized not only at the page creation
+                    // but also after the content loading.. don't know why.
+                    // let's imitate it
+                    me.initialized();
+                },
+                onLoadFinished: function(success){
+                    me.loadFinished(success);
+                    if (callback) {
+                        callback(success);
+                        callback = null;
+                    }
+                },
             }
 
             if (navigator) {
                 // don't recreate a browser if already opened.
-                navigator.onpageloaded = onPageLoaded;
+                netLog.registerBrowser(navigator.browser, options);
                 navigator.browser.loadURI(url);
                 return;
             }
 
-            var me = this;
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
-                navigator.webPage = webpage;
-                navigator.onpageloaded = onPageLoaded;
-                netLog.registerBrowser(navigator.browser, {
-                    onRequest: function(request) {me.resourceRequested(request);},
-                    onResponse:  function(res) {me.resourceReceived(res);},
-                    captureTypes: me.captureContent
-                });
+                netLog.registerBrowser(navigator.browser, options);
+                me.initialized();
                 navigator.browser.loadURI(url);
             }, navigator);
         },
@@ -205,6 +216,7 @@ function create() {
         close: function() {
             if (navigator) {
                 Services.obs.removeObserver(webpageObserver, "console-api-log-event");
+                netLog.unregisterBrowser(navigator.browser);
                 if (this.onClosing)
                     this.onClosing(this);
                 slLauncher.closeBrowser(navigator);

@@ -186,4 +186,50 @@ describe("webpage with listeners", function() {
         expect(r.end.contentType).toEqual("text/css");
         done();
     });
+
+    async.it("is opening a new page",function(done) {
+        webpage.open(domain + 'mouseevent.html', function(success){
+            trace += "CALLBACK2:"+success+"\n";
+            expect(success).toEqual("success");
+            done();
+        });
+    });
+    async.it("should generate the expected trace for the new page", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "URLCHANGED:http://localhost:8083/hello.html\n";
+        expectedTrace += "INITIALIZED 1\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/hello.html - 2 success\n";
+        expectedTrace += "CALLBACK:success\n";
+        expectedTrace += "LOADSTARTED:http://localhost:8083/hello.html\n";
+        expectedTrace += "URLCHANGED:http://localhost:8083/mouseevent.html\n";
+        expectedTrace += "INITIALIZED 2\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/mouseevent.html - 3 success\n";
+        expectedTrace += "CALLBACK2:success\n";
+        expect(trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should have received mouseevent.html", function(done){
+        var r;
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == (domain + 'mouseevent.html');
+        })[0];
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toEqual(200);
+        expect(r.start.statusText).toEqual('OK');
+        expect(r.end.status).toEqual(200);
+        expect(r.end.statusText).toEqual('OK');
+        expect(r.start.contentType).toEqual("text/html");
+        expect(r.end.contentType).toEqual("text/html");
+        done();
+    });
+
 });

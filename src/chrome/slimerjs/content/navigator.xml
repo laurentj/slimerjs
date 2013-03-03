@@ -31,15 +31,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                 document.getAnonymousElementByAttribute(this, "anonid", "mBrowser");
             </field>
 
-            <field name="onpageloaded">null</field>
-            <field name="webPage">null</field>
             <field name="requestCounter">0</field>
             <method name="resetBrowser">
                 <body>
-                    this.onpageloaded = null;
                     this.browser.stop();
                     this.browser.removeProgressListener(this.mProgressListener);
-                    this.webPage = null;
                     //this.browser.sessionHistory.PurgeHistory(1000);
                     this.browser.destroy();
                 </body>
@@ -49,27 +45,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                 <body><![CDATA[
                 var me = this;
                 var mm = this.browser.messageManager;
-
-                var pageLoaderListener = function(message){
-                    let channel = me.browser.docShell.currentDocumentChannel
-                    let success = "success";
-                    try {
-                        if (channel.URI.spec != 'about:blank') {
-                            channel = channel.QueryInterface(Components.interfaces.nsIHttpChannel);
-                            success = channel.requestSucceeded?"success":"fail:"+channel.responseStatus+" "+channel.responseStatusText;
-                        }
-                    }
-                    catch(e){
-                        //dump("pageloaded: NOT HTTP CHANNEL\n"+channel.URI.spec+"\n")
-                        success = 'fail';
-                    }
-
-                    if (me.webPage)
-                        me.webPage.loadFinished(success)
-
-                    if (me.onpageloaded)
-                        me.onpageloaded(success);
-                }
 
                 // listener for the first about:blank page load
                 var firstPageLoaderListener = function(message){
@@ -81,8 +56,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                     // initialize progress listeners and so one,
                     // and we can send the BrowserReady event.
                     mm.removeMessageListener("pageloaded", firstPageLoaderListener);
-                    me.initProgressListener();
-                    mm.addMessageListener("pageloaded", pageLoaderListener);
                     var evt = document.createEvent("Event");
                     evt.initEvent("BrowserReady", true, false);
                     me.dispatchEvent(evt);
@@ -90,142 +63,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
                 mm.addMessageListener("pageloaded", firstPageLoaderListener);
                 ]]></body>
-            </method>
-
-            <method name="initProgressListener">
-                <body>
-                <![CDATA[
-                    let ci = Components.interfaces;
-                    let WPL = ci.nsIWebProgressListener;
-                    let nav = this;
-                    this.mProgressListener = {
-                        _mainPageLoading : false,
-                        QueryInterface : function(aIID)
-                        {
-                          if (aIID.equals(WPL) ||
-                              aIID.equals(ci.nsIWebProgressListener2) ||
-                              aIID.equals(ci.nsISupportsWeakReference) ||
-                              aIID.equals(ci.nsISupports))
-                            return this;
-                          throw Components.results.NS_NOINTERFACE;
-                        },
-
-                        onLocationChange : function(aWebProgress, aRequest, aLocation, aFlags)
-                        {
-                            let failure = aFlags & WPL.LOCATION_CHANGE_ERROR_PAGE;
-                            if (failure) {
-                                if (nav.onpageloaded)
-                                    nav.onpageloaded("fail");
-                                return;
-                            }
-                            if (!nav.webPage)
-                                return;
-                            //let insidePage = aFlags & WPL.LOCATION_CHANGE_SAME_DOCUMENT;
-                            nav.webPage.urlChanged(aLocation.spec);
-                        },
-                        onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
-                        {
-                            let uri = ''
-                            if ((aRequest instanceof ci.nsIChannel || "URI" in aRequest)) {
-                                if (!nav.webPage)
-                                    return;
-                                uri = aRequest.URI.spec
-                            }
-                            else {
-                                /*dump("onStateChange no URI");
-                                if (aStateFlags & WPL.STATE_START)
-                                    dump( " START");
-                                if (aStateFlags & WPL.STATE_TRANSFERRING)
-                                    dump( " TRANS");
-                                if (aStateFlags & WPL.STATE_NEGOTIATING)
-                                    dump( " NEGO");
-                                if (aStateFlags & WPL.STATE_STOP)
-                                    dump( " STOP");
-                                if (aStateFlags & WPL.STATE_IS_REQUEST)
-                                    dump( " REQ");
-                                if (aStateFlags & WPL.STATE_IS_DOCUMENT)
-                                    dump( " DOC");
-                                if (aStateFlags & WPL.STATE_IS_NETWORK)
-                                    dump( " NET");
-                                if (aStateFlags & WPL.STATE_IS_WINDOW)
-                                    dump( " WIN");
-                                dump("\n")*/
-                                return;
-                            }
-
-                            // aStateFlags:
-                            // STATE_START, STATE_REDIRECTING, STATE_TRANSFERRING, STATE_NEGOTIATING, STATE_STOP
-                            // STATE_IS_REQUEST, STATE_IS_DOCUMENT, STATE_IS_NETWORK, STATE_IS_WINDOW
-
-                            /*dump("onStateChange URI:"+uri);
-                            if (aStateFlags & WPL.STATE_START)
-                                dump( " START");
-                            if (aStateFlags & WPL.STATE_TRANSFERRING)
-                                dump( " TRANS");
-                            if (aStateFlags & WPL.STATE_NEGOTIATING)
-                                dump( " NEGO");
-                            if (aStateFlags & WPL.STATE_STOP)
-                                dump( " STOP");
-                            if (aStateFlags & WPL.STATE_IS_REQUEST)
-                                dump( " REQ");
-                            if (aStateFlags & WPL.STATE_IS_DOCUMENT)
-                                dump( " DOC");
-                            if (aStateFlags & WPL.STATE_IS_NETWORK)
-                                dump( " NET");
-                            if (aStateFlags & WPL.STATE_IS_WINDOW)
-                                dump( " WIN");*/
-
-                            if (!this._mainPageLoading) {
-                                //dump("\n")
-                                if ( (aStateFlags & WPL.STATE_START) &&
-                                    (aStateFlags & WPL.STATE_IS_WINDOW)) {
-                                    this._mainPageLoading = uri;
-
-                                    nav.webPage.initialized();
-
-                                    nav.webPage.loadStarted();
-                                }
-                                return;
-                            }
-
-                            // ignore all request that are not the main request
-                            if (this._mainPageLoading != uri) {
-                                //dump(" IGNORED\n");
-                                return;
-                            }
-                            //dump("\n")
-
-                            // phantomjs call onInitialized twice.. don't know why.
-                            // let's imitate it
-                            if ( (aStateFlags & WPL.STATE_STOP) &&
-                                (aStateFlags & WPL.STATE_IS_REQUEST)) {
-                                nav.webPage.initialized();
-                            }
-                        },
-
-                        onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){},
-                        onSecurityChange : function(aWebProgress, aRequest, aState) { },
-                        onRefreshAttempted : function(aWebProgress, aURI, aDelay, aSameURI){},
-
-                        debug : function(aWebProgress, aRequest) {
-                            //aWebProgress -> browser
-                            //aWebProgress.DOMWindow
-                            //aWebProgress.isLoadingDocument
-                            //arequest  cancel(), resume(), suspend(), isPending()
-                        },
-                        onProgressChange : function (aWebProgress, aRequest,
-                                aCurSelfProgress, aMaxSelfProgress,
-                                aCurTotalProgress, aMaxTotalProgress)
-                        {},
-                        onProgressChange64 : function (aWebProgress, aRequest,
-                                aCurSelfProgress, aMaxSelfProgress,
-                                aCurTotalProgress, aMaxTotalProgress)
-                        {}
-
-                    }
-                    this.browser.addProgressListener(this.mProgressListener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
-                ]]>
-                </body>
             </method>
         </implementation>
         <handlers>
