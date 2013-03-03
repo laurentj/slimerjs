@@ -32,14 +32,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             </field>
 
             <field name="onpageloaded">null</field>
-            <field name="onloadstarted">null</field>
-            <field name="onloadfinished">null</field>
             <field name="webPage">null</field>
             <field name="requestCounter">0</field>
             <method name="resetBrowser">
                 <body>
                     this.onpageloaded = null;
-                    this.onloadstarted = null;
                     this.browser.stop();
                     this.browser.removeProgressListener(this.mProgressListener);
                     this.webPage = null;
@@ -67,12 +64,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                         success = 'fail';
                     }
 
-                    if (me.onloadfinished) {
-                        me.onloadfinished();
-                    }
-
-                    if (me.webPage && me.webPage.onLoadFinished)
-                        me.webPage.onLoadFinished(success)
+                    if (me.webPage)
+                        me.webPage.loadFinished(success)
 
                     if (me.onpageloaded)
                         me.onpageloaded(success);
@@ -128,8 +121,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                             if (!nav.webPage)
                                 return;
                             //let insidePage = aFlags & WPL.LOCATION_CHANGE_SAME_DOCUMENT;
-                            if (nav.webPage.onUrlChanged)
-                                nav.webPage.onUrlChanged(aLocation.spec);
+                            nav.webPage.urlChanged(aLocation.spec);
                         },
                         onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
                         {
@@ -185,19 +177,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
                             if (!this._mainPageLoading) {
                                 //dump("\n")
-                                if ( (aStateFlags & WPL.STATE_START) && (aStateFlags & WPL.STATE_IS_WINDOW)) {
+                                if ( (aStateFlags & WPL.STATE_START) &&
+                                    (aStateFlags & WPL.STATE_IS_WINDOW)) {
                                     this._mainPageLoading = uri;
 
-                                    // phantomjs call onInitialized twice.. don't know why.
-                                    // let's imitate it
-                                    if (nav.webPage.onInitialized)
-                                        nav.webPage.onInitialized();
+                                    nav.webPage.initialized();
 
-                                    if (nav.onloadstarted)
-                                        nav.onloadstarted();
-
-                                    if (nav.webPage.onLoadStarted)
-                                        nav.webPage.onLoadStarted();
+                                    nav.webPage.loadStarted();
                                 }
                                 return;
                             }
@@ -209,9 +195,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                             }
                             //dump("\n")
 
-                            if ( (aStateFlags & WPL.STATE_STOP) && (aStateFlags & WPL.STATE_IS_REQUEST)) {
-                                if (nav.webPage.onInitialized)
-                                    nav.webPage.onInitialized();
+                            // phantomjs call onInitialized twice.. don't know why.
+                            // let's imitate it
+                            if ( (aStateFlags & WPL.STATE_STOP) &&
+                                (aStateFlags & WPL.STATE_IS_REQUEST)) {
+                                nav.webPage.initialized();
                             }
                         },
 

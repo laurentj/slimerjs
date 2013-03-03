@@ -32,10 +32,10 @@ function create() {
     }
     var webPageSandbox = null;
 
-    // this listener is called each time a page is loaded in the
-    // browser. We then have the opportunity to do some cleanups
-    var loadListener = function() {
-        webPageSandbox = createSandBox();
+    function evalInSandbox (src) {
+        if (!webPageSandbox)
+            webPageSandbox = createSandBox();
+        return Cu.evalInSandbox(src, webPageSandbox);
     }
 
     /**
@@ -175,8 +175,6 @@ function create() {
 
             if (navigator) {
                 // don't recreate a browser if already opened.
-                navigator.onloadstarted = loadListener;
-                navigator.onloadfinished = loadListener;
                 navigator.onpageloaded = onPageLoaded;
                 navigator.browser.loadURI(url);
                 return;
@@ -185,8 +183,6 @@ function create() {
             var me = this;
             slLauncher.openBrowser(function(nav){
                 navigator = nav;
-                navigator.onloadstarted = loadListener;
-                navigator.onloadfinished = loadListener;
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
                 navigator.webPage = webpage;
                 navigator.onpageloaded = onPageLoaded;
@@ -334,11 +330,11 @@ function create() {
                 throw "WebPage not opened";
             let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
             func = '('+func.toSource()+').apply(this, ' + args + ');';
-            return Cu.evalInSandbox(func, webPageSandbox);
+            return evalInSandbox(func);
         },
 
         evaluateJavascript: function(src) {
-            Cu.evalInSandbox(src, webPageSandbox);
+            return evalInSandbox(src);
         },
 
         evaluateAsync: function(func) {
@@ -346,7 +342,7 @@ function create() {
                 throw "WebPage not opened";
             func = '('+func.toSource()+')();';
             navigator.browser.contentWindow.setTimeout(function() {
-                Cu.evalInSandbox(func, webPageSandbox)
+                evalInSandbox(func);
             }, 0)
         },
 
@@ -396,7 +392,7 @@ function create() {
             // filename resolved against the libraryPath property
             let f = getMozFile(filename, libPath);
             let source = readSyncStringFromFile(f);
-            Cu.evalInSandbox(source, webPageSandbox)
+            evalInSandbox(source);
         },
         get onError() {
             throw "Not Implemented"
@@ -700,23 +696,30 @@ function create() {
         },
 
         initialized: function() {
-            throw "Not Implemented"
+            webPageSandbox = null;
+            if (this.onInitialized)
+                this.onInitialized();
         },
 
         javaScriptAlertSent: function(message) {
             throw "Not Implemented"
         },
 
-        javaScriptConsoleMessageSent: function(message) {
-            throw "Not Implemented"
+        javaScriptConsoleMessageSent: function(message, lineNumber, fileName) {
+            if (this.onConsoleMessage)
+                onConsoleMessage(message, lineNumber, fileName);
         },
 
         loadFinished: function(status) {
-            throw "Not Implemented"
+            webPageSandbox = null;
+            if (this.onLoadFinished)
+                this.onLoadFinished(status);
         },
 
         loadStarted: function() {
-            throw "Not Implemented"
+            webPageSandbox = null;
+            if (this.onLoadStarted)
+                this.onLoadStarted();
         },
 
         navigationRequested: function(url, navigationType, navigationLocked, isMainFrame) {
@@ -738,7 +741,9 @@ function create() {
         },
 
         urlChanged: function(url) {
-            throw "Not Implemented"
+            webPageSandbox = null;
+            if (this.onUrlChanged)
+                this.onUrlChanged(url);
         }
     };
 

@@ -5,20 +5,35 @@ describe("webpage with listeners", function() {
     var webpage = require("webpage").create();
     var trace = '';
     var receivedRequest = [];
-    
+    var initializedCounter = 0;
+    webpage.onConsoleMessage= function(msg, lineNum, sourceId) {
+        console.log(msg);
+    }
+
     webpage.onLoadStarted = function() {
-        var currentUrl = webpage.evaluate(function() {
+        var currentUrl = webpage.evaluate(function(c) {
+            window.initializedCounter = c;
             return window.location.href;
-        });
+        }, initializedCounter);
         trace +="LOADSTARTED:"+currentUrl+"\n";
     };
 
     webpage.onUrlChanged = function(targetUrl) {
+        webpage.evaluate(function(c) {
+            window.initializedCounter = c;
+        }, initializedCounter);
         trace += "URLCHANGED:"+targetUrl+"\n";
     };
     
     webpage.onInitialized = function() {
-        trace +="INITIALIZED\n";
+        initializedCounter++;
+        var wi = webpage.evaluate(function(c) {
+            document.addEventListener('DOMContentLoaded', function() {
+                window.initializedCounter = c;
+            }, false);
+            return (window.initializedCounter === undefined?-1:window.initializedCounter);
+        }, initializedCounter);
+        trace +="INITIALIZED "+wi+"\n";
     };
 
     webpage.onResourceRequested = function(request) {
@@ -39,7 +54,7 @@ describe("webpage with listeners", function() {
     
     webpage.onLoadFinished = function(status) {
         var currentUrl = webpage.evaluate(function() {
-            return window.location.href;
+            return window.location.href + " - "+ window.initializedCounter;
         });
         trace += "LOADFINISHED:"+currentUrl+" "+status+"\n";
     };
@@ -57,18 +72,18 @@ describe("webpage with listeners", function() {
 
     async.it("should generate the expected trace", function(done){
         var expectedTrace = ""
-        expectedTrace += "INITIALIZED\n";
+        expectedTrace += "INITIALIZED -1\n";
         expectedTrace += "LOADSTARTED:about:blank\n";
         expectedTrace += "URLCHANGED:http://localhost:8083/hello.html\n";
-        expectedTrace += "INITIALIZED\n";
-        expectedTrace += "LOADFINISHED:http://localhost:8083/hello.html success\n";
+        expectedTrace += "INITIALIZED 1\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/hello.html - 2 success\n";
         expectedTrace += "CALLBACK:success\n";
         expect(trace).toEqual(expectedTrace);
         done();
     });
 
     async.it("should have received hello.html", function(done){
-        let r;
+        var r;
         r = receivedRequest.filter(function(result) {
             return result.req.url == (domain + 'hello.html');
         })[0];
@@ -89,7 +104,7 @@ describe("webpage with listeners", function() {
     });
 
     async.it("should have received slimerjs.png", function(done){
-        let r;
+        var r;
         r = receivedRequest.filter(function(result) {
             return result.req.url == (domain + 'slimerjs.png');
         })[0];
@@ -110,7 +125,7 @@ describe("webpage with listeners", function() {
     });
 
     async.it("should have received helloframe.html", function(done){
-        let r;
+        var r;
         r = receivedRequest.filter(function(result) {
             return result.req.url == (domain + 'helloframe.html');
         })[0];
@@ -131,7 +146,7 @@ describe("webpage with listeners", function() {
     });
 
     async.it("should have received hello.js", function(done){
-        let r;
+        var r;
         r = receivedRequest.filter(function(result) {
             return result.req.url == (domain + 'hello.js');
         })[0];
@@ -152,7 +167,7 @@ describe("webpage with listeners", function() {
     });
 
     async.it("should have received helloframe.css", function(done){
-        let r;
+        var r;
         r = receivedRequest.filter(function(result) {
             return result.req.url == (domain + 'helloframe.css');
         })[0];

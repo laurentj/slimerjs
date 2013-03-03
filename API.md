@@ -191,11 +191,11 @@ Methods that send signals:
 
 <table>
     <tr><td>closing(page)                       </td><td></td></tr>
-    <tr><td>initialized()                       </td><td></td></tr>
+    <tr><td>initialized()                       </td><td>Implemented</td></tr>
     <tr><td>javaScriptAlertSent(message)        </td><td></td></tr>
-    <tr><td>javaScriptConsoleMessageSent(message)</td><td></td></tr>
-    <tr><td>loadFinished(status)                </td><td></td></tr>
-    <tr><td>loadStarted()                       </td><td></td></tr>
+    <tr><td>javaScriptConsoleMessageSent(message)</td><td>Implemented</td></tr>
+    <tr><td>loadFinished(status)                </td><td>Implemented</td></tr>
+    <tr><td>loadStarted()                       </td><td>Implemented</td></tr>
     <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td></td></tr>
     <tr><td>rawPageCreated(page)                </td><td></td></tr>
     <tr><td>resourceReceived(request)           </td><td>Implemented</td></tr>
