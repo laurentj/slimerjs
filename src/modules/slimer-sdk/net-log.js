@@ -67,10 +67,11 @@ exports.registerBrowser = function(browser, options) {
     if (browserMap.has(browser)) {
         let {progressListener} = browserMap.get(browser);
         browser.removeProgressListener(progressListener);
+        progressListener.browser = null;
         browserMap.delete(browser);
     }
 
-    data.progressListener = new ProgressListener(data.options);
+    data.progressListener = new ProgressListener(browser, data.options);
     browser.addProgressListener(data.progressListener, Ci.nsIWebProgress.NOTIFY_ALL);
     browserMap.set(browser, data);
 };
@@ -79,6 +80,7 @@ exports.unregisterBrowser = function(browser) {
     try {
         if (browserMap.has(browser)) {
             let {progressListener} = browserMap.get(browser);
+            progressListener.browser = null;
             browser.removeProgressListener(progressListener);
             browserMap.delete(browser);
         }
@@ -439,7 +441,8 @@ const getBrowserForRequest = function(request) {
 exports.getBrowserForRequest = getBrowserForRequest;
 
 
-const ProgressListener = function(options) {
+const ProgressListener = function(browser, options) {
+    this.browser = browser;
     this.options = options;
     this.mainPageURI = '';
 };
@@ -451,6 +454,31 @@ ProgressListener.prototype = {
             return this;
        throw(Cr.NS_NOINTERFACE);
     },
+
+    isFromMainWindow : function (aChannel) {
+        let notificationCallbacks =
+                aChannel.notificationCallbacks ? aChannel.notificationCallbacks : aChannel.loadGroup.notificationCallbacks;
+
+        if (!notificationCallbacks) {
+            return false;
+        }
+        try {
+            if(notificationCallbacks.getInterface(Ci.nsIXMLHttpRequest)) {
+                // ignore requests from XMLHttpRequest
+                return false;
+            }
+        }
+        catch(e) { }
+        try {
+            let loadContext = notificationCallbacks.getInterface(Ci.nsILoadContext);
+            if (loadContext.isContent && this.browser.contentWindow == loadContext.associatedWindow) {
+                return true;
+            }
+        }
+        catch (e) {}
+        return false;
+    },
+
 
     isLoadRequested: function(flags) {
         return (
@@ -497,7 +525,7 @@ ProgressListener.prototype = {
             this.options.onURLChanged(location.spec);
         }
     },
-    
+
     onStateChange: function(progress, request, flags, status) {
 
         if (!(request instanceof Ci.nsIChannel || "URI" in request)) {
@@ -506,8 +534,10 @@ ProgressListener.prototype = {
         }
         let uri = request.URI.spec;
 
-        try {
+        if (!this.isFromMainWindow(request))
+            return;
 
+        try {
             if (this.mainPageURI == '') {
                 if (this.isLoadRequested(flags)) {
                     this.mainPageURI = uri;
@@ -520,7 +550,6 @@ ProgressListener.prototype = {
             // ignore all request that are not the main request
             if (this.mainPageURI != uri)
                 return;
-
 
             if (this.isStart(flags)) {
                 if (typeof(this.options.onTransferStarted) === "function") {
@@ -546,8 +575,7 @@ ProgressListener.prototype = {
                         }
                     }
                     catch(e){
-                        //dump("pageloaded: NOT HTTP CHANNEL\n"+channel.URI.spec+"\n")
-                        success = 'fail QI?'+e;
+                        success = 'fail';
                     }
                     this.options.onLoadFinished(success);
                 }
@@ -558,7 +586,6 @@ ProgressListener.prototype = {
             console.exception(e);
         }
     },
-
     onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){},
     onSecurityChange : function(aWebProgress, aRequest, aState) { },
     debug : function(aWebProgress, aRequest) {},

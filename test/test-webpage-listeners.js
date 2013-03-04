@@ -66,7 +66,10 @@ describe("webpage with listeners", function() {
         webpage.open(domain + 'hello.html', function(success){
             trace += "CALLBACK:"+success+"\n";
             expect(success).toEqual("success");
-            done();
+            setTimeout(function(){ // wait after the XHR
+                done();
+            }, 500)
+            //done();
         });
     });
 
