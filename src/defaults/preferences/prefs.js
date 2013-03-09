@@ -7,6 +7,8 @@ pref("app.update.enable", false);
 pref("extensions.update.enable", false);
 pref("dom.report_all_js_exceptions", true);
 
+pref("browser.fixup.alternate.enabled", false);
+
 // remove it for releases
 pref("nglayout.debug.disable_xul_cache", true);
 pref("nglayout.debug.disable_xul_fastload", true);

@@ -175,11 +175,31 @@ function create() {
                 onLoadStarted: function(){ me.loadStarted(); },
                 onURLChanged: function(url){ me.urlChanged(url);},
                 onTransferStarted :null,
-                onContentLoaded: function(){
+                onContentLoaded: function(success){
                     // phantomjs call onInitialized not only at the page creation
                     // but also after the content loading.. don't know why.
-                    // let's imitate it
-                    me.initialized();
+                    // let's imitate it. Only after a success
+                    if (success)
+                        me.initialized();
+                    else {
+                        // in case of a network fail, phantomjs send
+                        // a resourceReceived event.
+                        me.resourceReceived({
+                            id: 0,
+                            url: url,
+                            time: new Date(),
+                            headers: {},
+                            bodySize: 0,
+                            contentType: null,
+                            contentCharset: null,
+                            redirectURL: null,
+                            stage: "end",
+                            status: null,
+                            statusText: null,
+                            referrer: "",
+                            body: ""
+                        });
+                    }
                 },
                 onLoadFinished: function(success){
                     me.loadFinished(success);

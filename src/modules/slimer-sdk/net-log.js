@@ -514,10 +514,6 @@ ProgressListener.prototype = {
     onLocationChange : function(progress, request, location, flags) {
 
         if (flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_ERROR_PAGE) {
-            if (typeof(this.options.onLoadFinished) === "function") {
-                this.options.onLoadFinished("fail");
-            }
-            this.mainPageURI == ''
             return;
         }
 
@@ -560,7 +556,7 @@ ProgressListener.prototype = {
 
             if (this.isTransferDone(flags)) {
                 if (typeof(this.options.onContentLoaded) === "function") {
-                    this.options.onContentLoaded();
+                    this.options.onContentLoaded((request.status?false:true));
                 }
                 return;
             }
@@ -568,13 +564,7 @@ ProgressListener.prototype = {
                 this.mainPageURI = '';
                 if (typeof(this.options.onLoadFinished) === "function") {
                     let success = "success";
-                    try {
-                        if (uri != 'about:blank') {
-                            request = request.QueryInterface(Ci.nsIHttpChannel);
-                            success = (request.requestSucceeded?"success":"fail");
-                        }
-                    }
-                    catch(e){
+                    if (uri != 'about:blank' && request.status) {
                         success = 'fail';
                     }
                     this.options.onLoadFinished(success);
