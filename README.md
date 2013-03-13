@@ -1,7 +1,8 @@
 # SlimerJS
 
 SlimerJS is a scriptable browser. It means that you can manipulate a web page
-with a Javascript script.
+with a Javascript script. It is useful to do functional tests, page automaton,
+network monitoring, screen capture etc.
 
 It is in fact a tool like [PhantomJs](http://phantomjs.org/), except that
 it runs Gecko instead of Webkit, and it is not (yet) headless
@@ -13,9 +14,6 @@ other tools like [CasperJS](http://casperjs.org)...
 Technically, SlimerJS is a XUL/JS application that can be launched with
 XULRunner or Firefox (without its interface).
 
-For the moment, you can only run simple scripts that can use few functions from
-the **system** module, the **fs** module, the **webpage** module and the **webserver** module.
-
 # Community
 
 Follow us on twitter: [@slimerjs](https://twitter.com/slimerjs)
@@ -26,8 +24,8 @@ Or discuss with us on IRC: channel #slimerjs on irc.mozilla.org.
 
 # Install
 
-- Install [Firefox 18](http://getfirefox.com) or higher,
-  or [XulRunner 18](http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/18.0.2/runtimes/) or higher
+- Install [Firefox](http://getfirefox.com),
+  or [XulRunner](http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0.2/runtimes/) (both version 18 or more)
 - [download the source code of SlimerJS](https://github.com/laurentj/slimerjs/archive/master.zip) if you didn't it yet
 - On windows, a .bat is provided, but you can also launch slimer from a "true" console. In this case, you should install
   [Cygwin](http://www.cygwin.com/) or any other unix environment to launch slimerjs. Note
@@ -78,7 +76,7 @@ blank page. Here are objects you can play with:
 - the [document object](https://developer.mozilla.org/en-US/docs/DOM/document) of the blank page
 - a **console** object, similar with the [DOM Console object](https://developer.mozilla.org/en-US/docs/DOM/console),
   providing these methods: debug, log, info, warn, error
-- a **phantom** object that will provide the [API of PhantomJS 1.7](https://github.com/ariya/phantomjs/wiki/API-Reference),
+- a **phantom** object that will provide the [API of PhantomJS 1.8](https://github.com/ariya/phantomjs/wiki/API-Reference),
   but all of its properties and methods are not implemented yet
 - a **slimer** object that will contain additionnal API
 - a **require** function to load CommonJS modules
@@ -96,7 +94,7 @@ the window of SlimerJS won't be closed.
 
 # Roadmap
 
-The goal for a first stable release is to have a full implementation of the API of PhantomJS 1.7 (or 1.8?).
+The goal for a first stable release is to have a full implementation of the API of PhantomJS 1.8.
 
 After this release, I'll try to hack XulRunner to run headless windows (very difficult I guess :-) )
 
