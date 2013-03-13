@@ -1,20 +1,28 @@
 # SlimerJS
 
-SlimerJS is a XulRunner application that can be launched with Firefox, allowing
-to execute an external javascript script which can manipulate web content.
+SlimerJS is a scriptable browser. It means that you can manipulate a web page
+with a Javascript script.
 
-Its goal is to provide a tool like [PhantomJs](http://phantomjs.org/), with the
-same API, except that it runs Gecko instead of Webkit, and it is not headless
+It is in fact a tool like [PhantomJs](http://phantomjs.org/), except that
+it runs Gecko instead of Webkit, and it is not (yet) headless
 (but you can still use xvfb to have a headless SlimerJS).
 
-You could then use other tools like [CasperJS](http://casperjs.org)...
+Because SlimerJS will provide the same API of PhantomJS, you could then use
+other tools like [CasperJS](http://casperjs.org)...
+
+Technically, SlimerJS is a XUL/JS application that can be launched with
+XULRunner or Firefox (without its interface).
 
 For the moment, you can only run simple scripts that can use few functions from
 the **system** module, the **fs** module, the **webpage** module and the **webserver** module.
 
+# Community
+
 Follow us on twitter: [@slimerjs](https://twitter.com/slimerjs)
 
-Ask your questions on the dedicated [mailing list](https://groups.google.com/forum/#!forum/slimerjs). 
+Ask your questions on the dedicated [mailing list](https://groups.google.com/forum/#!forum/slimerjs).
+
+Or discuss with us on IRC: channel #slimerjs on irc.mozilla.org.
 
 # Install
 
