@@ -16,6 +16,11 @@ var slConfiguration = {
      */
     scriptFile: null,
 
+    /**
+     * @var nsIFile
+     */
+    workingDirectory: null,
+
     setEnvNames : function(envvars) {
         this.envs = envvars.filter(function(element, index, array) {
             return /^[a-z0-9_]+$/i.test(element);

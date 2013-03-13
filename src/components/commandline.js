@@ -133,6 +133,7 @@ slCommandLine.prototype = {
             return;
         }
 
+        slConfiguration.workingDirectory = cmdLine.workingDirectory;
         try {
             slConfiguration.scriptFile = cmdLine.resolveFile(slConfiguration.args[0]);
         }
