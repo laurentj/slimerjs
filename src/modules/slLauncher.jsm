@@ -11,6 +11,8 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/addon-sdk/toolkit/loader.js'); //Sandbox, Require, main, Module, Loader
 Cu.import('resource://slimerjs/slConsole.jsm');
 
+var windowMediator = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                     .getService(Components.interfaces.nsIWindowMediator);
 var sandbox = null;
 var mainLoader = null;
 
@@ -56,33 +58,19 @@ var slLauncher = {
         }
         Loader.evaluate(sandbox, uri, evalOptions);
     },
-    /**
-     * the XUL elements containing all opened browsers
-     * @var DOMElement
-     */
-    browserElements : null,
 
     /**
      * create a new browser element. call the given callback when it is ready,
      * with the browser element as parameter.
      */
     openBrowser : function(callback) {
-        let webpage = this.browserElements.ownerDocument.createElement("webpage");
-    
-        function onReady(event) {
-            webpage.removeEventListener("BrowserReady", onReady, false);
-            callback(webpage.browser);
-        }
-        webpage.addEventListener("BrowserReady", onReady, false);
-        this.browserElements.appendChild(webpage);
-        this.browserElements.selectedPanel = webpage;
+        windowMediator.getMostRecentWindow("slimerjs")
+                      .openDialog("webpage.xul", "_blank", "width=600,height=400,chrome,resizable", { callback:callback});
     },
 
     closeBrowser: function (browser) {
-        //navigator.resetBrowser();
-        let navigator = browser.parentNode;
-        navigator.parentNode.removeChild(navigator);
-        this.browserElements.selectedPanel = this.browserElements.lastChild;
+        let win = browser.parentNode.ownerDocument.defaultView.top;
+        win.close();
     }
 }
 

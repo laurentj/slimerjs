@@ -1,8 +1,6 @@
 #hauntedwall {
     text-align:center;
-    
 }
-
 
 #hauntedwall image {
     transition-property: width, height, opacity;
@@ -10,31 +8,10 @@
     opacity:0;
     width:10px;
     height:10px;
-    
 }
 
 #hauntedwall:hover image {
-    opacity:0.3;
-    width:320px;
-    height:320px;
-}
-/*
-@keyframes slidein {
-  from {
-    opacity: 0;
-    width: 20px;
-    height: 20px;
-  }
- 
-  to {
-    opacity: 0.7;
-    width: 100px;
-    height: 100px;
-  }
-}*/
-
-
-webpage {
-    -moz-binding: url("navigator.xml#slimer_navigator");
-    -moz-box-flex: 1;
+    opacity:0.5;
+    width:100px;
+    height:100px;
 }

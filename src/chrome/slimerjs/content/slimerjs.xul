@@ -13,21 +13,20 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     id="slimerjswin" hidechrome="false" title="SlimerJS"
     windowtype="slimerjs"
-    width="600" height="400"
+    width="150" height="100"
     onload="startup()"
+    orient="vertical"
     >
     <script type="application/javascript" src="slimerjs.js" />
 
-    <deck id="browsers" flex="1">
-        <box flex="1" align="center" pack="center">
-            <stack id="hauntedwall" width="320" height="320">
-                <html:div>
-                    <html:h1>&slimerjs.title;</html:h1>
-                    <html:h2>&slimerjs.slogan;</html:h2>
-                </html:div>
-                <image src="slimerjs.png" width="50" height="50" />
-                <iframe id="runtime" src="about:blank" type="content" collapsed="true"/>
-            </stack>
-        </box>
-    </deck>
+    <stack id="hauntedwall" flex="1">
+        <html:div>
+            <!--<html:h1>&slimerjs.title;</html:h1>-->
+            <html:h2>&slimerjs.slogan;</html:h2>
+        </html:div>
+        <hbox flex="1" pack="center" align="center">
+            <image src="slimerjs.png" />
+        </hbox>
+        <iframe id="runtime" src="about:blank" type="content" collapsed="true"/>
+    </stack>
 </window>
