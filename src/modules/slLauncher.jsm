@@ -66,23 +66,21 @@ var slLauncher = {
      * create a new browser element. call the given callback when it is ready,
      * with the browser element as parameter.
      */
-    openBrowser : function(callback, currentNavigator) {
-        let browser = currentNavigator;
-        if (!currentNavigator) {
-            browser = this.browserElements.ownerDocument.createElement("webpage");
-        }
+    openBrowser : function(callback) {
+        let webpage = this.browserElements.ownerDocument.createElement("webpage");
+    
         function onReady(event) {
-            browser.removeEventListener("BrowserReady", onReady, false);
-            callback(browser);
+            webpage.removeEventListener("BrowserReady", onReady, false);
+            callback(webpage.browser);
         }
-        browser.addEventListener("BrowserReady", onReady, false);
-        if (!currentNavigator)
-            this.browserElements.appendChild(browser);
-        this.browserElements.selectedPanel = browser;
+        webpage.addEventListener("BrowserReady", onReady, false);
+        this.browserElements.appendChild(webpage);
+        this.browserElements.selectedPanel = webpage;
     },
 
-    closeBrowser: function (navigator) {
+    closeBrowser: function (browser) {
         //navigator.resetBrowser();
+        let navigator = browser.parentNode;
         navigator.parentNode.removeChild(navigator);
         this.browserElements.selectedPanel = this.browserElements.lastChild;
     }

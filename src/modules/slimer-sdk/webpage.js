@@ -26,14 +26,14 @@ netLog.startTracer();
 
 function create() {
     // private properties for the webpage object
-    var navigator = null;
+    var browser = null;
     var libPath = slConfiguration.scriptFile.parent.clone();
 
     function createSandBox() {
-        let win = navigator.browser.contentWindow;
+        let win = browser.contentWindow;
         let sandbox = Cu.Sandbox(win,
             {
-                'sandboxName': navigator.browser.currentURI.spec,
+                'sandboxName': browser.currentURI.spec,
                 'sandboxPrototype': win,
                 'wantXrays': false
             });
@@ -59,7 +59,7 @@ function create() {
                     return;
                 // aData == outer window id
                 // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js#254
-                let domWindowUtils = navigator.browser.contentWindow
+                let domWindowUtils = browser.contentWindow
                             .QueryInterface(Ci.nsIInterfaceRequestor)
                             .getInterface(Ci.nsIDOMWindowUtils);
                 var consoleEvent = aSubject.wrappedJSObject;
@@ -131,27 +131,27 @@ function create() {
         // -------------------------------- History
 
         get canGoBack () {
-            return navigator.browser.canGoBack;
+            return browser.canGoBack;
         },
 
         get canGoForward () {
-            return navigator.browser.canGoForward;
+            return browser.canGoForward;
         },
 
         go : function(indexIncrement) {
-            let h = navigator.browser.sessionHistory;
+            let h = browser.sessionHistory;
             let index = h.index + indexIncrement;
             if (index >= h.count || index < 0)
                 return;
-            navigator.browser.gotoIndex(index);
+            browser.gotoIndex(index);
         },
 
         goBack : function() {
-            navigator.browser.goBack();
+            browser.goBack();
         },
 
         goForward : function() {
-            navigator.browser.goForward();
+            browser.goForward();
         },
 
         get navigationLocked() {
@@ -163,11 +163,11 @@ function create() {
         },
 
         reload : function() {
-            navigator.browser.reload();
+            browser.reload();
         },
 
         stop : function() {
-            navigator.browser.stop();
+            browser.stop();
         },
 
         // -------------------------------- Window manipulation
@@ -223,20 +223,20 @@ function create() {
                 },
             }
 
-            if (navigator) {
+            if (browser) {
                 // don't recreate a browser if already opened.
-                netLog.registerBrowser(navigator.browser, options);
-                navigator.browser.loadURI(url);
+                netLog.registerBrowser(browser, options);
+                browser.loadURI(url);
                 return;
             }
 
             slLauncher.openBrowser(function(nav){
-                navigator = nav;
+                browser = nav;
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
-                netLog.registerBrowser(navigator.browser, options);
+                netLog.registerBrowser(browser, options);
                 me.initialized();
-                navigator.browser.loadURI(url);
-            }, navigator);
+                browser.loadURI(url);
+            });
         },
 
         openUrl: function(url, httpConf, settings) {
@@ -247,15 +247,15 @@ function create() {
          * close the browser
          */
         close: function() {
-            if (navigator) {
+            if (browser) {
                 Services.obs.removeObserver(webpageObserver, "console-api-log-event");
-                netLog.unregisterBrowser(navigator.browser);
+                netLog.unregisterBrowser(browser);
                 if (this.onClosing)
                     this.onClosing(this);
-                slLauncher.closeBrowser(navigator);
+                slLauncher.closeBrowser(browser);
             }
             webPageSandbox = null;
-            navigator=null;
+            browsers=null;
         },
 
         /**
@@ -341,8 +341,8 @@ function create() {
         },
 
         get url() {
-            if (navigator)
-                return navigator.browser.currentURI.spec;
+            if (browser)
+                return browser.currentURI.spec;
             return "";
         },
 
@@ -371,7 +371,7 @@ function create() {
          * given function, instead of myvariable = something 
          */
         evaluate: function(func) {
-            if (!navigator)
+            if (!browser)
                 throw "WebPage not opened";
             let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
             func = '('+func.toSource()+').apply(this, ' + args + ');';
@@ -383,22 +383,22 @@ function create() {
         },
 
         evaluateAsync: function(func) {
-            if (!navigator)
+            if (!browser)
                 throw "WebPage not opened";
             func = '('+func.toSource()+')();';
-            navigator.browser.contentWindow.setTimeout(function() {
+            browser.contentWindow.setTimeout(function() {
                 evalInSandbox(func);
             }, 0)
         },
 
         includeJs: function(url, callback) {
-            if (!navigator)
+            if (!browser)
                 throw "WebPage not opened";
             // we don't use the sandbox, because with it, scripts
             // of the loaded page cannot access to variables/functions
             // created by the injected script. And this behavior
             // is necessary to be compatible with phantomjs.
-            let doc = navigator.browser.contentWindow.document;
+            let doc = browser.contentWindow.document;
             let body = doc.documentElement.getElementsByTagName("body")[0];
             let script = doc.createElement('script');
             script.setAttribute('type', 'text/javascript');
@@ -431,7 +431,7 @@ function create() {
          * given function, instead of myvariable = something 
          */
         injectJs: function(filename) {
-            if (!navigator) {
+            if (!browser) {
                 throw "WebPage not opened";
             }
             // filename resolved against the libraryPath property
@@ -449,13 +449,13 @@ function create() {
         // --------------------------------- content manipulation
 
         get content () {
-            if (!navigator)
+            if (!browser)
                 throw "WebPage not opened";
 
             const de = Ci.nsIDocumentEncoder
             let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
                             .createInstance(Ci.nsIDocumentEncoder);
-            let doc = navigator.browser.contentDocument;
+            let doc = browser.contentDocument;
             encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
             encoder.setNode(doc);
             return encoder.encodeToString();
@@ -499,25 +499,25 @@ function create() {
 
 
         get plainText() {
-            if (!navigator)
+            if (!browser)
                 throw "WebPage not opened";
 
             const de = Ci.nsIDocumentEncoder
             let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
                             .createInstance(Ci.nsIDocumentEncoder);
-            let doc = navigator.browser.contentDocument;
+            let doc = browser.contentDocument;
             encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly);
             encoder.setNode(doc);
             return encoder.encodeToString();
         },
 
         sendEvent: function(eventType, arg1, arg2, button, modifier) {
-            if (!navigator)
+            if (!browser)
                 throw new Error("WebPage not opened");
 
             eventType = eventType.toLowerCase();
-            navigator.browser.contentWindow.focus();
-            let domWindowUtils = navigator.browser.contentWindow
+            browser.contentWindow.focus();
+            let domWindowUtils = browser.contentWindow
                                         .QueryInterface(Ci.nsIInterfaceRequestor)
                                         .getInterface(Ci.nsIDOMWindowUtils);
             if (modifier) {
@@ -551,9 +551,7 @@ function create() {
                 let key = arg1;
                 if (typeof key == "number") {
                     let DOMKeyCode = convertQTKeyCode(key);
-                    //navigator.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                     domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
-                    //navigator.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 }
                 else if (key.length == 1) {
                     let charCode = key.charCodeAt(0);
@@ -685,7 +683,7 @@ function create() {
         zoomFactor : null,
 
         render: function(filename, ratio) {
-            if (!navigator)
+            if (!browser)
                 throw "WebPage not opened";
             let format = fs.extension(filename).toLowerCase() || 'png';
             let content = this.renderBytes(format, ratio);
@@ -697,7 +695,7 @@ function create() {
         },
 
         renderBase64: function(format, ratio) {
-            if (!navigator)
+            if (!browser)
                 throw "WebPage not opened";
 
             format = (format || "png").toString().toLowerCase();
@@ -711,7 +709,7 @@ function create() {
                 throw new Error("Render format \"" + format + "\" is not supported");
             }
 
-            let canvas = getScreenshotCanvas(navigator.browser.contentWindow,
+            let canvas = getScreenshotCanvas(browser.contentWindow,
                                              privateParameters.clipRect, ratio);
 
             return canvas.toDataURL(format, qual).split(",", 2)[1];
