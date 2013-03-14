@@ -104,8 +104,7 @@ function prepareLoader(fileURI, dirURI) {
           'main': fileURI,
           '': dirURI,
           'sdk/': 'resource://slimerjs/addon-sdk/sdk/',
-          'webpage' : 'resource://slimerjs/slimer-sdk/webpage',
-          'net-log' : 'resource://slimerjs/slimer-sdk/net-log'
+          'slimer-sdk/': 'resource://slimerjs/slimer-sdk/',
         },
         globals: {
             console: new slConsole()
@@ -115,14 +114,13 @@ function prepareLoader(fileURI, dirURI) {
           "system": Cu.import("resource://slimerjs/system.jsm", {}),
         },
         resolve: function(id, requirer) {
-            // we have some aliases, let's resolve them
+
             if (id == 'fs') {
                 return 'sdk/io/file';
             }
             if (id == 'chrome' || id.indexOf('@loader/') === 0) {
                 if (requirer.indexOf('sdk/') === 0
-                    || requirer == "webpage"
-                    || requirer == "net-log") {
+                    || requirer.indexOf('slimer-sdk/') === 0) {
                     return id;
                 }
                 // the chrome module is only allowed in embedded modules
@@ -132,6 +130,20 @@ function prepareLoader(fileURI, dirURI) {
                 else if (id.indexOf('@loader/') === 0)
                     throw Error("Unknown "+ id +" module");
             }
+
+            if (id == 'webpage') {
+                return 'slimer-sdk/webpage';
+            }
+
+            if (id == 'net-log') {
+                return 'slimer-sdk/net-log';
+            }
+
+            if (id.indexOf('sdk/') === 0
+                && requirer.indexOf('slimer-sdk/') === 0) {
+                return id;
+            }
+
             // let's resolve other id module as usual
             let paths = id.split('/');
             let result = requirer.split('/');
