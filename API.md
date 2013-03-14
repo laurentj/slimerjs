@@ -120,7 +120,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>plainText                           </td><td>Implemented</td></tr>
     <tr><td>scrollPosition                      </td><td></td></tr>
     <tr><td>settings                            </td><td></td></tr>
-    <tr><td>title                               </td><td></td></tr>
+    <tr><td>title                               </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>viewportSize                        </td><td>Implemented</td></tr>
     <tr><td>windowName                          </td><td></td></tr>

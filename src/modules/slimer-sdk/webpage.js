@@ -651,7 +651,10 @@ function create() {
         },
 
         get title() {
-            throw "Not Implemented"
+            if (!browser) {
+                return '';
+            }
+            return browser.contentDocument.title;
         },
 
         setContent: function(content, url) {
