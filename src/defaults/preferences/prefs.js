@@ -12,3 +12,7 @@ pref("browser.fixup.alternate.enabled", false);
 // remove it for releases
 pref("nglayout.debug.disable_xul_cache", true);
 pref("nglayout.debug.disable_xul_fastload", true);
+
+
+// for xulrunner, to display error pages instead of alert box
+pref("browser.xul.error_pages.enabled", true);
