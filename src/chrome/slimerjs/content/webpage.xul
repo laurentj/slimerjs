@@ -11,7 +11,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     id="slimerjswin" hidechrome="false" title="webpage"
     windowtype="slimerpage"
-    width="600" height="400"
+    width="400" height="300"
     >
     <script type="application/javascript" src="webpage.js" />
 </window>

@@ -347,11 +347,32 @@ function create() {
         },
 
         get viewportSize() {
-            throw "Not Implemented"
+            if (!browser)
+                return {width:0, height:0};
+            let win = browser.parentNode.ownerDocument.defaultView.top;
+            return {
+                width: win.innerWidth,
+                height: win.innerHeight
+            }
         },
 
         set viewportSize(val) {
-            throw "Not Implemented"
+            if (!browser)
+                return;
+            let win = browser.parentNode.ownerDocument.defaultView.top;
+
+            if (typeof val != "object")
+                throw new Error("Bad argument type");
+
+            let w = val.width || 0;
+            let h = val.height || 0;
+
+            if (w <= 0 || h <= 0)
+                return;
+
+            let domWindowUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
+                                    .getInterface(Ci.nsIDOMWindowUtils);
+            domWindowUtils. setCSSViewport(w,h);
         },
 
 

@@ -122,7 +122,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>settings                            </td><td></td></tr>
     <tr><td>title                               </td><td></td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
-    <tr><td>viewportSize                        </td><td></td></tr>
+    <tr><td>viewportSize                        </td><td>Implemented</td></tr>
     <tr><td>windowName                          </td><td></td></tr>
     <tr><td>zoomFactor                          </td><td></td></tr>
 </table>
@@ -150,9 +150,9 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>openUrl(url, httpConf, settings)    </td><td></td></tr>
     <tr><td>release()                           </td><td></td></tr>
     <tr><td>reload()                            </td><td>Implemented</td></tr>
-    <tr><td>render(filename, ratio)             </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter</td></tr>
+    <tr><td>render(filename, ratio)             </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter (value between 0 and 1)</td></tr>
     <tr><td>renderBytes(format, ratio)          </td><td>Implemented. SlimerJS only. Only PNG et JPG supported.</td></tr>
-    <tr><td>renderBase64(format, ratio)         </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter</td></tr>
+    <tr><td>renderBase64(format, ratio)         </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter (value between 0 and 1)</td></tr>
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td>Implemented</td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
     <tr><td>setContent(content, url)            </td><td></td></tr>

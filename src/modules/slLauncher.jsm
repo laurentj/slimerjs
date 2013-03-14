@@ -65,7 +65,7 @@ var slLauncher = {
      */
     openBrowser : function(callback) {
         windowMediator.getMostRecentWindow("slimerjs")
-                      .openDialog("webpage.xul", "_blank", "width=600,height=400,chrome,resizable", { callback:callback});
+                      .openDialog("webpage.xul", "_blank", "width=400,height=300,chrome,resizable", { callback:callback});
     },
 
     closeBrowser: function (browser) {
