@@ -47,6 +47,8 @@ describe("WebPage.render()", function(){
                 fs.remove('slimerjs_capture.png');
             webpage.render('slimerjs_capture.png');
             expect(fs.exists('slimerjs_capture.png')).toBeTruthy();
+            if (fs.exists('slimerjs_capture.png'))
+                fs.remove('slimerjs_capture.png');
         });
     });
 });
