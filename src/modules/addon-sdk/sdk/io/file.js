@@ -142,7 +142,7 @@ exports.write = function write(filename, content, mode) {
   var stream = exports.open(filename, mode);
   try {
     stream.write(content);
-    stream.flush();
+    //stream.flush();
   }
   finally {
     stream.close();

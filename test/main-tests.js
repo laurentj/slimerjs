@@ -41,6 +41,7 @@ phantom.injectJs("./test-webpage-keyevent.js");
 phantom.injectJs("./test-webpage-keyevent2.js");
 phantom.injectJs("./test-webpage-mouseevent.js");
 phantom.injectJs("./test-webpage-callbacks.js");
+phantom.injectJs("./test-webpage-render.js");
 
 
 
@@ -84,6 +85,14 @@ webserverTest.listen(8083, function(request, response) {
         response.close();
     }
 });
+
+var webserverTestWebPage = webServerFactory.create();
+webserverTestWebPage.listen(8082, function(request, response) {
+    response.statusCode = 200;
+    response.write('<html><head><title>hello world</title></head><body>Hello!</body></html>');
+    response.close();
+});
+
 
 
 // Launch tests

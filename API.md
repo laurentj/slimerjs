@@ -91,7 +91,7 @@ It will contain API that does not exists in PhantomJS.
 <table>
     <tr><td>canGoBack                           </td><td>Implemented</td></tr>
     <tr><td>canGoForward                        </td><td>Implemented</td></tr>
-    <tr><td>clipRect                            </td><td></td></tr>
+    <tr><td>clipRect                            </td><td>Implemented</td></tr>
     <tr><td>content                             </td><td>Implemented. Setter not implemented yet</td></tr>
     <tr><td>captureContent                      </td><td>Implemented. list of regexp matching content <br>
                                                         types of resources for which you want to retrieve <br>
@@ -150,8 +150,9 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>openUrl(url, httpConf, settings)    </td><td></td></tr>
     <tr><td>release()                           </td><td></td></tr>
     <tr><td>reload()                            </td><td>Implemented</td></tr>
-    <tr><td>render(filename)                    </td><td></td></tr>
-    <tr><td>renderBase64(format)                </td><td></td></tr>
+    <tr><td>render(filename, ratio)             </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter</td></tr>
+    <tr><td>renderBytes(format, ratio)          </td><td>Implemented. SlimerJS only. Only PNG et JPG supported.</td></tr>
+    <tr><td>renderBase64(format, ratio)         </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter</td></tr>
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td>Implemented</td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
     <tr><td>setContent(content, url)            </td><td></td></tr>

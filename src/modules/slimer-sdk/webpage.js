@@ -12,6 +12,15 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 
+const {validateOptions} = require("sdk/deprecated/api-utils");
+const {
+    getScreenshotCanvas, setAuthHeaders, removeAuthPrompt,
+    getCookies, setCookies, Cookie
+} = require("./utils");
+
+const fs = require("sdk/io/file");
+const base64 = require("sdk/base64");
+
 const netLog = require('net-log');
 netLog.startTracer();
 
@@ -72,6 +81,10 @@ function create() {
                 return;
             }
         }
+    }
+
+    var privateParameters = {
+        clipRect : null
     }
 
     var webpage = {
@@ -632,15 +645,76 @@ function create() {
 
         // ------------------------------- Screenshot and pdf export
 
-        clipRect :null,
+        /**
+         * clipRect defines the rectangle to render from the webpage
+         * when calling render*() methods
+         */
+        get clipRect () {
+            return privateParameters.clipRect;
+        },
+        set clipRect (value) {
+            let requirements = {
+                top: {
+                    is: ["number"],
+                    ok: function(val) val >= 0,
+                    msg: "top should be a positive integer"
+                },
+                left: {
+                    is: ["number"],
+                    ok: function(val) val >= 0,
+                    msg: "left should be a positive integer"
+                },
+                width: {
+                    is: ["number"],
+                    ok: function(val) val > 0,
+                    msg: "width should be a positive integer"
+                },
+                height: {
+                    is: ["number"],
+                    ok: function(val) val > 0,
+                    msg: "height should be a positive integer"
+                },
+            }
+            if (typeof(value) === "object") {
+                privateParameters.clipRect = validateOptions(value, requirements);
+            } else {
+                privateParameters.clipRect = null;
+            }
+        },
         paperSize : null,
         zoomFactor : null,
 
-        render: function(filename) {
-            throw "Not Implemented"
+        render: function(filename, ratio) {
+            if (!navigator)
+                throw "WebPage not opened";
+            let format = fs.extension(filename).toLowerCase() || 'png';
+            let content = this.renderBytes(format, ratio);
+            fs.write(filename, content, "wb");
         },
-        renderBase64: function(format) {
-            throw "Not Implemented"
+
+        renderBytes: function(format, ratio) {
+            return base64.decode(this.renderBase64(format, ratio));
+        },
+
+        renderBase64: function(format, ratio) {
+            if (!navigator)
+                throw "WebPage not opened";
+
+            format = (format || "png").toString().toLowerCase();
+            let qual = undefined;
+            if (format == "png") {
+                format = "image/png";
+            } else if (format == "jpeg") {
+                format = "image/jpeg";
+                qual = 0.8;
+            } else {
+                throw new Error("Render format \"" + format + "\" is not supported");
+            }
+
+            let canvas = getScreenshotCanvas(navigator.browser.contentWindow,
+                                             privateParameters.clipRect, ratio);
+
+            return canvas.toDataURL(format, qual).split(",", 2)[1];
         },
 
         //--------------------------------------------------- window popup callback

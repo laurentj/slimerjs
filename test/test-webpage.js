@@ -1,11 +1,4 @@
 
-var webserverTestWebPage = webServerFactory.create();
-webserverTestWebPage.listen(8082, function(request, response) {
-    response.statusCode = 200;
-    response.write('<html><head><title>hello world</title></head><body>Hello!</body></html>');
-    response.close();
-});
-
 describe("WebPage object on hello world", function(){
     var webpage = require("webpage").create();
     var url = "http://127.0.0.1:8082/";
@@ -191,3 +184,4 @@ describe("WebPage.injectJs()", function(){
         webpage.close();
     });
 });
+

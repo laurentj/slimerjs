@@ -25,8 +25,21 @@ their authors under the licenses listed alongside.
 * src/modules/slimer-sdk/net-log.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
+    The author is Olivier Meunier and Laurent Jouanneau
+    and this file comes from https://github.com/olivier-m/jetpack-net-log/
+
+* src/modules/slimer-sdk/utils.js
+    is released under the Mozilla Public License, v. 2.0
+    see http://mozilla.org/MPL/2.0/
     The author is Olivier Meunier and this file comes from
-    https://github.com/olivier-m/jetpack-net-log/
+    https://github.com/olivier-m/jetpack-webpage/
+
+* src/modules/slimer-sdk/webpage.js
+    is released under the Mozilla Public License, v. 2.0
+    see http://mozilla.org/MPL/2.0/
+    Some pieces of code come from webpage.js of the
+    project https://github.com/olivier-m/jetpack-webpage/
+    The author of these pieces of code is Olivier Meunier
 
 * src/modules/slPhantomJSKeyCode.jsm
 
