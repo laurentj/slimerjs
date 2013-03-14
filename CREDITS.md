@@ -1,7 +1,12 @@
 
+The original author of files of this project, except files provided
+by others project or contributors, is Laurent Jouanneau.
 
-- Mozilla contributors for files
-    src/modules/addon-sdk/*
-    components/httpd.js
+## Contributors
 
-- Laurent Jouanneau for all other files
+* Matthew Kastor
+    - bin/slimerjs.bat
+
+## Other authors
+
+See LICENCE file
