@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>hello world</title>
+    </head>
+    <body>Hello!
+
+    <script type="text/javascript">
+        var foo = ""
+        function doAlert() {
+            foo = "before"
+            window.alert("alert message");
+            foo ="alert done";
+        }
+
+        function doConfirm(msg) {
+            if (!msg)
+                msg = "do you confirm?";
+            if (window.confirm(msg)) {
+                return "ok";
+            }
+            return "cancel";
+        }
+
+        function doPrompt(msg, defaultValue) {
+            if (!msg)
+                msg = "what is your name?";
+
+            var response;
+            if (defaultValue)
+                response =  window.prompt(msg, defaultValue);
+            else
+                response =  window.prompt(msg);
+
+            if (response === null) {
+                return "--cancel--";
+            }
+            return response;
+        }
+    </script>
+    
+    </body>
+</html>
