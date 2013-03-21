@@ -232,6 +232,7 @@ function create() {
 
             slLauncher.openBrowser(function(nav){
                 browser = nav;
+                browser.parentNode.webpage = me;
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
                 netLog.registerBrowser(browser, options);
                 me.initialized();
@@ -252,6 +253,7 @@ function create() {
                 netLog.unregisterBrowser(browser);
                 if (this.onClosing)
                     this.onClosing(this);
+                browser.webpage = null;
                 slLauncher.closeBrowser(browser);
             }
             webPageSandbox = null;
@@ -740,13 +742,8 @@ function create() {
         },
 
         //--------------------------------------------------- window popup callback
-        get onAlert() {
-            throw "Not Implemented"
-        },
 
-        set onAlert(callback) {
-            throw "Not Implemented"
-        },
+        onAlert : null,
 
         get onCallback() {
             throw "Not Implemented"
@@ -756,13 +753,7 @@ function create() {
             throw "Not Implemented"
         },
 
-        get onConfirm() {
-            throw "Not Implemented"
-        },
-
-        set onConfirm(callback) {
-            throw "Not Implemented"
-        },
+        onConfirm : null,
 
         onConsoleMessage : null,
 
@@ -774,14 +765,7 @@ function create() {
             throw "Not Implemented"
         },
 
-        get onPrompt() {
-            throw "Not Implemented"
-        },
-
-        set onPrompt(callback) {
-            throw "Not Implemented"
-        },
-
+        onPrompt : null,
 
         // ------------------------------ browsing callbacks
 

@@ -21,7 +21,6 @@ var runtimeIframe = null;
 function startup() {
 
     var runtimeIframe = document.getElementById('runtime');
-
     try {
         slLauncher.launchMainScript(runtimeIframe.contentWindow, slConfiguration.scriptFile);
     }

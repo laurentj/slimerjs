@@ -17,10 +17,12 @@ their authors under the licenses listed alongside.
     http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/
 
 * src/components/ConsoleAPI.js
+* src/components/nsPrompter.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
     This file comes originally from the source code of Firefox
     http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js
+    http://mxr.mozilla.org/mozilla-central/source/toolkit/components/prompts/src/nsPrompter.js
 
 * src/modules/slimer-sdk/net-log.js
     is released under the Mozilla Public License, v. 2.0

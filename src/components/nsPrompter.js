@@ -16,7 +16,7 @@ function Prompter() {
 }
 
 Prompter.prototype = {
-    classID          : Components.ID("{1c978d25-b37f-43a8-a2d6-0c7a239ead87}"),
+    classID          : Components.ID("{06457d69-7b58-4975-a6ce-0496aeb508b6}"),
     QueryInterface   : XPCOMUtils.generateQI([Ci.nsIPromptFactory, Ci.nsIPromptService, Ci.nsIPromptService2]),
 
 
@@ -31,7 +31,6 @@ Prompter.prototype = {
 
 
     getPrompt : function (domWin, iid) {
-dump("Prompter getPrompt\n");
         // This is still kind of dumb; the C++ code delegated to login manager
         // here, which in turn calls back into us via nsIPromptService2.
         if (iid.equals(Ci.nsIAuthPrompt2) || iid.equals(Ci.nsIAuthPrompt)) {
@@ -43,7 +42,6 @@ dump("Prompter getPrompt\n");
                 Cu.reportError("nsPrompter: Delegation to password manager failed: " + e);
             }
         }
-dump("Prompter getPrompt2\n");
         let p = new ModalPrompter(domWin);
         p.QueryInterface(iid);
         return p;
@@ -54,8 +52,6 @@ dump("Prompter getPrompt2\n");
 
 
     alert : function (domWin, title, text) {
-dump("Prompter alert\n");
-
         let p = this.pickPrompter(domWin);
         p.alert(title, text);
     },
@@ -480,7 +476,30 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         PromptUtils.propBagToObject(propBag, args);
     },
 
+    _findWebPage : function () {
+        try {
+            let win = this.domWin.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                    .getInterface(Components.interfaces.nsIWebNavigation)
+                    .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+                    .rootTreeItem
+                    .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                    .getInterface(Components.interfaces.nsIDOMWindow);
 
+            let doc = win.document;
+            if (doc.documentElement.getAttribute("windowtype") != 'slimerpage') {
+                return null;
+            }
+
+            let webpageElement = doc.getElementById('webpage');
+            if (!webpageElement) {
+                return null;
+            }
+            return webpageElement.webpage;
+        }
+        catch(e) {
+            return null;
+        }
+    },
 
     /*
      * ---------- interface disambiguation ----------
@@ -519,9 +538,15 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
 
 
     alert : function (title, text) {
-dump("Modal prompter alert\n")
         if (!title)
             title = PromptUtils.getLocalizedString("Alert");
+        let webpage = this._findWebPage();
+        if (webpage) {
+            if (webpage.onAlert) {
+                webpage.onAlert(text);
+            }
+            return;
+        }
 
         let args = {
             promptType: "alert",
@@ -553,6 +578,14 @@ dump("Modal prompter alert\n")
     confirm : function (title, text) {
         if (!title)
             title = PromptUtils.getLocalizedString("Confirm");
+
+        let webpage = this._findWebPage();
+        if (webpage) {
+            if (webpage.onConfirm) {
+                return webpage.onConfirm(text);
+            }
+            return false;
+        }
 
         let args = {
             promptType: "confirm",
@@ -633,6 +666,20 @@ dump("Modal prompter alert\n")
     nsIPrompt_prompt : function (title, text, value, checkLabel, checkValue) {
         if (!title)
             title = PromptUtils.getLocalizedString("Prompt");
+
+        let webpage = this._findWebPage();
+        if (webpage) {
+            if (!webpage.onPrompt) {
+                return false;
+            }
+            var result = webpage.onPrompt(text, value.value);
+
+            if (result === null) {
+                return false;
+            }
+            value.value = result;
+            return true;
+        }
 
         let args = {
             promptType: "prompt",

@@ -32,6 +32,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             </field>
 
             <field name="requestCounter">0</field>
+            <!-- webpage object -->
+            <field name="webpage">null</field>
             <method name="resetBrowser">
                 <body>
                     this.browser.stop();

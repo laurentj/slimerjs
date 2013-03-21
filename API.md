@@ -170,19 +170,19 @@ It will contain API that does not exists in PhantomJS.
 ## callbacks
 
 <table>
-    <tr><td>onalert                             </td><td></td></tr>
+    <tr><td>onalert                             </td><td>Implemented</td></tr>
     <tr><td>onCallback                          </td><td></td></tr>
     <tr><td>onClosing                           </td><td></td></tr>
-    <tr><td>onConfirm                           </td><td></td></tr>
+    <tr><td>onConfirm                           </td><td>Implemented</td></tr>
     <tr><td>onConsoleMessage                    </td><td>Implemented (SlimerJS only: the callback receives the lineNumber and the sourceID, contrary to PhantomJS)</td></tr>
     <tr><td>onError                             </td><td></td></tr>
-    <tr><td>onFilePicker                         </td><td></td></tr>
+    <tr><td>onFilePicker                        </td><td></td></tr>
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented</td></tr>
     <tr><td>onLoadStarted                       </td><td>Implemented</td></tr>
     <tr><td>onNavigationRequested               </td><td></td></tr>
     <tr><td>onPageCreated                       </td><td></td></tr>
-    <tr><td>onPrompt                            </td><td></td></tr>
+    <tr><td>onPrompt                            </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
     <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>
     <tr><td>onUrlChanged                        </td><td>Implemented</td></tr>

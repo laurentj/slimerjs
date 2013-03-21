@@ -42,6 +42,7 @@ phantom.injectJs("./test-webpage-keyevent2.js");
 phantom.injectJs("./test-webpage-mouseevent.js");
 phantom.injectJs("./test-webpage-callbacks.js");
 phantom.injectJs("./test-webpage-render.js");
+phantom.injectJs("./test-webpage-prompt.js");
 
 var webserverTest = webServerFactory.create();
 webserverTest.listen(8083, function(request, response) {

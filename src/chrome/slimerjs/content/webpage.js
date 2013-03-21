@@ -2,6 +2,7 @@
 
 window.addEventListener("load", function(event){
     let browser = document.createElement("webpage");
+    browser.setAttribute('id', 'webpage');
     function onReady(event) {
         browser.removeEventListener("BrowserReady", onReady, false);
         if ("arguments" in window
