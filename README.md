@@ -13,12 +13,12 @@ other tools like [CasperJS](http://casperjs.org)...
 
 SlimerJS is not only a PhantomJS clone, it contains also additional features:
 
-* benefit of [the power of Javascript 1.8.6](https://developer.mozilla.org/en-US/docs/JavaScript/Reference),
+* Benefit of [the power of Javascript 1.8.6](https://developer.mozilla.org/en-US/docs/JavaScript/Reference),
   that [has already features of the future standard Ecmascript "Harmony" 6](https://developer.mozilla.org/en-US/docs/JavaScript/ECMAScript_6_support_in_Mozilla):
   iterators, generators, destructured assignement, Map and WeakMap, "let" keyword...
 * Many [modules of the Mozilla Addons Sdk](https://addons.mozilla.org/en-US/developers/docs/sdk/latest/) are available
   and you can import it into your code as any CommonJS modules.
-* You can load flash content if the plugin is installed
+* SlimerJS is able to load flash content if the Flash plugin is installed
 
 Technically, SlimerJS is a XUL/JS application that can be launched with
 XULRunner or Firefox (without its interface).
@@ -92,6 +92,7 @@ blank page. Here are objects you can play with:
 - some modules that are almost identical to those provided by PhantomJS: **system**, **webserver**,
   **fs** and **webpage**. Those two last modules are not yet fully implemented but they
   provide the most important API.
+- some modules of the Mozilla Addons SDK: promise, heritage, xhr, system/, deprecated/ etc.
 
 You can read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API.md) to know the implementation progress.
 
