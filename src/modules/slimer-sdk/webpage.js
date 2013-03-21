@@ -814,7 +814,8 @@ function create() {
         },
 
         javaScriptAlertSent: function(message) {
-            throw "Not Implemented"
+            if (this.onAlert)
+                onAlert(message);
         },
 
         javaScriptConsoleMessageSent: function(message, lineNumber, fileName) {
