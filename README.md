@@ -1,15 +1,24 @@
 # SlimerJS
 
-SlimerJS is a scriptable browser. It means that you can manipulate a web page
-with a Javascript script. It is useful to do functional tests, page automaton,
-network monitoring, screen capture etc.
+SlimerJS is a scriptable browser. It allows you to manipulate a web page
+with a Javascript script: opening a webpage, clicking on links, modifying the content...
+It is useful to do functional tests, page automaton, network monitoring, screen capture etc.
 
 It is in fact a tool like [PhantomJs](http://phantomjs.org/), except that
 it runs Gecko instead of Webkit, and it is not (yet) headless
-(but you can still use xvfb to have a headless SlimerJS).
+(but you can try to use xvfb to have a headless SlimerJS).
 
 Because SlimerJS will provide the same API of PhantomJS, you could then use
 other tools like [CasperJS](http://casperjs.org)...
+
+SlimerJS is not only a PhantomJS clone, it contains also additional features:
+
+* benefit of [the power of Javascript 1.8.6](https://developer.mozilla.org/en-US/docs/JavaScript/Reference),
+  that [has already features of the future standard Ecmascript "Harmony" 6](https://developer.mozilla.org/en-US/docs/JavaScript/ECMAScript_6_support_in_Mozilla):
+  iterators, generators, destructured assignement, Map and WeakMap, "let" keyword...
+* Many [modules of the Mozilla Addons Sdk](https://addons.mozilla.org/en-US/developers/docs/sdk/latest/) are available
+  and you can import it into your code as any CommonJS modules.
+* You can load flash content if the plugin is installed
 
 Technically, SlimerJS is a XUL/JS application that can be launched with
 XULRunner or Firefox (without its interface).
@@ -80,33 +89,39 @@ blank page. Here are objects you can play with:
   but all of its properties and methods are not implemented yet
 - a **slimer** object that will contain additionnal API
 - a **require** function to load CommonJS modules
-- You can load and use the **system** module
-- You can load and use the **fs** module although its implementation is not finished
-- You can load and use the **webpage** module although its implementation is not finished
-- You can load and use the **webserver** module
+- some modules that are almost identical to those provided by PhantomJS: **system**, **webserver**,
+  **fs** and **webpage**. Those two last modules are not yet fully implemented but they
+  provide the most important API.
 
 You can read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API.md) to know the implementation progress.
 
-To use all available APIs, read the [PhantomJS documentation](https://github.com/ariya/phantomjs/wiki/Quick-Start).
+To know how to use all available APIs, read the [PhantomJS documentation](https://github.com/ariya/phantomjs/wiki/Quick-Start).
 
 Note that you must execute ```slimer.exit()``` or ```phantom.exit()``` to terminate the application, else
 the window of SlimerJS won't be closed.
 
 # Roadmap
 
-The goal for a first stable release is to have a full implementation of the API of PhantomJS 1.8.
+The goal for a first stable release 1.0 is to have a full implementation of the API of PhantomJS 1.8.
 
-After this release, I'll try to hack XulRunner to run headless windows (very difficult I guess :-) )
+After this release, the goal will be to hack XulRunner to run headless windows.
 
 # FAQ
 
 - Why is it not Headless?
   - Gecko, the rendering engine of Firefox, cannot render web content without a window.
     See [Mozilla bug 446591](https://bugzilla.mozilla.org/show_bug.cgi?id=446591). however you could
-    launch SlimerJS with xvfb.
+    launch SlimerJS with xvfb (not tested).
 - Why is it called "SlimerJs"?
    - Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox source code uses
     many references from this movie, and since PhantomJS, CasperJs and other related tools, is a matter of ghost... ;-)
+- How can I contribute?
+   - Report bugs and ideas of improvements into ["issues" on github](https://github.com/laurentj/slimerjs/issues).
+   - Improve the code by providing patches. SlimerJS is entirely in Javascript!! [Fork the repository in github](https://github.com/laurentj/slimerjs/fork_select),
+     commit, and do pull requests. Please create one dedicated branch for each bugs/features.
+   - Document the API [in the wiki](https://github.com/laurentj/slimerjs/wiki)
+   - We need a website and a logo!!
+   - Other ideas? Discuss with us on the IRC channel or in the mailing list (see above).
 - Why are there no tests on the WebServer object?
    - This module is based on the [httpd component](http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/)
      of Mozilla used for their own unit tests, and that is already [heavily tested](http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/test/)
