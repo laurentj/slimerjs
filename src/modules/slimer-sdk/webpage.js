@@ -815,7 +815,7 @@ function create() {
 
         javaScriptAlertSent: function(message) {
             if (this.onAlert)
-                onAlert(message);
+                this.onAlert(message);
         },
 
         javaScriptConsoleMessageSent: function(message, lineNumber, fileName) {
