@@ -1,3 +1,124 @@
 section, article, aside, footer, header, nav, hgroup {
   display:block;
 }
+
+
+body {
+    background-color:#EAE0D7;
+    margin:0;
+    padding:0;
+    font-family: Helvetica,Arial,sans-serif;
+}
+
+header, footer {
+    background-color:#7691A0;
+    color: #2B2B2B;
+}
+header a {
+    color: #2B2B2B;
+    margin:0;
+    padding:0;
+}
+
+header h1 {
+    margin:0px;
+    padding:0.5em;
+    font-size: 1.2em;
+    float: left;
+}
+header h1 a { text-decoration: none;
+}
+header nav {
+    text-align:right; padding:0 1em;
+}
+header ul {
+    display:inline-block;
+    margin:1em 0;
+    padding:0;
+}
+header li {
+    display:inline-block;
+    margin:0;
+    padding:0 5px;
+    border-left: 1px solid #0D1414;
+}
+header li:first-child {
+    border-left: 0px transparent none;
+}
+footer {
+    position:relative;
+    font-size:0.7em;
+    text-align:center;
+    padding:1em;
+}
+
+section {
+    margin:1em;
+}
+section a {
+    color: #3F3F3F;
+}
+#download {
+    float:right;
+    margin:1em;
+    padding:1em;
+    text-align:center;
+    font-size:0.7em;
+    position:relative;
+    margin-top:-5em;
+}
+
+#download a {
+    display:inline-block;
+    padding:0.2em;
+    border-radius: 8px;
+    border:1px solid transparent;
+    background-color: #106D56;
+    text-decoration:none;
+    color: white;
+    font-size:1.7em;
+}
+#download a:hover {
+    background-color: #106D56;
+    color:white;
+}
+#main {
+    min-height:25em;
+}
+
+#main h3 {
+    background-color:#BCA998;
+    border-radius: 10px;
+    color:#383838;
+    padding-left:2em;
+}
+
+#cartouche {
+    background-color:#BCA998;
+    border-radius: 10px;
+    color:#383838;
+    padding:1em;
+    min-height:7em;
+}
+#cartouche h1{
+    font-size:1.5em;
+    padding:0;
+    margin-bottom:5px;
+}
+#cartouche h2{
+    padding: 0 0 0 1em;
+    margin:0 0;
+    font-size:1.0em;
+}
+
+
+
+
+@media (max-width: 500px) {
+    header h1 { float:none; text-align:center;}
+    header nav { text-align:center;}
+    #download {float:none;    margin-top:0;}
+    #main {min-height:auto;}
+
+}
+
