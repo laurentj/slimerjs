@@ -37,7 +37,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             <method name="resetBrowser">
                 <body>
                     this.browser.stop();
-                    this.browser.removeProgressListener(this.mProgressListener);
                     //this.browser.sessionHistory.PurgeHistory(1000);
                     this.browser.destroy();
                 </body>
