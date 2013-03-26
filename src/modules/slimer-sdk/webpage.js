@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-const { Cc, Ci, Cu } = require('chrome');
+const { Cc, Ci, Cu, Cr } = require('chrome');
 Cu.import('resource://slimerjs/slLauncher.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import('resource://slimerjs/slConfiguration.jsm');
@@ -24,11 +24,27 @@ const base64 = require("sdk/base64");
 const netLog = require('net-log');
 netLog.startTracer();
 
+/**
+ * create a webpage object
+ */
 function create() {
-    // private properties for the webpage object
+
+    // -----------------------  private properties and functions for the webpage object
+
+    /**
+     * the <browser> element loading the webpage content
+     */
     var browser = null;
+
+    /**
+     * library path
+     */
     var libPath = slConfiguration.scriptFile.parent.clone();
 
+    /**
+     * utility function to create a sandbox when executing a
+     * user script in the webpage content
+     */
     function createSandBox() {
         let win = browser.contentWindow;
         let sandbox = Cu.Sandbox(win,
@@ -48,7 +64,8 @@ function create() {
     }
 
     /**
-     * an observer for the Observer Service
+     * an observer for the Observer Service.
+     * It observes console events.
      */
     var webpageObserver = {
         QueryInterface: XPCOMUtils.generateQI([Ci.nsISupportsWeakReference,Ci.nsIObserver]),
@@ -83,10 +100,65 @@ function create() {
         }
     }
 
-    var privateParameters = {
-        clipRect : null
+    /**
+     * build an object of options for the netlogger
+     */
+    function getNetLoggerOptions(webpage, url, callback) {
+        return options = {
+            onRequest: function(request) {webpage.resourceRequested(request);},
+            onResponse:  function(res) {webpage.resourceReceived(res);},
+            captureTypes: webpage.captureContent,
+            onLoadStarted: function(){ webpage.loadStarted(); },
+            onURLChanged: function(url){ webpage.urlChanged(url);},
+            onTransferStarted :null,
+            onContentLoaded: function(success){
+                // phantomjs call onInitialized not only at the page creation
+                // but also after the content loading.. don't know why.
+                // let's imitate it. Only after a success
+                if (success)
+                    webpage.initialized();
+                else {
+                    // in case of a network fail, phantomjs send
+                    // a resourceReceived event.
+                    webpage.resourceReceived({
+                        id: 0,
+                        url: url,
+                        time: new Date(),
+                        headers: {},
+                        bodySize: 0,
+                        contentType: null,
+                        contentCharset: null,
+                        redirectURL: null,
+                        stage: "end",
+                        status: null,
+                        statusText: null,
+                        referrer: "",
+                        body: ""
+                    });
+                }
+            },
+            onLoadFinished: function(success){
+                webpage.loadFinished(success);
+                if (callback) {
+                    callback(success);
+                    callback = null;
+                }
+            }
+        }
     }
 
+    /**
+     * some private parameters
+     */
+     var privateParameters = {
+         clipRect : null
+     }
+
+    // ----------------------------------- webpage
+
+    /**
+     * the webpage object itself
+     */
     var webpage = {
 
         settings : null,
@@ -181,48 +253,7 @@ function create() {
         open: function(url, callback) {
 
             var me = this;
-            var options = {
-                onRequest: function(request) {me.resourceRequested(request);},
-                onResponse:  function(res) {me.resourceReceived(res);},
-                captureTypes: me.captureContent,
-                onLoadStarted: function(){ me.loadStarted(); },
-                onURLChanged: function(url){ me.urlChanged(url);},
-                onTransferStarted :null,
-                onContentLoaded: function(success){
-                    // phantomjs call onInitialized not only at the page creation
-                    // but also after the content loading.. don't know why.
-                    // let's imitate it. Only after a success
-                    if (success)
-                        me.initialized();
-                    else {
-                        // in case of a network fail, phantomjs send
-                        // a resourceReceived event.
-                        me.resourceReceived({
-                            id: 0,
-                            url: url,
-                            time: new Date(),
-                            headers: {},
-                            bodySize: 0,
-                            contentType: null,
-                            contentCharset: null,
-                            redirectURL: null,
-                            stage: "end",
-                            status: null,
-                            statusText: null,
-                            referrer: "",
-                            body: ""
-                        });
-                    }
-                },
-                onLoadFinished: function(success){
-                    me.loadFinished(success);
-                    if (callback) {
-                        callback(success);
-                        callback = null;
-                    }
-                },
-            }
-
+            var options = getNetLoggerOptions(this, url, callback);
             if (browser) {
                 // don't recreate a browser if already opened.
                 netLog.registerBrowser(browser, options);
