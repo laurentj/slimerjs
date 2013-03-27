@@ -261,16 +261,17 @@ function create() {
                 return;
             }
 
-            slLauncher.openBrowser(function(nav){
+            var win = slLauncher.openBrowser(function(nav){
                 browser = nav;
-                browser.parentNode.webpage = me;
+                browser.webpage = me;
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
-                netLog.registerBrowser(browser, options);
+                browser.stop();
                 me.initialized();
+                netLog.registerBrowser(browser, options);
                 browser.loadURI(url);
             });
-        },
 
+        },
         openUrl: function(url, httpConf, settings) {
             throw "Not Implemented"
         },
@@ -382,7 +383,7 @@ function create() {
         get viewportSize() {
             if (!browser)
                 return {width:0, height:0};
-            let win = browser.parentNode.ownerDocument.defaultView.top;
+            let win = browser.ownerDocument.defaultView.top;
             return {
                 width: win.innerWidth,
                 height: win.innerHeight
@@ -392,7 +393,7 @@ function create() {
         set viewportSize(val) {
             if (!browser)
                 return;
-            let win = browser.parentNode.ownerDocument.defaultView.top;
+            let win = browser.ownerDocument.defaultView.top;
 
             if (typeof val != "object")
                 throw new Error("Bad argument type");

@@ -69,7 +69,7 @@ var slLauncher = {
     },
 
     closeBrowser: function (browser) {
-        let win = browser.parentNode.ownerDocument.defaultView.top;
+        let win = browser.ownerDocument.defaultView.top;
         win.close();
     }
 }

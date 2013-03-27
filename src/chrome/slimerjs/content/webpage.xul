@@ -6,7 +6,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/applications" type="text/css"?>
-<?xml-stylesheet href="webpage.css" type="text/css"?>
 <window xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     id="slimerjswin" hidechrome="false" title="webpage"
@@ -14,4 +13,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     width="400" height="300"
     >
     <script type="application/javascript" src="webpage.js" />
+
+    <browser id="webpage" flex="1"
+        type="content-primary" autoscroll="true" disablesecurity="false"/>
 </window>
