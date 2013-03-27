@@ -104,7 +104,7 @@ function create() {
      * build an object of options for the netlogger
      */
     function getNetLoggerOptions(webpage, url, callback) {
-        return options = {
+        return {
             onRequest: function(request) {webpage.resourceRequested(request);},
             onResponse:  function(res) {webpage.resourceReceived(res);},
             captureTypes: webpage.captureContent,
