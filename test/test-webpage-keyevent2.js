@@ -78,7 +78,7 @@ describe("webpage.sendEvent() ", function() {
 
     // -----------------------------------------------  single char: keydown
 
-    it("send keydown event with a string of a printable char",function(done) {
+    it("send keydown event with a string of a printable char",function() {
         // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "a");
@@ -104,7 +104,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with  shift + string of a printable char",function(done) {
+    it("send keydown event with  shift + string of a printable char",function() {
         // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "a", null, null, modifier.shift);
@@ -130,7 +130,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with alt + string of a printable char",function(done) {
+    it("send keydown event with alt + string of a printable char",function() {
         // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "a", null, null, modifier.alt);
@@ -156,7 +156,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with ctrl + string of a printable char",function(done) {
+    it("send keydown event with ctrl + string of a printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "a", null, null, modifier.ctrl);
         readResult()
@@ -181,7 +181,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with shift + ctrl + string of a printable char",function(done) {
+    it("send keydown event with shift + ctrl + string of a printable char",function() {
         // -> phantomjs generates a keypress event when we send a keydown event: inconsistent
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "a", null, null, modifier.ctrl | modifier.shift);
@@ -208,7 +208,7 @@ describe("webpage.sendEvent() ", function() {
     });
     // -----------------------------------------------  single char: keypress
 
-    it("send keypress event with a string of a printable char",function(done) {
+    it("send keypress event with a string of a printable char",function() {
         // -> phantomjs generates a keydown + keypress + keyup event when
         // we send a keypress event: inconsistent for a single char
         webpage.evaluate(resetKeyCode);
@@ -235,7 +235,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1); // value with phantomjs is false
     });
 
-    it("send keypress event with  shift + string of a printable char",function(done) {
+    it("send keypress event with  shift + string of a printable char",function() {
         // -> phantomjs generates a keydown + keypress + keyup event when
         // we send a keypress event: inconsistent for a single char
         webpage.evaluate(resetKeyCode);
@@ -262,7 +262,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1); // value with phantomjs is false
     });
 
-    it("send keypress event with alt + string of a printable char",function(done) {
+    it("send keypress event with alt + string of a printable char",function() {
         // -> phantomjs generates a keydown + keypress + keyup event when
         // we send a keypress event: inconsistent for a single char
         webpage.evaluate(resetKeyCode);
@@ -290,7 +290,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1); // value with phantomjs is false
     });
 
-    it("send keypress event with ctrl + string of a printable char",function(done) {
+    it("send keypress event with ctrl + string of a printable char",function() {
         // -> phantomjs generates a keydown  + keyup event when
         // we send a keypress event, BUT NO KEYPRESS: inconsistent for a single char
         webpage.evaluate(resetKeyCode);
@@ -318,7 +318,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keypress event with shift + ctrl + string of a printable char",function(done) {
+    it("send keypress event with shift + ctrl + string of a printable char",function() {
         // -> phantomjs generates a keydown  + keyup event when
         // we send a keypress event: inconsistent for a single char
         webpage.evaluate(resetKeyCode);
@@ -347,7 +347,7 @@ describe("webpage.sendEvent() ", function() {
 
     // -----------------------------------------------  single char: keyup
 
-    it("send keyup event with a string of a printable char",function(done) {
+    it("send keyup event with a string of a printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "a");
         readResult()
@@ -372,7 +372,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with  shift + string of a printable char",function(done) {
+    it("send keyup event with  shift + string of a printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "a", null, null, modifier.shift);
         readResult()
@@ -397,7 +397,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with alt + string of a printable char",function(done) {
+    it("send keyup event with alt + string of a printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "a", null, null, modifier.alt);
         readResult()
@@ -422,7 +422,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with ctrl + string of a printable char",function(done) {
+    it("send keyup event with ctrl + string of a printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "a", null, null, modifier.ctrl);
         readResult()
@@ -447,7 +447,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with shift + ctrl + string of a printable char",function(done) {
+    it("send keyup event with shift + ctrl + string of a printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "a", null, null, modifier.ctrl | modifier.shift);
         readResult()
@@ -474,7 +474,7 @@ describe("webpage.sendEvent() ", function() {
 
     // -----------------------------------------------  single accentued char: keydown
 
-    it("send keydown event with a string of an accentued printable char",function(done) {
+    it("send keydown event with a string of an accentued printable char",function() {
             // -> phantomjs generates a keypress event when we send a keydown
             // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -501,7 +501,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with  shift + string of an accentued printable char",function(done) {
+    it("send keydown event with  shift + string of an accentued printable char",function() {
         // -> phantomjs generates a keypress event when we send a keydown
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -528,7 +528,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with alt + string of an accentued printable char",function(done) {
+    it("send keydown event with alt + string of an accentued printable char",function() {
         // -> phantomjs generates a keypress event when we send a keydown
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -555,7 +555,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with ctrl + string of an accentued printable char",function(done) {
+    it("send keydown event with ctrl + string of an accentued printable char",function() {
         // -> phantomjs generates a keypress event when we send a keydown
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -582,7 +582,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with shift + ctrl + string of an accentued printable char",function(done) {
+    it("send keydown event with shift + ctrl + string of an accentued printable char",function() {
         // -> phantomjs generates a keypress event when we send a keydown
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -611,7 +611,7 @@ describe("webpage.sendEvent() ", function() {
 
     // -----------------------------------------------  single accentued char: keypress
 
-    it("send keypress event with a string of an accentued printable char",function(done) {
+    it("send keypress event with a string of an accentued printable char",function() {
         // -> phantomjs generates a keydown + keypress + keyup event when we send a keypress
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -638,7 +638,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);// value with phantomjs is false
     });
 
-    it("send keypress event with  shift + string of an accentued printable char",function(done) {
+    it("send keypress event with  shift + string of an accentued printable char",function() {
         // -> phantomjs generates a keydown + keypress + keyup event when we send a keypress
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -665,7 +665,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);// value with phantomjs is false
     });
 
-    it("send keypress event with alt + string of an accentued printable char",function(done) {
+    it("send keypress event with alt + string of an accentued printable char",function() {
         // -> phantomjs generates a keydown + keypress + keyup event when we send a keypress
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -692,7 +692,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);// value with phantomjs is false
     });
 
-    it("send keypress event with ctrl + string of an accentued printable char",function(done) {
+    it("send keypress event with ctrl + string of an accentued printable char",function() {
         // -> phantomjs generates a keydown + keypress + keyup event when we send a keypress
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -719,7 +719,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);// value with phantomjs is false
     });
 
-    it("send keypress event with shift + ctrl + string of an accentued printable char",function(done) {
+    it("send keypress event with shift + ctrl + string of an accentued printable char",function() {
         // -> phantomjs generates a keydown + keypress + keyup event when we send a keypress
         // event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -748,7 +748,7 @@ describe("webpage.sendEvent() ", function() {
 
     // -----------------------------------------------  single accentued char: keyup
 
-    it("send keyup event with a string of an accentued printable char",function(done) {
+    it("send keyup event with a string of an accentued printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é");
         readResult()
@@ -773,7 +773,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with  shift + string of an accentued printable char",function(done) {
+    it("send keyup event with  shift + string of an accentued printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é", null, null, modifier.shift);
         readResult()
@@ -798,7 +798,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with alt + string of an accentued printable char",function(done) {
+    it("send keyup event with alt + string of an accentued printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é", null, null, modifier.alt);
         readResult()
@@ -823,7 +823,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with ctrl + string of an accentued printable char",function(done) {
+    it("send keyup event with ctrl + string of an accentued printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é", null, null, modifier.ctrl);
         readResult()
@@ -848,7 +848,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with shift + ctrl + string of an accentued printable char",function(done) {
+    it("send keyup event with shift + ctrl + string of an accentued printable char",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é", null, null, modifier.ctrl | modifier.shift);
         readResult()
@@ -875,7 +875,7 @@ describe("webpage.sendEvent() ", function() {
 
     // -----------------------------------------------  string: keydown
 
-    it("send keydown event with a string",function(done) {
+    it("send keydown event with a string",function() {
         // -> phantomjs generates a keypress event when we send a
         // keydown event: inconsistent
         // and phantomJS generates some characters without key events ?!!
@@ -906,7 +906,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with  shift + string",function(done) {
+    it("send keydown event with  shift + string",function() {
         // -> phantomjs generates a keypress event when we send a
         // keydown event: inconsistent
         // and phantomJS generates some characters without key events ?!!
@@ -937,7 +937,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with alt + string",function(done) {
+    it("send keydown event with alt + string",function() {
         // -> phantomjs generates a keypress event when we send a
         // keydown event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -967,7 +967,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with ctrl + string",function(done) {
+    it("send keydown event with ctrl + string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "aBè", null, null, modifier.ctrl);
         // let's assume that we send only a character for a given string
@@ -996,7 +996,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keydown event with shift + ctrl + string",function(done) {
+    it("send keydown event with shift + ctrl + string",function() {
         // -> phantomjs generates a keypress event when we send a
         // keydown event: inconsistent
         webpage.evaluate(resetKeyCode);
@@ -1028,7 +1028,7 @@ describe("webpage.sendEvent() ", function() {
 
     // -----------------------------------------------  string: keypress
 
-    it("send keypress event with a string",function(done) {
+    it("send keypress event with a string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "aBè");
         readResult()
@@ -1056,7 +1056,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keypress event with  shift + string",function(done) {
+    it("send keypress event with  shift + string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "aBè", null, null, modifier.shift);
         readResult()
@@ -1084,7 +1084,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keypress event with alt + string",function(done) {
+    it("send keypress event with alt + string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "aBè", null, null, modifier.alt);
         readResult()
@@ -1112,7 +1112,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keypress event with ctrl + string",function(done) {
+    it("send keypress event with ctrl + string",function() {
         // phantomjs doesn't generate a keypress event for the first character
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "aBè", null, null, modifier.ctrl);
@@ -1140,7 +1140,7 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownMeta).toEqual([ false, false, false]);
     });
 
-    it("send keypress event with shift + ctrl + string",function(done) {
+    it("send keypress event with shift + ctrl + string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "aBè", null, null, modifier.ctrl | modifier.shift);
         readResult()
@@ -1169,7 +1169,7 @@ describe("webpage.sendEvent() ", function() {
 
     // -----------------------------------------------  string: keyup
 
-    it("send keyup event with a string",function(done) {
+    it("send keyup event with a string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "aBè");
         readResult()
@@ -1198,7 +1198,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keyup event with  shift + string",function(done) {
+    it("send keyup event with  shift + string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "aBè", null, null, modifier.shift);
         readResult()
@@ -1227,7 +1227,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keyup event with alt + string",function(done) {
+    it("send keyup event with alt + string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "aBè", null, null, modifier.alt);
         readResult()
@@ -1256,7 +1256,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keyup event with ctrl + string",function(done) {
+    it("send keyup event with ctrl + string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "aBè", null, null, modifier.ctrl);
         readResult()
@@ -1285,7 +1285,7 @@ describe("webpage.sendEvent() ", function() {
     });
 
 
-    it("send keyup event with shift + ctrl + string",function(done) {
+    it("send keyup event with shift + ctrl + string",function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "aBè", null, null, modifier.ctrl | modifier.shift);
         readResult()
@@ -1311,6 +1311,9 @@ describe("webpage.sendEvent() ", function() {
         expect(key.keydownShift).toEqual(-1);
         expect(key.keydownCtrl).toEqual(-1);
         expect(key.keydownMeta).toEqual(-1);
+    });
+    it("test end", function(){
+        webpage.close();
     });
 });
 

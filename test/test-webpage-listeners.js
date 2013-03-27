@@ -316,5 +316,8 @@ describe("webpage with listeners", function() {
 
         done();
     });
-
+    async.it("test end", function(done){
+        webpage.close();
+        done();
+    });
 });

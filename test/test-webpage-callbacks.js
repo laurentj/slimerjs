@@ -75,5 +75,9 @@ describe("webpage.onConsoleMessage", function() {
             expect(message2[1].m).toEqual('message from consolemessageiframe');
         })
     });
+    it("close webpage",function() {
+        webpage.close();
+        webpage2.close();
+    });
 });
 

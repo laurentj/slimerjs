@@ -22,6 +22,7 @@ describe("WebPage.viewportSize", function(){
             expect(result).toEqual("650-320");
             expect(webpage.viewportSize.width).toEqual(650);
             expect(webpage.viewportSize.height).toEqual(320);
+            webpage.close();
         });
     });
 });
@@ -51,6 +52,7 @@ describe("WebPage.renderBase64()", function(){
         var capture = webpage.renderBase64();
         expect(typeof capture).toEqual("string");
         expect(capture.length > 0).toBeTruthy();
+        webpage.close();
     });
 
 });
@@ -76,6 +78,7 @@ describe("WebPage.render()", function(){
             expect(fs.exists('slimerjs_capture.png')).toBeTruthy();
             if (fs.exists('slimerjs_capture.png'))
                 fs.remove('slimerjs_capture.png');
+            webpage.close();
         });
     });
 });

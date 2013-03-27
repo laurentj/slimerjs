@@ -33,6 +33,7 @@ describe("WebPage.onAlert", function(){
         })
         expect(result).toEqual("alert done");
         expect(message).toEqual("alert message");
+        webpage.close();
     });
 });
 
@@ -77,6 +78,7 @@ describe("WebPage.onConfirm", function(){
         })
         expect(result).toEqual("cancel");
         expect(message).toEqual("question1");
+        webpage.close();
     });
 });
 
@@ -155,5 +157,6 @@ describe("WebPage.onPrompt", function(){
         })
         expect(result).toEqual("hello");
         expect(message).toEqual("question");
+        webpage.close();
     });
 });

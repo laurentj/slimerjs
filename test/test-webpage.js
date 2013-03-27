@@ -181,8 +181,10 @@ describe("WebPage.injectJs()", function(){
             }
         })
         expect(injectedVariableValue).toEqual("I am herechange by modify");
-        webpage.close();
     });
+    it("test end", function(){
+        webpage.close();
+    })
 });
 
 
@@ -201,6 +203,7 @@ describe("WebPage.title", function(){
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
             expect(webpage.title).toEqual("hello world");
+            webpage.close();
         });
     });
 });

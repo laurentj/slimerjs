@@ -81,7 +81,7 @@ describe("webpage.sendEvent", function() {
         expect(r.mousemove.button).toEqual(0);
 */
 
-    it("send mouse events outside the target",function(done) {
+    it("send mouse events outside the target",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("mousedown", 5, 5, 'left', 0);
         readResult();
@@ -138,7 +138,7 @@ describe("webpage.sendEvent", function() {
     });
 
     
-    it("send mousedown event",function(done) {
+    it("send mousedown event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("mousedown", 20, 20, 'left', 0);
         readResult();
@@ -157,7 +157,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
-    it("send mousedown+ctrl+right event",function(done) {
+    it("send mousedown+ctrl+right event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("mousedown", 20, 20, 'right', modifier.ctrl);
         readResult();
@@ -177,7 +177,7 @@ describe("webpage.sendEvent", function() {
     });
     
     
-    it("send mouseup event",function(done) {
+    it("send mouseup event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("mouseup", 20, 20, 'left', 0);
         readResult();
@@ -202,7 +202,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
-    it("send mousemove event",function(done) {
+    it("send mousemove event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("mousemove", 20, 20, 'left', 0);
         readResult();
@@ -221,7 +221,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
-    it("send mousedoubleclick event",function(done) {
+    it("send mousedoubleclick event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("mousedoubleclick", 20, 20, 'left', 0);
         readResult();
@@ -240,7 +240,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
-    it("send mousedoubleclick+ctrl+right event",function(done) {
+    it("send mousedoubleclick+ctrl+right event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("mousedoubleclick", 20, 20, 'right', modifier.ctrl);
         readResult();
@@ -259,7 +259,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
-    it("send doubleclick event",function(done) {
+    it("send doubleclick event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("doubleclick", 20, 20, 'left', 0);
         readResult();
@@ -322,7 +322,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick.button).toEqual(0);
     });
 
-    it("send doubleclick+ctrl event",function(done) {
+    it("send doubleclick+ctrl event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("doubleclick", 20, 20, 'left', modifier.ctrl);
         // note that modifier is ignored for doubleclick in phantomjs
@@ -386,7 +386,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick.button).toEqual(0);
     });
 
-    it("send click event",function(done) {
+    it("send click event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("click", 20, 20, 'left', 0);
         readResult();
@@ -417,7 +417,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
-    it("send click+right event",function(done) {
+    it("send click+right event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("click", 20, 20, 'right', 0);
         readResult();
@@ -451,7 +451,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
-    it("send click+middle event",function(done) {
+    it("send click+middle event",function() {
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("click", 20, 20, 'middle', 0);
         readResult();
@@ -485,7 +485,7 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
-    it("send click+shift+alt+middle event",function(done) {
+    it("send click+shift+alt+middle event",function() {
 
         webpage.evaluate(resetMouseInfo);
         webpage.sendEvent("click", 20, 20, 'middle', modifier.shift | modifier.alt);
@@ -522,6 +522,10 @@ describe("webpage.sendEvent", function() {
         //expect(r.dblclick).toEqual(-1);
 
         expect(r.dblclick).toEqual(-1);
+    });
+
+    it("test end",function() {
+        webpage.close();
     });
 });
 
