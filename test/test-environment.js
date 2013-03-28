@@ -59,8 +59,8 @@ if ("slimer" in this) {
 
         it("should have a right version", function(){
             expect(slimer.version.major).toEqual(0);
-            expect(slimer.version.minor).toEqual(0);
-            expect(slimer.version.patch).toEqual(4);
+            expect(slimer.version.minor).toEqual(5);
+            expect(slimer.version.patch).toEqual(0);
         });
 
     });

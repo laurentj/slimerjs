@@ -10,7 +10,14 @@ var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
                            .getService(Components.interfaces.nsIXULAppInfo);
 
 var [major, minor, patch] = xulAppInfo.version.split('.');
-var _version = { major: parseInt(major), minor: parseInt(minor), patch: parseInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+var _version = { major: checkInt(major), minor: checkInt(minor), patch: checkInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+
+function checkInt(val) {
+    let v = parseInt(val)
+    if (isNaN(v))
+        return 0;
+    return v;
+}
 
 var slimer =  {
 
