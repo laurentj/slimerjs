@@ -58,6 +58,16 @@ section {
 section a {
     color: #3F3F3F;
 }
+section h1 {
+    font-size:1.5em;
+}
+
+section h2 {
+    font-size:1.2em;
+}
+
+th { text-align:right;}
+
 #download {
     float:right;
     margin:1em;

@@ -24,11 +24,56 @@
         </header>
         <section id="main">
 
-            <p>Sorry. Nothing here for the moment.</p>
+            <h1>Installation</h1>
+
+            <h2>Installation of Firefox or Xulrunner</h2>
+
+            <p>SlimerJS runs on any platform on which Firefox (Desktop version) is available. It needs XulRunner or Firefox.
+             So install them first, for your prefered operating system.</p>
+
+            <ul>
+                <li><a href="http://getfirefox.com">Download Firefox</a> (version 18 or higher)</li>
+                <li>or <a href="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0.2/runtimes/">Download Xulrunner</a> (version 18 or higher)</li>
+            </ul>
+
+            <h2>Installation of SlimerJs</h2>
             
-            <p>See install instructions <a href="https://github.com/laurentj/slimerjs/blob/master/README.md#install">in the README</a>.</p>
-        
+            <p><a href="index.html">Download the latest zip package of SlimerJS</a> and extract files
+            into somewhere on your disk. You'll have a <code>slimerjs/</code> directory with some files and
+            a script <code>slimerjs</code> (and <code>slimerjs.bat</code> for Windows).</p>
+            
+            <p>During its launch, SlimerJS tries to discover itself the path of Firefox or XulRunner. In case it fails, you should
+            create an environment variable containing the path of the Firefox/XulRunner binary. To create this environment variable
+            from a command line:</p>
+            <table>
+                <tr>
+                    <th>On linux:</th>
+                    <td><code>export SLIMERJSLAUNCHER=/usr/bin/firefox</code></td>
+                </tr>
+                <tr>
+                    <th>on Windows</th>
+                    <td><code>SET SLIMERJSLAUNCHER="c:\Program Files\Mozilla Firefox\firefox.exe</code></td>
+                </tr>
+                <tr>
+                    <th>On windows with cygwin</th>
+                    <td><code>export SLIMERJSLAUNCHER="/cygdrive/c/program files/mozilla firefox/firefox.exe"</code></td>
+                </tr>
+                <tr>
+                    <th>On MacOS</th>
+                    <td><code>export SLIMERJSLAUNCHER=/Applications/Firefox.app/Contents/MacOS/firefox</code></td>
+                </tr>
+            </table>
+            <p>You can of course set this variable in your .bashrc, .profile or in the computer
+                properties on Windows.</p>
+            
+            <h2>Launching SlimerJS</h2>
+            
+            <p>From a command line, call the <code>slimerjs</code> script with the path of a javascript file.</p>
+            <pre><code>/somewhere/slimerjs-1.2.3/slimerjs myscript.js</code></pre>
+            <p>On Windows: <code>c:\somewhere\slimerjs-1.2.3\slimerjs.bat myscript.js</code></p>
+
+            <p>The js script should contain your instructions to manipulate a web page... See <a href="documentation.html">the documentation</a>.</p>
         </section>
-        <footer>&copy; 2013 Laurent Jouanneau</footer>
+        <footer>&copy; 2013 Laurent Jouanneau / Innophi</footer>
     </body>
 </html>
