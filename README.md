@@ -51,7 +51,7 @@ Or discuss with us on IRC: channel #slimerjs on irc.mozilla.org.
 
 # Launching SlimerJS
 
-Open a terminal and go to the bin/ directory of SlimerJS. Then launch:
+Open a terminal and go to the src/ directory of SlimerJS. Then launch:
 
 ```
     ./slimerjs myscript.js

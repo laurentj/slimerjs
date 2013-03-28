@@ -61,5 +61,5 @@ for v in $ENVVAR; do
     LISTVAR="$LISTVAR,${var[0]}"
 done
 
-"$SLIMERJSLAUNCHER" -app $SCRIPTDIR/../src/application.ini -purgecaches --envs "$LISTVAR" "$@"
+"$SLIMERJSLAUNCHER" -app $SCRIPTDIR/application.ini -purgecaches --envs "$LISTVAR" "$@"
 
