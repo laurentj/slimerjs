@@ -182,7 +182,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onLoadFinished                      </td><td>Implemented</td></tr>
     <tr><td>onLoadStarted                       </td><td>Implemented</td></tr>
     <tr><td>onNavigationRequested               </td><td></td></tr>
-    <tr><td>onPageCreated                       </td><td></td></tr>
+    <tr><td>onPageCreated                       </td><td>Implemented</td></tr>
     <tr><td>onPrompt                            </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
     <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>

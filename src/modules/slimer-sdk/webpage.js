@@ -103,15 +103,15 @@ function create() {
     /**
      * build an object of options for the netlogger
      */
-    function getNetLoggerOptions(webpage, url, callback) {
+    function getNetLoggerOptions(webpage, callback) {
         return {
             onRequest: function(request) {webpage.resourceRequested(request);},
             onResponse:  function(res) {webpage.resourceReceived(res);},
             captureTypes: webpage.captureContent,
-            onLoadStarted: function(){ webpage.loadStarted(); },
+            onLoadStarted: function(url){ webpage.loadStarted(); },
             onURLChanged: function(url){ webpage.urlChanged(url);},
             onTransferStarted :null,
-            onContentLoaded: function(success){
+            onContentLoaded: function(url, success){
                 // phantomjs call onInitialized not only at the page creation
                 // but also after the content loading.. don't know why.
                 // let's imitate it. Only after a success
@@ -137,13 +137,58 @@ function create() {
                     });
                 }
             },
-            onLoadFinished: function(success){
+            onLoadFinished: function(url, success){
                 webpage.loadFinished(success);
                 if (callback) {
                     callback(success);
                     callback = null;
                 }
             }
+        }
+    }
+
+
+    /**
+     * object that intercepts all window.open() of the web content
+     */
+    var slBrowserDOMWindow = {
+
+        QueryInterface : function(aIID) {
+            if (aIID.equals(Ci.nsIBrowserDOMWindow) ||
+                aIID.equals(Ci.nsISupports))
+                return this;
+            throw Cr.NS_NOINTERFACE;
+        },
+
+        /**
+         * called by nsContentTreeOwner::ProvideWindow
+         * when a window should be opened (window.open is invoked by a web page)
+         * @param aURI in our case, it is always null
+         * @param aWhere nsIBDW.OPEN_DEFAULTWINDOW, OPEN_CURRENTWINDOW OPEN_NEWWINDOW OPEN_NEWTAB OPEN_SWITCHTAB
+         * @param aContext nsIBDW.OPEN_EXTERNAL (external app which ask to open the url), OPEN_NEW
+         * @return the nsIDOMWindow object where to load the URI
+         */
+        openURI : function(aURI, aOpener, aWhere, aContext)
+        {
+            // create the webpage object for this child window
+            var childPage = create();
+            // open the window
+            var win = childPage._openBlankBrowser(aOpener);
+            // call the callback
+            if (webpage.onPageCreated)
+                webpage.onPageCreated(childPage);
+            // returns the contentWindow of the browser element
+            // nsContentTreeOwner::ProvideWindow and other will
+            // load the expected URI into it.
+            return win.content;
+        },
+
+        openURIInFrame : function(aURI, aOpener, aWhere, aContext) {
+            return null;
+        },
+
+        isTabContentWindow : function(aWindow) {
+            return false;
         }
     }
 
@@ -251,9 +296,8 @@ function create() {
          *                           receives "success" or "fail" as parameter.
          */
         open: function(url, callback) {
-
             var me = this;
-            var options = getNetLoggerOptions(this, url, callback);
+            var options = getNetLoggerOptions(this, callback);
             if (browser) {
                 // don't recreate a browser if already opened.
                 netLog.registerBrowser(browser, options);
@@ -270,8 +314,43 @@ function create() {
                 netLog.registerBrowser(browser, options);
                 browser.loadURI(url);
             });
-
+            win.QueryInterface(Ci.nsIDOMChromeWindow)
+               .browserDOMWindow= slBrowserDOMWindow;
         },
+
+        /**
+         * @private
+         */
+        _openBlankBrowser: function(parentWindow) {
+            var me = this;
+
+            if (browser) {
+                throw Cr.NS_ERROR_UNEXPECTED;
+            }
+            var options = getNetLoggerOptions(this, null);
+            var ready = false;
+            var win = slLauncher.openBrowser(function(nav){
+                browser = nav;
+                browser.webpage = me;
+                Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
+                netLog.registerBrowser(browser, options);
+                me.initialized();
+                ready = true;
+            }, parentWindow);
+
+            win.QueryInterface(Ci.nsIDOMChromeWindow)
+               .browserDOMWindow = slBrowserDOMWindow;
+
+            // we're waiting synchronously after the initialisation of the new window, because we need
+            // to have a ready browser element and then to have an existing win.content.
+            // slBrowserDOMWindow.openURI needs to return this win.content so the
+            // caller will load the URI into this window object.
+            let thread = Services.tm.currentThread;
+            while (!ready)
+                thread.processNextEvent(true);
+            return win;
+        },
+
         openUrl: function(url, httpConf, settings) {
             throw "Not Implemented"
         },
@@ -819,13 +898,7 @@ function create() {
         },
 
         // This callback is invoked when a new child window (but not deeper descendant windows) is created by the page, e.g. using window.open
-        get onPageCreated() {
-            throw "Not Implemented"
-        },
-
-        set onPageCreated(callback) {
-            throw "Not Implemented"
-        },
+        onPageCreated: null,
 
         onResourceRequested : null,
 

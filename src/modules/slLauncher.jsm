@@ -63,9 +63,10 @@ var slLauncher = {
      * create a new browser element. call the given callback when it is ready,
      * with the browser element as parameter.
      */
-    openBrowser : function(callback) {
-        windowMediator.getMostRecentWindow("slimerjs")
-                      .openDialog("webpage.xul", "_blank", "width=400,height=300,chrome,resizable", { callback:callback});
+    openBrowser : function(callback, parentWindow) {
+        if (!parentWindow)
+            parentWindow = windowMediator.getMostRecentWindow("slimerjs");
+        return parentWindow.openDialog("webpage.xul", "_blank", "chrome,all,dialog=no", { callback:callback});
     },
 
     closeBrowser: function (browser) {

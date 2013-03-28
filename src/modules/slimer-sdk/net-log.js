@@ -538,7 +538,7 @@ ProgressListener.prototype = {
                 if (this.isLoadRequested(flags)) {
                     this.mainPageURI = uri;
                     if (typeof(this.options.onLoadStarted) === "function") {
-                        this.options.onLoadStarted();
+                        this.options.onLoadStarted(uri);
                     }
                 }
                 return;
@@ -549,14 +549,14 @@ ProgressListener.prototype = {
 
             if (this.isStart(flags)) {
                 if (typeof(this.options.onTransferStarted) === "function") {
-                    this.options.onTransferStarted();
+                    this.options.onTransferStarted(uri);
                 }
                 return;
             }
 
             if (this.isTransferDone(flags)) {
                 if (typeof(this.options.onContentLoaded) === "function") {
-                    this.options.onContentLoaded((request.status?false:true));
+                    this.options.onContentLoaded(uri, (request.status?false:true));
                 }
                 return;
             }
@@ -567,7 +567,7 @@ ProgressListener.prototype = {
                     if (uri != 'about:blank' && request.status) {
                         success = 'fail';
                     }
-                    this.options.onLoadFinished(success);
+                    this.options.onLoadFinished(uri, success);
                 }
                 return;
             }

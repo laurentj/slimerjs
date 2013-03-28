@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>window open</title>
+    </head>
+    <body>this page try to open a window
+    <script type="text/javascript">
+        
+        function launchWindow() {
+            window.open("helloframe.html", "_blank", "resizable,scrollbars,status");
+            return "OK";
+        }
+    </script>
+    <input type="button" onclick="launchWindow()" value="click" id="btn">
+    </body>
+</html>

@@ -16,3 +16,12 @@ pref("nglayout.debug.disable_xul_fastload", true);
 
 // for xulrunner, to display error pages instead of alert box
 pref("browser.xul.error_pages.enabled", true);
+
+// disable popup blocker
+pref("dom.disable_open_during_load", false);
+pref("dom.popup_maximum", -1);
+
+// says how to open new window when window.open is called
+pref("browser.link.open_newwindow", 3);
+pref("browser.link.open_newwindow.restriction", 0);
+pref("browser.link.open_external", 1);
