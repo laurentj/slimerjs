@@ -362,13 +362,12 @@ function create() {
             if (browser) {
                 Services.obs.removeObserver(webpageObserver, "console-api-log-event");
                 netLog.unregisterBrowser(browser);
-                if (this.onClosing)
-                    this.onClosing(this);
+                this.closing(this);
                 browser.webpage = null;
                 slLauncher.closeBrowser(browser);
             }
             webPageSandbox = null;
-            browsers=null;
+            browser=null;
         },
 
         /**
@@ -909,7 +908,8 @@ function create() {
 
         // -------------------------------- private methods to send some events
         closing:function (page) {
-            throw "Not Implemented"
+            if (this.onClosing)
+                this.onClosing(page);
         },
 
         initialized: function() {

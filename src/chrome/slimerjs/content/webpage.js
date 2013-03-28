@@ -13,3 +13,13 @@ window.addEventListener("load", function(event) {
         window.arguments[0].callback(browser);
     }
 }, true);
+
+var closing = false;
+window.addEventListener("DOMWindowClose", function(event) {
+    if (closing)
+        return;
+    closing = true;
+    browser.webpage.close();
+}, true);
+
+
