@@ -94,7 +94,7 @@ blank page. Here are objects you can play with:
   provide the most important API.
 - some modules of the Mozilla Addons SDK: promise, heritage, xhr, system/, deprecated/ etc.
 
-You can read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API.md) to know the implementation progress.
+You can read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md) to know the implementation progress.
 
 To know how to use all available APIs, read the [PhantomJS documentation](https://github.com/ariya/phantomjs/wiki/Quick-Start).
 
