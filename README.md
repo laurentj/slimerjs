@@ -18,6 +18,8 @@ SlimerJS is not only a PhantomJS clone, it contains also additional features:
   iterators, generators, destructured assignement, Map and WeakMap, "let" keyword...
 * Many [modules of the Mozilla Addons Sdk](https://addons.mozilla.org/en-US/developers/docs/sdk/latest/) are available
   and you can import it into your code as any CommonJS modules.
+* Supports all last HTML5 standards implemented in Firefox, including things that are not available into PhantomJS:
+  Audio, Video, WebGL etc..
 * SlimerJS is able to load flash content if the Flash plugin is installed
 
 Technically, SlimerJS is a XUL/JS application that can be launched with
