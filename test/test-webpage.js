@@ -31,6 +31,65 @@ describe("WebPage object on hello world", function(){
 });
 
 
+describe("WebPage object", function(){
+    var webpage = require("webpage").create();
+    var url = "http://127.0.0.1:8083/";
+
+
+    it("can open a page and a promise can be used",function() {
+        var loaded = false;
+        var foo = '';
+        var loadedResult1 = '';
+        var loadedResult2 = '';
+        runs(function() {
+            var promise = webpage.open(url, function(success){
+                loadedResult1 = success;
+            });
+            promise.then(function(success){
+                loadedResult2 = success;
+                foo='bar';
+                var deferred = require("sdk/core/promise").defer();
+                setTimeout(deferred.resolve, 200, "hello");
+                return deferred.promise;
+            })
+            .then(function(val){
+                foo += val;
+                loaded = true;
+            })
+        });
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            expect(foo).toEqual("barhello");
+            expect(loadedResult1).toEqual("success");
+            expect(loadedResult2).toEqual("success");
+            webpage.close();
+        });
+    });
+
+    it("can chain two openings of page with a promise",function() {
+        var loaded = false;
+        var titles = '';
+        var loadedResult1 = '';
+        var loadedResult2 = '';
+        runs(function() {
+            webpage.open(url+"simplehello.html")
+            .then(function(){
+                titles+=' '+webpage.title;
+                return webpage.open(url+"helloframe.html");
+            })
+            .then(function(){
+                titles+=' '+webpage.title;
+                loaded = true;
+            })
+        });
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            expect(titles).toEqual(" simple hello world hello in frame");
+            webpage.close();
+        });
+    });
+});
+
 
 
 describe("WebPage.evaluate()", function(){

@@ -21,6 +21,7 @@ SlimerJS is not only a PhantomJS clone, it contains also additional features:
 * Supports all last HTML5 standards implemented in Firefox, including things that are not available into PhantomJS:
   Audio, Video, WebGL etc..
 * SlimerJS is able to load flash content if the Flash plugin is installed
+* You can use promises when opening a web page! ```webpage.open()``` returns [a promise](https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html).
 
 Technically, SlimerJS is a XUL/JS application that can be launched with
 XULRunner or Firefox (without its interface).

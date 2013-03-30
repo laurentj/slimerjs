@@ -20,6 +20,7 @@ const {
 
 const fs = require("sdk/io/file");
 const base64 = require("sdk/base64");
+const Q = require("sdk/core/promise");
 
 const netLog = require('net-log');
 netLog.startTracer();
@@ -103,7 +104,7 @@ function create() {
     /**
      * build an object of options for the netlogger
      */
-    function getNetLoggerOptions(webpage, callback) {
+    function getNetLoggerOptions(webpage, deferred) {
         return {
             onRequest: function(request) {webpage.resourceRequested(request);},
             onResponse:  function(res) {webpage.resourceReceived(res);},
@@ -139,14 +140,11 @@ function create() {
             },
             onLoadFinished: function(url, success){
                 webpage.loadFinished(success);
-                if (callback) {
-                    callback(success);
-                    callback = null;
-                }
+                if (deferred)
+                    deferred.resolve(success);
             }
         }
     }
-
 
     /**
      * object that intercepts all window.open() of the web content
@@ -297,12 +295,23 @@ function create() {
          */
         open: function(url, callback) {
             var me = this;
-            var options = getNetLoggerOptions(this, callback);
+            let deferred = Q.defer();
+
+            deferred.promise.then(function(result) {
+                if (callback) {
+                    callback(result);
+                    callback = null;
+                }
+                return result;
+            });
+
+            var options = getNetLoggerOptions(this, deferred);
+
             if (browser) {
                 // don't recreate a browser if already opened.
                 netLog.registerBrowser(browser, options);
                 browser.loadURI(url);
-                return;
+                return deferred.promise;
             }
 
             var win = slLauncher.openBrowser(function(nav){
@@ -316,6 +325,7 @@ function create() {
             });
             win.QueryInterface(Ci.nsIDOMChromeWindow)
                .browserDOMWindow= slBrowserDOMWindow;
+            return deferred.promise;
         },
 
         /**

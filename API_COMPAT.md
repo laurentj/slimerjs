@@ -7,6 +7,7 @@ Here are compatibility tables and other specific API to SlimerJS.
 
 * webpage.sendEvent() for key events is more consistent. In phantomJS, there are
   [several issues](http://code.google.com/p/phantomjs/issues/detail?id=1094)
+* ```webpage.open()``` returns [a promise](https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html). It's easier to chain things executed asynchronously
 * The webserver object has more methods to configure it easily
 
 Of course, since SlimerJS is still under developpement, the other main difference
@@ -147,7 +148,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>goForward()                         </td><td>Implemented</td></tr>
     <tr><td>includeJs(url, callback)            </td><td>implemented</td></tr>
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
-    <tr><td>open(url, callback)                 </td><td>Implemented</td></tr>
+    <tr><td>open(url, callback)                 </td><td>Implemented. SlimerJS only: it returns a promise</td></tr>
     <tr><td>openUrl(url, httpConf, settings)    </td><td></td></tr>
     <tr><td>release()                           </td><td></td></tr>
     <tr><td>reload()                            </td><td>Implemented</td></tr>
