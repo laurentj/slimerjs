@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>window frames</title>
+    </head>
+    <frameset rows="100,*">
+        <frame src="frame_top.html" name="frametop" >
+        <frameset cols="25%,*">
+            <frame src="frame_left.html" name='frameleft' >
+            <frame src="subframe_main.html" name='frameright'>
+        </frameset>
+    </frameset>
+    <script type="text/javascript">
+        function setFocusInOtherFrame() {
+            return "bad";
+        }
+    </script>
+</html>

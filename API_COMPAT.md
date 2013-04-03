@@ -103,14 +103,14 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>cookies                             </td><td></td></tr>
     <tr><td>customHeaders                       </td><td></td></tr>
     <tr><td>event                               </td><td></td></tr>
-    <tr><td>focusedFrameName                    </td><td></td></tr>
-    <tr><td>frameContent                        </td><td></td></tr>
-    <tr><td>frameName                           </td><td></td></tr>
-    <tr><td>framePlainText                      </td><td></td></tr>
-    <tr><td>frameTitle                          </td><td></td></tr>
-    <tr><td>frameUrl                            </td><td></td></tr>
-    <tr><td>framesCount                         </td><td></td></tr>
-    <tr><td>framesName                          </td><td></td></tr>
+    <tr><td>focusedFrameName                    </td><td>Implemented</td></tr>
+    <tr><td>frameContent                        </td><td>Implemented. Setter is not implemented yet.</td></tr>
+    <tr><td>frameName                           </td><td>Implemented</td></tr>
+    <tr><td>framePlainText                      </td><td>Implemented</td></tr>
+    <tr><td>frameTitle                          </td><td>Implemented</td></tr>
+    <tr><td>frameUrl                            </td><td>Implemented</td></tr>
+    <tr><td>framesCount                         </td><td>Implemented</td></tr>
+    <tr><td>framesName                          </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented</td></tr>
     <tr><td>navigationLocked                    </td><td></td></tr>
     <tr><td>offlineStoragePath                  </td><td></td></tr>
@@ -125,7 +125,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>title                               </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>viewportSize                        </td><td>Implemented</td></tr>
-    <tr><td>windowName                          </td><td></td></tr>
+    <tr><td>windowName                          </td><td>Implemented</td></tr>
     <tr><td>zoomFactor                          </td><td></td></tr>
 </table>
 
@@ -133,11 +133,11 @@ It will contain API that does not exists in PhantomJS.
 
 <table>
     <tr><td>addCookie(Cookie)                   </td><td></td></tr>
-    <tr><td>childFramesCount()                  </td><td>deprecated</td></tr>
-    <tr><td>childFramesName()                   </td><td>deprecated</td></tr>
+    <tr><td>childFramesCount()                  </td><td>Implemented. deprecated</td></tr>
+    <tr><td>childFramesName()                   </td><td>Implemented. deprecated</td></tr>
     <tr><td>clearCookies()                      </td><td></td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
-    <tr><td>currentFrameName()                  </td><td>deprecated</td></tr>
+    <tr><td>currentFrameName()                  </td><td>Implemented. deprecated</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td></td></tr>
     <tr><td>evaluateJavascript(str)             </td><td>implemented</td></tr>
     <tr><td>evaluate(function, arg1, arg2,...)  </td><td>implemented</td></tr>
@@ -159,13 +159,13 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
     <tr><td>setContent(content, url)            </td><td></td></tr>
     <tr><td>stop()                              </td><td>Implemented</td></tr>
-    <tr><td>switchToFocusedFrame()              </td><td></td></tr>
-    <tr><td>switchToFrame(frameName)            </td><td></td></tr>
-    <tr><td>switchToFrame(framePosition)        </td><td></td></tr>
-    <tr><td>switchToChildFrame(frameName)       </td><td>deprecated</td></tr>
-    <tr><td>switchToChildFrame(framePosition)   </td><td>deprecated</td></tr>
-    <tr><td>switchToMainFrame()                 </td><td></td></tr>
-    <tr><td>switchToParentFrame()               </td><td></td></tr>
+    <tr><td>switchToFocusedFrame()              </td><td>Implemented</td></tr>
+    <tr><td>switchToFrame(frameName)            </td><td>Implemented</td></tr>
+    <tr><td>switchToFrame(framePosition)        </td><td>Implemented</td></tr>
+    <tr><td>switchToChildFrame(frameName)       </td><td>Implemented. deprecated</td></tr>
+    <tr><td>switchToChildFrame(framePosition)   </td><td>Implemented. deprecated</td></tr>
+    <tr><td>switchToMainFrame()                 </td><td>Implemented</td></tr>
+    <tr><td>switchToParentFrame()               </td><td>Implemented</td></tr>
     <tr><td>uploadFile(selector, filename)      </td><td></td></tr>
 </table>
 

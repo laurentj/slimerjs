@@ -12,6 +12,8 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 
+const fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
+
 const {validateOptions} = require("sdk/deprecated/api-utils");
 const {
     getScreenshotCanvas, setAuthHeaders, removeAuthPrompt,
@@ -21,6 +23,7 @@ const {
 const fs = require("sdk/io/file");
 const base64 = require("sdk/base64");
 const Q = require("sdk/core/promise");
+const timer = require("sdk/timers");
 
 const netLog = require('net-log');
 netLog.startTracer();
@@ -46,8 +49,7 @@ function create() {
      * utility function to create a sandbox when executing a
      * user script in the webpage content
      */
-    function createSandBox() {
-        let win = browser.contentWindow;
+    function createSandBox(win) {
         let sandbox = Cu.Sandbox(win,
             {
                 'sandboxName': browser.currentURI.spec,
@@ -56,12 +58,16 @@ function create() {
             });
         return sandbox;
     }
+
     var webPageSandbox = null;
 
     function evalInSandbox (src) {
         if (!webPageSandbox)
-            webPageSandbox = createSandBox();
-        return Cu.evalInSandbox(src, webPageSandbox);
+            webPageSandbox = new WeakMap();
+        let win = getCurrentFrame();
+        if (!webPageSandbox.has(win))
+            webPageSandbox.set(win, createSandBox(win));
+        return Cu.evalInSandbox(src, webPageSandbox.get(win));
     }
 
     /**
@@ -193,9 +199,72 @@ function create() {
     /**
      * some private parameters
      */
-     var privateParameters = {
-         clipRect : null
-     }
+    var privateParameters = {
+        clipRect : null,
+        framePath : []
+    }
+
+    function getCurrentFrame() {
+        if (!browser)
+            return null;
+        var win = browser.contentWindow;
+        win.name = ''; // it seems that the root window take the name of the xul window
+        privateParameters.framePath.forEach(function(frameName){
+            if (win == null)
+                return;
+            if ((typeof frameName) == 'number') {
+                if (frameName < win.frames.length) {
+                    win = win.frames[frameName];
+                }
+                else
+                    win = null;
+            }
+            else if ((typeof frameName) == 'string') {
+                let found = false;
+                for(let i=0; i < win.frames.length; i++) {
+                    if (win.frames[i].name == frameName) {
+                        win = win.frames[i];
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    win = null;
+                }
+            }
+            else
+                win = null;
+        });
+        return win;
+    }
+
+    function isChromeWindow(win) {
+        try  {
+            win.QueryInterface(Ci.nsIDOMChromeWindow)
+            return true;
+        }catch(e) {
+            return false;
+        }
+    }
+
+    /**
+     * a function to return the focusedWindow.
+     * The focus given to a window can take time asynchronously
+     * so we're waiting that the focus is done.
+     */
+    function getFocusedWindow() {
+        let win = fm.focusedWindow;
+        let stop = false;
+        timer.setTimeout(function(){ stop = true},300);
+        let thread = Services.tm.currentThread;
+        while (!stop && (!win || isChromeWindow(win))) {
+            thread.processNextEvent(true);
+            win = fm.focusedWindow;
+        }
+        if (stop)
+            return null;
+        return win;
+    }
 
     // ----------------------------------- webpage
 
@@ -386,34 +455,6 @@ function create() {
          */
         onClosing: null,
 
-        childFramesCount: function () {
-            throw "Not Implemented"
-        },
-
-        childFramesName : function () {
-            throw "Not Implemented"
-        },
-
-        currentFrameName : function () {
-            throw "Not Implemented"
-        },
-
-        get frameUrl() {
-            throw "Not Implemented"
-        },
-
-        get focusedFrameName () {
-            throw "Not Implemented"
-        },
-
-        get frameCount () {
-            throw "Not Implemented"
-        },
-
-        get framesName () {
-            throw "Not Implemented"
-        },
-
         get ownsPages () {
             throw "Not Implemented"
         },
@@ -441,27 +482,6 @@ function create() {
         set scrollPosition(val) {
             throw "Not Implemented"
         },
-
-        switchToFocusedFrame: function() {
-            throw "Not Implemented"
-        },
-
-        switchToFrame: function(frame) {
-            throw "Not Implemented"
-        },
-
-        switchToChildFrame: function(frame) {
-            throw "Not Implemented"
-        },
-
-        switchToMainFrame: function() {
-            throw "Not Implemented"
-        },
-
-        switchToParentFrame: function() {
-            throw "Not Implemented"
-        },
-
         get url() {
             if (browser)
                 return browser.currentURI.spec;
@@ -497,9 +517,168 @@ function create() {
             domWindowUtils. setCSSViewport(w,h);
         },
 
-
         get windowName () {
+            if (!browser)
+                return null;
+            return browser.contentWindow.name;
+        },
+
+        // -------------------------------- frames manipulation
+
+        childFramesCount: function () {
+            return this.framesCount;
+        },
+
+        childFramesName : function () {
+            return this.framesName;
+        },
+
+        currentFrameName : function () {
+            return this.frameName;
+        },
+
+        get frameUrl() {
+            var win = getCurrentFrame();
+            if (!win){
+                return '';
+            }
+            return win.location.href;
+        },
+
+        get focusedFrameName () {
+            if (!browser) {
+                return '';
+            }
+            var win = getFocusedWindow();
+            if (win && win.name && win.name != 'webpage')
+                return win.name;
+            return '';
+        },
+
+        get framesCount () {
+            var win = getCurrentFrame();
+            if (!win){
+                return 0;
+            }
+            return win.frames.length;
+        },
+
+        get frameName () {
+            var win = getCurrentFrame();
+            if (!win){
+                return false;
+            }
+            return win.name;
+        },
+
+        get framesName () {
+            var win = getCurrentFrame();
+            if (!win){
+                return [];
+            }
+            let l = [];
+            for(let i = 0; i < win.frames.length; i++) {
+                l.push(win.frames[i].name);
+            }
+            return l;
+        },
+
+        switchToFocusedFrame: function() {
+            if (!browser) {
+                return false;
+            }
+            var win = getFocusedWindow();
+            if (!win)
+                return -1;
+            var l = [];
+            while(browser.contentWindow != win) {
+                if (win.name) {
+                    l.unshift(win.name)
+                }
+                else {
+                    let f = win.parent.frames;
+                    let found = false;
+                    for (let i=0; i < f.length;i++) {
+                        if (f[i] == win) {
+                            l.unshift(i);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                        return -2;
+                }
+                win = win.parent;
+            }
+            privateParameters.framePath = l;
+            return true;
+        },
+
+        switchToFrame: function(frameName) {
+            privateParameters.framePath.push(frameName);
+            var win = getCurrentFrame();
+            if (!win){
+                privateParameters.framePath.pop();
+                return false;
+            }
+            return true;
+        },
+
+        switchToChildFrame: function(frame) {
+            return this.switchToFrame(frame);
+        },
+
+        switchToMainFrame: function() {
+            privateParameters.framePath = [];
+        },
+
+        switchToParentFrame: function() {
+            if (privateParameters.framePath.length) {
+                privateParameters.framePath.pop();
+                return true;
+            }
+            else
+                return false;
+        },
+
+        get frameContent() {
+            var win = getCurrentFrame();
+            if (!win){
+                return false;
+            }
+            const de = Ci.nsIDocumentEncoder
+            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
+                            .createInstance(Ci.nsIDocumentEncoder);
+            let doc = win.document;
+            encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
+            encoder.setNode(doc);
+            return encoder.encodeToString();
+        },
+
+        set frameContent(val) {
             throw "Not Implemented"
+        },
+
+        get framePlainText() {
+            var win = getCurrentFrame();
+            if (!win){
+                return false;
+            }
+            const de = Ci.nsIDocumentEncoder
+            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
+                            .createInstance(Ci.nsIDocumentEncoder);
+            let doc = win.document;
+            encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly | de.OutputRaw);
+            encoder.setNode(doc);
+            return encoder.encodeToString();
+        },
+
+        get frameTitle() {
+            var win = getCurrentFrame();
+            if (!win){
+                return '';
+            }
+            return win.document.title;
         },
 
         // -------------------------------- Javascript evaluation
@@ -516,12 +695,16 @@ function create() {
         evaluate: function(func) {
             if (!browser)
                 throw "WebPage not opened";
+
             let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
             func = '('+func.toSource()+').apply(this, ' + args + ');';
             return evalInSandbox(func);
         },
 
         evaluateJavascript: function(src) {
+            if (!browser)
+                throw "WebPage not opened";
+
             return evalInSandbox(src);
         },
 
@@ -541,7 +724,11 @@ function create() {
             // of the loaded page cannot access to variables/functions
             // created by the injected script. And this behavior
             // is necessary to be compatible with phantomjs.
-            let doc = browser.contentWindow.document;
+            var win = getCurrentFrame();
+            if (!win){
+                throw "No window available";
+            }
+            let doc = win.document;
             let body = doc.documentElement.getElementsByTagName("body")[0];
             let script = doc.createElement('script');
             script.setAttribute('type', 'text/javascript');
@@ -608,22 +795,6 @@ function create() {
             throw "Not Implemented"
         },
 
-        get frameContent() {
-            throw "Not Implemented"
-        },
-
-        set frameContent(val) {
-            throw "Not Implemented"
-        },
-
-        get framePlainText() {
-            throw "Not Implemented"
-        },
-
-        get frameTitle() {
-            throw "Not Implemented"
-        },
-
         get offlineStoragePath() {
             throw "Not Implemented"
         },
@@ -639,7 +810,6 @@ function create() {
         set offlineStorageQuota(val) {
             throw "Not Implemented"
         },
-
 
         get plainText() {
             if (!browser)
