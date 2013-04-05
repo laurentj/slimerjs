@@ -10,12 +10,12 @@ component {fe06cc0a-53d5-4004-a5af-c23b4d2e327d} components/ConsoleAPI.js
 contract @mozilla.org/console-api;1 {fe06cc0a-53d5-4004-a5af-c23b4d2e327d}
 category JavaScript-global-property console @mozilla.org/console-api;1
 
-component {06457d69-7b58-4975-a6ce-0496aeb508b6} components/nsPrompter.js
-contract @mozilla.org/prompter;1 {06457d69-7b58-4975-a6ce-0496aeb508b6}
-component {6e134924-6c3a-4d86-81ac-69432dd971dc} components/nsPrompter.js
-contract @mozilla.org/network/authprompt-adapter-factory;1 {6e134924-6c3a-4d86-81ac-69432dd971dc}
-component {7ad1b327-6dfa-46ec-9234-f2a620ea7e00} components/nsPrompter.js
-contract @mozilla.org/embedcomp/prompt-service;1 {7ad1b327-6dfa-46ec-9234-f2a620ea7e00}
+component {47c45611-1cfe-4f5e-9749-dc5c78ce8b40} components/nsPrompter.js
+contract @mozilla.org/prompter;1 {47c45611-1cfe-4f5e-9749-dc5c78ce8b40}
+component {d49b3b06-afc2-4f72-9f9e-baffae1a4d8c} components/nsPrompter.js
+contract @mozilla.org/network/authprompt-adapter-factory;1 {d49b3b06-afc2-4f72-9f9e-baffae1a4d8c}
+component {5598347d-7573-47b9-ae3c-a9c4e3f0e56b} components/nsPrompter.js
+contract @mozilla.org/embedcomp/prompt-service;1 {5598347d-7573-47b9-ae3c-a9c4e3f0e56b}
 
 
 manifest components/httpd.manifest

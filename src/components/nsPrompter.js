@@ -16,7 +16,7 @@ function Prompter() {
 }
 
 Prompter.prototype = {
-    classID          : Components.ID("{06457d69-7b58-4975-a6ce-0496aeb508b6}"),
+    classID          : Components.ID("{47c45611-1cfe-4f5e-9749-dc5c78ce8b40}"),
     QueryInterface   : XPCOMUtils.generateQI([Ci.nsIPromptFactory, Ci.nsIPromptService, Ci.nsIPromptService2]),
 
 
@@ -850,7 +850,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
 function AuthPromptAdapterFactory() {
 }
 AuthPromptAdapterFactory.prototype = {
-    classID          : Components.ID("{6e134924-6c3a-4d86-81ac-69432dd971dc}"),
+    classID          : Components.ID("{d49b3b06-afc2-4f72-9f9e-baffae1a4d8c}"),
     QueryInterface   : XPCOMUtils.generateQI([Ci.nsIAuthPromptAdapterFactory]),
 
     /* ----------  nsIAuthPromptAdapterFactory ---------- */
@@ -903,7 +903,7 @@ AuthPromptAdapter.prototype = {
 function EmbedPrompter() {
 }
 EmbedPrompter.prototype = new Prompter();
-EmbedPrompter.prototype.classID          = Components.ID("{7ad1b327-6dfa-46ec-9234-f2a620ea7e00}");
+EmbedPrompter.prototype.classID          = Components.ID("{5598347d-7573-47b9-ae3c-a9c4e3f0e56b}");
 
 var component = [Prompter, EmbedPrompter, AuthPromptAdapterFactory];
 this.NSGetFactory = XPCOMUtils.generateNSGetFactory(component);
