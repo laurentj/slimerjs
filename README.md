@@ -5,11 +5,11 @@ with a Javascript script: opening a webpage, clicking on links, modifying the co
 It is useful to do functional tests, page automaton, network monitoring, screen capture etc.
 
 It is in fact a tool like [PhantomJs](http://phantomjs.org/), except that
-it runs Gecko instead of Webkit, and it is not (yet) headless
-(but you can try to use xvfb to have a headless SlimerJS).
+it runs Gecko instead of Webkit, and it is not (yet) natively headless.
+However, it can be headless with the use of xvfb under Linux or MacOS (see below).
 
-Because SlimerJS will provide the same API of PhantomJS, you could then use
-other tools like [CasperJS](http://casperjs.org)...
+Because SlimerJS will provide the same API of PhantomJS, in future releases
+you could use other tools like [CasperJS](http://casperjs.org)...
 
 SlimerJS is not only a PhantomJS clone, it contains also additional features:
 
@@ -80,6 +80,26 @@ You can for example launch some tests:
 Note: on MacOs, there is a known bug. You could have an error "script not found".
 Indicate the full path of the js script to avoid it.
 
+
+# Launching a headless SlimerJS
+
+There is a tool called xvfb, available on Linux and MacOS. It allows to launch
+any "graphical" programs without the need of X-Windows environment. Windows of
+the application won't be showned and will be drawn only in memory.
+
+Install it from your prefered repository (```sudo apt-get install xvfb```
+with debian/ubuntu).
+
+Then launch SlimerJS like this:
+
+```
+    xvfb-run ./slimerjs myscript.js
+```
+
+You won't see any windows. If you have any problems with xvfb, see its
+documentation.
+
+
 # Content of a script
 
 It should contain javascript instructions. The script is executed in the context of a
@@ -89,7 +109,7 @@ blank page. Here are objects you can play with:
 - the [document object](https://developer.mozilla.org/en-US/docs/DOM/document) of the blank page
 - a **console** object, similar with the [DOM Console object](https://developer.mozilla.org/en-US/docs/DOM/console),
   providing these methods: debug, log, info, warn, error
-- a **phantom** object that will provide the [API of PhantomJS 1.8](https://github.com/ariya/phantomjs/wiki/API-Reference),
+- a **phantom** object that will provide the [API of PhantomJS 1.9](https://github.com/ariya/phantomjs/wiki/API-Reference),
   but all of its properties and methods are not implemented yet
 - a **slimer** object that will contain additionnal API
 - a **require** function to load CommonJS modules
@@ -107,16 +127,17 @@ the window of SlimerJS won't be closed.
 
 # Roadmap
 
-The goal for a first stable release 1.0 is to have a full implementation of the API of PhantomJS 1.8.
+The goal for a first stable release 1.0 is to have a full implementation of
+the API of PhantomJS 1.9, with the support of Coffee scripts and Ghost Driver.
 
 After this release, the goal will be to hack XulRunner to run headless windows.
 
 # FAQ
 
-- Why is it not Headless?
-  - Gecko, the rendering engine of Firefox, cannot render web content without a window.
-    See [Mozilla bug 446591](https://bugzilla.mozilla.org/show_bug.cgi?id=446591). however you could
-    launch SlimerJS with xvfb (not tested).
+- Why is it not natively headless?
+  - Gecko, the rendering engine of Firefox, cannot render web content without a graphical window.
+    See [Mozilla bug 446591](https://bugzilla.mozilla.org/show_bug.cgi?id=446591).
+    However you can launch SlimerJS with xvfb (see below).
 - Why is it called "SlimerJs"?
    - Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox source code uses
     many references from this movie, and since PhantomJS, CasperJs and other related tools, is a matter of ghost... ;-)
