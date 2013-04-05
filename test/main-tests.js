@@ -75,14 +75,14 @@ webserverTest.listen(8083, function(request, response) {
         else {
             response.statusCode = 200;
             response.headers['Content-type'] = 'text/html';
-            response.write('<html><head><title>directory</title></head><body>directory</body></html>');
+            response.write('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>directory</title></head><body>directory</body></html>');
             response.close();
         }
     }
     else {
         response.statusCode = 404;
         response.headers['Content-type'] = 'text/html';
-        response.write('<html><head><title>error</title></head><body>File Not Found</body></html>');
+        response.write('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>error</title></head><body>File Not Found</body></html>');
         response.close();
     }
 });
@@ -90,7 +90,7 @@ webserverTest.listen(8083, function(request, response) {
 var webserverTestWebPage = webServerFactory.create();
 webserverTestWebPage.listen(8082, function(request, response) {
     response.statusCode = 200;
-    response.write('<html><head><title>hello world</title></head><body>Hello!</body></html>');
+    response.write('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>hello world</title></head><body>Hello!</body></html>');
     response.close();
 });
 
