@@ -193,7 +193,7 @@ It will contain API that does not exists in PhantomJS.
 Methods that send signals (private methods):
 
 <table>
-    <tr><td>closing(page)                       </td><td></td></tr>
+    <tr><td>closing(page)                       </td><td>Implemented</td></tr>
     <tr><td>initialized()                       </td><td>Implemented</td></tr>
     <tr><td>javaScriptAlertSent(message)        </td><td>Implemented</td></tr>
     <tr><td>javaScriptConsoleMessageSent(message)</td><td>Implemented</td></tr>
