@@ -266,3 +266,25 @@ describe("WebPage.title", function(){
         });
     });
 });
+
+describe("WebPage.zoomFactor", function(){
+    var webpage = require("webpage").create();
+    var url = "http://127.0.0.1:8082/hello.html";
+
+    it("can be retrieved",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open(url, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            expect(webpage.zoomFactor).toEqual(1);
+            webpage.zoomFactor = 1.5;
+            expect(webpage.zoomFactor).toEqual(1.5);
+            webpage.close();
+        });
+    });
+});

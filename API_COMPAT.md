@@ -126,7 +126,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>viewportSize                        </td><td>Implemented</td></tr>
     <tr><td>windowName                          </td><td>Implemented</td></tr>
-    <tr><td>zoomFactor                          </td><td></td></tr>
+    <tr><td>zoomFactor                          </td><td>Implemented</td></tr>
 </table>
 
 ## methods

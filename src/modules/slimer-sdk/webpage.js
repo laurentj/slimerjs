@@ -996,8 +996,16 @@ function create() {
             }
         },
         paperSize : null,
-        zoomFactor : null,
-
+        get zoomFactor () {
+            if (!browser)
+                throw "WebPage not opened";
+            return browser.markupDocumentViewer.fullZoom;
+        },
+        set zoomFactor (val) {
+            if (!browser)
+                throw "WebPage not opened";
+            browser.markupDocumentViewer.fullZoom = val;
+        },
         render: function(filename, ratio) {
             if (!browser)
                 throw "WebPage not opened";
