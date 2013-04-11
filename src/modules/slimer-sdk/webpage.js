@@ -24,12 +24,14 @@ const fs = require("sdk/io/file");
 const base64 = require("sdk/base64");
 const Q = require("sdk/core/promise");
 const timer = require("sdk/timers");
+const heritage = require("sdk/core/heritage");
 
 const netLog = require('net-log');
 netLog.startTracer();
 
 /**
  * create a webpage object
+ * @module webpage
  */
 function create() {
 
@@ -178,6 +180,9 @@ function create() {
             var childPage = create();
             // open the window
             var win = childPage._openBlankBrowser(aOpener);
+
+            privProp.childWindows.push(childPage);
+
             // call the callback
             if (webpage.onPageCreated)
                 webpage.onPageCreated(childPage);
@@ -199,9 +204,11 @@ function create() {
     /**
      * some private parameters
      */
-    var privateParameters = {
+    var privProp = {
         clipRect : null,
-        framePath : []
+        framePath : [],
+        childWindows : [],
+        settings: heritage.mix({}, slConfiguration.getDefaultWebpageConfig())
     }
 
     function getCurrentFrame() {
@@ -209,7 +216,7 @@ function create() {
             return null;
         var win = browser.contentWindow;
         win.name = ''; // it seems that the root window take the name of the xul window
-        privateParameters.framePath.forEach(function(frameName){
+        privProp.framePath.forEach(function(frameName){
             if (win == null)
                 return;
             if ((typeof frameName) == 'number') {
@@ -270,10 +277,36 @@ function create() {
 
     /**
      * the webpage object itself
+     * @module webpage
      */
     var webpage = {
 
-        settings : null,
+        /**
+          Object containing various settings of the web page
+
+            - javascriptEnabled: false if scripts of the page should not be executed (defaults to true).
+            - loadImages: false to not load images (defaults to true).
+            - localToRemoteUrlAccessEnabled: defines whether local resource (e.g. from file) can access remote URLs or not (defaults to false).
+            - userAgent defines the user agent sent to server when the web page requests resources.
+            - userName sets the user name used for HTTP authentication.
+            - password sets the password used for HTTP authentication.
+            - XSSAuditingEnabled defines whether load requests should be monitored for cross-site scripting attempts (defaults to false).
+            - webSecurityEnabled defines whether web security should be enabled or not (defaults to true).
+            - maxAuthAttempts: integer
+            - resourceTimeout: integer
+            - javascriptCanOpenWindows
+            - javascriptCanCloseWindows
+            Note: The settings apply only during the initial call to the WebPage#open function. Subsequent modification of the settings object will not have any impact.
+
+            @notimplemented
+         */
+        get settings (){
+            return privProp.settings;
+        },
+
+        set settings (val){
+            privProp.settings = heritage.mix(privProp.settings, val);
+        },
 
         /**
          * list of regexp matching content types
@@ -610,15 +643,15 @@ function create() {
                 }
                 win = win.parent;
             }
-            privateParameters.framePath = l;
+            privProp.framePath = l;
             return true;
         },
 
         switchToFrame: function(frameName) {
-            privateParameters.framePath.push(frameName);
+            privProp.framePath.push(frameName);
             var win = getCurrentFrame();
             if (!win){
-                privateParameters.framePath.pop();
+                privProp.framePath.pop();
                 return false;
             }
             return true;
@@ -629,12 +662,12 @@ function create() {
         },
 
         switchToMainFrame: function() {
-            privateParameters.framePath = [];
+            privProp.framePath = [];
         },
 
         switchToParentFrame: function() {
-            if (privateParameters.framePath.length) {
-                privateParameters.framePath.pop();
+            if (privProp.framePath.length) {
+                privProp.framePath.pop();
                 return true;
             }
             else
@@ -690,7 +723,9 @@ function create() {
          * this context. We have same
          * issue that https://bugzilla.mozilla.org/show_bug.cgi?id=783499
          * the only solution is to do window.myvariable = something in the
-         * given function, instead of myvariable = something 
+         * given function, instead of myvariable = something
+         * @see a solution used for the Firefox webconsole
+         * https://hg.mozilla.org/mozilla-central/rev/f5d6c95a9de9#l6.374
          */
         evaluate: function(func) {
             if (!browser)
@@ -964,7 +999,7 @@ function create() {
          * when calling render*() methods
          */
         get clipRect () {
-            return privateParameters.clipRect;
+            return privProp.clipRect;
         },
         set clipRect (value) {
             let requirements = {
@@ -990,9 +1025,9 @@ function create() {
                 },
             }
             if (typeof(value) === "object") {
-                privateParameters.clipRect = validateOptions(value, requirements);
+                privProp.clipRect = validateOptions(value, requirements);
             } else {
-                privateParameters.clipRect = null;
+                privProp.clipRect = null;
             }
         },
         paperSize : null,
@@ -1034,7 +1069,7 @@ function create() {
             }
 
             let canvas = getScreenshotCanvas(browser.contentWindow,
-                                             privateParameters.clipRect, ratio);
+                                             privProp.clipRect, ratio);
 
             return canvas.toDataURL(format, qual).split(",", 2)[1];
         },

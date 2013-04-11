@@ -39,78 +39,13 @@ slCommandLine.prototype = {
             dump("--config not supported yet\n");
         }
 
-        var cookiesFile = cmdLine.handleFlagWithParam("cookies-file", false);
-        if (cookiesFile) {
-            // read cookie files
-            dump("--cookies-file not supported yet\n");
+        try {
+            slConfiguration.handleFlags(cmdLine);
         }
-
-        if (cmdLine.handleFlagWithParam("ignore-ssl-errors", false) === 'yes') {
-            // deactivate ssl errors
-            dump("--ignore-ssl-errors not supported yet\n");
-        }
-        else {
-            // activate ssl errors
-        }
-
-        if (cmdLine.handleFlagWithParam("web-security", false) === 'no') {
-            // deactivate web security and authorise cross-domain xhr
-            dump("--web-security not supported yet\n");
-        }
-        else {
-            // activate web security and forbid cross-domain xhr
-        }
-
-        if (cmdLine.handleFlagWithParam("load-images", false) === 'no') {
-            // deactivate image loading
-            dump("--load-images not supported yet\n");
-        }
-        else {
-            // activate image loading
-        }
-
-        if (cmdLine.handleFlagWithParam("local-to-remote-url-access", false) === 'yes') {
-            // deactivate ssl errors
-            dump("--local-to-remote-url-access not supported yet\n");
-        }
-        else {
-            // activate ssl errors
-        }
-
-        if (cmdLine.handleFlagWithParam("disk-cache", false) === 'yes') {
-            // activate disk cache
-            dump("--disk-cache not supported yet\n");
-        }
-        else {
-            // disable disk cache
-        }
-
-        let maxDiscCache = cmdLine.handleFlagWithParam("max-disk-cache-size", false);
-        if (maxDiscCache !== null) {
-            dump("--max-disk-cache-size not supported yet\n");
-        }
-
-        let outputEncoding = cmdLine.handleFlagWithParam("output-encoding", false);
-        if (!outputEncoding) {
-            outputEncoding = 'utf-8';
-        }
-        else
-            dump("--output-encoding not supported yet\n");
-
-        let scriptEncoding = cmdLine.handleFlagWithParam("script-encoding", false);
-        if (!scriptEncoding)
-            scriptEncoding = 'utf-8';
-        else
-            dump("--script-encoding not supported yet\n");
-
-        let proxy = cmdLine.handleFlagWithParam("proxy", false);
-        if (proxy) {
-            dump("--proxy not supported yet\n");
-        }
-
-        let proxyType = cmdLine.handleFlagWithParam("proxy-type", false);
-        if (proxyType) {
-            dump("--proxy-type not supported yet\n");
+        catch(e) {
+            dump(e+"\n");
+            cmdLine.preventDefault = true
+            return;
         }
 
         if (cmdLine.length == 0) {

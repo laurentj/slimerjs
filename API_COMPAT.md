@@ -17,22 +17,35 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
 # Command-line arguments and options
 
 <table>
-    <tr><td>--cookies-file=/path/to/cookies.txt </td><td></td></tr>
-    <tr><td>--disk-cache=[yes|no]               </td><td></td></tr>
-    <tr><td>--help or -h                        </td><td>Implemented</td></tr>
-    <tr><td>--ignore-ssl-errors=[yes|no]        </td><td></td></tr>
-    <tr><td>--load-images=[yes|no]              </td><td></td></tr>
+    <tr><td>--config=/path/to/config.json        </td><td></td></tr>
+    <tr><td>--cookies-file=/path/to/cookies.txt  </td><td></td></tr>
+    <tr><td>--debug=[yes|no]                     </td><td></td></tr>
+    <tr><td>--disk-cache=[yes|no]                </td><td></td></tr>
+    <tr><td>--help or -h                         </td><td>Implemented</td></tr>
+    <tr><td>--ignore-ssl-errors=[yes|no]         </td><td></td></tr>
+    <tr><td>--load-images=[yes|no]               </td><td></td></tr>
+    <tr><td>--local-storage-path=/path/to/file   </td><td></td></tr>
+    <tr><td>--local-storage-quota=number         </td><td></td></tr>
     <tr><td>--local-to-remote-url-access=[yes|no]</td><td></td></tr>
-    <tr><td>--max-disk-cache-size=size          </td><td></td></tr>
-    <tr><td>--output-encoding=encoding          </td><td></td></tr>
-    <tr><td>--proxy=address:port                </td><td></td></tr>
-    <tr><td>--proxy-type=[http|socks5|none]     </td><td></td></tr>
-    <tr><td>--script-encoding=encoding          </td><td></td></tr>
-    <tr><td>--version or -v                     </td><td>Implemented</td></tr>
-    <tr><td>--web-security=[yes|no]             </td><td></td></tr>
-    <tr><td>--config=/path/to/config.json       </td><td></td></tr>
-    <tr><td>script path                         </td><td>Implemented</td></tr>
-    <tr><td>script arguments                    </td><td>Implemented</td></tr>
+    <tr><td>--max-disk-cache-size=size           </td><td></td></tr>
+    <tr><td>--output-encoding=encoding           </td><td></td></tr>
+    <tr><td>--proxy=address:port                 </td><td></td></tr>
+    <tr><td>--proxy-auth=username:password       </td><td></td></tr>
+    <tr><td>--proxy-type=[http|socks5|none]      </td><td></td></tr>
+    <tr><td>--remote-debugger-port=number        </td><td></td></tr>
+    <tr><td>--remote-debugger-autorun=[yes|no]   </td><td></td></tr>
+    <tr><td>--script-encoding=encoding           </td><td></td></tr>
+    <tr><td>--ssl-protocol=[SSLv3|SSLv2|TLSv1|any] </td><td></td></tr>
+    <tr><td>--ssl-certificates-path=/path/to/dir </td><td></td></tr>
+    <tr><td>--version or -v                      </td><td>Implemented</td></tr>
+    <tr><td>--webdriver or --wd or -w            </td><td></td></tr>
+    <tr><td>--webdriver=ip:port                  </td><td></td></tr>
+    <tr><td>--webdriver-logfile=/path/to/logfile </td><td></td></tr>
+    <tr><td>--webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]</td><td></td></tr>
+    <tr><td>--webdriver-selenium-grid-hub=url    </td><td></td></tr>
+    <tr><td>--web-security=[yes|no]              </td><td></td></tr>
+    <tr><td>script path                          </td><td>Implemented</td></tr>
+    <tr><td>script arguments                     </td><td>Implemented</td></tr>
 </table>
 
 # phantom object
@@ -121,7 +134,19 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>paperSize                           </td><td></td></tr>
     <tr><td>plainText                           </td><td>Implemented</td></tr>
     <tr><td>scrollPosition                      </td><td></td></tr>
-    <tr><td>settings                            </td><td></td></tr>
+    <tr><td>settings                            </td><td>Implemented</td></tr>
+    <tr><td>settings.javascriptEnabled          </td><td></td></tr>
+    <tr><td>settings.loadImages                 </td><td></td></tr>
+    <tr><td>settings.localToRemoteUrlAccessEnabled</td><td></td></tr>
+    <tr><td>settings.XSSAuditingEnabled         </td><td></td></tr>
+    <tr><td>settings.webSecurityEnabled         </td><td></td></tr>
+    <tr><td>settings.javascriptCanOpenWindows   </td><td></td></tr>
+    <tr><td>settings.javascriptCanCloseWindows  </td><td></td></tr>
+    <tr><td>settings.userAgent                  </td><td></td></tr>
+    <tr><td>settings.userName                   </td><td></td></tr>
+    <tr><td>settings.password                   </td><td></td></tr>
+    <tr><td>settings.maxAuthAttempts            </td><td></td></tr>
+    <tr><td>settings.resourceTimeout            </td><td></td></tr>
     <tr><td>title                               </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>viewportSize                        </td><td>Implemented</td></tr>
@@ -148,7 +173,13 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>goForward()                         </td><td>Implemented</td></tr>
     <tr><td>includeJs(url, callback)            </td><td>implemented</td></tr>
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
+    <tr><td>open(url)                           </td><td>Implemented. SlimerJS only: it returns a promise</td></tr>
     <tr><td>open(url, callback)                 </td><td>Implemented. SlimerJS only: it returns a promise</td></tr>
+    <tr><td>open(url, httpmethod)               </td><td></td></tr>
+    <tr><td>open(url, httpmethod, callback)     </td><td></td></tr>
+    <tr><td>open(url, httpmethod, data)         </td><td></td></tr>
+    <tr><td>open(url, httpmethod, data, callback)</td><td></td></tr>
+    <tr><td>open(url, httpmethod, data, headers, callback)</td><td></td></tr>
     <tr><td>openUrl(url, httpConf, settings)    </td><td></td></tr>
     <tr><td>release()                           </td><td></td></tr>
     <tr><td>reload()                            </td><td>Implemented</td></tr>

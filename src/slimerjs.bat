@@ -62,28 +62,50 @@ REM the character % is escaped by doubling it to %%
 REM if delayed variable expansion is turned on then the character ! needs to be escaped as ^^!
 	echo   Available options are:
 	echo.
-    echo   --cookies-file=^<file^>                 specifies the file name to store
-    echo                                         the persistent Cookies
-    echo   --disk-cache=[yes^|no]                 enables disk cache (default is no)
-    echo   --help or -h                          show this help
-    echo   --ignore-ssl-errors=[yes^|no]          ignores SSL errors (default is no)
-    echo   --load-images=[yes^|no]                load all inlined images (default is yes)
-    echo   --local-to-remote-url-access=[yes^|no] allows local content to 
-    echo                                         access remote URL (default is no)
-    echo   --max-disk-cache-size=size            limits the size of disk cache (in KB)
-    echo   --output-encoding=encoding            sets the encoding used for terminal
-    echo                                         output (default is utf8)
-    echo   --proxy=address:port                  specifies the proxy server to use
-    echo                                         (e.g. --proxy=192.168.1.42:8080)
-    echo   --proxy-type=[http^|socks5^|none]       specifies the type of the proxy
-    echo                                         server (default is http)
-    echo   --script-encoding=encoding            sets the encoding used for the
-    echo                                         starting script (default is utf8)
-    echo   --version or -v                       prints out the version of SlimerJS
-    echo                                         Halts immediately
-    echo   --web-security=[yes^|no]               enables web security and forbids
-    echo                                         cross-domain XHR (default is yes)
-    echo   --config=^<filename^>                   load the given configuration file
+REM    echo   --cookies-file=^<file^>              Sets the file name to store the persistent
+REM    echo                                      cookies.
+REM    echo   --config=^<filename^>                Load the given configuration file
+REM    echo                                      (JSON formated)
+REM    echo   --debug=[yes^|no]                   Prints additional warning and debug message
+REM    echo                                      (default is no)
+REM    echo   --disk-cache=[yes^|no]              Enables disk cache (default is no).
+    echo   --help or -h                       Show this help
+REM    echo   --ignore-ssl-errors=[yes^|no]       Ignores SSL errors (default is no).
+REM    echo   --load-images=[yes^|no]             Loads all inlined images (default is yes)
+REM    echo   --local-storage-path=^<path^>        Specifies the location for offline local
+REM    echo                                      storage
+REM    echo   --local-storage-quota=^<number^>     Sets the maximum size of the offline
+REM    echo                                      local storage (in KB)
+REM    echo   --local-to-remote-url-access=[yes^|no] Allows local content to access remote
+REM    echo                                         URL (default is no)
+REM    echo   --max-disk-cache-size=^<number^>     Limits the size of the disk cache (in KB)
+REM    echo   --output-encoding=^<enc^>            Sets the encoding for the terminal output
+REM    echo                                      (default is 'utf8')
+REM    echo   --remote-debugger-port=^<number^>    Starts the script in a debug harness and
+REM    echo                                      listens on the specified port
+REM    echo   --remote-debugger-autorun=[yes^|no] Runs the script in the debugger immediately
+REM    echo                                      (default is no)
+REM    echo   --proxy=^<proxy url^>                Sets the proxy server
+REM    echo   --proxy-auth=^<username:password^>   Provides authentication information for the
+REM    echo                                      proxy
+REM    echo   --proxy-type=[http^|socks5^|none]    Specifies the proxy type (default is http)
+REM    echo   --script-encoding=^<enc^>            Sets the encoding used for the starting
+REM    echo                                      script (default is utf8)
+REM    echo   --web-security=[yes^|no]            Enables web security (default is yes)
+REM    echo   --ssl-protocol=[SSLv3^|SSLv2^|TLSv1^|any]  Sets the SSL protocol
+REM    echo   --ssl-certificates-path=^<path^>     Sets the location for custom CA certificates
+    echo   --version or v                     Prints out SlimerJS version
+REM    echo   --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded
+REM    echo                                      GhostDriver) '127.0.0.1:8910'
+REM    echo   --webdriver=[^<IP^>:]^<PORT^>          Starts in 'Remote WebDriver mode' in the
+REM    echo                                      specified network interface
+REM    echo   --webdriver-logfile=^<file^>         File where to write the WebDriver's Log
+REM    echo                                      (default 'none') (NOTE: needs '--webdriver')
+REM    echo   --webdriver-loglevel=[ERROR^|WARN^|INFO^|DEBUG^|] WebDriver Logging Level
+REM    echo                                  (default is 'INFO') (NOTE: needs '--webdriver')
+REM    echo   --webdriver-selenium-grid-hub=^<url^> URL to the Selenium Grid HUB (default is
+REM    echo                                       'none') (NOTE: needs '--webdriver')
+
 goto :eof
 
 
