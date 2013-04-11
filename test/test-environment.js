@@ -44,8 +44,8 @@ describe("phantom object", function() {
 
     it("should have a right version", function(){
         expect(phantom.version.major).toEqual(1);
-        expect(phantom.version.minor).toEqual(8);
-        expect(phantom.version.patch).toEqual(1);
+        expect(phantom.version.minor).toEqual(9);
+        expect(phantom.version.patch).toEqual(0);
     });
 
 });

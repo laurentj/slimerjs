@@ -13,14 +13,7 @@ var httpCookies = [];
 
 var libPath = slConfiguration.scriptFile.parent.clone();
 
-var errorHandler = function defaultErrorHandler(msg, stack) {
-    dump("\nScript Error: "+msg+"\n");
-    dump("       Stack:\n");
-    stack.forEach(function(t) {
-        dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
-    })
-    dump("\n");
-}
+var errorHandler;
 
 var phantom = {
 
@@ -73,7 +66,7 @@ var phantom = {
      * return the version of SlimerJS
      */
     get version() {
-        return { major: 1, minor: 8, patch: 1, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+        return { major: 1, minor: 9, patch: 0, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
     },
 
     /**
@@ -127,6 +120,15 @@ var phantom = {
         return errorHandler;
     },
 
+    defaultErrorHandler : function (msg, stack) {
+        dump("\nScript Error: "+msg+"\n");
+        dump("       Stack:\n");
+        stack.forEach(function(t) {
+            dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
+        })
+        dump("\n");
+    },
+
     __exposedProps__ : {
         cookies: 'rw',
         cookiesEnabled: 'rw',
@@ -137,9 +139,12 @@ var phantom = {
         deleteCookie : 'r',
         exit : 'r',
         injectJs : 'r',
-        onError : 'rw'
+        onError : 'rw',
+        defaultErrorHandler : 'r'
     }
 }
+
+errorHandler = phantom.defaultErrorHandler;
 
 /**
  * cookie object for http requests

@@ -3,7 +3,7 @@ except deprecated API (at least in first releases).
 
 Here are compatibility tables and other specific API to SlimerJS.
 
-# Main differences with PhantomJS 1.8.1
+# Main differences with PhantomJS 1.9
 
 * webpage.sendEvent() for key events is more consistent. In phantomJS, there are
   [several issues](http://code.google.com/p/phantomjs/issues/detail?id=1094)
@@ -53,20 +53,26 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
 ## properties
 
 <table>
-    <tr><td>args                                </td><td>deprecated in phantomjs: not implemented</td></tr>
+    <tr><td>args                                </td><td>deprecated</td></tr>
     <tr><td>cookies                             </td><td></td></tr>
     <tr><td>cookiesEnabled                      </td><td></td></tr>
+    <tr><td>defaultPageSettings                 </td><td></td></tr>
     <tr><td>libraryPath                         </td><td>Implemented</td></tr>
-    <tr><td>scriptName                          </td><td>deprecated in phantomjs: not implemented</td></tr>
+    <tr><td>outputEncoding                      </td><td></td></tr>
+    <tr><td>page                                </td><td></td></tr>
+    <tr><td>scriptName                          </td><td>deprecated</td></tr>
     <tr><td>version                             </td><td>Implemented. Gives the PhantomJS version which is compatible to
                                                         the SlimerJS implementation.</td></tr>
+    <tr><td>webdriverMode                       </td><td></td></tr>
 </table>
 
 ## methods
 
 <table>
     <tr><td>addCookie(cookie)                   </td><td></td></tr>
+    <tr><td>callback(callback)                  </td><td></td></tr>
     <tr><td>clearCookies()                      </td><td></td></tr>
+    <tr><td>defaultErrorHandler(message, stack) </td><td>Implemented</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td></td></tr>
     <tr><td>exit(returnValue)                   </td><td>Partial implementation. The exit code cannot be returned
                                                     to the shell console because the Mozilla toolkit does not
@@ -306,7 +312,6 @@ Methods that send signals (private methods):
     <tr><td>remove(path)                        </td><td>Implemented</td></tr>
     <tr><td>touch(path)                         </td><td>Implemented</td></tr>
 
-
     <tr><td>makeDirectory(path)                 </td><td>Implemented</td></tr>
     <tr><td>removeDirectory(path)               </td><td>Implemented</td></tr>
     <tr><td>makeTree(path)                      </td><td></td></tr>
@@ -316,7 +321,7 @@ Methods that send signals (private methods):
     <tr><td>list(path)                          </td><td>Implemented</td></tr>
     <tr><td>readLink(path)                      </td><td></td></tr>
 
-
+    <tr><td>lastModified(path) Date             </td><td>Implemented</td></tr>
     <tr><td>exists(path)                        </td><td>Implemented</td></tr>
     <tr><td>isFile(path)                        </td><td>Implemented</td></tr>
     <tr><td>isDirectory(path)                   </td><td>Implemented</td></tr>
@@ -325,6 +330,8 @@ Methods that send signals (private methods):
     <tr><td>isWritable(path)                    </td><td>Implemented</td></tr>
 
     <tr><td>absolute(path)                      </td><td></td></tr>
+    <tr><td>join(base)                          </td><td>Implemented</td></tr>
+    <tr><td>split(path)                         </td><td></td></tr>
 
     <tr><td>size(path)                          </td><td>Implemented</td></tr>
 
@@ -332,13 +339,14 @@ Methods that send signals (private methods):
     <tr><td>isExecutable(path)                  </td><td>(not a CommonJS FileSystem method)</td></tr>
 
     <tr><td>changeWorkingDirectory(path)        </td><td>Implemented</td></tr>
+    <tr><td>fromNativeSeparators(path)          </td><td></td></tr>
+    <tr><td>toNativeSeparators(path)            </td><td></td></tr>
 </table>
 
-Other additionnal methods not provided in PhantomJS 1.7, but that
+Other additionnal methods not provided in PhantomJS 1.9, but that
 are part of the CommonJS FileSystem specification
 
 <table>
-
     <tr><td>rename(path, name)                  </td><td>Implemented</td></tr>
 
     <tr><td>listTree(path)                      </td><td></td></tr>
@@ -349,12 +357,8 @@ are part of the CommonJS FileSystem specification
 
     <tr><td>same(source, target)                </td><td></td></tr>
 
-    <tr><td>lastModified(path) Date             </td><td>Implemented</td></tr>
-
     <tr><td>workingDirectoryPath()              </td><td></td></tr>
 
-    <tr><td>join(base)                          </td><td>Implemented</td></tr>
-    <tr><td>split(path)                         </td><td></td></tr>
     <tr><td>normal(path)                        </td><td></td></tr>
     <tr><td>canonical(path)                     </td><td></td></tr>
     <tr><td>directory(path)                     </td><td>Implemented</td></tr>
@@ -366,6 +370,7 @@ are part of the CommonJS FileSystem specification
 # stream object
 
 <table>
+    <tr><td>atEnd()                             </td><td></td></tr>
     <tr><td>read()                              </td><td>Implemented</td></tr>
     <tr><td>readLine()                          </td><td></td></tr>
     <tr><td>write(data)                         </td><td>Implemented</td></tr>

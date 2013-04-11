@@ -24,7 +24,7 @@ var slLauncher = {
                                 'sandboxPrototype': contentWindow,
                                 'wantXrays': true
                             });
-
+        contentWindow.global = contentWindow;
         // import the slimer/phantom API into the sandbox
         Cu.import('resource://slimerjs/slimer.jsm', sandbox);
         Cu.import('resource://slimerjs/phantom.jsm', sandbox);
