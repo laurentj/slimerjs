@@ -22,6 +22,12 @@ describe("system module", function() {
         expect('version' in system.os).toBeTruthy();
         expect(system.os.architecture).toNotEqual('');
         expect(system.os.name).toNotEqual('');
+        if (system.os.name == 'linux') {
+            expect(system.os.isWindows()).toEqual(false);
+        }
+        else {
+            expect(system.os.isWindows()).toEqual(true);
+        }
         //expect(system.os.version).toNotEqual(''); // it is '' on some system...
     });
 

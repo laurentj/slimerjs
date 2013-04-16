@@ -284,7 +284,7 @@ Methods that send signals (private methods):
     <tr><td>pid                                 </td><td>Not Implemented. Always returns 0.
                                                     It seems Mozilla doesn't provide an API for that</td></tr>
     <tr><td>platform                            </td><td>Implemented</td></tr>
-    <tr><td>os                                  </td><td>Implemented</td></tr>
+    <tr><td>os                                  </td><td>Implemented. SlimerJS only: an additional method isWindows()</td></tr>
     <tr><td>env                                 </td><td>Implemented</td></tr>
     <tr><td>args                                </td><td>Implemented</td></tr>
 </table>
@@ -296,7 +296,7 @@ Methods that send signals (private methods):
 ## properties
 
 <table>
-    <tr><td>separator                           </td><td></td></tr>
+    <tr><td>separator                           </td><td>Implemented</td></tr>
     <tr><td>workingDirectory                    </td><td>Implemented as method, as specified in the
                                                     CommonJS FileSystem specification</td></tr>
 </table>

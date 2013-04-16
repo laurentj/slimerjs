@@ -27,6 +27,12 @@ var dirsvc = Cc["@mozilla.org/file/directory_service;1"]
 
 var currentWorkingDirectory = dirsvc.get("CurWorkD", Ci.nsIFile);
 
+var _separator = '/';
+
+if (currentWorkingDirectory.path.charAt(0) != '/') {
+    _separator = '\\';
+}
+
 function MozFile(path) {
   var file = currentWorkingDirectory.clone();
   try {
@@ -148,6 +154,13 @@ exports.write = function write(filename, content, mode) {
     stream.close();
   }
 };
+
+Object.defineProperty(exports, "separator", {
+  enumerable: true,
+  configurable: false,
+  writable: false,
+  value: _separator
+});
 
 exports.join = function join(base) {
   if (arguments.length < 2)

@@ -70,6 +70,14 @@ function ByteWriter(outputStream) {
       throw new Error("Error writing to stream: " + err);
     }
   };
+
+  /**
+   * Flushes the backing stream's buffer.
+   */
+  this.flush = function ByteWriter_flush() {
+    manager.ensureOpened();
+    stream.flush();
+  };
 }
 
 

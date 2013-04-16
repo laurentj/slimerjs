@@ -15,10 +15,14 @@ var httphandler =  Components.classes["@mozilla.org/network/protocol;1?name=http
 
 var oscpu = httphandler.oscpu;
 
+var _isWindows = false;
+
 var OS = {
     architecture: '32bit',
     name: xulRuntime.OS.toLowerCase(),
-    version: ''
+    version: '',
+    isWindows : function() _isWindows
+
 }
 
 if (OS.name == 'linux') {
@@ -31,7 +35,7 @@ else if (/Mac/i.test(oscpu)) {
         OS.architecture = 'ppc';
     else
         OS.architecture = '64bit';
-    
+
     OS.version = /([0-9\.ba]+)$/i.exec(oscpu)[1];
 }
 else if (/windows/i.test(oscpu)) {
@@ -39,11 +43,10 @@ else if (/windows/i.test(oscpu)) {
         OS.architecture = '64bit';
     }
     OS.version = /(\d+\.\d+)/.exec(oscpu)[1];
+    _isWindows = true;
 }
 
 this.__defineGetter__('os', function(){ return  OS;});
-
-
 
 this.__defineGetter__('pid', function(){
     //Components.utils.reportError("system.pid not implemented");
@@ -53,7 +56,6 @@ this.__defineGetter__('pid', function(){
 this.__defineGetter__('platform', function(){
     return "slimerjs";
 });
-
 
 var envService = Components.classes["@mozilla.org/process/environment;1"].
           getService(Components.interfaces.nsIEnvironment);
