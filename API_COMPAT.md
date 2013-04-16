@@ -329,9 +329,9 @@ Methods that send signals (private methods):
     <tr><td>isReadable(path)                    </td><td>Implemented</td></tr>
     <tr><td>isWritable(path)                    </td><td>Implemented</td></tr>
 
-    <tr><td>absolute(path)                      </td><td></td></tr>
+    <tr><td>absolute(path)                      </td><td>Implemented</td></tr>
     <tr><td>join(base)                          </td><td>Implemented</td></tr>
-    <tr><td>split(path)                         </td><td></td></tr>
+    <tr><td>split(path)                         </td><td>Implemented</td></tr>
 
     <tr><td>size(path)                          </td><td>Implemented</td></tr>
 

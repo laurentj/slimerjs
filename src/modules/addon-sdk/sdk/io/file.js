@@ -33,6 +33,7 @@ if (currentWorkingDirectory.path.charAt(0) != '/') {
     _separator = '\\';
 }
 
+
 function MozFile(path) {
   var file = currentWorkingDirectory.clone();
   try {
@@ -164,12 +165,24 @@ Object.defineProperty(exports, "separator", {
 
 exports.join = function join(base) {
   if (arguments.length < 2)
-    throw new Error("need at least 2 args");
+    throw new Error("join() needs at least 2 args");
   base = MozFile(base);
   for (var i = 1; i < arguments.length; i++)
     base.append(arguments[i]);
   return base.path;
 };
+
+exports.split = function split(path) {
+    var f;
+    if (_separator == '\\')
+        // normalize path with / and replace redondant separator by a single separator
+        f = path.replace('/\\+/',"/");
+    else
+        // replace redondant separators by a single separator
+        f = path.replace('/\/+/',"/");
+
+    return f.replace(/\/$/, "").split("/")
+}
 
 exports.directory = function directory(path) {
   var parent = MozFile(path).parent;
@@ -194,6 +207,26 @@ exports.base = function base(path) {
 exports.basename = function basename(path) {
     return exports.base(path);
 };
+
+exports.absolute = function base(path) {
+    var f = exports.split(MozFile(path).path);
+    var p = [];
+    f.forEach(function(element){
+        if (element == '.')
+            return;
+        if (element == '..') {
+            p.pop();
+            return
+        }
+        p.push(element);
+    })
+    if (!p.length)
+        return '';
+    p[0] = _separator+p[0];
+    if (p.length > 1)
+        return exports.join.apply(exports, p)
+    return p[0];
+}
 
 exports.extension = function extension(path) {
   var leafName = exports.base(path);
