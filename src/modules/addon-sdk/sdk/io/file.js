@@ -300,6 +300,18 @@ exports.remove = function remove(path) {
 
 exports.makeDirectory = function makeDirectory(path) {
   var file = MozFile(path);
+  if (!file.exists()){
+    // if the parent directory does not exists, an exception should be thrown
+    if (file.parent && !file.parent.exists())
+        throw new Error("The parent directory does not exist");
+    file.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755", 8)); // u+rwx go+rx
+  }
+  else if (!file.isDirectory())
+    throw new Error("The path already exists and is not a directory: " + path);
+}
+
+exports.makeTree = function makeTree(path) {
+  var file = MozFile(path);
   if (!file.exists())
     file.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755", 8)); // u+rwx go+rx
   else if (!file.isDirectory())
@@ -310,7 +322,7 @@ exports.makeDirectory = function makeDirectory(path) {
  * @deprecated
  */
 exports.mkpath = function mkpath(path) {
-    return exports.makeDirectory(path);
+    return exports.makeTree(path);
 };
 
 exports.removeDirectory = function removeDirectory(path) {
@@ -318,6 +330,17 @@ exports.removeDirectory = function removeDirectory(path) {
   ensureDir(file);
   try {
     file.remove(false);
+  }
+  catch (err) {
+    // Bug 566950 explains why we're not catching a specific exception here.
+    throw new Error("The directory is not empty: " + path);
+  }
+};
+
+exports.removeTree = function removeTree(path) {
+  var file = MozFile(path);
+  try {
+    file.remove(true);
   }
   catch (err) {
     // Bug 566950 explains why we're not catching a specific exception here.

@@ -314,8 +314,8 @@ Methods that send signals (private methods):
 
     <tr><td>makeDirectory(path)                 </td><td>Implemented</td></tr>
     <tr><td>removeDirectory(path)               </td><td>Implemented</td></tr>
-    <tr><td>makeTree(path)                      </td><td></td></tr>
-    <tr><td>removeTree(path)                    </td><td></td></tr>
+    <tr><td>makeTree(path)                      </td><td>Implemented</td></tr>
+    <tr><td>removeTree(path)                    </td><td>Implemented</td></tr>
     <tr><td>copyTree(source, destination)       </td><td></td></tr>
 
     <tr><td>list(path)                          </td><td>Implemented</td></tr>
