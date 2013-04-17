@@ -319,7 +319,7 @@ Methods that send signals (private methods):
     <tr><td>copyTree(source, destination)       </td><td></td></tr>
 
     <tr><td>list(path)                          </td><td>Implemented</td></tr>
-    <tr><td>readLink(path)                      </td><td></td></tr>
+    <tr><td>readLink(path)                      </td><td>Implemented</td></tr>
 
     <tr><td>lastModified(path) Date             </td><td>Implemented</td></tr>
     <tr><td>exists(path)                        </td><td>Implemented</td></tr>

@@ -392,3 +392,25 @@ exports.touch = function move(path, date) {
       file.lastModifiedTime = d.getTime();
   }
 }
+
+exports.readLink = function readLink(path) {
+    var file =  MozFile(path);
+    if (!file.exists()) {
+        throw new Error("File does not exists");
+    }
+    if (!file.isSymLink()) {
+        throw new Error("The given path is not a symbolic link");
+    }
+    return file.target;
+}
+
+/*
+no way in Gecko to create symbolic links.
+So we don't define symbolicLink and hardLink,
+as indicated in the FileSystem/A/0 specification
+
+exports.symbolicLink = function symbolicLink(source, target) {
+}
+exports.hardLink = function symbolicLink(source, target) {
+}
+*/
