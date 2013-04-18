@@ -375,6 +375,34 @@ exports.copy = function copy(sourceFileName, targetFileName) {
   sourceFile.copyTo(targetFile.parent, targetFile.leafName);
 };
 
+
+function copyDir(sourceDir, targetDir) {
+    let enumDir = sourceDir.directoryEntries;
+    while(enumDir.hasMoreElements()) {
+        let file = enumDir.getNext().QueryInterface(Ci.nsIFile);
+        if (file.isFile()) {
+            file.copyTo(targetDir, file.leafName);
+        }
+        else if (file.isDirectory()) {
+            let newDir = targetDir.clone();
+            newDir.append(file.leafName);
+            newDir.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755", 8));
+            copyDir(file, newDir);
+        }
+    }
+}
+
+exports.copyTree = function copyTree(sourceDirName, targetDirName) {
+  var sourceDir = MozFile(sourceDirName);
+  var targetDir = MozFile(targetDirName);
+  ensureDir(sourceDir);
+  if (targetDir.exists())
+    throw new Error("The target directory does exist: " + targetDirName);
+
+  copyDir(sourceDir, targetDir);
+};
+
+
 exports.rename = function rename(path, name) {
   var sourceFile = MozFile(path);
   ensureFile(sourceFile);
