@@ -304,9 +304,9 @@ Methods that send signals (private methods):
 ## methods
 
 <table>
-    <tr><td>open(path, mode)                    </td><td>Implemented. "a" mode is still missing</td></tr>
+    <tr><td>open(path, mode)                    </td><td>Implemented</td></tr>
     <tr><td>read(path)                          </td><td>Implemented</td></tr>
-    <tr><td>write(path, content, mode)          </td><td>Implemented. "a" mode not implemented</td></tr>
+    <tr><td>write(path, content, mode)          </td><td>Implemented</td></tr>
     <tr><td>copy(source, destination)           </td><td>Implemented</td></tr>
     <tr><td>move(source, destination)           </td><td>Implemented</td></tr>
     <tr><td>remove(path)                        </td><td>Implemented</td></tr>

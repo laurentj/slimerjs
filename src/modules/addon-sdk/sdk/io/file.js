@@ -143,8 +143,14 @@ exports.write = function write(filename, content, mode) {
   if (typeof(mode) !== "string")
     mode = "w";
 
+  var hasA = /a/.test(mode)
+  var hasX = /x/.test(mode)
   // Ensure mode is write-only.
   mode = /b/.test(mode) ? "wb" : "w";
+  if (hasA)
+    mode += "a";
+  if (hasX)
+    mode += "x";
 
   var stream = exports.open(filename, mode);
   try {
@@ -257,14 +263,21 @@ exports.open = function open(filename, mode) {
     mode = "";
 
   // File opened for write only.
-  if (/w/.test(mode)) {
+  if (/(w|a)/.test(mode)) {
+    if (/x/.test(mode) && !file.exists()) {
+        throw new friendlyError(Cr.NS_ERROR_FILE_NOT_FOUND, filename);
+    }
     if (file.exists())
       ensureFile(file);
     var stream = Cc['@mozilla.org/network/file-output-stream;1'].
                  createInstance(Ci.nsIFileOutputStream);
     var openFlags = OPEN_FLAGS.WRONLY |
-                    OPEN_FLAGS.CREATE_FILE |
-                    OPEN_FLAGS.TRUNCATE;
+                    OPEN_FLAGS.CREATE_FILE;
+    if (/a/.test(mode))
+        openFlags |= OPEN_FLAGS.APPEND;
+    else
+        openFlags |= OPEN_FLAGS.TRUNCATE;
+
     var permFlags = parseInt("0644", 8); // u+rw go+r
     try {
       stream.init(file, openFlags, permFlags, 0);
