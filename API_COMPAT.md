@@ -335,8 +335,8 @@ Methods that send signals (private methods):
 
     <tr><td>size(path)                          </td><td>Implemented</td></tr>
 
-    <tr><td>isAbsolute(path)                    </td><td>(not a CommonJS FileSystem method)</td></tr>
-    <tr><td>isExecutable(path)                  </td><td>(not a CommonJS FileSystem method)</td></tr>
+    <tr><td>isAbsolute(path)                    </td><td>Implemented (not a CommonJS FileSystem method)</td></tr>
+    <tr><td>isExecutable(path)                  </td><td>Implemented (not a CommonJS FileSystem method)</td></tr>
 
     <tr><td>changeWorkingDirectory(path)        </td><td>Implemented</td></tr>
     <tr><td>fromNativeSeparators(path)          </td><td></td></tr>

@@ -155,7 +155,7 @@ exports.write = function write(filename, content, mode) {
   var stream = exports.open(filename, mode);
   try {
     stream.write(content);
-    //stream.flush();
+    stream.flush();
   }
   finally {
     stream.close();
@@ -455,3 +455,27 @@ exports.symbolicLink = function symbolicLink(source, target) {
 exports.hardLink = function symbolicLink(source, target) {
 }
 */
+
+
+/**
+ * not defined in the CommonJS specification
+ */
+
+exports.isAbsolute = function isAbsolute(path) {
+  var file = currentWorkingDirectory.clone();
+  try {
+    // if path is a relative path, there won't have exception
+    file.appendRelativePath(path);
+    return false;
+  }
+  catch(e) { }
+  return true;
+}
+
+exports.isExecutable = function isExecutable(path) {
+    var file =  MozFile(path);
+    if (!file.exists()) {
+        throw new Error("File does not exists");
+    }
+    return (file.permissions & 0x49) > 0
+}
