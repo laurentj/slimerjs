@@ -184,8 +184,8 @@ function create() {
             privProp.childWindows.push(childPage);
 
             // call the callback
-            if (webpage.onPageCreated)
-                webpage.onPageCreated(childPage);
+            webpage.rawPageCreated(childPage);
+
             // returns the contentWindow of the browser element
             // nsContentTreeOwner::ProvideWindow and other will
             // load the expected URI into it.
@@ -1168,7 +1168,8 @@ function create() {
         },
 
         rawPageCreated: function(page) {
-            throw "Not Implemented"
+            if (this.onPageCreated)
+                this.onPageCreated(page);
         },
 
         resourceReceived: function(request) {

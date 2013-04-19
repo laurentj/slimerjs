@@ -237,7 +237,7 @@ Methods that send signals (private methods):
     <tr><td>loadFinished(status)                </td><td>Implemented</td></tr>
     <tr><td>loadStarted()                       </td><td>Implemented</td></tr>
     <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td></td></tr>
-    <tr><td>rawPageCreated(page)                </td><td></td></tr>
+    <tr><td>rawPageCreated(page)                </td><td>Implemented</td></tr>
     <tr><td>resourceReceived(request)           </td><td>Implemented</td></tr>
     <tr><td>resourceRequested(resource)         </td><td>Implemented</td></tr>
     <tr><td>urlChanged(url)                     </td><td>Implemented</td></tr>
