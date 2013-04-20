@@ -31,16 +31,18 @@ cp README.md $TARGETDIR
 cp LICENSE $TARGETDIR
 cd src
 
+# zip chrome files into omni.ja
+zip -r $TARGETDIR/omni.ja chrome/ components/ defaults/ modules/ chrome.manifest --exclude @package_exclude.lst
+
 # set the build date
+cd $TARGETDIR
 BUILDDATE=`date +%Y%m%d`
 sed -i -e "s/BuildID=.*/BuildID=$BUILDDATE/g" application.ini
-
-# zip chrome files into omni.ja
-zip -r $TARGETDIR/omni.ja chrome/ components/ defaults/ modules/ chrome.manifest --exclude @../package_exclude.lst
 
 # create the final package
 cd $SLIMERDIR/_dist
 zip -r "slimerjs-$VERSION.zip" "slimerjs-$VERSION"
 
+# the end
 cd $CURRENTDIR
 echo "The package is in $SLIMERDIR/_dist/slimerjs-$VERSION.zip"
