@@ -36,7 +36,7 @@ BUILDDATE=`date +%Y%m%d`
 sed -i -e "s/BuildID=.*/BuildID=$BUILDDATE/g" application.ini
 
 # zip chrome files into omni.ja
-zip -r $TARGETDIR/omni.ja chrome/ components/ defaults/ modules/ chrome.manifest
+zip -r $TARGETDIR/omni.ja chrome/ components/ defaults/ modules/ chrome.manifest --exclude @../package_exclude.lst
 
 # create the final package
 cd $SLIMERDIR/_dist
