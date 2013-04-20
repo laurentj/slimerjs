@@ -4,18 +4,18 @@ section, article, aside, footer, header, nav, hgroup {
 
 
 body {
-    background-color:#EAE0D7;
+    background-color:#FFFFFF;
     margin:0;
     padding:0;
     font-family: Helvetica,Arial,sans-serif;
 }
 
 header, footer {
-    background-color:#7691A0;
-    color: #2B2B2B;
+    background-color:#252626;
+    color: #FFFFFF;
 }
 header a {
-    color: #2B2B2B;
+    color: #FFFFFF;
     margin:0;
     padding:0;
 }
