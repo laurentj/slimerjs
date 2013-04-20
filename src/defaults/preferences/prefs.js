@@ -9,10 +9,9 @@ pref("dom.report_all_js_exceptions", true);
 
 pref("browser.fixup.alternate.enabled", false);
 
-// remove it for releases
-pref("nglayout.debug.disable_xul_cache", true);
-pref("nglayout.debug.disable_xul_fastload", true);
-
+// disable warnings about long script run time
+pref("dom.max_script_run_time" ,0);
+pref("dom.max_chrome_script_run_time" ,0);
 
 // for xulrunner, to display error pages instead of alert box
 pref("browser.xul.error_pages.enabled", true);
@@ -27,3 +26,5 @@ pref("browser.link.open_newwindow.restriction", 0);
 pref("browser.link.open_external", 1);
 
 pref("dom.allow_scripts_to_close_windows", true);
+
+
