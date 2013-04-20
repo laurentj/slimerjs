@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
         <meta content="index, follow" name="robots">
-        <title>SlimerJS - a scriptable web browser</title>
+        <title>SlimerJS - Installation</title>
         <meta content="browser, javascript, scriptable, phantomjs, casperjs" name="keywords">
         <meta content="SlimerJS is a scriptable browser for web testing, web scraping, network monitoring" name="description">
         <link href="slimerjs.css" rel="stylesheet" type="text/css">
@@ -14,11 +14,13 @@
             <h1><a href="index.html">SlimerJS</a></h1>
             <nav>
                 <ul>
+                    <li><a href="features.html">Features</a></li>
                     <li><a href="install.html">Install</a></li>
-                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="http://docs.slimerjs.org">Documentation</a></li>
                     <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
                     <li><a href="faq.html">FAQ</a></li>
                     <li><a href="index.html#community">Community</a></li>
+                    <li><a href="about.html">About</a></li>
                 </ul>
             </nav>
         </header>
@@ -28,8 +30,8 @@
 
             <h2>Installation of Firefox or Xulrunner</h2>
 
-            <p>SlimerJS runs on any platform on which Firefox (Desktop version) is available. It needs XulRunner or Firefox.
-             So install them first, for your prefered operating system.</p>
+            <p>SlimerJS runs on any platform on which Firefox (Desktop version) is available.
+               It needs XulRunner or Firefox. So install them first, for your prefered operating system.</p>
 
             <ul>
                 <li><a href="http://getfirefox.com">Download Firefox</a> (version 18 or higher)</li>
@@ -42,9 +44,10 @@
             into somewhere on your disk. You'll have a <code>slimerjs/</code> directory with some files and
             a script <code>slimerjs</code> (and <code>slimerjs.bat</code> for Windows).</p>
             
-            <p>During its launch, SlimerJS tries to discover itself the path of Firefox or XulRunner. In case it fails, you should
-            create an environment variable containing the path of the Firefox/XulRunner binary. To create this environment variable
-            from a command line:</p>
+            <p>During its launch, SlimerJS tries to discover itself the path of Firefox or
+            XulRunner. In case it fails, you should create an environment variable
+            containing the path of the Firefox/XulRunner binary. To create this environment
+            variable from a command line:</p>
             <table>
                 <tr>
                     <th>On linux:</th>
@@ -68,11 +71,13 @@
             
             <h2>Launching SlimerJS</h2>
             
-            <p>From a command line, call the <code>slimerjs</code> script with the path of a javascript file.</p>
+            <p>From a command line, call the <code>slimerjs</code> executable with the path
+                of a javascript file.</p>
             <pre><code>/somewhere/slimerjs-1.2.3/slimerjs myscript.js</code></pre>
             <p>On Windows: <code>c:\somewhere\slimerjs-1.2.3\slimerjs.bat myscript.js</code></p>
 
-            <p>The js script should contain your instructions to manipulate a web page... See <a href="documentation.html">the documentation</a>.</p>
+            <p>The js script should contain your instructions to manipulate a web page...
+            See <a href="documentation.html">the documentation</a>.</p>
         </section>
         <footer>&copy; 2013 Laurent Jouanneau / Innophi</footer>
     </body>

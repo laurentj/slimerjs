@@ -2,6 +2,9 @@
 Welcome to SlimerJS's documentation!
 ====================================
 
+This documentation is a work in progress. Feel free `to contribute <https://github.com/laurentj/slimerjs/tree/master/docs>`_ !
+
+
 Contents:
 
 .. toctree::

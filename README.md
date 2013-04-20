@@ -146,8 +146,11 @@ After this release, the goal will be to hack XulRunner to run headless windows.
    - Improve the code by providing patches. SlimerJS is entirely in Javascript!! [Fork the repository in github](https://github.com/laurentj/slimerjs/fork_select),
      commit, and do pull requests. Please create one dedicated branch for each bugs/features.
    - Document the API [in the wiki](https://github.com/laurentj/slimerjs/wiki)
-   - We need a website and a logo!!
    - Other ideas? Discuss with us on the IRC channel or in the mailing list (see above).
+- Hey, CapserJS does not work with SlimerJS!
+   - Yes, because SlimerJS does not implement yet all the PhantomJS API and CasperJS does
+     not know SlimerJS. But we are working on it and we will provide some patch to
+     the CasperJS project
 - Why are there no tests on the WebServer object?
    - This module is based on the [httpd component](http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/)
      of Mozilla used for their own unit tests, and that is already [heavily tested](http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/test/)
