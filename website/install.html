@@ -1,84 +1,200 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-        <meta content="index, follow" name="robots">
-        <title>SlimerJS - Installation</title>
-        <meta content="browser, javascript, scriptable, phantomjs, casperjs" name="keywords">
-        <meta content="SlimerJS is a scriptable browser for web testing, web scraping, network monitoring" name="description">
-        <link href="slimerjs.css" rel="stylesheet" type="text/css">
-    </head>
-    <body>
-        <header>
-            <h1><a href="index.html">SlimerJS</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="features.html">Features</a></li>
-                    <li><a href="install.html">Install</a></li>
-                    <li><a href="http://docs.slimerjs.org">Documentation</a></li>
-                    <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="index.html#community">Community</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-            </nav>
-        </header>
-        <section id="main">
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Install · SlimerJS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-            <h1>Installation</h1>
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/docs.css" rel="stylesheet">
+    <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
 
-            <h2>Installation of Firefox or Xulrunner</h2>
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <![endif]-->
 
-            <p>SlimerJS runs on any platform on which Firefox (Desktop version) is available.
-               It needs XulRunner or Firefox. So install them first, for your prefered operating system.</p>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
 
-            <ul>
-                <li><a href="http://getfirefox.com">Download Firefox</a> (version 18 or higher)</li>
-                <li>or <a href="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0.2/runtimes/">Download Xulrunner</a> (version 18 or higher)</li>
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+<!-- Navbar
+================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+          <a class="brand" href="index.html"><span>Slimer</span>JS</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li class="active"><a href="install.html">Install</a></li>
+                <li><a href="http://docs.slimerjs.org">Documentation</a></li>
+                <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            <h2>Installation of SlimerJs</h2>
-            
-            <p><a href="index.html">Download the latest zip package of SlimerJS</a> and extract files
-            into somewhere on your disk. You'll have a <code>slimerjs/</code> directory with some files and
-            a script <code>slimerjs</code> (and <code>slimerjs.bat</code> for Windows).</p>
-            
-            <p>During its launch, SlimerJS tries to discover itself the path of Firefox or
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <div class="logo">
+        <img src="assets/img/glouton-boyEntete100.png"/>
+    </div>
+    <h1>Installation</h1>
+    <p class="lead">Installing & launching <i class="slm">SlimerJS</i> on your plateform</p>
+  </div>
+</header>
+
+
+ <div class="container">
+
+    <div class="row-fluid">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav">
+          <li><a href="#download-bootstrap"><i class="icon-chevron-right"></i> Installation of Firefox or Xulrunner</a></li>
+          <li><a href="#file-structure"><i class="icon-chevron-right"></i> Installation of SlimerJs</a></li>
+          <li><a href="#contents"><i class="icon-chevron-right"></i> Launching SlimerJS</a></li>
+        </ul>
+      </div>
+      
+      <div class="span9">
+
+        <section id="download-bootstrap">
+          <div class="page-header">
+            <h1 class="install">1. Installation of Firefox or Xulrunner</h1>
+          </div>
+          <p class="lead"><span class="slm">SlimerJS</span> runs on any platform
+            on which <b>Firefox</b> (Desktop version) is available. It needs
+            <a href="#" alt="" title="">XulRunner</a> or <a href="#">Firefox</a>.
+            So install them first, for your prefered operating system.</p>
+
+         <div class="row-fluid">
+        	<div class="span5">
+          	<h2>Firefox</h2>
+          	<p>The Famous Web Browser. <span class="slm">SlimerJS</span> needs only its core engine
+            to be executed. Minimum version: 18.0.</p>
+          	<p><a class="btn" href="http://getfirefox.com">Download</a></p>
+        	</div>
+	        <div class="span5">
+          	<h2>Xulrunner</h2>
+          	<p>XulRunner is a software that contains only the core engine of
+              Firefox and which can launch an application like <span class="slm">SlimerJS</span>, made
+              with Mozilla technologies (XUL, XPCom...).
+              Minimum version: 18.0.</p>
+          	<p><a class="btn" href="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0.2/runtimes/">Download</a></p>
+       		</div>
+      	</div>
+       </section>
+
+
+        <section id="file-structure">
+          <div class="page-header">
+            <h1 class="install">2. Installation of SlimerJs</h1>
+          </div>
+          <p class="lead"><a href="http://download.slimerjs.org/slimerjs-nightly.zip">Download
+             the latest zip package</a> of <span class="slm">SlimerJS</span>
+             and extract files into somewhere on your disk. You'll have a
+             <code>slimerjs/</code> directory with some files and a script
+             <code>slimerjs</code> (and <code>slimerjs.bat</code> for Windows).</p>
+        
+        <p>During its launch, <span class="slm">SlimerJS</span> tries to discover itself the path of Firefox or
             XulRunner. In case it fails, you should create an environment variable
             containing the path of the Firefox/XulRunner binary. To create this environment
             variable from a command line:</p>
-            <table>
-                <tr>
-                    <th>On linux:</th>
-                    <td><code>export SLIMERJSLAUNCHER=/usr/bin/firefox</code></td>
-                </tr>
-                <tr>
-                    <th>on Windows</th>
-                    <td><code>SET SLIMERJSLAUNCHER="c:\Program Files\Mozilla Firefox\firefox.exe</code></td>
-                </tr>
-                <tr>
-                    <th>On windows with cygwin</th>
-                    <td><code>export SLIMERJSLAUNCHER="/cygdrive/c/program files/mozilla firefox/firefox.exe"</code></td>
-                </tr>
-                <tr>
-                    <th>On MacOS</th>
-                    <td><code>export SLIMERJSLAUNCHER=/Applications/Firefox.app/Contents/MacOS/firefox</code></td>
-                </tr>
-            </table>
-            <p>You can of course set this variable in your .bashrc, .profile or in the computer
-                properties on Windows.</p>
-            
-            <h2>Launching SlimerJS</h2>
-            
-            <p>From a command line, call the <code>slimerjs</code> executable with the path
-                of a javascript file.</p>
-            <pre><code>/somewhere/slimerjs-1.2.3/slimerjs myscript.js</code></pre>
-            <p>On Windows: <code>c:\somewhere\slimerjs-1.2.3\slimerjs.bat myscript.js</code></p>
+        
+         <div class="row-fluid">
+        	<div class="span5">
+          	<h4>On linux</h4>
+          	<p><code>export SLIMERJSLAUNCHER=/usr/bin/firefox</code></p>
 
-            <p>The js script should contain your instructions to manipulate a web page...
-            See <a href="documentation.html">the documentation</a>.</p>
+          	<h4>On Windows</h4>
+          	<p><code>SET SLIMERJSLAUNCHER="c:\Program Files\Mozilla Firefox\firefox.exe</code></p>
+
+          	<h4>On MacOS</h4>
+          	<p><code>export SLIMERJSLAUNCHER=/Applications/Firefox.app/Contents/MacOS/firefox</code></p>
+
+          	<h4>On windows with cygwin</h4>
+          	<p><code>export SLIMERJSLAUNCHER="/cygdrive/c/program files/mozilla firefox/firefox.exe"</code></p>
+        	</div>
+      	</div>
+     
+     		<p>You can of course set this variable in your <code>.bashrc</code>,
+            <code>.profile</code> or in the computer properties on Windows.</p> 
+     </section>
+
+        <section id="contents">
+          <div class="page-header">
+            <h1 class="install">3. Launching SlimerJS</h1>
+          </div>
+
+          <h2>On Linux or MacOS</h2>
+          <p class="lead">From a command line, call the <code>slimerjs</code>
+          script with the path of a javascript file.</p>
+            <pre><code>/somewhere/slimerjs-1.2.3/slimerjs myscript.js</code></pre>
+
+          <h2>On Windows</h2>
+          <pre><code>c:\somewhere\slimerjs-1.2.3\slimerjs.bat myscript.js</code></pre>
+          <p>The js script should contain your instructions to manipulate a web page...
+          See the <a href="http://docs.slimerjs.org">documentation</a>.</p> 
         </section>
-        <footer>&copy; 2013 Laurent Jouanneau / Innophi</footer>
-    </body>
+      </div>
+    </div>
+  </div>
+
+
+    <footer class="footer">
+      <div class="container">
+          <ul class="bs-docs-social-buttons">
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/"><img class="imgbtn" src="assets/img/git2.png"> Source Code</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/fork"><img class="imgbtn" src="assets/img/git1.png"> Fork</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://twitter.com/slimerjs"><img src="assets/img/tweet.png"> Tweet</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/slimerjs"><img class="imgbtn" src="assets/img/tchat2.png"> Mail List</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/issues"><img class="imgbtn" src="assets/img/bug_bleu.png"> Bug ? Ideas !</a>
+            </li>
+          </ul>
+          <p>Copyright 2013 Laurent Jouanneau / Innophi</p>
+      </div>
+    </footer>
+
+    <!--script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script-->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    
+    <!--script src="assets/js/holder/holder.js"></script-->
+    <!--script src="assets/js/google-code-prettify/prettify.js"></script-->
+    <script src="assets/js/application.js"></script>
+
+
+
+  </body>
 </html>

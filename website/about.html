@@ -1,45 +1,93 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-        <meta content="index, follow" name="robots">
-        <title>SlimerJS - About the project</title>
-        <meta content="browser, javascript, scriptable, phantomjs, casperjs" name="keywords">
-        <meta content="SlimerJS is a scriptable browser for web testing, web scraping, network monitoring" name="description">
-        <link href="slimerjs.css" rel="stylesheet" type="text/css">
-    </head>
-    <body>
-        <header>
-            <h1><a href="index.html">SlimerJS</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="features.html">Features</a></li>
-                    <li><a href="install.html">Install</a></li>
-                    <li><a href="http://docs.slimerjs.org">Documentation</a></li>
-                    <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="index.html#community">Community</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-            </nav>
-        </header>
-        <section id="main">
-            <h2>About the project and its authors</h2>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>About SlimerJS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/docs.css" rel="stylesheet">
+    <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+          <a class="brand" href="index.html"><span>Slimer</span>JS</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="install.html">Install</a></li>
+                <li><a href="http://docs.slimerjs.org">Documentation</a></li>
+                <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li class="active"><a href="about.html">About</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <header class="jumbotron subhead" id="overview">
+      <div class="container">
+        <div class="logo">
+        <img class="" src="assets/img/glouton-boyEntete100.png"/>
+        </div>
+        <h1>About the project..</h1>
+        <p class="lead">.. and its authors</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row-fluid">
+        <!--div class="span3 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav">
+            <li><a href="#"><i class="icon-chevron-right"></i> </a></li>
+          </ul>
+        </div-->
+        <div class="span9">  
+          <section id="contents">
+            <!--div class="page-header">
+              <h1>title</h1>
+            </div-->
 
             <p>Continuous Integration, unit and functionnal testings etc... All of these
             subjects are more and more important in Web projects. The success of tools
             like PhantomsJS or CasperJS prove that assertion.</p>
 
             <p>There is only one issue with PhantomJS: it uses Webkit. Well, sorry,
-            we don't say that Webkit is a bad thing. We just want to say that it don't
+            we don't say that Webkit is a bad thing. We just want to say that it doesn't
             give the opportunity for web developpers to do their tests or else with an
             other "web engine", like Gecko for example, the core of Firefox. </p>
 
             <p>After all, Firefox has significant market shares, and so that's a shame to
                 run your functional tests only with webkit.</p>
 
-            <p>This is why Laurent Jouanneau started to develop SlimerJS at the end
+            <p>This is why Laurent Jouanneau started to develop <span class="slm">SlimerJS</span> at the end
             of 2012, after a "twitter" discussion with
             <a href="https://twitter.com/n1k0">Nicolas</a>, the author of CasperJS :-).</p>
 
@@ -51,10 +99,46 @@
             (Firefox extensions, XulRunner applications). </p>
 
             <p>The project does not aim to be a project of a single man. <strong>Feel free
-            to contribute!</strong> SlimerJS is open source, and entirely written in
-            Javascript ;-).</p>
-        </section>
+            to contribute!</strong> <span class="slm">SlimerJS</span> is open source,
+            and entirely written in Javascript ;-).</p>
 
-        <footer>&copy; 2013 Laurent Jouanneau / Innophi</footer>
-    </body>
+            <p>.</p> 
+          </section>
+        </div>
+      </div>
+    </div>
+
+
+    <footer class="footer">
+      <div class="container">
+          <ul class="bs-docs-social-buttons">
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/"><img class="imgbtn" src="assets/img/git2.png"> Source Code</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/fork"><img class="imgbtn" src="assets/img/git1.png"> Fork</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://twitter.com/slimerjs"><img src="assets/img/tweet.png"> Tweet</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/slimerjs"><img class="imgbtn" src="assets/img/tchat2.png"> Mail List</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/issues"><img class="imgbtn" src="assets/img/bug_bleu.png"> Bug ? Ideas !</a>
+            </li>
+          </ul>
+          <p>Copyright 2013 Laurent Jouanneau / Innophi</p>
+      </div>
+    </footer>
+
+    <!--script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script-->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <!--script src="assets/js/holder/holder.js"></script-->
+    <!--script src="assets/js/google-code-prettify/prettify.js"></script-->
+    <script src="assets/js/application.js"></script>
+
+  </body>
 </html>

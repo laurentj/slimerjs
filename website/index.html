@@ -1,60 +1,165 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-        <meta content="index, follow" name="robots">
-        <title>SlimerJS - a scriptable web browser</title>
-        <meta content="browser, javascript, scriptable, phantomjs, casperjs" name="keywords">
-        <meta content="SlimerJS is a scriptable browser for web testing, web scraping, network monitoring" name="description">
-        <link href="slimerjs.css" rel="stylesheet" type="text/css">
-    </head>
-    <body>
-        <header>
-            <h1><a href="index.html">SlimerJS</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="features.html">Features</a></li>
-                    <li><a href="install.html">Install</a></li>
-                    <li><a href="http://docs.slimerjs.org">Documentation</a></li>
-                    <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="index.html#community">Community</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-            </nav>
-        </header>
-        <section id="main">
-            <div id="cartouche">
-                <h1>SlimerJS</h1>
-                <h2>Is a scriptable browser for Web developers</h2>
-                <div id="download"> <a href="http://download.slimerjs.org/slimerjs-nightly.zip">Download SlimerJS 0.6pre</a><br/>
-                    all operating system<br>
-                Free - Open source</div>
-            </div>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SlimerJS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A scriptable web browser for web testing, web scrapping, network monitoring...">
+    <meta name="author" content="Laurent Jouanneau">
 
-            <p>SlimerJS allows you to manipulate a web page with a Javascript script:
-                opening a webpage, clicking on links, modifying the content...</p>
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/docs.css" rel="stylesheet">
+    <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
 
-            <p>It is useful to do functional tests, page automaton, network monitoring, screen capture etc.</p>
+    <!--[if lt IE 9]>
+      <script src="assets/js/html5shiv.js"></script>
+    <![endif]-->
 
-            <p>SlimerJS is similar to <a href="http://phantomjs.org/">PhantomJs</a>
-                except that it runs Gecko, the engine of Mozilla Firefox,
-                instead of Webkit.
-            </p>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+  </head>
 
-            <h3 id="community">Community</h3>
+  <body class="home" data-spy="scroll" data-target=".bs-docs-sidebar">
 
-            <ul>
-                <li>Questions? Discuss with us on <a href="https://groups.google.com/forum/#!forum/slimerjs">the mailing list</a>
-                or on <strong>IRC</strong> (irc.mozilla.org, #slimerjs)</li>
-                <li>Bugs? Improvement ideas? <a href="https://github.com/laurentj/slimerjs/issues">Post an issue</a>.</li>
-                <li>You can contribute in <a href="http://github.com/laurentj/slimerjs">the source code of SlimerJS</a>
-                or in <a href="https://github.com/laurentj/slimerjs/tree/master/website">the source code of the website</a> on Github.</li>
-                <li>Follow us on Twitter: <a href="https://twitter.com/slimerjs">@slimerjs</a>.</li>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+          <a class="brand" href="index.html">SlimerJS</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="install.html">Install</a></li>
+                <li><a href="http://docs.slimerjs.org">Documentation</a></li>
+                <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        </section>
-        <footer>&copy; 2013 Laurent Jouanneau / Innophi</footer>
-    </body>
+<div class="jumbotronhome masthead">
+  <div class="container">
+    <h1><img src="assets/img/glouton-homeOmbre.png"/> <span>Slimer</span>JS</h1>
+    <div class="homesubtitle">Free - Open Source</div>
+
+    <p class="shortdesc">A scriptable browser for Web developers</p>
+    
+    <p id="download">
+      <a href="http://download.slimerjs.org/slimerjs-nightly.zip" class="btn"><span class="download">Download SlimerJS</span><br/>
+      <span class="sublabel">All operating systems - Version 0.6pre (nightly)</span></a>
+    </p>
+    
+    <div class="row-fluid">
+            <div class="span4 slogan">
+                <h2>SlimerJS allows you to manipulate a web page with a Javascript script</h2>
+            </div>
+    		<div class="span4">
+    			<div class="homeintro">
+                    <p>
+    			<span class="orange">></span> Opening a webpage,<br/>
+    			<span class="orange">></span> Clicking on links,<br/>
+    			<span class="orange">></span> Modifying the content...</p>
+                <p>
+                <span class="slmv">Slimer<span>JS</span></span> is useful to do
+                functional tests, page automaton, network monitoring,
+                screen capture, etc.</p>
+                <p><span class="slmv">Slimer<span>JS</span></span> is similar to <i>PhantomJs</i>,
+                except that it runs <span class="orange">Gecko</span>,
+                the browser engine of <span class="orange">Mozilla Firefox</span>,
+                instead of <span class="orange">Webkit</span>.
+				</p></div>
+                
+    		</div>
+
+			<div class="span4">
+                <p></p>
+<pre>
+<span class="codetitre">Simple example</span>
+
+<span class="object">webpage</span>.<span class="fonction">open</span>(url) <span class="comment">// load a page</span>
+  .then(function(){
+    <span class="comment">// store a screenshot of the page</span>
+    <span class="object">webpage</span>.<span class="fonction">viewportSize</span> =
+        { width:650, height:320 };
+    webpage.render(<span class="literal">'page.png'</span>);
+    <span class="comment">// then open a second page</span>
+    return <span class="object">webpage</span>.<span class="fonction">open</span>(url2);
+  })
+  .then(function(){
+    <span class="comment">// click somewhere on
+    // the second page</span>
+    <span class="object">webpage</span>.<span class="fonction">sendEvent</span>("click", 5, 5,
+                        <span class="literal">'left'</span>, 0);
+    <span class="object">slimerjs</span>.<span class="fonction">exit</span>()
+  });
+</pre>
+            </div>
+    </div>
+
+    <br class="clear"/>
+    
+    <!--<ul class="masthead-links">
+      <li>
+        <img src="assets/img/dots.png" />
+      </li>
+      <li>
+        <a href="#" >Examples</a>
+      </li>
+      <li>
+        <a href="#" >Extend</a>
+      </li>
+      <li>
+        <img src="assets/img/dots.png" />
+      </li>
+    </ul>
+    <br/>-->
+  </div>
+</div>
+
+    <footer class="footer">
+      <div class="container">
+          <ul class="bs-docs-social-buttons">
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/"><img class="imgbtn" src="assets/img/git2.png"> Source Code</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/fork"><img class="imgbtn" src="assets/img/git1.png"> Fork</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://twitter.com/slimerjs"><img src="assets/img/tweet.png"> Tweet</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/slimerjs"><img class="imgbtn" src="assets/img/tchat2.png"> Mail List</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/issues"><img class="imgbtn" src="assets/img/bug_bleu.png"> Bug ? Ideas !</a>
+            </li>
+          </ul>
+          <p>Copyright 2013 Laurent Jouanneau / Innophi</p>
+      </div>
+    </footer>
+
+    <!--script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script-->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    
+    <!--script src="assets/js/holder/holder.js"></script-->
+    <!--script src="assets/js/google-code-prettify/prettify.js"></script-->
+    <script src="assets/js/application.js"></script>
+
+  </body>
 </html>

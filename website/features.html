@@ -1,35 +1,80 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-        <meta content="index, follow" name="robots">
-        <title>SlimerJS - features</title>
-        <meta content="browser, javascript, scriptable, phantomjs, casperjs" name="keywords">
-        <meta content="SlimerJS is a scriptable browser for web testing, web scraping, network monitoring" name="description">
-        <link href="slimerjs.css" rel="stylesheet" type="text/css">
-    </head>
-    <body>
-        <header>
-            <h1><a href="index.html">SlimerJS</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="features.html">Features</a></li>
-                    <li><a href="install.html">Install</a></li>
-                    <li><a href="http://docs.slimerjs.org">Documentation</a></li>
-                    <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="index.html#community">Community</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-            </nav>
-        </header>
-        <section id="main">
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Features · SlimerJS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Features of the scriptabel web browser SlimerJS">
+    <meta name="author" content="Laurent Jouanneau">
 
-            <h2>Features</h2>
-            
-            <p>SlimerJS allowing you to execute a javascript script outside a classical
-             webpage.</p>
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/docs.css" rel="stylesheet">
+    <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+          <a class="brand" href="index.html"><span>Slimer</span>JS</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li><a href="index.html">Home</a></li>
+                <li class="active"><a href="features.html">Features</a></li>
+                <li><a href="install.html">Install</a></li>
+                <li><a href="http://docs.slimerjs.org">Documentation</a></li>
+                <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header class="jumbotron subhead" id="overview">
+      <div class="container">
+        <div class="logo">
+            <img class="" src="assets/img/glouton-boyEntete100.png"/>
+        </div>
+        <h1>Features</h1>
+        <p class="lead">What can you do with <i class="slm">SlimerJS</i>?</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row-fluid">
+        <!--div class="span3 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav">
+            <li><a href="#"><i class="icon-chevron-right"></i> </a></li>
+          </ul>
+        </div-->
+        <div class="span9">
+          <section id="contents">
+            <!--div class="page-header">
+              <h1>title</h1>
+            </div-->
+
+            <p><span class="slm">SlimerJS</span> allows you to execute a javascript script outside a classical
+             web browser.</p>
             
             <p>In your javascript script, you can use some modules providing many APIs:</p>
 
@@ -45,14 +90,14 @@
             </ul>
 
             <p>All of these features are executed on top of the core of Firefox.
-            and are already implemented in SlimerJS.</p>
+            and are already implemented in <span class="slm">SlimerJS</span>.</p>
 
             <p>These APIs are similar to the APIs of <a href="http://phantomjs.org/">Phantomjs</a>
-            but for the moment, SlimerJS is not fully compatible with PhantomJS.
+            but for the moment, <span class="slm">SlimerJS</span> is not fully compatible with PhantomJS.
             However in a near future, it will be. It's the main goal for the
             next version SlimerJS 1.0.</p>
 
-            <p>SlimerJS is not only a PhantomJS clone, it contains also additional features
+            <p><span class="slm">SlimerJS</span> is not only a PhantomJS clone, it contains also additional features
             right now:</p>
 
             <ul>
@@ -60,16 +105,54 @@
                 that <a href="https://developer.mozilla.org/en-US/docs/JavaScript/ECMAScript_6_support_in_Mozilla">has already features of the future standard Ecmascript "Harmony" 6</a>:
                     iterators, generators, destructured assignement, Map and WeakMap, "let" keyword...</li>
                 <li>Many modules of the <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/">Mozilla Addons Sdk</a>
-                    are available and you can import it into your code as any CommonJS modules.</li>
+                    are available and you can import it into your code as any <strong>CommonJS</strong> modules.</li>
                 <li>Supports all last HTML5 standards implemented in Firefox, including things that
                 are not available into PhantomJS: Audio, Video, WebGL etc..</li>
-                <li>SlimerJS is able to load flash content if the Flash plugin is installed</li>
+                <li><span class="slm">SlimerJS</span> is able to load flash content if the Flash plugin is installed</li>
                 <li>You can use "promises" when opening a web page! <code>webpage.open()</code>
                     returns <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html">a promise</a>.</li>
             </ul>
 
             <p><strong><a href="index.html#download">Try SlimerJS</a></strong> for your web projects!</p>
         </section>
-        <footer>&copy; 2013 Laurent Jouanneau / Innophi</footer>
-    </body>
+      </div>
+    </div>
+  </div>
+
+
+
+    <footer class="footer">
+      <div class="container">
+          <ul class="bs-docs-social-buttons">
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/"><img class="imgbtn" src="assets/img/git2.png"> Source Code</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/fork"><img class="imgbtn" src="assets/img/git1.png"> Fork</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://twitter.com/slimerjs"><img src="assets/img/tweet.png"> Tweet</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/slimerjs"><img class="imgbtn" src="assets/img/tchat2.png"> Mail List</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/issues"><img class="imgbtn" src="assets/img/bug_bleu.png"> Bug ? Ideas !</a>
+            </li>
+          </ul>
+          <p>Copyright 2013 Laurent Jouanneau / Innophi</p>
+      </div>
+    </footer>
+
+    <!--script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script-->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    
+    <!--script src="assets/js/holder/holder.js"></script-->
+    <!--script src="assets/js/google-code-prettify/prettify.js"></script-->
+    <script src="assets/js/application.js"></script>
+
+
+
+  </body>
 </html>

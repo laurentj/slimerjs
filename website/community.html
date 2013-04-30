@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>FaQ - SlimerJS</title>
+    <title>Community of SlimerJS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Frequently Asked Questions about SlimerJS">
-    <meta name="author" content="Laurent Jouanneau">
+    <meta name="description" content="Links to resources for the community of SlimerJS">
+    <meta name="author" content="">
 
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
@@ -21,6 +21,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
     <link rel="shortcut icon" href="assets/ico/favicon.png">
+
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -42,8 +43,8 @@
                 <li><a href="install.html">Install</a></li>
                 <li><a href="http://docs.slimerjs.org">Documentation</a></li>
                 <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
-                <li class="active"><a href="faq.html">FAQ</a></li>
-                <li><a href="community.html">Community</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li class="active"><a href="community.html">Community</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
           </div>
@@ -51,14 +52,13 @@
       </div>
     </div>
 
-
     <header class="jumbotron subhead" id="overview">
       <div class="container">
         <div class="logo">
         <img class="" src="assets/img/glouton-boyEntete100.png"/>
         </div>
-        <h1>FAQ</h1>
-        <p class="lead">Or Frequently Asked Questions...</p>
+        <h1>Community</h1>
+        <p class="lead">Finding help or contributing</p>
       </div>
     </header>
 
@@ -72,63 +72,16 @@
         <div class="span9">  
           <section id="contents">
             <!--div class="page-header">
-              <h1>title</h1>
+              <h1 class="install">title</h1>
             </div-->
-
-
-<dl>
-    <dt>Why is it not natively headless?</dt>
-    <dd>You see windows during the execution of your script? It's normal.
-        Gecko, the rendering engine of Firefox, cannot render web content without a graphical window.
-        See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=446591">Mozilla bug 446591</a>.
-        However you can launch <span class="slm">SlimerJS</span> with xvfb if you are under linux or MacOSx, to
-        have a headless <span class="slm">SlimerJS</span>.</dd>
-
-    <dt>Why is it called "SlimerJs"?</dt>
-    <dd>Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox
-        source code uses many references from this movie, and since PhantomJS,
-        CasperJs and other related tools, is a matter of ghosts... ;-)</dd>
-
-    <dt>How can I contribute?</dt>
-    <dd>
-        You can contribute in many ways:
-        <ul>
-            <li>Report bugs or ideas of improvements into
-                <a href="https://github.com/laurentj/slimerjs/issues">"issues" on github</a></li>
-            <li>Improve the code by providing patches. <span class="slm">SlimerJS</span> is entirely in Javascript!!
-            <a href="https://github.com/laurentj/slimerjs/fork_select">Fork the repository in github</a>,
-            commit, and do pull requests. Please create one dedicated branch for each bugs/features.</li>
-            <li><a href="https://github.com/laurentj/slimerjs/tree/master/docs">Document the API</a>.
-                 The documentation is stored in the github repository.</li>
-            <li>Other ideas? Discuss with us on the IRC channel or in the mailing list
-             (<a href="community.html">see the community page</a>).</li>
-        </ul>
-    </dd>
-
-
-    <dt>Hey, CapserJS does not work with <span class="slm">SlimerJS</span>!</dt>
-    <dd>Yes, because:
-        <ul>
-            <li><span class="slm">SlimerJS</span> does not implement yet all the PhantomJS API</li>
-            <li>CasperJS does not know SlimerJS but we are working on it
-                and we will provide some patch to the CasperJS project
-            </li>
-        </ul>
-    </dd>
-
-    <dt>Why are there no tests on the WebServer object in the source code?</dt>
-    <dd>This module is based on the
-        <a href="http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/">httpd component</a>
-        of Mozilla used for their own unit tests, and that is already
-        <a href="http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/test/">heavily tested</a></dd>
-
-    <dt>Why are there no tests on the FileSystem object in the source code?</dt>
-    <dd>This module is based on the
-        <a href="https://github.com/laurentj/addon-sdk/blob/master/lib/sdk/io/file.js">file module provided in the Mozilla Addons SDK</a>,
-        and <a href="https://github.com/laurentj/addon-sdk/blob/master/test/test-file.js">is already tested</a>.</dd>
-
-</dl>
-
+             <ul>
+                <li>Questions? Discuss with us on <a href="https://groups.google.com/forum/#!forum/slimerjs">the mailing list</a>
+                or on <strong>IRC</strong> (irc.mozilla.org, #slimerjs)</li>
+                <li>Bugs? Improvement ideas? <a href="https://github.com/laurentj/slimerjs/issues">Post an issue</a>.</li>
+                <li>You can contribute in <a href="http://github.com/laurentj/slimerjs">the source code of SlimerJS</a>
+                or in <a href="https://github.com/laurentj/slimerjs/tree/master/website">the source code of the website</a> on Github.</li>
+                <li>Follow us on Twitter: <a href="https://twitter.com/slimerjs">@slimerjs</a>.</li>
+            </ul>
 
           </section>
         </div>
@@ -162,10 +115,12 @@
     <!--script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script-->
     <script src="assets/js/jquery.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
-
+    
     <!--script src="assets/js/holder/holder.js"></script-->
     <!--script src="assets/js/google-code-prettify/prettify.js"></script-->
     <script src="assets/js/application.js"></script>
+
+
 
   </body>
 </html>
