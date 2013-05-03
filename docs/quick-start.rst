@@ -5,15 +5,15 @@
 Quick Start
 ===========
 
-SlimerJS execute your script in the context of a blank window (that you cannot see).
+SlimerJS executes your script in the context of a blank window (that you cannot see).
 So you have a document object, a window object, even if it is not really useful. You
-have other objects that will allow you to do many things.
+have other objects that allow you to do many tasks.
 
 
 Hello World
 -----------
 
-Since SlimerJS is called from the command line, the first thing we could do in our script
+Since SlimerJS is called from the command line, the first thing you could do in your script
 is to print something in the terminal. You do it with the ``console`` object, as in
 any web page.
 
@@ -32,7 +32,7 @@ You'll see a little window opening and the "hello" message in the terminal. And 
 Contrary to PhantomJS, SlimerJS is not (yet) headless, this is why you see this window.
 But on Linux or MacOS, you can use the tool xvfb to hide all windows opened by your script.
 
-You see that you have to close the window yourself. To close it automatically, call
+You see that you have to close the window by yourself. To close it automatically, call
 ``slimer.exit()`` (or ``phantom.exit()`` to be compatible with PhantomJS), at the end
 of your script
 
@@ -59,13 +59,17 @@ the module name in parameter, and returns an object
 The result of require, here stored into ``webpageModule``, is an object that have all
 exported functions of the module.
 
+SlimerJS has modules almost identical to those provided by PhantomJS (webpage, fs,
+webserver, system) but it has also many other modules from the Mozilla Addons SDK
+which is included into the SlimerJS package.
+
 Opening a web page
 ------------------
 
 The main goal of SlimerJS is to open a web page and to manipulate it or to extract data
 from it. You have a dedicated module for that, "webpage".
 
-This module provides only one function, ``create()`` that create a ``webpage`` object.
+This module provides only one function, ``create()`` that creates a ``webpage`` object.
 
 .. code-block:: javascript
 
@@ -73,18 +77,18 @@ This module provides only one function, ``create()`` that create a ``webpage`` o
    page.open("http://slimerjs.org")
        .then(function(status){
             if (status == "success") {
-                console.log("The title of the page is: "+ page.title+"\n");
+                console.log("The title of the page is: "+ page.title);
             }
             else {
-                console.log("Sorry, the page is not loaded\n");
+                console.log("Sorry, the page is not loaded");
             }
             page.close();
             phantom.exit();
        })
 
 In SlimerJS, the ``open()`` method of the webpage object returns a "promise", a kind
-of object that allows to execute asynchronous task one after an other (you can chain several
-page loading with a simple syntax). In our example,
+of object that allows to execute asynchronous tasks one after an other (you can chain
+easily several page loading with this object). In our example,
 the webpage object load the page at the given URL, and when it is loaded, it executes
 the "then" step. Here we check the result of the loading, and if it is ok, we
 display the page title.
@@ -97,12 +101,113 @@ function to ``open()``:
    var page = require("webpage").create();
    page.open("http://slimerjs.org", function(status){
         if (status == "success") {
-            console.log("The title of the page is: "+ page.title+"\n");
+            console.log("The title of the page is: "+ page.title);
         }
         else {
-            console.log("Sorry, the page is not loaded\n");
+            console.log("Sorry, the page is not loaded");
         }
         page.close();
         phantom.exit();
    })
+
+
+Code Evaluation
+---------------
+
+Once a web page is opened, you may need to execute a javascript function into the
+context of the web page, in order to retrieve data or to manipulate the page content.
+
+This function must not call functions or use variables, of your script. It will not
+have access to them when it will be executed. The function can return a value: it should
+be only simple javascript values : array, number, string or literal object. But not objects
+like DOM objects...
+
+To execute such function, use the ``evaluate()`` method of the web page object:
+
+.. code-block:: javascript
+
+    var page = require('webpage').create();
+    page.open("http://slimerjs.org", function (status) {
+        var mainTitle = page.evaluate(function () {
+            console.log('message from the web page');
+            return document.querySelector("h1").textContent;
+        });
+        console.log('First title of the page is ' + mainTitle);
+        slimer.exit()
+    });
+
+You may notice that you don't see the message "message from the web page". Any console
+messages sended from the web page are not displayed by default. You need to give a
+callback on the property ``onConsoleMessage``, that will do it:
+
+.. code-block:: javascript
+
+    var page = require('webpage').create();
+    page.onConsoleMessage = function (msg) {
+        console.log(msg);
+    };
+    page.open("http://slimerjs.org", function (status) {
+        var mainTitle = page.evaluate(function () {
+            console.log('message from the web page');
+            return document.querySelector("h1").textContent;
+        });
+        console.log('First title of the page is ' + mainTitle);
+        slimer.exit()
+    });
+
+
+Taking screenshots
+------------------
+
+You can capture the page rendering and store it into an image, with the ``render()``
+method:
+
+.. code-block:: javascript
+
+    var page = require('webpage').create();
+    page.open("http://slimerjs.org", function (status) {
+        page.viewportSize = { width:1024, height:768 };
+        page.render('screenshot.png')
+    });
+
+``viewportSize`` allows you to set the window size.
+
+
+Network monitoring
+------------------
+
+You can listen all HTTP steps made during a page loading. You have several callback you can give.
+
+To listen the full loading of the page (when all of its resources are loaded), you may
+set the ``onLoadStarted`` callback to know when the loading starts, and
+``onLoadFinished`` when the page is fully loaded.
+
+.. code-block:: javascript
+
+    var page = require('webpage').create();
+    var startTime;
+    page.onLoadStarted = function () {
+        startTime = new Date()
+    };
+    page.onLoadFinished = function (status) {
+        if (status == "success") {
+            var endTime = new Date()
+            console.log('The page is loaded in '+ ((endTime - startTime)/1000)+ " seconds" );
+        }
+        else
+            console.log("The loading has failed");
+    };
+    page.open(url);
+
+This example displays the time spent to load the page.
+
+You can also listen all HTTP requests and responses with callbacks ``onResourceRequested`` and
+``onResourceReceived``.
+
+More informations
+-----------------
+
+The documentation is not yet complete. You can read the documentation of PhantomJS
+to know more about the API.
+
 
