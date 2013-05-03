@@ -45,14 +45,14 @@ if ("slimer" in this) {
     assertExists(slimer, "has slimer object? ");
     assertExists(slimer.version, "has slimer.version object? ");
     assertEquals("0", slimer.version.major, "slimer has the good major version");
-    assertEquals("0", slimer.version.minor, "slimer has the good minor version");
-    assertEquals("4", slimer.version.patch, "slimer has the good patch version");
+    assertEquals("6", slimer.version.minor, "slimer has the good minor version");
+    assertEquals("0", slimer.version.patch, "slimer has the good patch version");
 }
 else
     console.warn("==> No slimer object!")
 assertEquals("1", phantom.version.major, "phantom has the good major version");
-assertEquals("8", phantom.version.minor, "phantom has the good minor version");
-assertEquals("1", phantom.version.patch, "phantom has the good patch version");
+assertEquals("9", phantom.version.minor, "phantom has the good minor version");
+assertEquals("0", phantom.version.patch, "phantom has the good patch version");
 
 assertEquals(true, "require" in this, "there is a require object");
 assertEquals("function", typeof require, "require is a function");
