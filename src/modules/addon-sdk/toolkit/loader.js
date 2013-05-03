@@ -64,14 +64,14 @@ const keys = Object.keys;
 // Workaround for bug 674195. Freezing objects from other compartments fail,
 // so we use `Object.freeze` from the same component instead.
 function freeze(object) {
-  if (prototypeOf(object) === null) {
+  /*if (prototypeOf(object) === null) {
       Object.freeze(object);
   }
   else {
     prototypeOf(prototypeOf(object.isPrototypeOf)).
       constructor. // `Object` from the owner compartment.
       freeze(object);
-  }
+  }*/
   return object;
 }
 
@@ -409,7 +409,7 @@ exports.main = main;
 const Module = iced(function Module(id, uri) {
   return create(null, {
     id: { enumerable: true, value: id },
-    exports: { enumerable: true, writable: true, value: create(null) },
+    exports: { enumerable: true, writable: true, value: create({}) },
     uri: { value: uri }
   });
 });
