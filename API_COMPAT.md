@@ -53,14 +53,14 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
 ## properties
 
 <table>
-    <tr><td>args                                </td><td>deprecated</td></tr>
+    <tr><td>args                                </td><td>Implemented (deprecated)</td></tr>
     <tr><td>cookies                             </td><td></td></tr>
     <tr><td>cookiesEnabled                      </td><td></td></tr>
     <tr><td>defaultPageSettings                 </td><td></td></tr>
-    <tr><td>libraryPath                         </td><td>Implemented</td></tr>
+    <tr><td>libraryPath                         </td><td>Implemented (deprecated)</td></tr>
     <tr><td>outputEncoding                      </td><td></td></tr>
     <tr><td>page                                </td><td></td></tr>
-    <tr><td>scriptName                          </td><td>deprecated</td></tr>
+    <tr><td>scriptName                          </td><td>Implemented</td></tr>
     <tr><td>version                             </td><td>Implemented. Gives the PhantomJS version which is compatible to
                                                         the SlimerJS implementation.</td></tr>
     <tr><td>webdriverMode                       </td><td></td></tr>

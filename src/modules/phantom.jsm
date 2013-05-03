@@ -17,6 +17,14 @@ var errorHandler;
 
 var phantom = {
 
+    get args (){
+        return slConfiguration.args;
+    },
+
+    get scriptName (){
+        return slConfiguration.args[0];
+    },
+
     // ------------------------  cookies
 
     /**
