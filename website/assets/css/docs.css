@@ -90,7 +90,7 @@ hr.soften {
 
 .homeintro {
     padding-top:25px;
-    color:#757575;
+    color:#666666;
     font-size:15px;
 }
 
@@ -109,7 +109,8 @@ hr.soften {
     color:#dbdbdb;
 }
 
-.shortdesc, #download {
+.shortdesc,
+#download {
   font-size: 24px;
   text-align:center;
   line-height: 1.25;
@@ -199,7 +200,9 @@ a {
   /*text-shadow: 0 0 10px rgba(0,0,0,.25);*/
 }
 
-/* Download button */
+
+/* Download button
+-------------------------*/
 .masthead .btn {
   padding: 19px 24px;
   font-size: 24px;
@@ -214,21 +217,36 @@ a {
           transition: none;
 }
 .masthead .btn,
-.masthead .btn:hover {
+.masthead .btn:hover
+{
   -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
      -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
           box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
 }
-.masthead .btn:active {
+.masthead .btn:active
+{
   -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
      -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
           box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
 }
-.masthead .btn .sublabel {
+.masthead .btn .sublabel
+{
     font-size:12px;
     color:#fbfbfb;
 }
+a .download {
+	color:#3c3c3b;
+	}
 
+a:hover .download {
+	color:#3c3c3b;
+	}
+
+#download .relnote {
+    font-size:12px;
+    color: rgb(117, 117, 117);
+    text-decoration: underline;
+}
 
 /* Pattern overlay
 ------------------------- */
@@ -679,13 +697,7 @@ img.imgbtn {
 	padding-bottom:2px;
 	}
 	
-a .download {
-	color:#3c3c3b;
-	}
 
-a:hover .download {
-	color:#3c3c3b;
-	}
 
 .intro {
 	float:right;

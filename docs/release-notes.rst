@@ -5,7 +5,9 @@
 Release Notes v0.6
 ==================
 
-This is the first public stable release of SlimerJS.
+SlimerJS 0.6 has been released on May 03, 2013. This is the first public stable
+release of SlimerJS.
+
 It is usable, although its API is not still 100% compatible with PhantomJS.
 
 
@@ -28,7 +30,7 @@ implementation is planed in future releases.
 - ``webpage.open()`` only supports an url and a callback as parameter
 - no support of file uploading in web page (``webpage.uploadFile()``, ``webpage.onFilePicker``..)
 
-You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_ to know the implementation progress.
+You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_ to know details.
 
 
 Known issues
@@ -37,4 +39,5 @@ Known issues
 - CommonJS modules: you cannot alter objects (they are `freezed <https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/freeze>`_ )
   returned by the ``require()`` function. This is a "feature" of the CommonJS
   modules system of the Mozilla Addons SDK (used by SlimerJS).
+
 

@@ -114,8 +114,8 @@ blank page. Here are objects you can play with:
 - a **slimer** object that will contain additionnal API
 - a **require** function to load CommonJS modules
 - some modules that are almost identical to those provided by PhantomJS: **system**, **webserver**,
-  **fs** and **webpage**. Those two last modules are not yet fully implemented but they
-  provide the most important API.
+  **fs** and **webpage**. The last module is not yet fully implemented but it
+  provides the most important API.
 - some modules of the Mozilla Addons SDK: promise, heritage, xhr, system/, deprecated/ etc.
 
 You can read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md) to know the implementation progress.
