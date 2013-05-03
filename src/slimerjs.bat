@@ -5,7 +5,7 @@ REM % ~ d[rive] p[ath] 0[script name] is the absolute path to this bat file, wit
 REM ~ strips quotes from the argument
 SET SCRIPTDIR=%~dp0
 REM %* is every argument passed to this script.
-SET ARGS=%*
+SET __SLIMER_ARGS=%*
 SET LISTVAR=
 
 if ["%~1"]==["/?"] (
@@ -46,7 +46,7 @@ REM FIXME: This solution is not optimal, since we cannot see messages at realtim
 REM FIXME: an other solution to redirect directly to the console ?
 set TMPFILE=%TMP%\slimer-output-%RANDOM%.tmp
 
-%SLIMERJSLAUNCHER% -app "%SCRIPTDIR%application.ini" -purgecaches -envs "%LISTVAR%" %ARGS% >%TMPFILE% 2>&1
+%SLIMERJSLAUNCHER% -app "%SCRIPTDIR%application.ini" -purgecaches -envs "%LISTVAR%" %__SLIMER_ARGS% >%TMPFILE% 2>&1
 
 TYPE %TMPFILE%
 DEL %TMPFILE%
