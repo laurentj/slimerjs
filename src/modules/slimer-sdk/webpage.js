@@ -69,7 +69,12 @@ function create() {
         let win = getCurrentFrame();
         if (!webPageSandbox.has(win))
             webPageSandbox.set(win, createSandBox(win));
-        return Cu.evalInSandbox(src, webPageSandbox.get(win));
+        try {
+            return Cu.evalInSandbox(src, webPageSandbox.get(win));
+        }
+        catch(e) {
+            throw new Error('Error during javascript evaluation in the web page: '+e)
+        }
     }
 
     /**
@@ -425,6 +430,7 @@ function create() {
                 netLog.registerBrowser(browser, options);
                 browser.loadURI(url);
             });
+            // to catch window.open()
             win.QueryInterface(Ci.nsIDOMChromeWindow)
                .browserDOMWindow= slBrowserDOMWindow;
             return deferred.promise;
