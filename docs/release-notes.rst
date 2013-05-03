@@ -2,19 +2,18 @@
 
 
 ==================
-Release Notes v0.6
+Release Notes v0.7
 ==================
 
-SlimerJS 0.6 has been released on May 03, 2013. This is the first public stable
-release of SlimerJS.
+SlimerJS 0.7 has not been released yet.
 
-It is usable, although its API is not still 100% compatible with PhantomJS.
+It is usable, although its API is not yet 100% compatible with PhantomJS.
 
 
 Missing APIS
 ------------
 
-Here are the PhantomJS APIs that are missing in SlimerJS 0.6. Of course, their
+Here are the PhantomJS APIs that are missing in SlimerJS 0.7. Of course, their
 implementation is planed in future releases.
 
 - most of options for the command line are not supported
