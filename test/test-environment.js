@@ -48,6 +48,9 @@ describe("phantom object", function() {
         expect(phantom.version.patch).toEqual(0);
     });
 
+    it("should contain the script name", function(){
+        expect(phantom.scriptName.substr(-13,13)).toEqual("main-tests.js");
+    });
 });
 
 if ("slimer" in this) {
