@@ -18,7 +18,7 @@ var errorHandler;
 var phantom = {
 
     get args (){
-        return slConfiguration.args;
+        return slConfiguration.args.slice(1);
     },
 
     get scriptName (){
