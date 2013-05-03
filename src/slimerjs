@@ -82,5 +82,7 @@ for v in $ENVVAR; do
     LISTVAR="$LISTVAR,${var[0]}"
 done
 
+export __SLIMER_ARGS="$@"
+
 "$SLIMERJSLAUNCHER" -app $SCRIPTDIR/application.ini -purgecaches --envs "$LISTVAR" "$@"
 

@@ -10,6 +10,17 @@ release of SlimerJS.
 
 It is usable, although its API is not still 100% compatible with PhantomJS.
 
+Improvements
+------------
+
+- Implements phantom.args and phantom.scriptName
+
+Fixed bugs
+----------
+
+- The leading "-" of command line options were troncated and loose their values
+- Modules loader doesn't freeze any more module objects, so they can be extensible
+
 
 Missing APIS
 ------------

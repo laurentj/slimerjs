@@ -8,6 +8,9 @@ Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://slimerjs/slConfiguration.jsm");
 
+var envService = Components.classes["@mozilla.org/process/environment;1"].
+          getService(Components.interfaces.nsIEnvironment);
+
 function slCommandLine() {
 
 }
@@ -56,8 +59,34 @@ slCommandLine.prototype = {
         }
 
         let nbArgs = cmdLine.length;
+        // The command line parser normalize options:
+        // --flag becomes -flag and --flag==value becomes -flag value
+        // we should store original flags into system.args
+        let realArgs = ''
+        if (envService.exists('__SLIMER_ARGS'))
+            realArgs = envService.get('__SLIMER_ARGS');
+
         for(let i=0; i < nbArgs; i++) {
-            slConfiguration.args.push(cmdLine.getArgument(i));
+            let arg = cmdLine.getArgument(i);
+            if (arg.charAt(0) == '-' && realArgs) {
+                let r = new RegExp("-"+arg+"(\=[^\s]+)?")
+                let result = r.exec(realArgs);
+                if (result) {
+                    if (result[1]) {
+                        i++;
+                        slConfiguration.args.push('-'+arg+'='+cmdLine.getArgument(i));
+                    }
+                    else {
+                        slConfiguration.args.push('-'+arg);
+                    }
+                }
+                else {
+                    slConfiguration.args.push(arg);
+                }
+            }
+            else {
+                slConfiguration.args.push(arg);
+            }
         }
         cmdLine.removeArguments(0, nbArgs-1);
 
