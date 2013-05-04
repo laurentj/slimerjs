@@ -90,35 +90,51 @@ function friendlyError(errOrResult, filename) {
 }
 
 exports.exists = function exists(filename) {
+  if (!filename)
+    return false;
   return MozFile(filename).exists();
 };
 
 exports.isFile = function isFile(filename) {
+  if (!filename)
+    return false;
   return MozFile(filename).isFile();
 };
 
 exports.isDirectory = function isDirectory(filename) {
+  if (!filename)
+    return false;
   return MozFile(filename).isDirectory();
 };
 
 exports.isReadable = function isReadable(filename) {
-    return MozFile(filename).isReadable();
+  if (!filename)
+    return false;
+  return MozFile(filename).isReadable();
 }
 
 exports.isWritable = function isWritable(filename) {
-    return MozFile(filename).isWritable();
+  if (!filename)
+    return false;
+  return MozFile(filename).isWritable();
 }
 
 exports.isLink = function isLink(filename) {
-    return MozFile(filename).isSymLink();
+  if (!filename)
+    return false;
+  return MozFile(filename).isSymLink();
 }
 
 exports.size = function size(filename) {
-    return MozFile(filename).fileSize();
+  if (!filename)
+    return 0;
+  return MozFile(filename).fileSize();
 }
 
 exports.lastModified = function lastModified(filename) {
-    return new Date(MozFile(filename).lastModifiedTime);
+  if (!filename)
+    return null;
+  return new Date(MozFile(filename).lastModifiedTime);
 }
 
 exports.read = function read(filename, mode) {
@@ -462,6 +478,9 @@ exports.hardLink = function symbolicLink(source, target) {
  */
 
 exports.isAbsolute = function isAbsolute(path) {
+  if (path == "")
+    return false;
+
   var file = currentWorkingDirectory.clone();
   try {
     // if path is a relative path, there won't have exception
@@ -473,6 +492,8 @@ exports.isAbsolute = function isAbsolute(path) {
 }
 
 exports.isExecutable = function isExecutable(path) {
+    if (path == "")
+      return false;
     var file =  MozFile(path);
     if (!file.exists()) {
         throw new Error("File does not exists");
