@@ -742,7 +742,7 @@ function create() {
             return evalInSandbox(func);
         },
 
-        evaluateJavascript: function(src) {
+        evaluateJavaScript: function(src) {
             if (!browser)
                 throw "WebPage not opened";
 
