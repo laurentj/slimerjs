@@ -52,6 +52,9 @@ const { loadSubScript } = Cc['@mozilla.org/moz/jssubscript-loader;1'].
 const { notifyObservers } = Cc['@mozilla.org/observer-service;1'].
                         getService(Ci.nsIObserverService);
 
+const ioService = Cc['@mozilla.org/network/io-service;1'].
+                                getService(Ci.nsIIOService2);
+
 // Define some shortcuts.
 const bind = Function.call.bind(Function.bind);
 const getOwnPropertyNames = Object.getOwnPropertyNames;
@@ -345,6 +348,16 @@ const resolve = iced(function resolve(id, base) {
 exports.resolve = resolve;
 
 const resolveURI = iced(function resolveURI(id, mapping) {
+  try {
+    let file = Cc['@mozilla.org/file/local;1']
+              .createInstance(Ci.nsILocalFile);
+    file.initWithPath(id);
+    if (file.exists()) {
+      return ioService.newFileURI(file).spec;
+    }
+  }
+  catch(e){}
+
   let count = mapping.length, index = 0;
   while (index < count) {
     let [ path, uri ] = mapping[index ++];
@@ -369,10 +382,8 @@ const Require = iced(function Require(loader, requirer) {
     // Resolve `id` to its requirer if it's relative.
     let requirement = requirer ? resolve(id, requirer.id) : id;
 
-
     // Resolves `uri` of module using loaders resolve function.
     let uri = resolveURI(requirement, mapping);
-
     if (!uri) // Throw if `uri` can not be resolved.
       throw Error('Module: Can not resolve "' + id + '" module required by ' +
                   requirer.id + ' located at ' + requirer.uri, requirer.uri);
