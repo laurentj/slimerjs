@@ -738,7 +738,7 @@ function create() {
                 throw "WebPage not opened";
 
             let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
-            func = '('+func.toSource()+').apply(this, ' + args + ');';
+            func = '('+func.toString()+').apply(this, ' + args + ');';
             return evalInSandbox(func);
         },
 
