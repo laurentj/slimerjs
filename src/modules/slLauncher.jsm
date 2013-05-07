@@ -66,7 +66,7 @@ var slLauncher = {
     openBrowser : function(callback, parentWindow) {
         if (!parentWindow)
             parentWindow = windowMediator.getMostRecentWindow("slimerjs");
-        return parentWindow.openDialog("webpage.xul", "_blank", "chrome,all,dialog=no", { callback:callback});
+        return parentWindow.openDialog("chrome://slimerjs/content/webpage.xul", "_blank", "chrome,all,dialog=no", { callback:callback});
     },
 
     closeBrowser: function (browser) {
