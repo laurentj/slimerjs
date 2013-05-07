@@ -1,7 +1,9 @@
 .. index:: Release notes
 
-
 =============
+Release notes
+=============
+
 version 0.6.1
 =============
 
@@ -25,7 +27,6 @@ Fixed PhantomJS conformance issues
 - webpage.evaluate should accepts strings (Vincent Meurisse)
 - Incorrect case for webpage.evaluateJavaScript (Vincent Meurisse)
 
-===========
 version 0.6
 ===========
 
