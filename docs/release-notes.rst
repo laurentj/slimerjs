@@ -1,14 +1,11 @@
 .. index:: Release notes
 
 
-==================
-Release Notes v0.6
-==================
+=============
+version 0.6.1
+=============
 
-SlimerJS 0.6 has been released on May 03, 2013. This is the first public stable
-release of SlimerJS.
-
-It is usable, although its API is not still 100% compatible with PhantomJS.
+SlimerJS 0.6.1 is not released yet.
 
 Improvements
 ------------
@@ -19,8 +16,23 @@ Fixed bugs
 ----------
 
 - The leading "-" of command line options were troncated and loose their values
-- Modules loader doesn't freeze any more module objects, so they can be extensible
+- Some functions of the fs module should verify if the given path is empty
+- Fixed issue with node-phantom: bad XUL address of webpage.xul (Vincent Meurisse)
 
+Fixed PhantomJS conformance issues
+----------------------------------
+
+- webpage.evaluate should accepts strings (Vincent Meurisse)
+- Incorrect case for webpage.evaluateJavaScript (Vincent Meurisse)
+
+===========
+version 0.6
+===========
+
+SlimerJS 0.6 has been released on May 03, 2013. This is the first public stable
+release of SlimerJS.
+
+It is usable, although its API is not still 100% compatible with PhantomJS.
 
 Missing APIS
 ------------
