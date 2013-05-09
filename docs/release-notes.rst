@@ -19,13 +19,14 @@ Fixed bugs
 
 - The leading "-" of command line options were troncated and loose their values
 - Some functions of the fs module should verify if the given path is empty
-- Fixed issue with node-phantom: bad XUL address of webpage.xul (Vincent Meurisse)
+- Fixed issue with node-phantom: bad XUL address of webpage.xul (Vincent Meurisse - issue #16)
+- Callback of webpage.open was not called after a redirection (issue #22)
 
 Fixed PhantomJS conformance issues
 ----------------------------------
 
-- webpage.evaluate should accepts strings (Vincent Meurisse)
-- Incorrect case for webpage.evaluateJavaScript (Vincent Meurisse)
+- webpage.evaluate should accepts strings (Vincent Meurisse - issue #20)
+- Incorrect case for webpage.evaluateJavaScript (Vincent Meurisse - issue #19)
 
 version 0.6
 ===========

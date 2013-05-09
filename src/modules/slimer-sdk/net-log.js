@@ -516,7 +516,6 @@ ProgressListener.prototype = {
         if (flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_ERROR_PAGE) {
             return;
         }
-
         if (typeof(this.options.onURLChanged) === "function") {
             this.options.onURLChanged(location.spec);
         }
@@ -530,8 +529,9 @@ ProgressListener.prototype = {
         }
         let uri = request.URI.spec;
 
-        if (!this.isFromMainWindow(request))
+        if (!this.isFromMainWindow(request)) {
             return;
+        }
 
         try {
             if (this.mainPageURI == '') {
@@ -544,8 +544,9 @@ ProgressListener.prototype = {
                 return;
             }
             // ignore all request that are not the main request
-            if (this.mainPageURI != uri)
+            if (this.mainPageURI != uri) {
                 return;
+            }
 
             if (this.isStart(flags)) {
                 if (typeof(this.options.onTransferStarted) === "function") {
@@ -571,6 +572,18 @@ ProgressListener.prototype = {
                 }
                 return;
             }
+
+            try {
+                if (request.responseStatus == 301
+                    || request.responseStatus == 302
+                    || request.responseStatus == 307) {
+                    this.mainPageURI = request.getResponseHeader('Location');
+                }
+            }
+            catch(e) {
+                // in some case, request.responseStatus is not available
+            }
+
             return;
         } catch(e) {
             console.exception(e);
