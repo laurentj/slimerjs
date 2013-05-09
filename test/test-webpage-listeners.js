@@ -99,7 +99,9 @@ describe("webpage with listeners", function() {
 
     async.it("should have received hello.html", function(done){
         var r;
-        r = receivedRequest.filter(function(result) {
+        r = receivedRequest.filter(function(result, i) {
+            if (i == 0)
+                return false;
             return result.req.url == (domain + 'hello.html');
         })[0];
         expect(r).toNotBe(null);
@@ -120,7 +122,9 @@ describe("webpage with listeners", function() {
 
     async.it("should have received slimerjs.png", function(done){
         var r;
-        r = receivedRequest.filter(function(result) {
+        r = receivedRequest.filter(function(result, i) {
+            if (i == 0)
+                return false;
             return result.req.url == (domain + 'slimerjs.png');
         })[0];
         expect(r).toNotBe(null);
@@ -141,7 +145,9 @@ describe("webpage with listeners", function() {
 
     async.it("should have received helloframe.html", function(done){
         var r;
-        r = receivedRequest.filter(function(result) {
+        r = receivedRequest.filter(function(result, i) {
+            if (i == 0)
+                return false;
             return result.req.url == (domain + 'helloframe.html');
         })[0];
         expect(r).toNotBe(null);
@@ -162,7 +168,9 @@ describe("webpage with listeners", function() {
 
     async.it("should have received hello.js", function(done){
         var r;
-        r = receivedRequest.filter(function(result) {
+        r = receivedRequest.filter(function(result, i) {
+            if (i == 0)
+                return false;
             return result.req.url == (domain + 'hello.js');
         })[0];
         expect(r).toNotBe(null);
@@ -269,8 +277,10 @@ describe("webpage with listeners", function() {
 
     async.it("should have received a 404 page", function(done){
         var r;
-        expect(receivedRequest.length).toEqual(1);
-        r = receivedRequest.filter(function(result) {
+        expect(receivedRequest.length).toEqual(2);
+        r = receivedRequest.filter(function(result, i) {
+            if (i == 0)
+                return false;
             return result.req.url == (domain + 'plop.html');
         })[0];
         expect(r).toNotBe(null);
@@ -309,8 +319,10 @@ describe("webpage with listeners", function() {
 
     async.it("should have received an error page", function(done){
         var r;
-        expect(receivedRequest.length).toEqual(1);
-        r = receivedRequest.filter(function(result) {
+        expect(receivedRequest.length).toEqual(2);
+        r = receivedRequest.filter(function(result, i) {
+            if (i == 0)
+                return false;
             return result.req.url == "http://qsdqsdqs.qsfdsfi/plop.html";
         })[0];
 
@@ -318,7 +330,6 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toBeNull();
         expect(r.end).toNotBe(null);
-        
         expect(r.end.contentType).toBeNull()
         expect(r.end.redirectURL).toBeNull()
         expect(r.end.status).toBeNull()
@@ -353,7 +364,7 @@ describe("webpage with listeners", function() {
 
     async.it("should have received the simple hello page", function(done){
         var r;
-        expect(receivedRequest.length).toEqual(2);
+        expect(receivedRequest.length).toEqual(3);
         r = receivedRequest.filter(function(result) {
             return result.req.url == domain+"redirectToSimpleHello";
         })[0];

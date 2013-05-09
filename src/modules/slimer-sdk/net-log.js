@@ -120,7 +120,7 @@ const onRequestStart = function(subject, data) {
     }
     let {options, requestList} = browserMap.get(browser);
     requestList.push(subject.name);
-    let index = requestList.length - 1;
+    let index = requestList.length;
 
     if (typeof(options._onRequest) === "function") {
         options._onRequest(subject);
@@ -142,7 +142,7 @@ const onRequestResponse = function(subject, data) {
     let {options, requestList} = browserMap.get(browser);
     requestList = requestList.map(function(val, i) {
         if (subject.name == val) {
-            index = i;
+            index = i + 1;
             return val;
         }
         return val;
