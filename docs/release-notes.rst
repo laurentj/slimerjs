@@ -28,6 +28,7 @@ Fixed PhantomJS conformance issues
 
 - webpage.evaluate should accepts strings (Vincent Meurisse - issue #20)
 - Incorrect case for webpage.evaluateJavaScript (Vincent Meurisse - issue #19)
+- Resource id on request/response object should start at 1, not 0 (issue #17)
 
 version 0.6
 ===========
