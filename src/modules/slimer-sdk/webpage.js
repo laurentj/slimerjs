@@ -135,7 +135,7 @@ function create() {
                     // in case of a network fail, phantomjs send
                     // a resourceReceived event.
                     webpage.resourceReceived({
-                        id: 0,
+                        id: 1,
                         url: url,
                         time: new Date(),
                         headers: {},

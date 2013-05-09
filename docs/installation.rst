@@ -61,6 +61,8 @@ of a javascript file.
 
     /somewhere/slimerjs-1.2.3/slimerjs myscript.js
 
+Note: on MacOS, there is an issue. You must indicate the full path of the script.
+
 On Windows:
 
 .. code-block:: text

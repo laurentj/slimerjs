@@ -49,6 +49,14 @@ phantom.injectJs("./test-webpage-frames.js");
 var webserverTest = webServerFactory.create();
 webserverTest.listen(8083, function(request, response) {
 
+    if (request.url == '/redirectToSimpleHello') {
+        response.statusCode = 301;
+        response.headers['Location'] = 'http://localhost:8083/simplehello.html';
+        response.write('');
+        response.close();
+        return;
+    }
+
     var filepath = phantom.libraryPath+'/www'+request.url;
     if (fs.exists(filepath)){
         if (fs.isFile(filepath)) {
@@ -93,8 +101,6 @@ webserverTestWebPage.listen(8082, function(request, response) {
     response.write('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>hello world</title></head><body>Hello!</body></html>');
     response.close();
 });
-
-
 
 // Launch tests
 var jEnv = jasmine.getEnv();

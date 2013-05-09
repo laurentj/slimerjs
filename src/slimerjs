@@ -84,5 +84,5 @@ done
 
 export __SLIMER_ARGS="$@"
 
-"$SLIMERJSLAUNCHER" -app $SCRIPTDIR/application.ini -purgecaches --envs "$LISTVAR" "$@"
+"$SLIMERJSLAUNCHER" -app $SCRIPTDIR/application.ini -purgecaches -no-remote --envs "$LISTVAR" "$@"
 
