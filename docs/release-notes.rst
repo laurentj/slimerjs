@@ -21,6 +21,7 @@ Fixed bugs
 - Some functions of the fs module should verify if the given path is empty
 - Fixed issue with node-phantom: bad XUL address of webpage.xul (Vincent Meurisse - issue #16)
 - Callback of webpage.open was not called after a redirection (issue #22)
+- Multiple instance of SlimerJS could not launch at the same time (issue #18)
 
 Fixed PhantomJS conformance issues
 ----------------------------------

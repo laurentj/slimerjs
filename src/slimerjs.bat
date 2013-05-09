@@ -46,7 +46,7 @@ REM FIXME: This solution is not optimal, since we cannot see messages at realtim
 REM FIXME: an other solution to redirect directly to the console ?
 set TMPFILE=%TMP%\slimer-output-%RANDOM%.tmp
 
-%SLIMERJSLAUNCHER% -app "%SCRIPTDIR%application.ini" -purgecaches -envs "%LISTVAR%" %__SLIMER_ARGS% >%TMPFILE% 2>&1
+%SLIMERJSLAUNCHER% -app "%SCRIPTDIR%application.ini" -purgecaches -no-remote -envs "%LISTVAR%" %__SLIMER_ARGS% >%TMPFILE% 2>&1
 
 TYPE %TMPFILE%
 DEL %TMPFILE%
