@@ -29,8 +29,6 @@ var slLauncher = {
         Cu.import('resource://slimerjs/slimer.jsm', sandbox);
         Cu.import('resource://slimerjs/phantom.jsm', sandbox);
 
-        sandbox.console = new slConsole();
-
         // load and execute the provided script
         let fileURI = Services.io.newFileURI(scriptFile).spec;
         let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;

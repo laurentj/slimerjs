@@ -170,8 +170,6 @@ exports.serializeStack = serializeStack
 // - `wantXrays`: A Boolean value indicating whether code outside the sandbox
 //    wants X-ray vision with respect to objects inside the sandbox. Defaults
 //    to `true`.
-// - `sandbox`: A sandbox to share JS compartment with. If omitted new
-//    compartment will be created.
 // For more details see:
 // https://developer.mozilla.org/en/Components.utils.Sandbox
 const Sandbox = iced(function Sandbox(options) {
@@ -181,16 +179,12 @@ const Sandbox = iced(function Sandbox(options) {
     // still can expose via prototype.
     wantComponents: false,
     sandboxName: options.name,
+    //wantXHRConstructor: false,
+    // option that is not supported by Cu.Sandbox,
     principal: 'principal' in options ? options.principal : systemPrincipal,
     wantXrays: 'wantXrays' in options ? options.wantXrays : true,
     sandboxPrototype: 'prototype' in options ? options.prototype : {},
-    sameGroupAs: 'sandbox' in options ? options.sandbox : null
   };
-
-  // Make `options.sameGroupAs` only if `sandbox` property is passed,
-  // otherwise `Cu.Sandbox` will throw.
-  if (!options.sameGroupAs)
-    delete options.sameGroupAs;
 
   let sandbox = Cu.Sandbox(options.principal, options);
 
@@ -245,18 +239,15 @@ const load = iced(function load(loader, module, initialSandbox, src) {
     // that contains properties of the initial sandbox and
     // the properties we want to inject
 
-    let proto = create(globals, descriptor({
+    let proto = override(globals, {
         require: require,
         module: module,
         exports: module.exports
-      }));
+      });
     proto = create(initialSandbox, descriptor(proto));
 
     sandbox = Sandbox({
       name: module.uri,
-      // set this sandbox property so we can reuse its compartment
-      // when creating the new one to reduce memory consumption.
-      sandbox: initialSandbox,
       prototype: proto,
       wantXrays: false
     });
@@ -264,9 +255,6 @@ const load = iced(function load(loader, module, initialSandbox, src) {
   else {
     sandbox = Sandbox({
       name: module.uri,
-      // Get an existing module sandbox, if any, so we can reuse its compartment
-      // when creating the new one to reduce memory consumption.
-      sandbox: sandboxes[keys(sandboxes).shift()],
       // We expose set of properties defined by `CommonJS` specification via
       // prototype of the sandbox. Also globals are deeper in the prototype
       // chain so that each module has access to them as well.
