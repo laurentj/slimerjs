@@ -15,6 +15,12 @@ Improvements
 Fixed bugs
 ----------
 
+Fixed PhantomJS conformance issues
+----------------------------------
+
+- Modules have now access to global objects like window, phantom, document...
+
+
 
 Missing APIS
 ------------
@@ -42,6 +48,4 @@ Known issues
 ------------
 
 - On MacOS: you must indicate the full path of your JS script on the command line
-- CommonJS modules: you cannot alter objects (they are `freezed <https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/freeze>`_ )
-  returned by the ``require()`` function. This is a "feature" of the CommonJS
-  modules system of the Mozilla Addons SDK (used by SlimerJS).
+

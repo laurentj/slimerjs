@@ -18,13 +18,14 @@ var mainLoader = null;
 
 var slLauncher = {
     launchMainScript: function (contentWindow, scriptFile) {
-        sandbox = Cu.Sandbox(contentWindow,
+        let global = Cu.getGlobalForObject(contentWindow);
+        sandbox = Cu.Sandbox(global,
                             {
                                 'sandboxName': 'slimerjs',
-                                'sandboxPrototype': contentWindow,
+                                'sandboxPrototype': global,
                                 'wantXrays': true
                             });
-        contentWindow.global = contentWindow;
+        //contentWindow.global = contentWindow;
         // import the slimer/phantom API into the sandbox
         Cu.import('resource://slimerjs/slimer.jsm', sandbox);
         Cu.import('resource://slimerjs/phantom.jsm', sandbox);
@@ -142,6 +143,9 @@ function prepareLoader(fileURI, dirURI) {
             }
             var finalpath = result.join('/');
             return finalpath;
+        },
+        load : function(loader, module) {
+            Loader.load(loader, module, sandbox)
         }
     });
 }

@@ -28,3 +28,16 @@ describe("require function", function() {
         expect(m.identity.firstName).toEqual("Laurent");
     }
 });
+
+
+describe("the loaded module requiredexample", function() {
+
+    it("should have access to all expected global objects"), function(){
+        expect(ex.hasWindowObject).toBeTruthy();
+        expect(ex.hasDocumentObject ).toBeTruthy();
+        expect(ex.hasConsoleObject).toBeTruthy();
+        expect(ex.hasAlertFunction).toBeTruthy();
+        expect(ex.hasConfirmFunction).toBeTruthy();
+        expect(ex.hasPhantomObject).toBeTruthy();
+    }
+});

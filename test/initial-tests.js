@@ -57,15 +57,25 @@ assertEquals("0", phantom.version.patch, "phantom has the good patch version");
 assertEquals(true, "require" in this, "there is a require object");
 assertEquals("function", typeof require, "require is a function");
 
-assertEquals(true, "module" in this, "there is a module property");
-assertNotEquals("", module.uri, "module uri");
-assertEquals("main", module.id, "module id");
-
+if ("module" in this) {
+    assertEquals(true, "module" in this, "there is a module property");
+    assertNotEquals("", module.uri, "module uri");
+    assertEquals("main", module.id, "module id");
+}
+else
+    console.warn("==> No 'module' object!")
 
 var ex = require('./requiredexample');
 assertExists(ex, "is 'ex' defined? ");
 assertEquals("foo", ex.myExample, "value of ex.myExample");
 assertEquals(5, ex.myCalcFunc(2), "value of ex.myCalcFunc(2)");
+
+assertEquals(true, ex.hasWindowObject , "the loaded module has a window object");
+assertEquals(true, ex.hasDocumentObject , "the loaded module has a document object");
+assertEquals(true, ex.hasConsoleObject , "the loaded module has a console object");
+assertEquals(true, ex.hasAlertFunction , "the loaded module has a alert function");
+assertEquals(true, ex.hasConfirmFunction , "the loaded module has a confirm function");
+assertEquals(true, ex.hasPhantomObject , "the loaded module has a phantom object");
 
 var m = require('./a/b');
 assertEquals("Laurent", m.identity.firstName, "value of m.identity.firstName");
@@ -164,7 +174,7 @@ phantom.onError = function(msg, stack) {
     assertNotEquals(-1, stack[0].sourceURL.indexOf('requiredexample.js'), "filename is requiredexample.js")
     assertEquals(9, stack[0].line, "line in requiredexample.js")
     assertNotEquals(-1, stack[1].sourceURL.indexOf('initial-tests.js'), "filename is initial-tests.js")
-    assertEquals(170, stack[1].line, "line in initial-tests.js")
+    assertEquals(180, stack[1].line, "line in initial-tests.js")
 }
 
 ex.throwExcept();
