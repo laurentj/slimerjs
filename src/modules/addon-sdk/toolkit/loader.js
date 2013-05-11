@@ -10,8 +10,11 @@
  * Some functionnalities have been added:
  *  - the possibility to indicate the javascript version in the loader options
  *    to evaluate modules with this version.
- *  - the possiblity to indicate our own sandbox for the main module
- *  - the possibility to indicate a source code for the main module
+ *  - the possiblity to indicate our own sandbox for the module loading
+ *  - the possibility to indicate a source code for the module loading
+ * The support of sameGroupAs option for sandboxes has been removed
+ * since it is not supported any more into recents Firefox versions.
+ * 
  * main contributor: Laurent Jouanneau
  */
 
@@ -229,28 +232,7 @@ const load = iced(function load(loader, module, initialSandbox, src) {
 
   let sandbox;
   if (initialSandbox) {
-    // The new sandbox should "inherits" from the initial sandbox
-
-    // we create the prototype of the new sandbox.
-    // we don't import directly require and module.exports
-    // into the initialSandbox else properties of module.exports
-    // are shadowed and an __exposedProps__ should be needed.
-    // this is why we create a new sandbox with a new prototype
-    // that contains properties of the initial sandbox and
-    // the properties we want to inject
-
-    let proto = override(globals, {
-        require: require,
-        module: module,
-        exports: module.exports
-      });
-    proto = create(initialSandbox, descriptor(proto));
-
-    sandbox = Sandbox({
-      name: module.uri,
-      prototype: proto,
-      wantXrays: false
-    });
+    sandbox = initialSandbox;
   }
   else {
     sandbox = Sandbox({
@@ -396,10 +378,10 @@ const Require = iced(function Require(loader, requirer) {
 });
 exports.Require = Require;
 
-const main = iced(function main(loader, id, sandbox, source) {
+const main = iced(function main(loader, id) {
   let uri = resolveURI(id, loader.mapping)
   let module = loader.main = loader.modules[uri] = Module(id, uri);
-  return load(loader, module, sandbox, source).exports;
+  return load(loader, module).exports;
 });
 exports.main = main;
 

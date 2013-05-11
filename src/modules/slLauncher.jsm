@@ -13,22 +13,21 @@ Cu.import('resource://slimerjs/slConsole.jsm');
 
 var windowMediator = Components.classes["@mozilla.org/appshell/window-mediator;1"]
                      .getService(Components.interfaces.nsIWindowMediator);
-var sandbox = null;
+var mainSandbox = null;
 var mainLoader = null;
 
 var slLauncher = {
     launchMainScript: function (contentWindow, scriptFile) {
-        let global = Cu.getGlobalForObject(contentWindow);
-        sandbox = Cu.Sandbox(global,
+        mainSandbox = Cu.Sandbox(contentWindow,
                             {
                                 'sandboxName': 'slimerjs',
-                                'sandboxPrototype': global,
+                                'sandboxPrototype': contentWindow,
                                 'wantXrays': true
                             });
-        //contentWindow.global = contentWindow;
+
         // import the slimer/phantom API into the sandbox
-        Cu.import('resource://slimerjs/slimer.jsm', sandbox);
-        Cu.import('resource://slimerjs/phantom.jsm', sandbox);
+        Cu.import('resource://slimerjs/slimer.jsm', mainSandbox);
+        Cu.import('resource://slimerjs/phantom.jsm', mainSandbox);
 
         // load and execute the provided script
         let fileURI = Services.io.newFileURI(scriptFile).spec;
@@ -36,12 +35,12 @@ var slLauncher = {
         mainLoader = prepareLoader(fileURI, dirURI);
 
         try {
-            Loader.main(mainLoader, 'main', sandbox);
+            loadMainScript(mainLoader, mainSandbox);
         }
         catch(e) {
-            if (sandbox.phantom.onError) {
+            if (mainSandbox.phantom.onError) {
                 let [msg, stackRes] = getTraceException(e, fileURI);
-                sandbox.phantom.onError(msg, stackRes);
+                mainSandbox.phantom.onError(msg, stackRes);
             }
             else
                 throw e;
@@ -145,7 +144,34 @@ function prepareLoader(fileURI, dirURI) {
             return finalpath;
         },
         load : function(loader, module) {
+
+            // we create the prototype of the new sandbox.
+            // we don't import directly require and module.exports
+            // into the current sandbox else properties of module.exports
+            // are shadowed and an __exposedProps__ should be needed.
+            // this is why we create a new sandbox with a new prototype
+            // that contains properties of the initial sandbox and
+            // the properties we want to inject
+            let proto = Loader.override(loader.globals, {
+                require: Loader.Require(loader, module),
+                module: module,
+                exports: module.exports
+              });
+            proto = Object.create(mainSandbox, Loader.descriptor(proto));
+            let sandbox = Loader.Sandbox({
+              name: module.uri,
+              prototype: proto,
+              wantXrays: false
+            });
+
             Loader.load(loader, module, sandbox)
         }
     });
+}
+
+function loadMainScript(loader, sandbox) {
+    let id = 'main';
+    let uri = Loader.resolveURI(id, loader.mapping);
+    let module = loader.main = loader.modules[uri] = Loader.Module(id, uri);
+    loader.load(loader, module);
 }
