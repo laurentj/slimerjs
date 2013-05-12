@@ -77,10 +77,6 @@ You can for example launch some tests:
     ./slimerjs ../test/initial-tests.js
 ```
 
-Note: on MacOs, there is a known bug. You could have an error "script not found".
-Indicate the full path of the js script to avoid it.
-
-
 # Launching a headless SlimerJS
 
 There is a tool called xvfb, available on Linux and MacOS. It allows to launch

@@ -22,6 +22,7 @@ Fixed bugs
 - Fixed issue with node-phantom: bad XUL address of webpage.xul (Vincent Meurisse - issue #16)
 - Callback of webpage.open was not called after a redirection (issue #22)
 - Multiple instance of SlimerJS could not launch at the same time (issue #18)
+- On MacOS the relative path of the JS script couldn't be given on the command line (issue #45)
 
 Fixed PhantomJS conformance issues
 ----------------------------------
@@ -63,7 +64,7 @@ You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob
 Known issues
 ------------
 
-- On MacOS: you must indicate the full path of your JS script on the command line
+- On MacOS: you must indicate the full path of your JS script on the command line (fixed in 0.6.1)
 - CommonJS modules: you cannot alter objects (they are `freezed <https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/freeze>`_ )
   returned by the ``require()`` function. This is a "feature" of the CommonJS
   modules system of the Mozilla Addons SDK (used by SlimerJS).

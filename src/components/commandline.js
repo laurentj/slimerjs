@@ -7,9 +7,13 @@
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://slimerjs/slConfiguration.jsm");
+Components.utils.import("resource://slimerjs/slUtils.jsm");
 
 var envService = Components.classes["@mozilla.org/process/environment;1"].
           getService(Components.interfaces.nsIEnvironment);
+
+var httphandler =  Components.classes["@mozilla.org/network/protocol;1?name=http"]
+                    .getService(Components.interfaces.nsIHttpProtocolHandler);
 
 function slCommandLine() {
 
@@ -99,7 +103,20 @@ slCommandLine.prototype = {
 
         slConfiguration.workingDirectory = cmdLine.workingDirectory;
         try {
-            slConfiguration.scriptFile = cmdLine.resolveFile(slConfiguration.args[0]);
+            if (/Mac/i.test(httphandler.oscpu)) {
+                // under MacOS, resolveFile fails with a relative path
+                try {
+                    slConfiguration.scriptFile = cmdLine.resolveFile(slConfiguration.args[0]);
+                }
+                catch(e) {
+                    slConfiguration.scriptFile = getMozFile(slConfiguration.args[0], cmdLine.workingDirectory)
+                }
+            }
+            else {
+                slConfiguration.scriptFile = cmdLine.resolveFile(slConfiguration.args[0]);
+            }
+            if (!slConfiguration.scriptFile.exists())
+                throw "script not found";
         }
         catch(e) {
             Components.utils.reportError("script not found");
