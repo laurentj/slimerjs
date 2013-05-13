@@ -27,8 +27,8 @@ fi
 cp src/application.ini $TARGETDIR
 cp src/slimerjs $TARGETDIR
 cp src/slimerjs.bat $TARGETDIR
+cp src/LICENSE $TARGETDIR
 cp README.md $TARGETDIR
-cp LICENSE $TARGETDIR
 cd src
 
 # zip chrome files into omni.ja
