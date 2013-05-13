@@ -24,12 +24,13 @@ else
 fi
 
 # copy files
-cp src/application.ini $TARGETDIR
-cp src/slimerjs $TARGETDIR
-cp src/slimerjs.bat $TARGETDIR
-cp src/LICENSE $TARGETDIR
-cp README.md $TARGETDIR
 cd src
+
+cp application.ini $TARGETDIR
+cp slimerjs $TARGETDIR
+cp slimerjs.bat $TARGETDIR
+cp LICENSE $TARGETDIR
+cp README.md $TARGETDIR
 
 # zip chrome files into omni.ja
 zip -r $TARGETDIR/omni.ja chrome/ components/ defaults/ modules/ chrome.manifest --exclude @package_exclude.lst
