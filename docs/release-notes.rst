@@ -7,7 +7,7 @@ Release notes
 version 0.6.1
 =============
 
-SlimerJS 0.6.1 is not released yet.
+SlimerJS 0.6.1  has been released on May 13, 2013.
 
 Improvements
 ------------
