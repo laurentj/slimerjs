@@ -47,5 +47,5 @@ You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob
 Known issues
 ------------
 
-- On MacOS: you must indicate the full path of your JS script on the command line
+- See the github page...
 

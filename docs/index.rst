@@ -13,6 +13,7 @@ Contents:
    release-notes
    installation
    quick-start
+   script-execution
 
 Indices and tables
 ==================

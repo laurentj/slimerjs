@@ -13,6 +13,8 @@ have other objects that allow you to do many tasks.
 Hello World
 -----------
 
+.. index:: console, exit
+
 Since SlimerJS is called from the command line, the first thing you could do in your script
 is to print something in the terminal. You do it with the ``console`` object, as in
 any web page.
@@ -47,6 +49,8 @@ of your script
 Loading a module
 ----------------
 
+.. index:: module, require
+
 All components and libraries provided by SlimerJS are stored in modules. A module is
 a javascript file that "exports" a number of functions to the caller script. To "import"
 this functions in your scripts, you have to use the ``require()`` function. It accepts
@@ -65,6 +69,8 @@ which is included into the SlimerJS package.
 
 Opening a web page
 ------------------
+
+.. index:: webpage, webpage loading, open
 
 The main goal of SlimerJS is to open a web page and to manipulate it or to extract data
 from it. You have a dedicated module for that, "webpage".
@@ -114,6 +120,8 @@ function to ``open()``:
 Code Evaluation
 ---------------
 
+.. index:: evaluate javascript, onConsoleMessage
+
 Once a web page is opened, you may need to execute a javascript function into the
 context of the web page, in order to retrieve data or to manipulate the page content.
 
@@ -159,6 +167,8 @@ callback on the property ``onConsoleMessage``, that will do it:
 Taking screenshots
 ------------------
 
+.. index:: render, screenshot
+
 You can capture the page rendering and store it into an image, with the ``render()``
 method:
 
@@ -175,6 +185,8 @@ method:
 
 Network monitoring
 ------------------
+
+.. index:: network monitoring, http listeners, onLoadStarted, onLoadFinished, onResourceRequested, onResourceReceived
 
 You can listen all HTTP steps made during a page loading. You have several callback you can give.
 
