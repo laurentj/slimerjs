@@ -94,7 +94,7 @@ It will contain API that does not exists in PhantomJS.
 
 <table>
     <tr><td>require(modulename)                 </td><td>Implemented
-                                                    <br/>Limitation: it imports only modules from the same directory
+                                                    <br/>it imports only modules from the same directory
                                                         of the launched script (or from its sub-directories)
                                                     </td></tr>
 </table>

@@ -31,7 +31,7 @@ containing the path of the Firefox/XulRunner binary. To create this environment
 variable from a command line:
 
 - On linux:
-   .. code-block:: text
+   .. code-block:: bash
 
       export SLIMERJSLAUNCHER=/usr/bin/firefox
 - on Windows
@@ -39,11 +39,11 @@ variable from a command line:
 
       SET SLIMERJSLAUNCHER="c:\Program Files\Mozilla Firefox\firefox.exe
 - On windows with cygwin
-   .. code-block:: text
+   .. code-block:: bash
 
       export SLIMERJSLAUNCHER="/cygdrive/c/program files/mozilla firefox/firefox.exe"
 - On MacOS
-   .. code-block:: text
+   .. code-block:: bash
 
       export SLIMERJSLAUNCHER=/Applications/Firefox.app/Contents/MacOS/firefox
 
@@ -57,7 +57,7 @@ Launching SlimerJS
 From a command line, call the <code>slimerjs</code> executable with the path
 of a javascript file.
 
-.. code-block:: text
+.. code-block:: bash
 
     /somewhere/slimerjs-1.2.3/slimerjs myscript.js
 
@@ -69,3 +69,21 @@ On Windows:
 
 The js script should contain your instructions to manipulate a web page...
 
+
+Having a headless SlimerJS
+--------------------------
+
+There is a tool called xvfb, available on Linux and MacOS. It allows to launch
+any "graphical" programs without the need of an X-Windows environment. Windows of
+the application won't be shown and will be drawn only in memory.
+
+Install it from your prefered repository (``sudo apt-get install xvfb`` with debian/ubuntu).
+
+Then launch SlimerJS like this:
+
+.. code-block:: bash
+
+    xvfb-run ./slimerjs myscript.js
+
+You won't see any windows. If you have any problems with xvfb, see its
+documentation.
