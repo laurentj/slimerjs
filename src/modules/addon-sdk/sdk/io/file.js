@@ -49,9 +49,12 @@ function MozFile(path) {
   return file;
 }
 
-exports.workingDirectory = function workingDirectory() {
-    return currentWorkingDirectory.path;
-}
+// in the file system specification, it is a method
+// but in phantomjs, it is a property. And we want to be compatible with
+// phantomjs
+Object.defineProperty(exports, "workingDirectory", {
+    get: function() { return currentWorkingDirectory.path; }
+});
 
 exports.changeWorkingDirectory = function changeWorkingDirectory(path) {
     currentWorkingDirectory = MozFile(path);

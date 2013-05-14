@@ -23,7 +23,8 @@ Fixed PhantomJS conformance issues
 ----------------------------------
 
 - Modules have now access to global objects like window, phantom, document...
-
+- Changed fs.workingDirectory from a method to a property, even if it violates the
+  CommonsJS filesystem specification.
 
 
 Missing APIS

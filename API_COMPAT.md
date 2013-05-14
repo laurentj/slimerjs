@@ -295,8 +295,10 @@ Methods that send signals (private methods):
 
 <table>
     <tr><td>separator                           </td><td>Implemented</td></tr>
-    <tr><td>workingDirectory                    </td><td>Implemented as method, as specified in the
-                                                    CommonJS FileSystem specification</td></tr>
+    <tr><td>workingDirectory                    </td><td>Implemented<br/>
+                                                    Note that it is a property, to be compatible
+                                                    with PhantomJS. In the CommonJS FileSystem
+                                                    specification, it supposed to be a method</td></tr>
 </table>
 
 ## methods
