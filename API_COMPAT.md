@@ -93,10 +93,8 @@ It will contain API that does not exists in PhantomJS.
 # CommonJS API
 
 <table>
-    <tr><td>require(modulename)                 </td><td>Implemented
-                                                    <br/>it imports only modules from the same directory
-                                                        of the launched script (or from its sub-directories)
-                                                    </td></tr>
+    <tr><td>require(modulename)                 </td><td>Implemented</td></tr>
+    <tr><td>require.paths                       </td><td>Implemented. SlimerJS only. Array of path where modules can be found</td></tr>
 </table>
 
 # Module: webpage

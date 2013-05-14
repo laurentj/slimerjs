@@ -12,6 +12,8 @@ It is usable, although its API is not yet 100% compatible with PhantomJS.
 Improvements
 ------------
 
+- Implementation of ``require.paths``, a list of paths where modules can be found (CommonJS modules 1.1 specification)
+
 Fixed bugs
 ----------
 

@@ -6,18 +6,21 @@
 var EXPORTED_SYMBOLS = ["slLauncher"];
 
 const Cu = Components.utils;
+const Cc = Components.classes;
+const Ci = Components.interfaces;
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/addon-sdk/toolkit/loader.js'); //Sandbox, Require, main, Module, Loader
 Cu.import('resource://slimerjs/slConsole.jsm');
 
-var windowMediator = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-                     .getService(Components.interfaces.nsIWindowMediator);
+var windowMediator = Cc["@mozilla.org/appshell/window-mediator;1"]
+                     .getService(Ci.nsIWindowMediator);
 var mainSandbox = null;
 var mainLoader = null;
 
 var slLauncher = {
     launchMainScript: function (contentWindow, scriptFile) {
+
         mainSandbox = Cu.Sandbox(contentWindow,
                             {
                                 'sandboxName': 'slimerjs',
@@ -31,8 +34,7 @@ var slLauncher = {
 
         // load and execute the provided script
         let fileURI = Services.io.newFileURI(scriptFile).spec;
-        let dirURI =  Services.io.newFileURI(scriptFile.parent).spec;
-        mainLoader = prepareLoader(fileURI, dirURI);
+        mainLoader = prepareLoader(fileURI, scriptFile.parent);
 
         try {
             loadMainScript(mainLoader, mainSandbox);
@@ -73,24 +75,98 @@ var slLauncher = {
     }
 }
 
+function getFile(path) {
+    let file = Cc['@mozilla.org/file/local;1']
+              .createInstance(Ci.nsILocalFile);
+    try {
+        file.initWithPath(path);
+    }
+    catch(e){
+        throw Error("Modules path "+path+" is not a valid path");
+    }
+    if (!file.exists()) {
+        throw Error("Modules path "+path+" does not exists");
+    }
+    if (!file.isDirectory()) {
+        throw Error("Modules path "+path+" is not a directory");
+    }
+    return file;
+}
 
-function prepareLoader(fileURI, dirURI) {
+/**
+ * prepare the module loader
+ * Some things here could be done in the loader.js file, but we want to avoid to
+ * modify it because this is an external file.
+ * @param string fileURI  the URI of the main script to execute
+ * @param nsIFile dirFile the file object of the directory where the script is stored
+ */
+function prepareLoader(fileURI, dirFile) {
+    var dirURI =  Services.io.newFileURI(dirFile).spec;
+    let dirPath = dirFile.path;
+    var loader;
+
     var metadata ={
-            permissions : {}
+        permissions : {}
     };
 
-    return Loader.Loader({
+    // list of all nsIFile corresponding to a modules directory
+    var pathsNsFile = [ dirFile ];
+
+    // create a proxy around the array which will contain all module paths.
+    // we should know when an element is set or delete, in order to update
+    // pathsNsFile and loader.mapping
+    var requirePathsProxy = new Proxy(
+        [dirPath],
+        {
+            deleteProperty : function(arr, idx) {
+                if (idx.match(/^([0-9])+$/) != null && idx in arr) {
+                    var path =arr[idx];
+                    pathsNsFile.splice(idx,1);
+                    // loader.mapping is not writable, we cannot use filter()
+                    let idxToDelete = -1;
+                    loader.mapping.forEach(function(elt, idx) {
+                        if (elt[0] == path)
+                            idxToDelete = idx;
+                    });
+                    if (idxToDelete > -1)
+                        loader.mapping.splice(idxToDelete,1);
+                    arr.splice(idx,1);
+                    return true;
+                }
+                return false;
+            },
+            set: function(arr, idx, path) {
+                if (idx.match(/^([0-9])+$/) == null) {
+                    arr[idx] = path;
+                    return;
+                }
+                let file = getFile(path);
+                pathsNsFile[idx] = file;
+                loader.mapping.push([file.path, Services.io.newFileURI(file).spec]);
+                loader.mapping.sort(function(a, b) { return b[0].length - a[0].length });
+                arr[idx] = file.path;
+            }
+        }
+    )
+
+    let pathsMapping = {
+        'main': fileURI,
+        'sdk/': 'resource://slimerjs/addon-sdk/sdk/',
+        'slimer-sdk/': 'resource://slimerjs/slimer-sdk/',
+        '@loader/': 'resource://slimerjs/@loader',
+        'chrome': 'resource://slimerjs/@chrome',
+        'webserver' : 'resource://slimerjs/webserver.jsm',
+        'system' : 'resource://slimerjs/system.jsm'
+    }
+    pathsMapping[dirPath] = dirURI;
+
+    loader =  Loader.Loader({
         javascriptVersion : 'ECMAv5',
         id:'slimerjs@innophi.com',
         name: 'SlimerJs',
         rootURI: dirURI,
         metadata: Object.freeze(metadata),
-        paths: {
-          'main': fileURI,
-          '': dirURI,
-          'sdk/': 'resource://slimerjs/addon-sdk/sdk/',
-          'slimer-sdk/': 'resource://slimerjs/slimer-sdk/',
-        },
+        paths:pathsMapping,
         globals: {
             console: new slConsole()
         },
@@ -98,8 +174,9 @@ function prepareLoader(fileURI, dirURI) {
           "webserver": Cu.import("resource://slimerjs/webserver.jsm", {}),
           "system": Cu.import("resource://slimerjs/system.jsm", {}),
         },
+        // this function should return the true id of the module.
+        // The returned id should be an id or an absolute path of a file
         resolve: function(id, requirer) {
-
             if (id == 'fs') {
                 return 'sdk/io/file';
             }
@@ -124,26 +201,55 @@ function prepareLoader(fileURI, dirURI) {
                 return 'slimer-sdk/net-log';
             }
 
+            if (id == 'webserver' || id == 'system')
+                return id;
+
+            // let's resolve other id module as usual
+            id = Loader.resolve(id, requirer);
+
             if (id.indexOf('sdk/') === 0
                 && requirer.indexOf('slimer-sdk/') === 0) {
                 return id;
             }
 
-            // let's resolve other id module as usual
-            let paths = id.split('/');
-            let result = requirer.split('/');
-            result.pop();
-            while (paths.length) {
-              let path = paths.shift();
-              if (path === '..')
-                result.pop();
-              else if (path !== '.')
-                result.push(path);
+            let idjs = id.substr(-3) === '.js' ? id : id + '.js';
+            // if requirer is an absolute path, the id is then an absolute path after Loader.resolve
+            try {
+                // see if we have an absolute path
+                let file = Cc['@mozilla.org/file/local;1']
+                            .createInstance(Ci.nsILocalFile);
+                file.initWithPath(idjs);
+                if (file.exists()) {
+                    return idjs;
+                }
             }
-            var finalpath = result.join('/');
-            return finalpath;
+            catch(e){}
+
+            // this is not an absolute path, try to resolve the id
+            // against all registered path
+            for (let i=0; i < pathsNsFile.length;i++) {
+                let f = pathsNsFile[i];
+                if (!f)
+                    continue;
+                f = f.clone();
+                try {
+                    f.appendRelativePath(idjs);
+                    if (f.exists())
+                        return f.path;
+                }
+                catch(e) {}
+            }
+            return id;
         },
         load : function(loader, module) {
+            var require = Loader.Require(loader, module);
+
+            Object.defineProperty(require, 'paths',
+                                  {
+                                    enumerable:true,
+                                    value: requirePathsProxy,
+                                    writable:false,
+                                  });
 
             // we create the prototype of the new sandbox.
             // we don't import directly require and module.exports
@@ -153,7 +259,7 @@ function prepareLoader(fileURI, dirURI) {
             // that contains properties of the initial sandbox and
             // the properties we want to inject
             let proto = Loader.override(loader.globals, {
-                require: Loader.Require(loader, module),
+                require: require,
                 module: module,
                 exports: module.exports
               });
@@ -167,6 +273,8 @@ function prepareLoader(fileURI, dirURI) {
             Loader.load(loader, module, sandbox)
         }
     });
+
+    return loader;
 }
 
 function loadMainScript(loader, sandbox) {

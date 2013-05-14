@@ -318,16 +318,6 @@ const resolve = iced(function resolve(id, base) {
 exports.resolve = resolve;
 
 const resolveURI = iced(function resolveURI(id, mapping) {
-  try {
-    let file = Cc['@mozilla.org/file/local;1']
-              .createInstance(Ci.nsILocalFile);
-    file.initWithPath(id);
-    if (file.exists()) {
-      return ioService.newFileURI(file).spec;
-    }
-  }
-  catch(e){}
-
   let count = mapping.length, index = 0;
   while (index < count) {
     let [ path, uri ] = mapping[index ++];
