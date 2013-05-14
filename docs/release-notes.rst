@@ -13,6 +13,8 @@ Improvements
 ------------
 
 - Implementation of ``require.paths``, a list of paths where modules can be found (CommonJS modules 1.1 specification)
+- Implementation of ``require.globals``, an object which can contain properties that will be
+  shared between modules as global variables/functions/objects.
 
 Fixed bugs
 ----------

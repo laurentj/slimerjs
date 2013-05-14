@@ -50,6 +50,12 @@ describe("require function", function() {
         }
         expect(ok).toBeTruthy()
     });
+
+    it("provides a globals property", function() {
+        require("a/defineglobal");
+        var access = require("a/accessglobal");
+        expect(access.accessToGlobalFunction).toEqual("result from a global function")
+    })
 });
 
 

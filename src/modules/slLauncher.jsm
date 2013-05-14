@@ -160,6 +160,10 @@ function prepareLoader(fileURI, dirFile) {
     }
     pathsMapping[dirPath] = dirURI;
 
+    // will contain all global objects/function/variable accessible from all
+    // modules.
+    var globalProperties = { }
+
     loader =  Loader.Loader({
         javascriptVersion : 'ECMAv5',
         id:'slimerjs@innophi.com',
@@ -250,6 +254,12 @@ function prepareLoader(fileURI, dirFile) {
                                     value: requirePathsProxy,
                                     writable:false,
                                   });
+            Object.defineProperty(require, 'globals',
+                                  {
+                                    enumerable:true,
+                                    value: globalProperties,
+                                    writable:false,
+                                  });
 
             // we create the prototype of the new sandbox.
             // we don't import directly require and module.exports
@@ -258,11 +268,14 @@ function prepareLoader(fileURI, dirFile) {
             // this is why we create a new sandbox with a new prototype
             // that contains properties of the initial sandbox and
             // the properties we want to inject
-            let proto = Loader.override(loader.globals, {
+            let proto = Loader.override(globalProperties, loader.globals);
+            proto = Loader.override( proto,
+                {
                 require: require,
                 module: module,
                 exports: module.exports
-              });
+            });
+
             proto = Object.create(mainSandbox, Loader.descriptor(proto));
             let sandbox = Loader.Sandbox({
               name: module.uri,
