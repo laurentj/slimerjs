@@ -276,12 +276,12 @@ function prepareLoader(fileURI, dirFile) {
                 exports: module.exports
             });
 
-            proto = Object.create(mainSandbox, Loader.descriptor(proto));
             let sandbox = Loader.Sandbox({
               name: module.uri,
-              prototype: proto,
+              prototype: mainSandbox,
               wantXrays: false
             });
+            Object.defineProperties(sandbox, Loader.descriptor(proto));
 
             Loader.load(loader, module, sandbox)
         }
