@@ -69,6 +69,7 @@ On Windows:
 
 The js script should contain your instructions to manipulate a web page...
 
+You can indicate several options on the command line. See the "configuration" chapter.
 
 Having a headless SlimerJS
 --------------------------

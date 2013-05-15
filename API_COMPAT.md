@@ -56,7 +56,7 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
     <tr><td>args                                </td><td>Implemented (deprecated)</td></tr>
     <tr><td>cookies                             </td><td></td></tr>
     <tr><td>cookiesEnabled                      </td><td></td></tr>
-    <tr><td>defaultPageSettings                 </td><td></td></tr>
+    <tr><td>defaultPageSettings                 </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented (deprecated)</td></tr>
     <tr><td>outputEncoding                      </td><td></td></tr>
     <tr><td>page                                </td><td></td></tr>

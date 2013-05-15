@@ -51,6 +51,33 @@ describe("phantom object", function() {
     it("should contain the script name", function(){
         expect(phantom.scriptName.substr(-13,13)).toEqual("main-tests.js");
     });
+
+    it("should have a defaultPageSettings property", function() {
+        expect(phantom.defaultPageSettings.javascriptEnabled).toBeTruthy();
+        expect(phantom.defaultPageSettings.loadImages).toBeTruthy();
+        expect(phantom.defaultPageSettings.localToRemoteUrlAccessEnabled).toBeFalsy();
+        expect(phantom.defaultPageSettings.XSSAuditingEnabled).toBeFalsy();
+        expect(phantom.defaultPageSettings.webSecurityEnabled).toBeTruthy();
+        expect(phantom.defaultPageSettings.javascriptCanOpenWindows).toBeTruthy();
+        expect(phantom.defaultPageSettings.javascriptCanCloseWindows).toBeTruthy();
+        expect(phantom.defaultPageSettings.userName).toEqual(undefined);
+        expect(phantom.defaultPageSettings.password).toEqual(undefined);
+        expect(phantom.defaultPageSettings.userAgent).not.toEqual('');
+        expect(phantom.defaultPageSettings.maxAuthAttempts).toEqual(undefined);
+        expect(phantom.defaultPageSettings.resourceTimeout).toEqual(undefined);
+
+        // defaultPageSettings is supposed to be read only
+        phantom.defaultPageSettings = {
+            javascriptEnabled: false,
+            userName: 'laurent'
+        };
+        expect(phantom.defaultPageSettings.javascriptEnabled).toBeTruthy();
+        expect(phantom.defaultPageSettings.loadImages).toBeTruthy();
+        expect(phantom.defaultPageSettings.userName).toEqual(undefined);
+        
+        phantom.defaultPageSettings.userName = 'laurent';
+        expect(phantom.defaultPageSettings.userName).toEqual(undefined);
+    });
 });
 
 if ("slimer" in this) {

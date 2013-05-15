@@ -15,6 +15,8 @@ var libPath = slConfiguration.scriptFile.parent.clone();
 
 var errorHandler;
 
+var defaultSettings = null;
+
 var phantom = {
 
     get args (){
@@ -71,10 +73,14 @@ var phantom = {
     },
 
     /**
-     * return the version of SlimerJS
+     * return the version of PhantomJS on which this implementation is compatible
      */
     get version() {
         return { major: 1, minor: 9, patch: 0, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+    },
+
+    get defaultPageSettings () {
+        return slConfiguration.getDefaultWebpageConfig();
     },
 
     /**
@@ -148,7 +154,8 @@ var phantom = {
         exit : 'r',
         injectJs : 'r',
         onError : 'rw',
-        defaultErrorHandler : 'r'
+        defaultErrorHandler : 'r',
+        defaultPageSettings : 'r'
     }
 }
 

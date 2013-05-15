@@ -179,7 +179,7 @@ var slConfiguration = {
     },
 
     getDefaultWebpageConfig : function() {
-        return {
+        return Object.freeze({
             javascriptEnabled: true,
             loadImages: this.loadImages,
             localToRemoteUrlAccessEnabled: this.localToRemoteUrlAccessEnabled,
@@ -188,11 +188,11 @@ var slConfiguration = {
             javascriptCanOpenWindows: this.javascriptCanOpenWindows,
             javascriptCanCloseWindows: this.javascriptCanCloseWindows,
             userAgent: 'SlimerJS',
-            userName: '',
-            password: '',
-            maxAuthAttempts: -1,
-            resourceTimeout:-1,
-        }
+            userName: undefined,
+            password: undefined,
+            maxAuthAttempts: undefined,
+            resourceTimeout: undefined,
+        })
     },
 
     cookiesFile : '',

@@ -15,6 +15,8 @@ Improvements
 - Implementation of ``require.paths``, a list of paths where modules can be found (CommonJS modules 1.1 specification)
 - Implementation of ``require.globals``, an object which can contain properties that will be
   shared between modules as global variables/functions/objects.
+- Implementation of ``phantom.defaultPageSettings``. Note that settings are not supported
+  yet by the webpage module.
 
 Fixed bugs
 ----------
@@ -42,7 +44,7 @@ implementation is planed in future releases.
 - no support of the ``webpage.offlineStorage*`` properties, although offlineStorage
   is supported natively and usable by a web page
 - no API to manage child windows
-- no support of settings on the webpage and phantomjs object
+- no support of settings on the webpage object
 - ``webpage.open()`` only supports an url and a callback as parameter
 - no support of file uploading in web page (``webpage.uploadFile()``, ``webpage.onFilePicker``..)
 

@@ -14,6 +14,7 @@ Contents:
    installation
    quick-start
    script-execution
+   configuration
 
 Indices and tables
 ==================
