@@ -34,8 +34,7 @@ exports.registerBrowser = function(browser, options) {
 
             // The mask.
             // called when the load of new document is asked.
-            // receives the uri that is loading, and a boolean
-            // indicating if it is just a frame
+            // receives the uri that is loading
             onLoadStarted: null,
 
             // The red underpants.
@@ -57,11 +56,21 @@ exports.registerBrowser = function(browser, options) {
 
             // The t-shirt with the SUPER logo (or not).
             // called when the document is ready.
-            // Receives the URI, "success" or "fail", and a boolean indicating
-            // if it is just a frame.
+            // Receives the URI, "success" or "fail"
             // all resources are loaded.
             // the document has just received the load event.
-            onLoadFinished: null
+            onLoadFinished: null,
+
+            // called when the load of frame is starting.
+            // receives the uri that is loading, and a boolean
+            // indicating if it is during the load of the main document (true) or not
+            onFrameLoadStarted: null,
+
+            // called when a frame is loaded.
+            // Receives the URI, "success" or "fail", and a boolean indicating
+            // if it is during the load of the main document (true) or not
+            onFrameLoadFinished: null
+
         }, options || {}),
         requestList: [],
         progressListener: null
@@ -458,30 +467,33 @@ ProgressListener.prototype = {
        throw(Cr.NS_NOINTERFACE);
     },
 
-    isFromMainWindow : function (aChannel) {
+    getLoadContext: function (aChannel) {
         let notificationCallbacks =
                 aChannel.notificationCallbacks ? aChannel.notificationCallbacks : aChannel.loadGroup.notificationCallbacks;
 
         if (!notificationCallbacks) {
-            return false;
+            return null;
         }
         try {
             if(notificationCallbacks.getInterface(Ci.nsIXMLHttpRequest)) {
                 // ignore requests from XMLHttpRequest
-                return false;
+                return null;
             }
         }
         catch(e) { }
         try {
-            let loadContext = notificationCallbacks.getInterface(Ci.nsILoadContext);
-            if (loadContext.isContent && this.browser.contentWindow == loadContext.associatedWindow) {
-                return true;
-            }
+            return notificationCallbacks.getInterface(Ci.nsILoadContext);
         }
         catch (e) {}
-        return false;
+        return null;
     },
 
+    isFromMainWindow: function (loadContext) {
+        if (loadContext  && loadContext.isContent
+            && this.browser.contentWindow == loadContext.associatedWindow)
+            return true;
+        return false;
+    },
 
     isLoadRequested: function(flags) {
         return (
@@ -520,7 +532,7 @@ ProgressListener.prototype = {
             return;
         }
         if (typeof(this.options.onURLChanged) === "function"
-            && this.isFromMainWindow(request)) {
+            && this.isFromMainWindow(this.getLoadContext(request))) {
             this.options.onURLChanged(location.spec);
         }
     },
@@ -532,27 +544,24 @@ ProgressListener.prototype = {
             return
         }
         let uri = request.URI.spec;
+        let loadContext = this.getLoadContext(request);
 
-        if (!this.isFromMainWindow(request)) {
+        if (!this.isFromMainWindow(loadContext)) {
             // we receive a new status for a page that is loading in a frame
 
-            if (this.mainPageURI != '')
-                // call callbacks only if this is a frame that is loaded
-                // AFTER the main page has been loaded
-                return;
-
             if (this.isLoadRequested(flags)) {
-                if (typeof(this.options.onLoadStarted) === "function") {
-                    this.options.onLoadStarted(uri, true);
+                if (typeof(this.options.onFrameLoadStarted) === "function") {
+                    this.options.onFrameLoadStarted(uri, (this.mainPageURI != ''));
                 }
             }
             else if (this.isLoaded(flags)) {
-                if (typeof(this.options.onLoadFinished) === "function") {
+                if (typeof(this.options.onFrameLoadFinished) === "function") {
+                    let win = (loadContext?loadContext.associatedWindow:null);
                     let success = "success";
                     if (uri != 'about:blank' && request.status) {
                         success = 'fail';
                     }
-                    this.options.onLoadFinished(uri, success, true);
+                    this.options.onFrameLoadFinished(uri, success, win, (this.mainPageURI != ''));
                 }
             }
             return;

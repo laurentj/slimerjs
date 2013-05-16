@@ -122,7 +122,7 @@ function create() {
             onRequest: function(request) {webpage.resourceRequested(request);},
             onResponse:  function(res) {webpage.resourceReceived(res);},
             captureTypes: webpage.captureContent,
-            onLoadStarted: function(url, isFrame){ webpage.loadStarted(url, isFrame); },
+            onLoadStarted: function(url){ webpage.loadStarted(url, false); },
             onURLChanged: function(url){ webpage.urlChanged(url);},
             onTransferStarted :null,
             onContentLoaded: function(url, success){
@@ -151,10 +151,18 @@ function create() {
                     });
                 }
             },
-            onLoadFinished: function(url, success, isFrame){
-                webpage.loadFinished(success, url, isFrame);
-                if (!isFrame && deferred)
+            onLoadFinished: function(url, success){
+                webpage.loadFinished(success, url, false);
+                if (deferred)
                     deferred.resolve(success);
+            },
+            onFrameLoadStarted : function(url, duringMainLoad) {
+                if (!duringMainLoad)
+                    webpage.loadStarted(url, true)
+            },
+            onFrameLoadFinished : function(url, success, frameWindow, duringMainLoad){
+                if (!duringMainLoad)
+                    webpage.loadFinished(success, url, true);
             }
         }
     }
