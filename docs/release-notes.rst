@@ -17,6 +17,8 @@ New API
   shared between modules as global variables/functions/objects.
 - Implementation of ``phantom.defaultPageSettings``. Note that settings are not supported
   yet by the webpage module.
+- callbacks ``webpage.onLoadStarted`` and  ``webpage.onLoadFinished`` receive two additionnal
+  parameters: the url that is loaded, and a boolean true if the loaded page is in a frame.
 
 Fixed bugs
 ----------
@@ -32,7 +34,8 @@ Fixed PhantomJS conformance issues
 - ``webpage.injectJs()`` and ``phantom.injectJs()`` now return a boolean and try to
   load the given file from the current working dir before from the library path, like
   PhantomJS does.
-
+- callbacks ``webpage.onLoadStarted`` and  ``webpage.onLoadFinished`` are called when
+  a frame is loading a new document inside the web page.
 
 Missing APIS
 ------------

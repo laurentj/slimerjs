@@ -215,8 +215,8 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onError                             </td><td></td></tr>
     <tr><td>onFilePicker                        </td><td></td></tr>
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
-    <tr><td>onLoadFinished                      </td><td>Implemented</td></tr>
-    <tr><td>onLoadStarted                       </td><td>Implemented</td></tr>
+    <tr><td>onLoadFinished                      </td><td>Implemented<br>SlimerJS only: the callback receives 3 parameters: the status ("success" or "fail"), the url and true if this is a frame that is loaded</td></tr>
+    <tr><td>onLoadStarted                       </td><td>Implemented<br>SlimerJS only: the callback receives 2 parameters: the url and true if this is a frame that is loaded</td></tr>
     <tr><td>onNavigationRequested               </td><td></td></tr>
     <tr><td>onPageCreated                       </td><td>Implemented</td></tr>
     <tr><td>onPrompt                            </td><td>Implemented</td></tr>

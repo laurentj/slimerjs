@@ -122,7 +122,7 @@ function create() {
             onRequest: function(request) {webpage.resourceRequested(request);},
             onResponse:  function(res) {webpage.resourceReceived(res);},
             captureTypes: webpage.captureContent,
-            onLoadStarted: function(url){ webpage.loadStarted(); },
+            onLoadStarted: function(url, isFrame){ webpage.loadStarted(url, isFrame); },
             onURLChanged: function(url){ webpage.urlChanged(url);},
             onTransferStarted :null,
             onContentLoaded: function(url, success){
@@ -151,9 +151,9 @@ function create() {
                     });
                 }
             },
-            onLoadFinished: function(url, success){
-                webpage.loadFinished(success);
-                if (deferred)
+            onLoadFinished: function(url, success, isFrame){
+                webpage.loadFinished(success, url, isFrame);
+                if (!isFrame && deferred)
                     deferred.resolve(success);
             }
         }
@@ -1165,16 +1165,16 @@ function create() {
                 onConsoleMessage(message, lineNumber, fileName);
         },
 
-        loadFinished: function(status) {
+        loadFinished: function(status, url, isFrame) {
             webPageSandbox = null;
             if (this.onLoadFinished)
-                this.onLoadFinished(status);
+                this.onLoadFinished(status, url, isFrame);
         },
 
-        loadStarted: function() {
+        loadStarted: function(url, isFrame) {
             webPageSandbox = null;
             if (this.onLoadStarted)
-                this.onLoadStarted();
+                this.onLoadStarted(url, isFrame);
         },
 
         navigationRequested: function(url, navigationType, navigationLocked, isMainFrame) {

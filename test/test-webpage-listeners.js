@@ -15,12 +15,15 @@ describe("webpage with listeners", function() {
             console.log(msg);
         }
 
-        webpage.onLoadStarted = function() {
+        webpage.onLoadStarted = function(url) {
             var currentUrl = webpage.evaluate(function(c) {
                 window.initializedCounter = c;
                 return window.location.href;
             }, initializedCounter);
             trace +="LOADSTARTED:"+currentUrl+"\n";
+            if (url){
+                trace +="  loading url="+url+"\n";
+            }
             //console.log("LOADSTARTED:"+currentUrl)
         };
 
@@ -60,11 +63,14 @@ describe("webpage with listeners", function() {
             receivedRequest[response.id][response.stage] = response;
         };
 
-        webpage.onLoadFinished = function(status) {
+        webpage.onLoadFinished = function(status, url) {
             var currentUrl = webpage.evaluate(function() {
                 return window.location.href + " - "+ window.initializedCounter;
             });
             trace += "LOADFINISHED:"+currentUrl+" "+status+"\n";
+            if (url){
+                trace +="  loaded url="+url+"\n";
+            }
             //console.log("LOADFINISHED:"+currentUrl);
         };
     }
@@ -89,9 +95,11 @@ describe("webpage with listeners", function() {
         var expectedTrace = ""
         expectedTrace += "INITIALIZED -1\n";
         expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "  loading url=http://localhost:8083/hello.html\n";
         expectedTrace += "URLCHANGED:http://localhost:8083/hello.html\n";
         expectedTrace += "INITIALIZED 1\n";
         expectedTrace += "LOADFINISHED:http://localhost:8083/hello.html - 2 success\n";
+        expectedTrace += "  loaded url=http://localhost:8083/hello.html\n";
         expectedTrace += "CALLBACK:success\n";
         expect(trace).toEqual(expectedTrace);
         done();
@@ -210,6 +218,53 @@ describe("webpage with listeners", function() {
         done();
     });
 
+    async.it("should receive event when a frame is changed", function(done){
+        var currentTrace = trace;
+        var currentReceivedRequest = receivedRequest;
+        var currentInitializedCounter = initializedCounter;
+
+        trace = '';
+        receivedRequest = [];
+        initializedCounter = 0;
+
+        webpage.evaluate(function(){
+            document.getElementsByTagName( "iframe" )[ 0 ].contentWindow.location.href="simplehello.html"
+            document.getElementsByTagName( "img" )[ 0 ].src="glouton-home.png"
+        })
+        setTimeout(function() {
+            var expectedTrace = "LOADSTARTED:http://localhost:8083/hello.html\n";
+            expectedTrace += "  loading url=http://localhost:8083/simplehello.html\n";
+            expectedTrace += "LOADFINISHED:http://localhost:8083/hello.html - 0 success\n";
+            expectedTrace += "  loaded url=http://localhost:8083/simplehello.html\n";
+            expect(trace).toEqual(expectedTrace);
+            expect(receivedRequest.length).toEqual(9);
+            var r;
+            r = receivedRequest.filter(function(result, i) {
+                if (i == 0)
+                    return false;
+                return result.req.url == (domain + 'simplehello.html');
+            })[0];
+            expect(r).toNotBe(null);
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(200);
+            expect(r.start.statusText).toEqual('OK');
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual('OK');
+            expect(r.start.contentType).toEqual("text/html");
+            expect(r.end.contentType).toEqual("text/html");
+            trace = currentTrace;
+            receivedRequest = currentReceivedRequest;
+            initializedCounter = currentInitializedCounter;
+            done();
+        },200);
+    });
+    
+    
     async.it("is opening a new page",function(done) {
         webpage.open(domain + 'mouseevent.html', function(success){
             trace += "CALLBACK2:"+success+"\n";
@@ -221,14 +276,18 @@ describe("webpage with listeners", function() {
         var expectedTrace = ""
         expectedTrace += "INITIALIZED -1\n";
         expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "  loading url=http://localhost:8083/hello.html\n";
         expectedTrace += "URLCHANGED:http://localhost:8083/hello.html\n";
         expectedTrace += "INITIALIZED 1\n";
         expectedTrace += "LOADFINISHED:http://localhost:8083/hello.html - 2 success\n";
+        expectedTrace += "  loaded url=http://localhost:8083/hello.html\n";
         expectedTrace += "CALLBACK:success\n";
         expectedTrace += "LOADSTARTED:http://localhost:8083/hello.html\n";
+        expectedTrace += "  loading url=http://localhost:8083/mouseevent.html\n";
         expectedTrace += "URLCHANGED:http://localhost:8083/mouseevent.html\n";
         expectedTrace += "INITIALIZED 2\n";
         expectedTrace += "LOADFINISHED:http://localhost:8083/mouseevent.html - 3 success\n";
+        expectedTrace += "  loaded url=http://localhost:8083/mouseevent.html\n";
         expectedTrace += "CALLBACK2:success\n";
         expect(trace).toEqual(expectedTrace);
         done();
@@ -267,9 +326,11 @@ describe("webpage with listeners", function() {
     async.it("should generate the expected trace for an inexistant page", function(done){
         var expectedTrace = ""
         expectedTrace += "LOADSTARTED:http://localhost:8083/mouseevent.html\n";
+        expectedTrace += "  loading url=http://localhost:8083/plop.html\n";
         expectedTrace += "URLCHANGED:http://localhost:8083/plop.html\n";
         expectedTrace += "INITIALIZED 3\n";
         expectedTrace += "LOADFINISHED:http://localhost:8083/plop.html - 4 success\n";
+        expectedTrace += "  loaded url=http://localhost:8083/plop.html\n";
         expectedTrace += "CALLBACK:success\n";
         expect(trace).toEqual(expectedTrace);
         done();
@@ -311,7 +372,9 @@ describe("webpage with listeners", function() {
     async.it("should generate the expected trace for the error page", function(done){
         var expectedTrace = ""
         expectedTrace += "LOADSTARTED:http://localhost:8083/plop.html\n";
+        expectedTrace += "  loading url=http://qsdqsdqs.qsfdsfi/plop.html\n";
         expectedTrace += "LOADFINISHED:http://localhost:8083/plop.html - 4 fail\n";
+        expectedTrace += "  loaded url=http://qsdqsdqs.qsfdsfi/plop.html\n";
         expectedTrace += "CALLBACK:fail\n";
         expect(trace).toEqual(expectedTrace);
         done();
@@ -354,9 +417,11 @@ describe("webpage with listeners", function() {
         var expectedTrace = ""
         expectedTrace += "INITIALIZED -1\n";
         expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "  loading url=http://localhost:8083/redirectToSimpleHello\n";
         expectedTrace += "URLCHANGED:http://localhost:8083/simplehello.html\n";
         expectedTrace += "INITIALIZED 5\n";
         expectedTrace += "LOADFINISHED:http://localhost:8083/simplehello.html - 6 success\n";
+        expectedTrace += "  loaded url=http://localhost:8083/simplehello.html\n";
         expectedTrace += "CALLBACK:success\n";
         expect(trace).toEqual(expectedTrace);
         done();

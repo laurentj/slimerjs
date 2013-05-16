@@ -34,6 +34,8 @@ exports.registerBrowser = function(browser, options) {
 
             // The mask.
             // called when the load of new document is asked.
+            // receives the uri that is loading, and a boolean
+            // indicating if it is just a frame
             onLoadStarted: null,
 
             // The red underpants.
@@ -55,7 +57,8 @@ exports.registerBrowser = function(browser, options) {
 
             // The t-shirt with the SUPER logo (or not).
             // called when the document is ready.
-            // Received "success" or "fail" as parameter.
+            // Receives the URI, "success" or "fail", and a boolean indicating
+            // if it is just a frame.
             // all resources are loaded.
             // the document has just received the load event.
             onLoadFinished: null
@@ -516,7 +519,8 @@ ProgressListener.prototype = {
         if (flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_ERROR_PAGE) {
             return;
         }
-        if (typeof(this.options.onURLChanged) === "function") {
+        if (typeof(this.options.onURLChanged) === "function"
+            && this.isFromMainWindow(request)) {
             this.options.onURLChanged(location.spec);
         }
     },
@@ -530,6 +534,27 @@ ProgressListener.prototype = {
         let uri = request.URI.spec;
 
         if (!this.isFromMainWindow(request)) {
+            // we receive a new status for a page that is loading in a frame
+
+            if (this.mainPageURI != '')
+                // call callbacks only if this is a frame that is loaded
+                // AFTER the main page has been loaded
+                return;
+
+            if (this.isLoadRequested(flags)) {
+                if (typeof(this.options.onLoadStarted) === "function") {
+                    this.options.onLoadStarted(uri, true);
+                }
+            }
+            else if (this.isLoaded(flags)) {
+                if (typeof(this.options.onLoadFinished) === "function") {
+                    let success = "success";
+                    if (uri != 'about:blank' && request.status) {
+                        success = 'fail';
+                    }
+                    this.options.onLoadFinished(uri, success, true);
+                }
+            }
             return;
         }
 
@@ -538,7 +563,7 @@ ProgressListener.prototype = {
                 if (this.isLoadRequested(flags)) {
                     this.mainPageURI = uri;
                     if (typeof(this.options.onLoadStarted) === "function") {
-                        this.options.onLoadStarted(uri);
+                        this.options.onLoadStarted(uri, false);
                     }
                 }
                 return;
@@ -568,7 +593,7 @@ ProgressListener.prototype = {
                     if (uri != 'about:blank' && request.status) {
                         success = 'fail';
                     }
-                    this.options.onLoadFinished(uri, success);
+                    this.options.onLoadFinished(uri, success, false);
                 }
                 return;
             }
