@@ -805,10 +805,18 @@ function create() {
             if (!browser) {
                 throw "WebPage not opened";
             }
-            // filename resolved against the libraryPath property
-            let f = getMozFile(filename, libPath);
+            let f = getMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            if (!f.exists()) {
+                // filename resolved against the libraryPath property
+                f = getMozFile(filename, libPath);
+                if (!f.exists()) {
+                    dump("Can't open '"+filename+"'\n");
+                    return false;
+                }
+            }
             let source = readSyncStringFromFile(f);
             evalInSandbox(source);
+            return true;
         },
         get onError() {
             throw "Not Implemented"

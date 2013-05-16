@@ -29,6 +29,9 @@ Fixed PhantomJS conformance issues
 - Modules have now access to global objects like window, phantom, document...
 - Changed fs.workingDirectory from a method to a property, even if it violates the
   CommonsJS filesystem specification.
+- ``webpage.injectJs()`` and ``phantom.injectJs()`` now return a boolean and try to
+  load the given file from the current working dir before from the library path, like
+  PhantomJS does.
 
 
 Missing APIS

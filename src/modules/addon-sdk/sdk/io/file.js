@@ -58,6 +58,7 @@ Object.defineProperty(exports, "workingDirectory", {
 
 exports.changeWorkingDirectory = function changeWorkingDirectory(path) {
     currentWorkingDirectory = MozFile(path);
+    dirsvc.set("CurWorkD", currentWorkingDirectory);
 }
 
 function ensureReadable(file) {

@@ -115,10 +115,20 @@ var phantom = {
      * injects an external script into the SlimerJS sandbox runtime
      */
     injectJs: function(filename) {
-        // filename resolved against the libraryPath property
-        let f = getMozFile(filename, libPath);
+        // resolve the filename against the current working directory
+        let f = getMozFile(filename, Services.dirsvc.get("CurWorkD", Components.interfaces.nsIFile));
+        if (!f.exists()) {
+            // filename resolved against the libraryPath property
+            f = getMozFile(filename, libPath);
+            if (!f.exists()) {
+                dump("Can't open '"+filename+"'\n");
+                return false;
+            }
+        }
+
         let source = readSyncStringFromFile(f);
         slLauncher.injectJs(source, Services.io.newFileURI(f).spec);
+        return true;
     },
 
     /**
