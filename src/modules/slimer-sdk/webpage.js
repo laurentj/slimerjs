@@ -323,31 +323,31 @@ function create() {
 
         // ------------------------ cookies and headers
         get cookies() {
-            throw "Not Implemented"
+            throw new Error("webpage.cookies not implemented")
         },
 
         set cookies(val) {
-            throw "Not Implemented"
+            throw new Error("webpage.cookies not implemented")
         },
 
         get customHeaders() {
-            throw "Not Implemented"
+            throw new Error("webpage.customHeaders not implemented")
         },
 
         set customHeaders(val) {
-            throw "Not Implemented"
+            throw new Error("webpage.customHeaders not implemented")
         },
 
         addCookie: function(cookie) {
-            throw "Not Implemented"
+            throw new Error("webpage.addCookie not implemented")
         },
 
         clearCookies: function() {
-            throw "Not Implemented"
+            throw new Error("webpage.clearCookies not implemented")
         },
 
         deleteCookie: function(cookieName) {
-            throw "Not Implemented"
+            throw new Error("webpage.deleteCookie not implemented")
         },
 
         // -------------------------------- History
@@ -377,11 +377,11 @@ function create() {
         },
 
         get navigationLocked() {
-            throw "Not Implemented"
+            throw new Error("webpage.navigationLocked not implemented")
         },
 
         set navigationLocked(val) {
-            throw "Not Implemented"
+            throw new Error("webpage.navigationLocked not implemented")
         },
 
         reload : function() {
@@ -470,7 +470,7 @@ function create() {
         },
 
         openUrl: function(url, httpConf, settings) {
-            throw "Not Implemented"
+            throw new Error("webpage.openUrl not implemented")
         },
 
         /**
@@ -495,31 +495,31 @@ function create() {
         onClosing: null,
 
         get ownsPages () {
-            throw "Not Implemented"
+            throw new Error("webpage.ownsPages not implemented")
         },
 
         getPage: function (windowName) {
-            throw "Not Implemented"
+            throw new Error("webpage.getPage not implemented")
         },
 
         get pages () {
-            throw "Not Implemented"
+            throw new Error("webpage.pages not implemented")
         },
 
         get pagesWindowName () {
-            throw "Not Implemented"
+            throw new Error("webpage.pagesWindowName not implemented")
         },
 
         release : function() {
-            throw "Not Implemented"
+            throw new Error("webpage.release not implemented")
         },
 
         get scrollPosition() {
-            throw "Not Implemented"
+            throw new Error("webpage.scrollPosition not implemented")
         },
 
         set scrollPosition(val) {
-            throw "Not Implemented"
+            throw new Error("webpage.scrollPosition not implemented")
         },
         get url() {
             if (browser)
@@ -695,7 +695,7 @@ function create() {
         },
 
         set frameContent(val) {
-            throw "Not Implemented"
+            throw new Error("webpage.frameContent setter not implemented")
         },
 
         get framePlainText() {
@@ -735,7 +735,7 @@ function create() {
          */
         evaluate: function(func) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
             let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
             func = '('+func.toString()+').apply(this, ' + args + ');';
@@ -744,14 +744,14 @@ function create() {
 
         evaluateJavaScript: function(src) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
             return evalInSandbox(src);
         },
 
         evaluateAsync: function(func) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             func = '('+func.toSource()+')();';
             browser.contentWindow.setTimeout(function() {
                 evalInSandbox(func);
@@ -760,14 +760,14 @@ function create() {
 
         includeJs: function(url, callback) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             // we don't use the sandbox, because with it, scripts
             // of the loaded page cannot access to variables/functions
             // created by the injected script. And this behavior
             // is necessary to be compatible with phantomjs.
             var win = getCurrentFrame();
             if (!win){
-                throw "No window available";
+                throw new Error("No window available");
             }
             let doc = win.document;
             let body = doc.documentElement.getElementsByTagName("body")[0];
@@ -803,7 +803,7 @@ function create() {
          */
         injectJs: function(filename) {
             if (!browser) {
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             }
             let f = getMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
             if (!f.exists()) {
@@ -819,17 +819,17 @@ function create() {
             return true;
         },
         get onError() {
-            throw "Not Implemented"
+            throw new Error("webpage.onError not implemented")
         },
         set onError(callback) {
-            throw "Not Implemented"
+            throw new Error("webpage.onError not implemented")
         },
 
         // --------------------------------- content manipulation
 
         get content () {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
             const de = Ci.nsIDocumentEncoder
             let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
@@ -841,28 +841,28 @@ function create() {
         },
 
         set content(val) {
-            throw "Not Implemented"
+            throw new Error("webpage.content setter not implemented")
         },
 
         get offlineStoragePath() {
-            throw "Not Implemented"
+            throw new Error("webpage.offlineStoragePath not implemented")
         },
 
         set offlineStoragePath(val) {
-            throw "Not Implemented"
+            throw new Error("webpage.offlineStoragePath not implemented")
         },
 
         get offlineStorageQuota() {
-            throw "Not Implemented"
+            throw new Error("webpage.offlineStorageQuota not implemented")
         },
 
         set offlineStorageQuota(val) {
-            throw "Not Implemented"
+            throw new Error("webpage.offlineStorageQuota not implemented")
         },
 
         get plainText() {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
             const de = Ci.nsIDocumentEncoder
             let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
@@ -977,7 +977,7 @@ function create() {
                 return;
             }
 
-            throw "Unknown event type";
+            throw new Error("Unknown event type");
         },
 
         event : {
@@ -999,11 +999,11 @@ function create() {
         },
 
         setContent: function(content, url) {
-            throw "Not Implemented"
+            throw new Error("webpage.setContent not implemented")
         },
 
         uploadFile: function(selector, filename) {
-            throw "Not Implemented"
+            throw new Error("webpage.uploadFile not implemented")
         },
 
         // ------------------------------- Screenshot and pdf export
@@ -1047,17 +1047,17 @@ function create() {
         paperSize : null,
         get zoomFactor () {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             return browser.markupDocumentViewer.fullZoom;
         },
         set zoomFactor (val) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             browser.markupDocumentViewer.fullZoom = val;
         },
         render: function(filename, ratio) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             let format = fs.extension(filename).toLowerCase() || 'png';
             let content = this.renderBytes(format, ratio);
             fs.write(filename, content, "wb");
@@ -1069,7 +1069,7 @@ function create() {
 
         renderBase64: function(format, ratio) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
             format = (format || "png").toString().toLowerCase();
             let qual = undefined;
@@ -1093,11 +1093,11 @@ function create() {
         onAlert : null,
 
         get onCallback() {
-            throw "Not Implemented"
+            throw new Error("webpage.onCallback not implemented")
         },
 
         set onCallback(callback) {
-            throw "Not Implemented"
+            throw new Error("webpage.onCallback not implemented")
         },
 
         onConfirm : null,
@@ -1105,11 +1105,11 @@ function create() {
         onConsoleMessage : null,
 
         get onFilePicker() {
-            throw "Not Implemented"
+            throw new Error("webpage.onFilePicker not implemented")
         },
 
         set onFilePicker(callback) {
-            throw "Not Implemented"
+            throw new Error("webpage.onFilePicker not implemented")
         },
 
         onPrompt : null,
@@ -1126,11 +1126,11 @@ function create() {
         onLoadStarted: null,
 
         get onNavigationRequested() {
-            throw "Not Implemented"
+            throw new Error("webpage.onNavigationRequested not implemented")
         },
 
         set onNavigationRequested(callback) {
-            throw "Not Implemented"
+            throw new Error("webpage.onNavigationRequested not implemented")
         },
 
         // This callback is invoked when a new child window (but not deeper descendant windows) is created by the page, e.g. using window.open
@@ -1178,7 +1178,7 @@ function create() {
         },
 
         navigationRequested: function(url, navigationType, navigationLocked, isMainFrame) {
-            throw "Not Implemented"
+            throw new Error("webpage.navigationRequested not implemented");
         },
 
         rawPageCreated: function(page) {

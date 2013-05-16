@@ -9,8 +9,8 @@ SlimerJS 0.7 has not been released yet.
 
 It is usable, although its API is not yet 100% compatible with PhantomJS.
 
-Improvements
-------------
+New API
+-------
 
 - Implementation of ``require.paths``, a list of paths where modules can be found (CommonJS modules 1.1 specification)
 - Implementation of ``require.globals``, an object which can contain properties that will be

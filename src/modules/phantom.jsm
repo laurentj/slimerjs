@@ -55,7 +55,7 @@ var phantom = {
      * @param cookie cookie
      */
     addCookie : function(cookie) {
-        throw "Not Implemented";
+        throw new Error("phantom.addCookie not implemented");
     },
 
     /**
@@ -69,7 +69,7 @@ var phantom = {
      * delete a cookie
      */
     deleteCookie : function(cookieName) {
-        throw "Not Implemented";
+        throw new Error("phantom.deleteCookie not implemented");
     },
 
     /**
