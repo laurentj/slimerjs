@@ -21,6 +21,8 @@ Improvements
 Fixed bugs
 ----------
 
+- when we launched SlimerJS from a symbolic link, there was an error "application.ini path not recognized"
+
 Fixed PhantomJS conformance issues
 ----------------------------------
 

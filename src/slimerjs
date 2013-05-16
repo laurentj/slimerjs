@@ -68,10 +68,16 @@ then
     exit 0
 fi
 
-#retrieve full path (firefox on macos needs it)
-pushd `dirname $0` > /dev/null
-SCRIPTDIR=`pwd`
-popd > /dev/null
+#retrieve full path of the current script
+# symlinks are resolved, so application.ini could be found
+# this code comes from http://stackoverflow.com/questions/59895/
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$SCRIPTDIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 # retrieve list of existing environment variable, because Mozilla doesn't provide an API to get this
 # list
@@ -82,6 +88,8 @@ for v in $ENVVAR; do
     LISTVAR="$LISTVAR,${var[0]}"
 done
 
+# put all arguments in a variable, to have original arguments before their transformation
+# by Mozilla
 export __SLIMER_ARGS="$@"
 
 "$SLIMERJSLAUNCHER" -app $SCRIPTDIR/application.ini -purgecaches -no-remote --envs "$LISTVAR" "$@"
