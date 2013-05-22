@@ -81,12 +81,34 @@
     <dd>You see windows during the execution of your script? It's normal.
         Gecko, the rendering engine of Firefox, cannot render web content without a graphical window.
         See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=446591">Mozilla bug 446591</a>.
-        However you can launch <span class="slm">SlimerJS</span> with xvfb if you are under linux or MacOSx, to
-        have a headless <span class="slm">SlimerJS</span>.</dd>
+        However you can launch <span class="slm">SlimerJS</span> with xvfb if you are under
+        linux or MacOSx, to have a headless <span class="slm">SlimerJS</span>.</dd>
+
+    <dt>Why do we need Firefox or XulRunner?</dt>
+    <dd><span class="slm">SlimerJS</span> does not embed Gecko directly, because the Mozilla plateform is a huge library.
+        Most of time, web developers have already Firefox installed, so downloading and installing
+        an other Gecko is useless. With only its 350ko, <span class="slm">SlimerJS</span> saves megabytes of bandwidth and
+        it avoid to distribute a version for each platform (linux, macos, windows...). It allows
+        you to choose your Firefox version.<br>
+        Probably in the future <span class="slm">SlimerJS</span> will embed its own version of Gecko, if we had to hack
+        Gecko for some reason (headless feature for example), or if users really want to
+        have it.
+    </dd>
+
+    <dt>Hey, CapserJS does not work with <span class="slm">SlimerJS</span>!</dt>
+    <dd>Yes, because:
+        <ol>
+            <li><span class="slm">SlimerJS</span> does not implement yet all the PhantomJS API</li>
+            <li>CasperJS does not know SlimerJS but
+                <a href="https://github.com/n1k0/casperjs/issues/482">we are working on this issue</a>.
+            </li>
+        </ol>
+        We hope that SlimerJS 0.7 or 0.8 will work with CasperJS.
+    </dd>
 
     <dt>Why is it called "SlimerJs"?</dt>
     <dd>Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox
-        source code uses many references from this movie, and since PhantomJS,
+        source code uses some references from this movie, and since PhantomJS,
         CasperJs and other related tools, is a matter of ghosts... ;-)</dd>
 
     <dt>How can I contribute?</dt>
@@ -105,15 +127,13 @@
         </ul>
     </dd>
 
-
-    <dt>Hey, CapserJS does not work with <span class="slm">SlimerJS</span>!</dt>
-    <dd>Yes, because:
-        <ul>
-            <li><span class="slm">SlimerJS</span> does not implement yet all the PhantomJS API</li>
-            <li>CasperJS does not know SlimerJS but we are working on it
-                and we will provide some patch to the CasperJS project
-            </li>
-        </ul>
+    <dt>Is there a build of SlimerJS containing latest improvements?</dt>
+    <dd>Yes, each days a build is made from the "master" branch of the source code.
+    This is the nightly build. Since this is a version in development, don't use it
+    in production.<br>
+    <a href="http://download.slimerjs.org/slimerjs-nightly.zip">Download the archive here</a> and
+    <a href="http://download.slimerjs.org/slimerjs-doc-nightly.zip">its documentation</a>
+    (that you can view <a href="http://docs.slimerjs.org/nightly/">online here</a>).
     </dd>
 
     <dt>Why are there no tests on the WebServer object in the source code?</dt>
