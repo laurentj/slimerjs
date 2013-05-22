@@ -29,6 +29,15 @@ const heritage = require("sdk/core/heritage");
 const netLog = require('net-log');
 netLog.startTracer();
 
+const PHANTOMCALLBACK =
+'window.callPhantom =  function() {' +
+'    var arg = (arguments.length?arguments[0]:null);'+
+'    var event = new CustomEvent("callphantom", {"detail":arg});' +
+'    window.top.dispatchEvent(event);' +
+'    if (window.__phantomCallbackError) throw window.__phantomCallbackError;' +
+'    return window.__phantomCallbackResult;' +
+'}';
+
 /**
  * create a webpage object
  * @module webpage
@@ -75,6 +84,33 @@ function create() {
         catch(e) {
             throw new Error('Error during javascript evaluation in the web page: '+e)
         }
+    }
+
+    /**
+     * evaluate a script directly into the content window
+     */
+    function evalInWindow (win, source, url, callback) {
+        // we don't use the sandbox, because with it, scripts
+        // of the loaded page cannot access to variables/functions
+        // created by the injected script. And this behavior
+        // is necessary to be compatible with phantomjs.
+        let doc = win.document;
+        let script = doc.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        if (url) {
+            script.setAttribute('src', url);
+            if (callback) {
+                let listener = function(event){
+                    script.removeEventListener('load', listener, true);
+                    callback();
+                }
+                script.addEventListener('load', listener, true);
+            }
+        }
+        else {
+            script.textContent = source;
+        }
+        doc.documentElement.appendChild(script);
     }
 
     /**
@@ -152,6 +188,20 @@ function create() {
                 }
             },
             onLoadFinished: function(url, success){
+                // listener called by the window.callPhantom function
+                browser.contentWindow.addEventListener("callphantom", function(event) {
+                    if (webpage.onCallback) {
+                        try {
+                            browser.contentWindow.wrappedJSObject.__phantomCallbackResult = webpage.onCallback(event.detail)
+                            browser.contentWindow.wrappedJSObject.__phantomCallbackError = null;
+                        }catch(e){
+                            browser.contentWindow.wrappedJSObject.__phantomCallbackError = e;
+                        }
+                    }
+                }, true);
+                // inject the function window.callPhantom
+                evalInWindow(browser.contentWindow, PHANTOMCALLBACK);
+
                 webpage.loadFinished(success, url, false);
                 if (deferred)
                     deferred.resolve(success);
@@ -160,7 +210,9 @@ function create() {
                 if (!duringMainLoad)
                     webpage.loadStarted(url, true)
             },
-            onFrameLoadFinished : function(url, success, frameWindow, duringMainLoad){
+            onFrameLoadFinished : function(url, success, frameWindow, duringMainLoad) {
+                // inject the function window.callPhantom
+                evalInWindow(frameWindow,PHANTOMCALLBACK);
                 if (!duringMainLoad)
                     webpage.loadFinished(success, url, true);
             }
@@ -769,25 +821,11 @@ function create() {
         includeJs: function(url, callback) {
             if (!browser)
                 throw new Error("WebPage not opened");
-            // we don't use the sandbox, because with it, scripts
-            // of the loaded page cannot access to variables/functions
-            // created by the injected script. And this behavior
-            // is necessary to be compatible with phantomjs.
             var win = getCurrentFrame();
             if (!win){
                 throw new Error("No window available");
             }
-            let doc = win.document;
-            let body = doc.documentElement.getElementsByTagName("body")[0];
-            let script = doc.createElement('script');
-            script.setAttribute('type', 'text/javascript');
-            script.setAttribute('src', url);
-            let listener = function(event){
-                script.removeEventListener('load', listener, true);
-                callback();
-            }
-            script.addEventListener('load', listener, true);
-            body.appendChild(script);
+            evalInWindow (win, null, url, callback);
         },
 
         get libraryPath () {
@@ -1100,13 +1138,7 @@ function create() {
 
         onAlert : null,
 
-        get onCallback() {
-            throw new Error("webpage.onCallback not implemented")
-        },
-
-        set onCallback(callback) {
-            throw new Error("webpage.onCallback not implemented")
-        },
+        onCallback : null,
 
         onConfirm : null,
 

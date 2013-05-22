@@ -19,6 +19,7 @@ New API
   yet by the webpage module.
 - callbacks ``webpage.onLoadStarted`` and  ``webpage.onLoadFinished`` receive two additionnal
   parameters: the url that is loaded, and a boolean true if the loaded page is in a frame.
+- Support of ``webpage.onCallback`` and ``window.callPhantom()``
 
 Fixed bugs
 ----------
