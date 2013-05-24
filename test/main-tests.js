@@ -46,6 +46,7 @@ phantom.injectJs("./test-webpage-prompt.js");
 phantom.injectJs("./test-webpage-open.js");
 phantom.injectJs("./test-webpage-frames.js");
 phantom.injectJs("./test-webpage-callPhantom.js");
+phantom.injectJs("./test-webpage-onerror.js");
 
 var webserverTest = webServerFactory.create();
 webserverTest.listen(8083, function(request, response) {

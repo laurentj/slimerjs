@@ -6,6 +6,7 @@
 const { Cc, Ci, Cu, Cr } = require('chrome');
 Cu.import('resource://slimerjs/slLauncher.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
+Cu.import('resource://slimerjs/slConsole.jsm');
 Cu.import('resource://slimerjs/slConfiguration.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
@@ -72,17 +73,38 @@ function create() {
 
     var webPageSandbox = null;
 
-    function evalInSandbox (src) {
+    /**
+     * evaluate javascript code into a sandbox
+     * @see webpage.evaluate(), webpage.evaluateJavascript()...
+     * @param string src the source code to evaluate
+     * @param string file the file name associated to the source code
+     */
+    function evalInSandbox (src, file) {
         if (!webPageSandbox)
             webPageSandbox = new WeakMap();
         let win = getCurrentFrame();
         if (!webPageSandbox.has(win))
             webPageSandbox.set(win, createSandBox(win));
         try {
-            return Cu.evalInSandbox(src, webPageSandbox.get(win));
+            return Cu.evalInSandbox(src, webPageSandbox.get(win), '1.8', file, 1);
         }
         catch(e) {
-            throw new Error('Error during javascript evaluation in the web page: '+e)
+            if (webpage.onError) {
+                var err = getTraceException(e, '');
+                if (err[1]) {
+                    err[1].forEach(function(item){
+                        if ('line' in item)
+                            item.line = parseInt(item.line);
+                        item.file = item.sourceURL;
+                    })
+                }
+                else err[1] = [];
+                webpage.onError('Error: '+err[0], err[1]);
+                return undefined;
+            }
+            else {
+                throw new Error('Error during javascript evaluation in the web page: '+e)
+            }
         }
     }
 
@@ -114,6 +136,30 @@ function create() {
     }
 
     /**
+     * says if the given outer window id is the ID of the window
+     * of the webpage or the window of an iframe of the webpage
+     */
+    function isOurWindow(outerWindowId) {
+        let domWindowUtils = browser.contentWindow
+                    .QueryInterface(Ci.nsIInterfaceRequestor)
+                    .getInterface(Ci.nsIDOMWindowUtils);
+        if (domWindowUtils.outerWindowID == outerWindowId) {
+            return true;
+        }
+        // probably the window is an iframe of the webpage. check if this is
+        // the case
+        let iframe = domWindowUtils.getOuterWindowWithId(outerWindowId);
+        if (iframe) {
+            let dwu = iframe.top.QueryInterface(Ci.nsIInterfaceRequestor)
+                            .getInterface(Ci.nsIDOMWindowUtils);
+            if (dwu.outerWindowID == domWindowUtils.outerWindowID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * an observer for the Observer Service.
      * It observes console events.
      */
@@ -126,29 +172,48 @@ function create() {
                     return;
                 // aData == outer window id
                 // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js#254
-                let domWindowUtils = browser.contentWindow
-                            .QueryInterface(Ci.nsIInterfaceRequestor)
-                            .getInterface(Ci.nsIDOMWindowUtils);
                 var consoleEvent = aSubject.wrappedJSObject;
-                if (domWindowUtils.outerWindowID == aData) {
+                if (isOurWindow(aData)) {
                     webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
                     return
-                }
-                // probably the window is an iframe of the webpage. check if this is
-                // the case
-                let iframe = domWindowUtils.getOuterWindowWithId(aData);
-                if (iframe) {
-                    let dwu = iframe.top.QueryInterface(Ci.nsIInterfaceRequestor)
-                            .getInterface(Ci.nsIDOMWindowUtils);
-                    if (dwu.outerWindowID == domWindowUtils.outerWindowID) {
-                        webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
-                        return;
-                    }
                 }
                 return;
             }
         }
     }
+
+    /**
+     * a listener for the console service, to track errors in the content window.
+     * Unfortunately, we don't have no way to retrieve the stack :-/
+     */
+    var jsErrorListener = {
+        observe:function( aMessage ){
+            if (!webpage.onError)
+                return;
+            try {
+                let msg = aMessage.QueryInterface(Ci.nsIScriptError);
+                //dump(" ************** jsErrorListener on error:"+aMessage.message+ "("+aMessage.category+")\n")
+                if (msg instanceof Ci.nsIScriptError
+                    && !(msg.flags & Ci.nsIScriptError.warningFlag)
+                    && msg.outerWindowID
+                    && isOurWindow(msg.outerWindowID)
+                    && msg.category == "content javascript"
+                    ) {
+                    webpage.onError(aMessage.errorMessage, [{file:aMessage.sourceName, line:aMessage.lineNumber, 'function':null}]);
+                }
+            }
+            catch(e) {
+                //dump("**************** jsErrorListener err:"+e+"\n")
+            }
+        },
+        QueryInterface: function (iid) {
+            if (!iid.equals(Ci.nsIConsoleListener) &&
+                !iid.equals(Ci.nsISupports)) {
+                throw Components.results.NS_ERROR_NO_INTERFACE;
+            }
+            return this;
+        }
+    };
 
     /**
      * build an object of options for the netlogger
@@ -201,7 +266,11 @@ function create() {
                 }, true);
                 // inject the function window.callPhantom
                 evalInWindow(browser.contentWindow, PHANTOMCALLBACK);
+                try {
+                    Services.console.unregisterListener(jsErrorListener);
+                }catch(e){}
 
+                Services.console.registerListener(jsErrorListener);
                 webpage.loadFinished(success, url, false);
                 if (deferred)
                     deferred.resolve(success);
@@ -538,6 +607,7 @@ function create() {
          */
         close: function() {
             if (browser) {
+                Services.console.unregisterListener(jsErrorListener);
                 Services.obs.removeObserver(webpageObserver, "console-api-log-event");
                 netLog.unregisterBrowser(browser);
                 this.closing(this);
@@ -799,14 +869,14 @@ function create() {
 
             let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
             func = '('+func.toString()+').apply(this, ' + args + ');';
-            return evalInSandbox(func);
+            return evalInSandbox(func, 'phantomjs://webpage.evaluate()');
         },
 
         evaluateJavaScript: function(src) {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            return evalInSandbox(src);
+            return evalInSandbox(src, 'phantomjs://webpage.evaluate()');
         },
 
         evaluateAsync: function(func) {
@@ -814,7 +884,7 @@ function create() {
                 throw new Error("WebPage not opened");
             func = '('+func.toSource()+')();';
             browser.contentWindow.setTimeout(function() {
-                evalInSandbox(func);
+                evalInSandbox(func, 'phantomjs://webpage.evaluate()');
             }, 0)
         },
 
@@ -861,15 +931,11 @@ function create() {
                 }
             }
             let source = readSyncStringFromFile(f);
-            evalInSandbox(source);
+            evalInSandbox(source, filename);
             return true;
         },
-        get onError() {
-            throw new Error("webpage.onError not implemented")
-        },
-        set onError(callback) {
-            throw new Error("webpage.onError not implemented")
-        },
+
+        onError : null,
 
         // --------------------------------- content manipulation
 
