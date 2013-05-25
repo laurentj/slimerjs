@@ -8,21 +8,58 @@ REM %* is every argument passed to this script.
 SET __SLIMER_ARGS=%*
 SET LISTVAR=
 
-if ["%~1"]==["/?"] (
-    call :helpMessage
-    pause
-    exit 0
+SET CREATETEMP=Y
+
+REM check arguments
+FOR %%A IN (%*) DO (
+
+    if ["%%A"]==["/?"] (
+        call :helpMessage
+        pause
+        exit 0
+    )
+    if /I ["%%A"]==["--help"] (
+        call :helpMessage
+        pause
+        exit 0
+    )
+    if /I ["%%A"]==["-h"] (
+        call :helpMessage
+        pause
+        exit 0
+    )
+    if /I ["%%A"]==["-reset-profile"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["-profile"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["-p"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["-createprofile"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["-profilemanager"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["--reset-profile"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["--profile"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["--p"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["--createprofile"] (
+        SET CREATETEMP=
+    )
+    if /I ["%%A"]==["--profilemanager"] (
+        SET CREATETEMP=
+    )
 )
-if ["%~1"]==["--help"] (
-    call :helpMessage
-    pause
-    exit 0
-)
-if ["%~1"]==["-h"] (
-    call :helpMessage
-    pause
-    exit 0
-)
+
 if not exist %SLIMERJSLAUNCHER% (
     call :findFirefox
 )
@@ -37,17 +74,39 @@ if not exist %SLIMERJSLAUNCHER% (
     exit 1
 )
 
+
 SETLOCAL EnableDelayedExpansion
+
+REM store environment variable into LISTVAR for SlimerJS
 FOR /F "usebackq delims==" %%i IN (`set`) DO set LISTVAR=!LISTVAR!,%%i
 
+REM let's create a temporary dir for the profile, if needed
+if ["%CREATETEMP%"]==[""] (
+   SET PROFILEDIR=
+   SET PROFILE=-purgecaches
+   goto callexec
+)
+:createdirname
+SET PROFILEDIR=%Temp%\slimerjs-!Random!!Random!!Random!
+IF EXIST "%PROFILEDIR%" (
+    GOTO createdirname
+)
+mkdir %PROFILEDIR%
+
+SET PROFILE=-profile %PROFILEDIR%
+
+:callexec
 REM Firefox console output is done to NUL or something like that.
 REM So we have to redirect output to a file and then output this file
 REM FIXME: This solution is not optimal, since we cannot see messages at realtime
 REM FIXME: an other solution to redirect directly to the console ?
 set TMPFILE=%TMP%\slimer-output-%RANDOM%.tmp
 
-%SLIMERJSLAUNCHER% -app "%SCRIPTDIR%application.ini" -purgecaches -no-remote -envs "%LISTVAR%" %__SLIMER_ARGS% >%TMPFILE% 2>&1
+%SLIMERJSLAUNCHER% -app "%SCRIPTDIR%application.ini" %PROFILE% -no-remote -envs "%LISTVAR%" %__SLIMER_ARGS% >%TMPFILE% 2>&1
 
+if ["%CREATETEMP%"]==["Y"] (
+     rmdir /S /Q %PROFILEDIR%
+)
 TYPE %TMPFILE%
 DEL %TMPFILE%
 ENDLOCAL
@@ -105,7 +164,16 @@ REM    echo   --webdriver-loglevel=[ERROR^|WARN^|INFO^|DEBUG^|] WebDriver Loggin
 REM    echo                                  (default is 'INFO') (NOTE: needs '--webdriver')
 REM    echo   --webdriver-selenium-grid-hub=^<url^> URL to the Selenium Grid HUB (default is
 REM    echo                                       'none') (NOTE: needs '--webdriver')
-
+    echo.
+    echo *** About profiles: see details of these Mozilla options at
+    echo https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile
+    echo.
+    echo   --createprofile name               Create a new profile and exit
+    echo   -P name                            Use the specified profile to execute the script
+    echo   -profile path                      Use the profile stored in the specified
+    echo                                      directory, to execute the script
+    echo By default, SlimerJS use a temporary profile
+    echo.
 goto :eof
 
 

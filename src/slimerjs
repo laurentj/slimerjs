@@ -20,8 +20,8 @@ then
     exit 1
 fi
 
-if [ "$1" == "--help" -o "$1" == "-h" ]
-then
+function showHelp() {
+
     #echo "  --cookies-file=<file>              Sets the file name to store the persistent"
     #echo "                                     cookies."
     #echo "  --config=<file>                    Load the given configuration file"
@@ -65,8 +65,17 @@ then
     #echo "                                 (default is 'INFO') (NOTE: needs '--webdriver')"
     #echo "  --webdriver-selenium-grid-hub=<url> URL to the Selenium Grid HUB (default is"
     #echo "                                      'none') (NOTE: needs '--webdriver') "
-    exit 0
-fi
+    echo ""
+    echo "*** About profiles: see details of these Mozilla options at"
+    echo "https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile"
+    echo ""
+    echo "  --createprofile name               Create a new profile and exit"
+    echo "  -P name                            Use the specified profile to execute the script"
+    echo "  -profile path                      Use the profile stored in the specified"
+    echo "                                     directory, to execute the script"
+    echo "By default, SlimerJS use a temporary profile"
+    echo ""
+}
 
 #retrieve full path of the current script
 # symlinks are resolved, so application.ini could be found
@@ -88,9 +97,47 @@ for v in $ENVVAR; do
     LISTVAR="$LISTVAR,${var[0]}"
 done
 
+# check arguments.
+CREATE_TEMP='Y'
+shopt -s nocasematch
+for i in $*; do
+    case "$i" in
+        --help|-h)
+           showHelp
+           exit 0
+           ;;
+        -reset-profile|-profile|-p|-createprofile|-profilemanager)
+            CREATE_TEMP=''
+            ;;
+        --reset-profile|--profile|--p|--createprofile|--profilemanager)
+            CREATE_TEMP=''
+            ;;
+    esac
+done
+shopt -u nocasematch
+
+# If profile parameters, don't create a temporary profile
+PROFILE=""
+PROFILE_DIR=""
+if [ "$CREATE_TEMP" == "Y" ]
+then
+    PROFILE_DIR=`mktemp -d -q`
+    if [ "$PROFILE_DIR" == "" ]; then
+        echo "Error: cannot generate temp profile"
+        exit 1
+    fi
+    PROFILE="--profile $PROFILE_DIR"
+else
+    PROFILE="-purgecaches"
+fi
+
 # put all arguments in a variable, to have original arguments before their transformation
 # by Mozilla
 export __SLIMER_ARGS="$@"
 
-"$SLIMERJSLAUNCHER" -app $SCRIPTDIR/application.ini -purgecaches -no-remote --envs "$LISTVAR" "$@"
+# launch slimerjs with firefox/xulrunner
+"$SLIMERJSLAUNCHER" -app $SCRIPTDIR/application.ini $PROFILE -no-remote --envs "$LISTVAR" "$@"
 
+if [ "$PROFILE_DIR" != "" ]; then
+    rm -rf $PROFILE_DIR
+fi

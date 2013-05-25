@@ -62,6 +62,7 @@ Options specific to SlimerJS
 -jsconsole                                     Supported        Open `the error console <https://developer.mozilla.org/en-US/docs/Error_Console>`_ that displays all javascript errors, warning, notices...
 -P name                                        Supported        Use the indicated profile
 -CreateProfile name                            Supported        Create a new profile
+-profile path                                  Supported        Use the given directory as a profile
 =============================================  ==============  ========================================================================
 
 
@@ -117,25 +118,21 @@ A profile is a directory where XulRunner/Firefox (and so SlimerJS), store many t
 - cookies
 - etc...
 
-There is always at least one profile, named "default", which is used each time you
-launch SlimerJS. It means that you reuse same data, cookies etc at each execution.
+By default, SlimerJS create a temporary profile each time you launch it. This profile
+is deleted at the end of the execution. It allows to launch several SlimerJS instances
+at the same time: they don't share same profile files.
 
-This can be a issue, since it doesn't match the behavior of PhantomJS. In the future,
-SlimerJS will create a temporary profile at each launch, to have a fresh configuration.
-
-If you want to launch multiple instance of SlimerJS, or if you don't want to share same
-preferences, cookies, data etc, you need to create new profiles.
-
-Just do 
+If you want to use a persistent profile (to reuse same preferences, same cookies, localstorage
+etc stored during a navigation), you have to create a specific profile and to indicate it.
 
 .. code-block:: bash
 
    slimerjs -CreateProfile myNewProfile
 
+It will create a directory in ``$HOME/.innophi/slimerjs/``.
 Then to use this new profile, use the ``-P`` parameter
 
 .. code-block:: bash
 
    slimerjs -P myNewProfile  myscript.js
-
 

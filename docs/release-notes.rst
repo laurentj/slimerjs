@@ -22,6 +22,12 @@ New API
 - Support of ``webpage.onCallback`` and ``window.callPhantom()``
 - Support of ``webpage.onError``
 
+Improvements
+------------
+
+- Issue #32: a new profile is created each time we launch SlimerJS, to not have preferences,
+  cookies or other data created by a previous launch. It is still possible to use a
+  permanent profile to keep data between two launchs.
 
 Fixed bugs
 ----------
@@ -50,7 +56,6 @@ implementation is planed in future releases.
 - no API to manage HTTP cookies, although cookies are supported (they are stored
   automatically)
 - no API to manage HTTP headers
-- no support of the ``window.callPhantom()`` function in web pages
 - no support of the navigation locking
 - no support of the ``webpage.offlineStorage*`` properties, although offlineStorage
   is supported natively and usable by a web page
@@ -65,5 +70,5 @@ You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob
 Known issues
 ------------
 
-- See the github page...
+- See `the github page <https://github.com/laurentj/slimerjs/issues>`_ ...
 
