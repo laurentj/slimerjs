@@ -143,7 +143,6 @@ function prepareLoader(fileURI, dirFile) {
                 let file = getFile(path);
                 pathsNsFile[idx] = file;
                 loader.mapping.push([file.path, Services.io.newFileURI(file).spec]);
-                loader.mapping.sort(function(a, b) { return b[0].length - a[0].length });
                 arr[idx] = file.path;
             },
             // because of a regression in proxies in Firefox 20, we should implement
