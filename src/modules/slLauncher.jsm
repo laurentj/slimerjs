@@ -145,6 +145,11 @@ function prepareLoader(fileURI, dirFile) {
                 loader.mapping.push([file.path, Services.io.newFileURI(file).spec]);
                 loader.mapping.sort(function(a, b) { return b[0].length - a[0].length });
                 arr[idx] = file.path;
+            },
+            // because of a regression in proxies in Firefox 20, we should implement
+            // the get() function. see https://bugzilla.mozilla.org/show_bug.cgi?id=876114
+            get : function(arr, idx) {
+                return arr[idx];
             }
         }
     )
