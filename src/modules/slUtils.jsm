@@ -3,9 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 "use strict";
-var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "getMozFile", "readSyncStringFromFile"];
+var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "getMozFile", "readSyncStringFromFile", "getWebpageFromContentWindow"];
 
-
+const Cc = Components.classes;
+const Ci = Components.interfaces;
 
 function dumpex(ex, msg) {
     if (msg)
@@ -51,8 +52,8 @@ function getMozFile(path, basepath) {
     }
 
     if (first.match(/\:$/) || first == '') {
-        file = Components.classes['@mozilla.org/file/local;1']
-                  .createInstance(Components.interfaces.nsILocalFile);
+        file = Cc['@mozilla.org/file/local;1']
+                  .createInstance(Ci.nsILocalFile);
         file.initWithPath(path);
         return file;
     }
@@ -72,10 +73,10 @@ function getMozFile(path, basepath) {
 
 
 function readSyncStringFromFile (file) {
-    let fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
-                   createInstance(Components.interfaces.nsIFileInputStream);
-    let cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].
-                  createInstance(Components.interfaces.nsIConverterInputStream);
+    let fstream = Cc["@mozilla.org/network/file-input-stream;1"].
+                   createInstance(Ci.nsIFileInputStream);
+    let cstream = Cc["@mozilla.org/intl/converter-input-stream;1"].
+                  createInstance(Ci.nsIConverterInputStream);
     fstream.init(file, -1, 0, 0);
     cstream.init(fstream, "UTF-8", 0, 0);
     let data = '';
@@ -88,4 +89,43 @@ function readSyncStringFromFile (file) {
     }
     cstream.close(); // this closes fstream
     return data;
+}
+
+
+function getWebpageFromContentWindow(contentWin) {
+    try {
+        var browser= contentWin.QueryInterface(Ci.nsIInterfaceRequestor)
+                         .getInterface(Ci.nsIWebNavigation)
+                         .QueryInterface(Ci.nsIDocShell)
+                         .chromeEventHandler;
+        if (browser.getAttribute('id') != 'webpage')
+            return null;
+
+        if (browser.ownerDocument.documentElement.getAttribute("windowtype") != 'slimerpage') {
+            return null;
+        }
+
+        return browser.webpage;
+        /*
+        let win = contentWin.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                        .getInterface(Components.interfaces.nsIWebNavigation)
+                        .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+                        .rootTreeItem
+                        .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                        .getInterface(Components.interfaces.nsIDOMWindow);
+
+        let doc = win.document;
+        if (doc.documentElement.getAttribute("windowtype") != 'slimerpage') {
+            return null;
+        }
+
+        let webpageElement = doc.getElementById('webpage');
+        if (!webpageElement) {
+            return null;
+        }
+        return webpageElement.webpage;*/
+    }
+    catch(e) {
+        return null;
+    }
 }

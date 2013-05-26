@@ -10,6 +10,7 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
+Cu.import("resource://slimerjs/slUtils.jsm");
 
 function Prompter() {
     // Note that EmbedPrompter clones this implementation.
@@ -477,28 +478,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
     },
 
     _findWebPage : function () {
-        try {
-            let win = this.domWin.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                    .getInterface(Components.interfaces.nsIWebNavigation)
-                    .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
-                    .rootTreeItem
-                    .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                    .getInterface(Components.interfaces.nsIDOMWindow);
-
-            let doc = win.document;
-            if (doc.documentElement.getAttribute("windowtype") != 'slimerpage') {
-                return null;
-            }
-
-            let webpageElement = doc.getElementById('webpage');
-            if (!webpageElement) {
-                return null;
-            }
-            return webpageElement.webpage;
-        }
-        catch(e) {
-            return null;
-        }
+        return getWebpageFromContentWindow(this.domWin)
     },
 
     /*
