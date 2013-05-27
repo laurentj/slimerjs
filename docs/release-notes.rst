@@ -33,6 +33,8 @@ Fixed bugs
 ----------
 
 - when we launched SlimerJS from a symbolic link, there was an error "application.ini path not recognized"
+- issue #15: Slimerjs freezed on JS errors, when calling ``webpage.evaluate()``. A default error handler
+  is used now.
 
 Fixed PhantomJS conformance issues
 ----------------------------------
