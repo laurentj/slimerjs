@@ -12,9 +12,14 @@ const Ci = Components.interfaces;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/addon-sdk/toolkit/loader.js'); //Sandbox, Require, main, Module, Loader
 Cu.import('resource://slimerjs/slConsole.jsm');
+Cu.import('resource://slimerjs/slUtils.jsm');
 
 var windowMediator = Cc["@mozilla.org/appshell/window-mediator;1"]
                      .getService(Ci.nsIWindowMediator);
+
+var fileHandler = Cc["@mozilla.org/network/protocol;1?name=file"]
+                     .getService(Ci.nsIFileProtocolHandler)
+
 var mainSandbox = null;
 var mainLoader = null;
 
@@ -75,7 +80,7 @@ var slLauncher = {
     }
 }
 
-function getFile(path) {
+function getFile(path, isDir) {
     let file = Cc['@mozilla.org/file/local;1']
               .createInstance(Ci.nsILocalFile);
     try {
@@ -87,11 +92,19 @@ function getFile(path) {
     if (!file.exists()) {
         throw Error("Modules path "+path+" does not exists");
     }
-    if (!file.isDirectory()) {
+    if (isDir && !file.isDirectory()) {
         throw Error("Modules path "+path+" is not a directory");
     }
     return file;
 }
+
+const nativeModules = {
+    'fs' : 'sdk/io/file',
+    'webpage': 'slimer-sdk/webpage',
+    'net-log' : 'slimer-sdk/net-log',
+    'webserver' : 'webserver',
+    'system' : 'system',
+};
 
 /**
  * prepare the module loader
@@ -140,7 +153,7 @@ function prepareLoader(fileURI, dirFile) {
                     arr[idx] = path;
                     return;
                 }
-                let file = getFile(path);
+                let file = getFile(path, true);
                 pathsNsFile[idx] = file;
                 loader.mapping.push([file.path, Services.io.newFileURI(file).spec]);
                 arr[idx] = file.path;
@@ -164,6 +177,14 @@ function prepareLoader(fileURI, dirFile) {
     }
     pathsMapping[dirPath] = dirURI;
 
+    // list of extensions and their compiler
+    var extensions = {
+        '.js': function(module, filename) {
+            let content = readSyncStringFromFile(getFile(filename));
+            return module._compile(content, filename);
+        }
+    }
+
     // will contain all global objects/function/variable accessible from all
     // modules.
     var globalProperties = { }
@@ -185,9 +206,10 @@ function prepareLoader(fileURI, dirFile) {
         // this function should return the true id of the module.
         // The returned id should be an id or an absolute path of a file
         resolve: function(id, requirer) {
-            if (id == 'fs') {
-                return 'sdk/io/file';
-            }
+
+            if (id in nativeModules)
+                return nativeModules[id];
+
             if (id == 'chrome' || id.indexOf('@loader/') === 0) {
                 if (requirer.indexOf('sdk/') === 0
                     || requirer.indexOf('slimer-sdk/') === 0) {
@@ -200,17 +222,6 @@ function prepareLoader(fileURI, dirFile) {
                 else if (id.indexOf('@loader/') === 0)
                     throw Error("Unknown "+ id +" module");
             }
-
-            if (id == 'webpage') {
-                return 'slimer-sdk/webpage';
-            }
-
-            if (id == 'net-log') {
-                return 'slimer-sdk/net-log';
-            }
-
-            if (id == 'webserver' || id == 'system')
-                return id;
 
             // let's resolve other id module as usual
             id = Loader.resolve(id, requirer);
@@ -264,6 +275,12 @@ function prepareLoader(fileURI, dirFile) {
                                     value: globalProperties,
                                     writable:false,
                                   });
+            Object.defineProperty(require, 'extensions',
+                                  {
+                                    enumerable:true,
+                                    value: extensions,
+                                    writable:false,
+                                  });
 
             // we create the prototype of the new sandbox.
             // we don't import directly require and module.exports
@@ -287,7 +304,31 @@ function prepareLoader(fileURI, dirFile) {
             });
             Object.defineProperties(sandbox, Loader.descriptor(proto));
 
-            Loader.load(loader, module, sandbox)
+            module._compile = function (content, filename) {
+                Loader.load(loader, module, sandbox, content);
+            }
+
+            if (module.uri.indexOf('file://') == -1) {
+                Loader.load(loader, module, sandbox);
+                return;
+            }
+            let file;
+            try {
+                file = fileHandler.getFileFromURLSpec(module.uri);
+            }
+            catch(e) {
+                dump("err for "+module.uri+" :"+e+"\n")
+                throw e;
+            }
+            let filename = file.leafName;
+            let source = '';
+            for(let ext in extensions) {
+                let idx = filename.lastIndexOf(ext);
+                if (idx == -1 || idx != (filename.length - ext.length)) {
+                    continue;
+                }
+                extensions[ext](module, file.path);
+            }
         }
     });
 

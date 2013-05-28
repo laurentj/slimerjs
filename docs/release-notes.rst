@@ -15,6 +15,7 @@ New API
 - Implementation of ``require.paths``, a list of paths where modules can be found (CommonJS modules 1.1 specification)
 - Implementation of ``require.globals``, an object which can contain properties that will be
   shared between modules as global variables/functions/objects.
+- Implementation of ``require.extensions``, to declare specific loaders corresponding to some file extensions
 - Implementation of ``phantom.defaultPageSettings``. Note that settings are not supported
   yet by the webpage module.
 - callbacks ``webpage.onLoadStarted`` and  ``webpage.onLoadFinished`` receive two additionnal
