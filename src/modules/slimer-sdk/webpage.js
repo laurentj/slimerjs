@@ -506,13 +506,7 @@ function create() {
             browser.goForward();
         },
 
-        get navigationLocked() {
-            throw new Error("webpage.navigationLocked not implemented")
-        },
-
-        set navigationLocked(val) {
-            throw new Error("webpage.navigationLocked not implemented")
-        },
+        navigationLocked : false,
 
         reload : function() {
             browser.reload();
@@ -1232,13 +1226,7 @@ function create() {
         //This callback is invoked when the page starts the loading. There is no argument passed to the callback.
         onLoadStarted: null,
 
-        get onNavigationRequested() {
-            throw new Error("webpage.onNavigationRequested not implemented")
-        },
-
-        set onNavigationRequested(callback) {
-            throw new Error("webpage.onNavigationRequested not implemented")
-        },
+        onNavigationRequested: null,
 
         // This callback is invoked when a new child window (but not deeper descendant windows) is created by the page, e.g. using window.open
         onPageCreated: null,
@@ -1284,8 +1272,17 @@ function create() {
                 this.onLoadStarted(url, isFrame);
         },
 
-        navigationRequested: function(url, navigationType, navigationLocked, isMainFrame) {
-            throw new Error("webpage.navigationRequested not implemented");
+        /**
+         * @param string url  the url of the requested page
+         * @param string navigationType a string indicated the origin:
+         *          "Undefined" "LinkClicked" "FormSubmitted" "BackOrForward" "Reload" "FormResubmitted" "Other"
+         * @param boolean willNavigate  true if the navigation is not locked
+         * @param boolean isMainFrame true if it comes from the mainFrame
+         */
+
+        navigationRequested: function(url, navigationType, willNavigate, isMainFrame) {
+            if (this.onNavigationRequested)
+                this.onNavigationRequested(url, navigationType, willNavigate, isMainFrame)
         },
 
         rawPageCreated: function(page) {

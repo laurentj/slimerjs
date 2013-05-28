@@ -18,4 +18,9 @@ component {5598347d-7573-47b9-ae3c-a9c4e3f0e56b} components/nsPrompter.js
 contract @mozilla.org/embedcomp/prompt-service;1 {5598347d-7573-47b9-ae3c-a9c4e3f0e56b}
 
 
+component {5a5f9d66-53b5-4541-8225-cae868541bc2} components/navigation.js
+contract @slimerjs.org/navigation;1 {5a5f9d66-53b5-4541-8225-cae868541bc2}
+category content-policy m-slimerjsnav @slimerjs.org/navigation;1
+
+
 manifest components/httpd.manifest

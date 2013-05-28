@@ -3,7 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 "use strict";
-var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "getMozFile", "readSyncStringFromFile", "getWebpageFromContentWindow"];
+var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "getMozFile", "readSyncStringFromFile",
+                        "getWebpageFromContentWindow", "getWebpageFromDocShell"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -94,18 +95,6 @@ function readSyncStringFromFile (file) {
 
 function getWebpageFromContentWindow(contentWin) {
     try {
-        var browser= contentWin.QueryInterface(Ci.nsIInterfaceRequestor)
-                         .getInterface(Ci.nsIWebNavigation)
-                         .QueryInterface(Ci.nsIDocShell)
-                         .chromeEventHandler;
-        if (browser.getAttribute('id') != 'webpage')
-            return null;
-
-        if (browser.ownerDocument.documentElement.getAttribute("windowtype") != 'slimerpage') {
-            return null;
-        }
-
-        return browser.webpage;
         /*
         let win = contentWin.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                         .getInterface(Components.interfaces.nsIWebNavigation)
@@ -114,18 +103,39 @@ function getWebpageFromContentWindow(contentWin) {
                         .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                         .getInterface(Components.interfaces.nsIDOMWindow);
 
-        let doc = win.document;
-        if (doc.documentElement.getAttribute("windowtype") != 'slimerpage') {
+        */
+        var docShell = contentWin.top.QueryInterface(Ci.nsIInterfaceRequestor)
+                         .getInterface(Ci.nsIWebNavigation)
+                         .QueryInterface(Ci.nsIDocShell);
+        return getWebpageFromDocShell(docShell);
+    }
+    catch(e) {
+dump("error getWebpageFromContentWindow: "+e+"\n")
+        return null;
+    }
+}
+
+function getWebpageFromDocShell(docShell) {
+    try {
+        var browser= docShell.chromeEventHandler;
+        if (!browser) {
+    dump("browset is null\n")
+            return null;
+        }
+        if (browser.getAttribute('id') != 'webpage') {
+            dump("browset: "+browser.localName+"\n")
             return null;
         }
 
-        let webpageElement = doc.getElementById('webpage');
-        if (!webpageElement) {
+        if (browser.ownerDocument.documentElement.getAttribute("windowtype") != 'slimerpage') {
+            dump("browset: not in slimerpage\n")
             return null;
         }
-        return webpageElement.webpage;*/
+dump("browset: ok\n")
+        return browser.webpage;
     }
     catch(e) {
+dump("error getWebpageFromDocshell: "+e+"\n")
         return null;
     }
 }
