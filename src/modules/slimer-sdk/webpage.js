@@ -343,7 +343,12 @@ function create() {
         clipRect : null,
         framePath : [],
         childWindows : [],
-        settings: heritage.mix({}, slConfiguration.getDefaultWebpageConfig())
+        settings: {}
+    }
+
+    let defaultSettings = slConfiguration.getDefaultWebpageConfig();
+    for (let p in defaultSettings) {
+        privProp.settings[p] = defaultSettings[p]
     }
 
     function getCurrentFrame() {
