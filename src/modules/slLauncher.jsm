@@ -104,6 +104,8 @@ const nativeModules = {
     'net-log' : 'slimer-sdk/net-log',
     'webserver' : 'webserver',
     'system' : 'system',
+    'vm':'slimer-sdk/vm',
+    'path':'slimer-sdk/path',
 };
 
 /**
