@@ -129,7 +129,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>framesCount                         </td><td>Implemented</td></tr>
     <tr><td>framesName                          </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented</td></tr>
-    <tr><td>navigationLocked                    </td><td></td></tr>
+    <tr><td>navigationLocked                    </td><td>Implemented</td></tr>
     <tr><td>offlineStoragePath                  </td><td></td></tr>
     <tr><td>offlineStorageQuota                 </td><td></td></tr>
     <tr><td>ownsPages                           </td><td></td></tr>
@@ -217,7 +217,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented<br>SlimerJS only: the callback receives 3 parameters: the status ("success" or "fail"), the url and true if this is a frame that is loaded</td></tr>
     <tr><td>onLoadStarted                       </td><td>Implemented<br>SlimerJS only: the callback receives 2 parameters: the url and true if this is a frame that is loaded</td></tr>
-    <tr><td>onNavigationRequested               </td><td></td></tr>
+    <tr><td>onNavigationRequested               </td><td>Implemented.<br>SlimerJS issue: navigationType is always "Undefined"</td></tr>
     <tr><td>onPageCreated                       </td><td>Implemented</td></tr>
     <tr><td>onPrompt                            </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>

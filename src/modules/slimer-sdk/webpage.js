@@ -541,7 +541,12 @@ function create() {
             if (browser) {
                 // don't recreate a browser if already opened.
                 netLog.registerBrowser(browser, options);
-                browser.loadURI(url);
+                try {
+                    browser.loadURI(url);
+                } catch(e) {
+                    // if content is not loaded because of navigation locked,
+                    // we have an exception;
+                }
                 return deferred.promise;
             }
 
@@ -552,7 +557,12 @@ function create() {
                 browser.stop();
                 me.initialized();
                 netLog.registerBrowser(browser, options);
-                browser.loadURI(url);
+                try {
+                    browser.loadURI(url);
+                } catch(e) {
+                    // if content is not loaded because of navigation locked,
+                    // we have an exception;
+                }
             });
             // to catch window.open()
             win.QueryInterface(Ci.nsIDOMChromeWindow)

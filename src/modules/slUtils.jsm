@@ -110,7 +110,6 @@ function getWebpageFromContentWindow(contentWin) {
         return getWebpageFromDocShell(docShell);
     }
     catch(e) {
-dump("error getWebpageFromContentWindow: "+e+"\n")
         return null;
     }
 }
@@ -119,23 +118,18 @@ function getWebpageFromDocShell(docShell) {
     try {
         var browser= docShell.chromeEventHandler;
         if (!browser) {
-    dump("browset is null\n")
             return null;
         }
         if (browser.getAttribute('id') != 'webpage') {
-            dump("browset: "+browser.localName+"\n")
             return null;
         }
 
         if (browser.ownerDocument.documentElement.getAttribute("windowtype") != 'slimerpage') {
-            dump("browset: not in slimerpage\n")
             return null;
         }
-dump("browset: ok\n")
         return browser.webpage;
     }
     catch(e) {
-dump("error getWebpageFromDocshell: "+e+"\n")
         return null;
     }
 }

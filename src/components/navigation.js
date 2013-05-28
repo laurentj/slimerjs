@@ -3,7 +3,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 const Cu = Components.utils;
-dump("Navigation file loaded\n")
+
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://slimerjs/slUtils.jsm");
@@ -17,46 +17,7 @@ function makeLoadFlag(type, flags) { return type | (flags << 16);}
 const LOAD_LINK = makeLoadFlag(IDS.LOAD_CMD_NORMAL, IWN.LOAD_FLAGS_IS_LINK);
 const LOAD_HISTORY = makeLoadFlag(IDS.LOAD_CMD_HISTORY, IWN.LOAD_FLAGS_NONE);
 
-
-dump("LOAD_LINK="+LOAD_LINK+"\n")
-/*
-
-    LOAD_NORMAL = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_NONE),
-    LOAD_NORMAL_REPLACE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_REPLACE_HISTORY),
-    LOAD_NORMAL_EXTERNAL = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_FROM_EXTERNAL),
-    LOAD_NORMAL_BYPASS_CACHE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE),
-    LOAD_NORMAL_BYPASS_PROXY = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_BYPASS_PROXY),
-    LOAD_NORMAL_BYPASS_PROXY_AND_CACHE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE | nsIWebNavigation::LOAD_FLAGS_BYPASS_PROXY),
-
-    LOAD_LINK = makeLoadFlag(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_IS_LINK),
-
-    LOAD_REFRESH = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_IS_REFRESH),
-    LOAD_BYPASS_HISTORY = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_BYPASS_HISTORY),
-    LOAD_STOP_CONTENT = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_STOP_CONTENT),
-    LOAD_STOP_CONTENT_AND_REPLACE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_STOP_CONTENT | nsIWebNavigation::LOAD_FLAGS_REPLACE_HISTORY),
-    LOAD_REPLACE_BYPASS_CACHE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, nsIWebNavigation::LOAD_FLAGS_REPLACE_HISTORY | nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE),
-    LOAD_ERROR_PAGE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_NORMAL, LOAD_FLAGS_ERROR_PAGE)
-
-
-
-    LOAD_RELOAD_NORMAL = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_RELOAD, nsIWebNavigation::LOAD_FLAGS_NONE),
-    LOAD_RELOAD_BYPASS_CACHE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_RELOAD, nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE),
-    LOAD_RELOAD_BYPASS_PROXY = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_RELOAD, nsIWebNavigation::LOAD_FLAGS_BYPASS_PROXY),
-    LOAD_RELOAD_ALLOW_MIXED_CONTENT = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_RELOAD, nsIWebNavigation::LOAD_FLAGS_ALLOW_MIXED_CONTENT | nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE),
-    LOAD_RELOAD_BYPASS_PROXY_AND_CACHE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_RELOAD, nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE | nsIWebNavigation::LOAD_FLAGS_BYPASS_PROXY),
-    LOAD_RELOAD_CHARSET_CHANGE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_RELOAD, nsIWebNavigation::LOAD_FLAGS_CHARSET_CHANGE),
-
-    LOAD_PUSHSTATE = MAKE_LOAD_TYPE(nsIDocShell::LOAD_CMD_PUSHSTATE, nsIWebNavigation::LOAD_FLAGS_NONE),
-*/
-
-
-
-
-
-
-
 function Navigation() {
-dump("Navigation loaded\n")
 }
 
 Navigation.prototype = {
@@ -70,13 +31,11 @@ Navigation.prototype = {
     shouldLoad : function(aContentType, aContentLocation, aRequestOrigin, aContext, aMimeTypeGuess, aExtra) {
         let result = Ci.nsIContentPolicy.ACCEPT;
 
-dump("-------Navigation shouldLoad "+aContentLocation.spec+"\n")
         // ignore content that is not a document
         if (Ci.nsIContentPolicy.TYPE_DOCUMENT != aContentType
             && Ci.nsIContentPolicy.TYPE_SUBDOCUMENT != aContentType) {
           return result;
         }
-dump("Navigation doc ok\n")
 
         // ignore content that is loaded from chrome, about, resource protocols etc..
         if (aContentLocation.scheme != 'http'
@@ -84,29 +43,23 @@ dump("Navigation doc ok\n")
             && aContentLocation.scheme != 'ftp'
             && aContentLocation.scheme != 'file'
             ){
-dump("Navigation ignore scheme \n")
             return result;
         }
-            
-dump("Navigation scheme ok\n")
 
         //------ retrieve the corresponding webpage object
         let [webpage, navtype] = this._findWebpage(aContext);
         if (!webpage)
             return result;
-dump("Navigation webpage \n")
-        // call the navigationRequest callback
 
+        // call the navigationRequest callback
         webpage.navigationRequested(aContentLocation.spec, navtype, !webpage.navigationLocked,
                                     (Ci.nsIContentPolicy.TYPE_DOCUMENT == aContentType));
-dump("Navigation navigationRequested ok\n")
+
 
         // if the navigation request is blocked, refuse the content
         if (webpage.navigationLocked) {
             result = Ci.nsIContentPolicy.REJECT_REQUEST;
-            dump("Navigation rejected\n")
         }
-        else dump("Navigation accepted\n")
         return result;
     },
 
@@ -133,19 +86,19 @@ dump("Navigation navigationRequested ok\n")
         // for top window or an html <(i)frame> ...
         try {
             let node = aContext.QueryInterface(Ci.nsIDOMElement);
-            let docshell = this._getDocShell(node.contentWindow.top);
-            let navType = this._getNavType(docshell);
+            let docshell = this._getDocShell(node.contentWindow);
 
-            if (node.localName == 'browser'
-                || node.localName == 'iframe'
-                || node.localName == 'frame') {
-                dump("_findWebpage browser "+node.localName+" "+(node.webpage?"wb":"no wb")+"\n");
-                return [(node.webpage?node.webpage: null), navType];
+            if (node.localName != 'browser') {
+                // this is an html frame : retrieve the corresponding browser
+                node = docshell.chromeEventHandler;
+                if (!node) {
+                   return [null, null];
+                }
+                docshell = node.docShell;
             }
-            dump("_findWebpage from defaultview??\n");
 
-            // FIXME: is this an <iframe> from the content or a XUL iframe?
-            return this._getWebPageAndNavType(node.ownerDocument.defaultView);
+            let navType = this._getNavType(docshell);
+            return [(node.webpage?node.webpage: null), navType];
         }
         catch(e){}
 
@@ -153,15 +106,12 @@ dump("Navigation navigationRequested ok\n")
         // FIXME do we receive always a chrome window?
         try {
             aContext = aContext.QueryInterface(Ci.nsIDOMWindow);
-            dump("_findWebpage win\n");
             if (aContext instanceof Ci.nsIDOMChromeWindow) {
-                dump("_findWebpage chromewin\n");
                 let browser = aContext.document.getElementById('webpage');
                 if (browser) {
                     let navType = this._getNavType(browser.docShell);
                     return [browser.webpage, navType];
                 }
-                dump("_findWebpage chromewin has no browser\n");
                 return [null, null];
             }
             else {
@@ -174,11 +124,9 @@ dump("Navigation navigationRequested ok\n")
         let doc;
         try {
             doc = aContext.QueryInterface(Ci.nsIDOMDocument);
-            dump("_findWebpage doc\n");
             return this._getWebPageAndNavType(doc.defaultView);
         }
         catch(e){}
-        dump("_findWebpage not found\n");
         return [null, null];
     },
 
@@ -189,7 +137,6 @@ dump("Navigation navigationRequested ok\n")
                         .QueryInterface(IDS)
         }
         catch(e) {
-            dump("_getDocShell error: "+e+"\n");
             return null;
         }
     },
@@ -204,7 +151,11 @@ dump("Navigation navigationRequested ok\n")
     },
     _getNavType : function(docshell) {
         let navType = "Undefined";
-        dump("loadType="+docshell.loadType+"\n")
+
+        // FIXME it seems that the loadType on the docshell is not updated
+        // at this time, and we have the value of the previous loading.
+        // so the value of navtype is not correct. We should not use it :-/
+        /*dump("loadType="+docshell.loadType+"\n")
         if (docshell.loadType & IDS.LOAD_CMD_RELOAD) {
             navType = "Reload";
         }
@@ -217,7 +168,7 @@ dump("Navigation navigationRequested ok\n")
         }
         else if (docshell.loadType & IDS.LOAD_CMD_NORMAL) {
             navType = "Other"
-        }
+        }*/
         //FIXME: "FormSubmitted" "FormResubmitted"
 
         return navType;

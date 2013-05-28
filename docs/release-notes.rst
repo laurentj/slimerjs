@@ -21,6 +21,7 @@ New API
   parameters: the url that is loaded, and a boolean true if the loaded page is in a frame.
 - Support of ``webpage.onCallback`` and ``window.callPhantom()``
 - Support of ``webpage.onError``
+- Support of ``webpage.onNavigationRequested`` and ``webpage.navigationLocked``
 
 Improvements
 ------------
@@ -58,7 +59,6 @@ implementation is planed in future releases.
 - no API to manage HTTP cookies, although cookies are supported (they are stored
   automatically)
 - no API to manage HTTP headers
-- no support of the navigation locking
 - no support of the ``webpage.offlineStorage*`` properties, although offlineStorage
   is supported natively and usable by a web page
 - no API to manage child windows
