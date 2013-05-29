@@ -98,6 +98,32 @@ function getFile(path, isDir) {
     return file;
 }
 
+/**
+ * @param string filename
+ * @param base nsIFile
+ */
+function isFile(filename, base) {
+    try {
+        // see if we have an absolute path
+        let file;
+        if (base) {
+            file = base.clone();
+            file.appendRelativePath(filename);
+        }
+        else {
+            file = Cc['@mozilla.org/file/local;1']
+                        .createInstance(Ci.nsILocalFile);
+            file.initWithPath(filename);
+        }
+        if (file.exists()) {
+            return file.path;
+        }
+    }
+    catch(e){
+    }
+    return false;
+}
+
 const nativeModules = {
     'fs' : 'sdk/io/file',
     'webpage': 'slimer-sdk/webpage',
@@ -107,6 +133,7 @@ const nativeModules = {
     'vm':'slimer-sdk/vm',
     'path':'slimer-sdk/path',
 };
+
 
 /**
  * prepare the module loader
@@ -187,6 +214,18 @@ function prepareLoader(fileURI, dirFile) {
         }
     }
 
+    function findFileExtension(id, baseFile) {
+        let f = isFile(id, baseFile)
+        if (f)
+            return f;
+        for(let ext in extensions) {
+            f = isFile(id+ext, baseFile);
+            if (f)
+                return f;
+        }
+        return null;
+    }
+
     // will contain all global objects/function/variable accessible from all
     // modules.
     var globalProperties = { }
@@ -233,32 +272,20 @@ function prepareLoader(fileURI, dirFile) {
                 return id;
             }
 
-            let idjs = id.substr(-3) === '.js' ? id : id + '.js';
             // if requirer is an absolute path, the id is then an absolute path after Loader.resolve
-            try {
-                // see if we have an absolute path
-                let file = Cc['@mozilla.org/file/local;1']
-                            .createInstance(Ci.nsILocalFile);
-                file.initWithPath(idjs);
-                if (file.exists()) {
-                    return idjs;
-                }
-            }
-            catch(e){}
+            let realId = findFileExtension(id);
+            if (realId)
+                return realId;
 
             // this is not an absolute path, try to resolve the id
             // against all registered path
             for (let i=0; i < pathsNsFile.length;i++) {
-                let f = pathsNsFile[i];
-                if (!f)
+                let dir = pathsNsFile[i];
+                if (!dir)
                     continue;
-                f = f.clone();
-                try {
-                    f.appendRelativePath(idjs);
-                    if (f.exists())
-                        return f.path;
-                }
-                catch(e) {}
+                let file = findFileExtension(id, dir);
+                if (file)
+                    return file;
             }
             return id;
         },
