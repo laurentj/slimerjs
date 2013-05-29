@@ -1,8 +1,8 @@
 .. index:: script, execution, javascript environment
 
-================
-Script execution
-================
+============================
+Script execution and modules
+============================
 
 The main script
 ===============
