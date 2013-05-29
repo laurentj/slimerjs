@@ -202,7 +202,8 @@ function prepareLoader(fileURI, dirFile) {
         '@loader/': 'resource://slimerjs/@loader',
         'chrome': 'resource://slimerjs/@chrome',
         'webserver' : 'resource://slimerjs/webserver.jsm',
-        'system' : 'resource://slimerjs/system.jsm'
+        'system' : 'resource://slimerjs/system.jsm',
+        'coffee-script/':'resource://slimerjs/coffee-script/lib/coffee-script/',
     }
     pathsMapping[dirPath] = dirURI;
 
@@ -365,6 +366,11 @@ function prepareLoader(fileURI, dirFile) {
 }
 
 function loadMainScript(loader, sandbox) {
+    // first load the bootstrap module
+    let bsModule = Loader.Module('slimer-sdk/bootstrap', 'resource://slimerjs/slimer-sdk/bootstrap.js');
+    loader.load(loader, bsModule);
+
+    // load the main module
     let id = 'main';
     let uri = Loader.resolveURI(id, loader.mapping);
     let module = loader.main = loader.modules[uri] = Loader.Module(id, uri);

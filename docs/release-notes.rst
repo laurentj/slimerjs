@@ -27,6 +27,7 @@ New API
 Improvements
 ------------
 
+- Issue #36: Support of modules written with the Coffee-Script language
 - Issue #32: a new profile is created each time we launch SlimerJS, to not have preferences,
   cookies or other data created by a previous launch. It is still possible to use a
   permanent profile to keep data between two launchs.
@@ -67,6 +68,7 @@ implementation is planed in future releases.
 - no support of settings on the webpage object
 - ``webpage.open()`` only supports an url and a callback as parameter
 - no support of file uploading in web page (``webpage.uploadFile()``, ``webpage.onFilePicker``..)
+- no support of Ghost Driver
 
 You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_ to know details.
 
