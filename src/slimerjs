@@ -138,6 +138,10 @@ export __SLIMER_ARGS="$@"
 # launch slimerjs with firefox/xulrunner
 "$SLIMERJSLAUNCHER" -app $SCRIPTDIR/application.ini $PROFILE -no-remote --envs "$LISTVAR" "$@"
 
+EXITCODE=$?
+
 if [ "$PROFILE_DIR" != "" ]; then
     rm -rf $PROFILE_DIR
 fi
+
+exit $EXITCODE

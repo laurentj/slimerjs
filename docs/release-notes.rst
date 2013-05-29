@@ -37,6 +37,7 @@ Fixed bugs
 - when we launched SlimerJS from a symbolic link, there was an error "application.ini path not recognized"
 - issue #15: Slimerjs freezed on JS errors, when calling ``webpage.evaluate()``. A default error handler
   is used now.
+- issue #36: Exit code of Firefox/Xulrunner should be used as exit code of the slimerjs shell script
 
 Fixed PhantomJS conformance issues
 ----------------------------------
