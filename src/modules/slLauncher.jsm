@@ -212,6 +212,10 @@ function prepareLoader(fileURI, dirFile) {
         '.js': function(module, filename) {
             let content = readSyncStringFromFile(getFile(filename));
             return module._compile(content, filename);
+        },
+        '.json': function(module, filename) {
+            let content = readSyncStringFromFile(getFile(filename));
+            module.exports = JSON.parse(content);
         }
     }
 
