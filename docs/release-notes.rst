@@ -27,7 +27,7 @@ New API
 Improvements
 ------------
 
-- Issue #36: Support of modules written with the Coffee-Script language
+- Issue #36: Support of scripts and modules written with the Coffee-Script language
 - Issue #32: a new profile is created each time we launch SlimerJS, to not have preferences,
   cookies or other data created by a previous launch. It is still possible to use a
   permanent profile to keep data between two launchs.

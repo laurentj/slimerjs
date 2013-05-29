@@ -365,14 +365,23 @@ function prepareLoader(fileURI, dirFile) {
     return loader;
 }
 
+function resolveMainURI(mapping) {
+    let count = mapping.length, index = 0;
+    while (index < count) {
+        let [ path, uri ] = mapping[index ++];
+        if (path == 'main')
+            return uri;
+    }
+    return null;
+}
+
 function loadMainScript(loader, sandbox) {
     // first load the bootstrap module
     let bsModule = Loader.Module('slimer-sdk/bootstrap', 'resource://slimerjs/slimer-sdk/bootstrap.js');
     loader.load(loader, bsModule);
 
     // load the main module
-    let id = 'main';
-    let uri = Loader.resolveURI(id, loader.mapping);
-    let module = loader.main = loader.modules[uri] = Loader.Module(id, uri);
+    let uri =resolveMainURI(loader.mapping);
+    let module = loader.main = loader.modules[uri] = Loader.Module('main', uri);
     loader.load(loader, module);
 }
