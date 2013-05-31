@@ -15,7 +15,7 @@ Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 
 const fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
-
+const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
 const {
     getScreenshotCanvas, setAuthHeaders, removeAuthPrompt,
@@ -161,6 +161,47 @@ function create() {
     }
 
     /**
+     * returns the content of the document
+     * @param nsIDOMWindow window
+     * @param nsIDocShell docShell
+     * @param boolean onlyPlainText only the text content
+     */
+    function getWindowContent(window, docShell, onlyPlainText) {
+        if (!docShell) {
+            docShell = window.QueryInterface(Ci.nsIInterfaceRequestor)
+                         .getInterface(Ci.nsIWebNavigation)
+                         .QueryInterface(Ci.nsIDocShell)
+        }
+        let channel = docShell.currentDocumentChannel;
+        let doc = window.document;
+        if (channel.contentType != "text/html") {
+            // for text document, the DOMDocument content
+            // a <pre> element with the text in it
+            if (channel.contentType.indexOf("text/") === 0)
+                return doc.body.getElementsByTagName('pre')[0].textContent;
+            // FIXME retrieve content for other resource type
+            return null
+        }
+        else {
+            // this is an HTML document, use the document encoder
+            // to retrieve the text version of the DOM
+            let encoder;
+            if (onlyPlainText) {
+                encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
+                            .createInstance(Ci.nsIDocumentEncoder);
+                encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly | de.OutputRaw);
+            }
+            else {
+                encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
+                            .createInstance(Ci.nsIDocumentEncoder);
+                encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
+            }
+            encoder.setNode(doc);
+            return encoder.encodeToString();
+        }
+    }
+
+    /**
      * an observer for the Observer Service.
      * It observes console events.
      */
@@ -254,24 +295,27 @@ function create() {
                 }
             },
             onLoadFinished: function(url, success){
-                // listener called by the window.callPhantom function
-                browser.contentWindow.addEventListener("callphantom", function(event) {
-                    if (webpage.onCallback) {
-                        try {
-                            browser.contentWindow.wrappedJSObject.__phantomCallbackResult = webpage.onCallback(event.detail)
-                            browser.contentWindow.wrappedJSObject.__phantomCallbackError = null;
-                        }catch(e){
-                            browser.contentWindow.wrappedJSObject.__phantomCallbackError = e;
+                let channel = browser.docShell.currentDocumentChannel;
+                if (channel.contentType == "text/html") {
+                    // listener called by the window.callPhantom function
+                    browser.contentWindow.addEventListener("callphantom", function(event) {
+                        if (webpage.onCallback) {
+                            try {
+                                browser.contentWindow.wrappedJSObject.__phantomCallbackResult = webpage.onCallback(event.detail)
+                                browser.contentWindow.wrappedJSObject.__phantomCallbackError = null;
+                            }catch(e){
+                                browser.contentWindow.wrappedJSObject.__phantomCallbackError = e;
+                            }
                         }
-                    }
-                }, true);
-                // inject the function window.callPhantom
-                evalInWindow(browser.contentWindow, PHANTOMCALLBACK);
-                try {
-                    Services.console.unregisterListener(jsErrorListener);
-                }catch(e){}
+                    }, true);
+                    // inject the function window.callPhantom
+                    evalInWindow(browser.contentWindow, PHANTOMCALLBACK);
+                    try {
+                        Services.console.unregisterListener(jsErrorListener);
+                    }catch(e){}
 
-                Services.console.registerListener(jsErrorListener);
+                    Services.console.registerListener(jsErrorListener);
+                }
                 webpage.loadFinished(success, url, false);
                 if (deferred)
                     deferred.resolve(success);
@@ -281,8 +325,14 @@ function create() {
                     webpage.loadStarted(url, true)
             },
             onFrameLoadFinished : function(url, success, frameWindow, duringMainLoad) {
-                // inject the function window.callPhantom
-                evalInWindow(frameWindow,PHANTOMCALLBACK);
+                let channel =frameWindow.QueryInterface(Ci.nsIInterfaceRequestor)
+                         .getInterface(Ci.nsIWebNavigation)
+                         .QueryInterface(Ci.nsIDocShell)
+                         .currentDocumentChannel;
+                if (channel.contentType == "text/html") {
+                    // inject the function window.callPhantom
+                    evalInWindow(frameWindow, PHANTOMCALLBACK);
+                }
                 if (!duringMainLoad)
                     webpage.loadFinished(success, url, true);
             }
@@ -617,7 +667,9 @@ function create() {
          */
         close: function() {
             if (browser) {
-                Services.console.unregisterListener(jsErrorListener);
+                try {
+                    Services.console.unregisterListener(jsErrorListener);
+                }catch(e){}
                 Services.obs.removeObserver(webpageObserver, "console-api-log-event");
                 netLog.unregisterBrowser(browser);
                 this.closing(this);
@@ -825,13 +877,7 @@ function create() {
             if (!win){
                 return false;
             }
-            const de = Ci.nsIDocumentEncoder
-            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-            let doc = win.document;
-            encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
-            encoder.setNode(doc);
-            return encoder.encodeToString();
+            return getWindowContent(win, null, false);
         },
 
         set frameContent(val) {
@@ -843,13 +889,8 @@ function create() {
             if (!win){
                 return false;
             }
-            const de = Ci.nsIDocumentEncoder
-            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-            let doc = win.document;
-            encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly | de.OutputRaw);
-            encoder.setNode(doc);
-            return encoder.encodeToString();
+
+            return getWindowContent(win, null, true);
         },
 
         get frameTitle() {
@@ -953,13 +994,8 @@ function create() {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            const de = Ci.nsIDocumentEncoder
-            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-            let doc = browser.contentDocument;
-            encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
-            encoder.setNode(doc);
-            return encoder.encodeToString();
+            return getWindowContent(browser.contentWindow,
+                                    browser.docShell, false);
         },
 
         set content(val) {
@@ -986,13 +1022,8 @@ function create() {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            const de = Ci.nsIDocumentEncoder
-            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-            let doc = browser.contentDocument;
-            encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly);
-            encoder.setNode(doc);
-            return encoder.encodeToString();
+            return getWindowContent(browser.contentWindow,
+                                    browser.docShell, true);
         },
 
         sendEvent: function(eventType, arg1, arg2, button, modifier) {

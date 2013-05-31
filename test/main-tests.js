@@ -75,6 +75,8 @@ webserverTest.listen(8083, function(request, response) {
                 h['Content-Type'] = 'text/css';
             else if (filepath.match(/\.js$/))
                 h['Content-Type'] = 'text/javascript';
+            else if (filepath.match(/\.txt$/))
+               h['Content-Type'] = 'text/plain';
             else {
                 h['Content-Type'] = 'text/html';
             }

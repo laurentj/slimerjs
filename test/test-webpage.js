@@ -267,6 +267,49 @@ describe("WebPage.title", function(){
     });
 });
 
+describe("WebPage.content", function(){
+    var webpage = require("webpage").create();
+    var url = "http://127.0.0.1:8083/simplehello.html";
+
+    it("contain the source code of the HTML page",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open(url, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var content = "<!DOCTYPE html>\n<html><head>\n"
+                +"        <meta charset=\"utf-8\">\n"
+                +"        <title>simple hello world</title>\n"
+                +"    </head>\n"
+                +"    <body>Hello World!\n"
+                +"    \n"
+                +"</body>"; // after </body>, there is the script injected by slimerjs
+            expect(webpage.content.indexOf(content)).toEqual(0);
+            webpage.close();
+        });
+    });
+
+    it("contain the content of a text page",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open("http://127.0.0.1:8083/hello.txt", function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var content = "hello I am a file requested by XHR"
+            expect(webpage.content).toEqual(content);
+            webpage.close();
+        });
+    });
+});
+
 describe("WebPage.zoomFactor", function(){
     var webpage = require("webpage").create();
     var url = "http://127.0.0.1:8082/hello.html";
