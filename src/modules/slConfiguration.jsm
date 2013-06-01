@@ -5,6 +5,11 @@
 
 var EXPORTED_SYMBOLS = ["slConfiguration"];
 
+const Cu = Components.utils;
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
+Cu.import('resource://slimerjs/slErrorLogger.jsm');
 
 var optionsSpec = {
     // name: [ 'cmdline option name', 'parser function name', 'default value',  supported],
@@ -70,6 +75,12 @@ var slConfiguration = {
     envs : [],
 
     handleFlags : function(cmdline) {
+
+        let filename = cmdline.handleFlagWithParam("error-log-file", false);
+        if (filename) {
+            initErrorLogger(filename, this.workingDirectory);
+        }
+
         for (let opt in optionsSpec) {
             let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
             if (cmdlineOpt == '')
@@ -87,7 +98,6 @@ var slConfiguration = {
                     this[opt] = optValue;
             }
         }
-        //dump(JSON.stringify(this));
     },
 
     parse_int : function (val, cmdlineOpt) {

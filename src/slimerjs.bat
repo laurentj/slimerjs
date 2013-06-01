@@ -164,6 +164,9 @@ REM    echo   --webdriver-loglevel=[ERROR^|WARN^|INFO^|DEBUG^|] WebDriver Loggin
 REM    echo                                  (default is 'INFO') (NOTE: needs '--webdriver')
 REM    echo   --webdriver-selenium-grid-hub=^<url^> URL to the Selenium Grid HUB (default is
 REM    echo                                       'none') (NOTE: needs '--webdriver')
+    echo   --error-log-file=<file>            Log all javascript errors in a file
+    echo   -jsconsole                         Open a window to view all javascript errors
+    echo                                        during the execution
     echo.
     echo *** About profiles: see details of these Mozilla options at
     echo https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile

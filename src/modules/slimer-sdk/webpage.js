@@ -251,7 +251,7 @@ function create() {
         QueryInterface: function (iid) {
             if (!iid.equals(Ci.nsIConsoleListener) &&
                 !iid.equals(Ci.nsISupports)) {
-                throw Components.results.NS_ERROR_NO_INTERFACE;
+                throw Cr.NS_ERROR_NO_INTERFACE;
             }
             return this;
         }

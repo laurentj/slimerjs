@@ -54,11 +54,12 @@ PhantomJS options
 --web-security=[yes|no]              
 =============================================  =================== =============================================
 
-SlimerJS has some specific options. They are in fact `options of Firefox/Xulrunner <https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options>`_
+SlimerJS has some specific options. Some of them are `options of Firefox/Xulrunner <https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options>`_
 
 =============================================  ==============  ========================================================================
 Options specific to SlimerJS
 =============================================  ==============  ========================================================================
+--error-log-file=file                          Supported        stores all JS errors in the given log file
 -jsconsole                                     Supported        Open `the error console <https://developer.mozilla.org/en-US/docs/Error_Console>`_ that displays all javascript errors, warning, notices...
 -P name                                        Supported        Use the indicated profile
 -CreateProfile name                            Supported        Create a new profile

@@ -41,6 +41,8 @@ slCommandLine.prototype = {
 
         slConfiguration.setEnvNames(cmdLine.handleFlagWithParam("envs", false).split(/,/));
 
+        slConfiguration.workingDirectory = cmdLine.workingDirectory;
+
         let configFile = cmdLine.handleFlagWithParam("config", false);
         if (configFile) {
             dump("--config not supported yet\n");
@@ -101,7 +103,6 @@ slCommandLine.prototype = {
             return;
         }
 
-        slConfiguration.workingDirectory = cmdLine.workingDirectory;
         try {
             if (/Mac/i.test(httphandler.oscpu)) {
                 // under MacOS, resolveFile fails with a relative path

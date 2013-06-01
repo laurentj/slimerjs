@@ -26,7 +26,6 @@ New API
 - Support of ``webpage.customHeaders``
 - Support of ``webpage.settings.userAgent``
 
-
 Improvements
 ------------
 
@@ -35,6 +34,7 @@ Improvements
 - Issue #32: a new profile is created each time we launch SlimerJS, to not have preferences,
   cookies or other data created by a previous launch. It is still possible to use a
   permanent profile to keep data between two launchs.
+- new option on the commande line: --error-log-file=filename to log errors in a file
 
 Fixed bugs
 ----------
