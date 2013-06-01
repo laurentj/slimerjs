@@ -48,6 +48,7 @@ phantom.injectJs("./test-webpage-frames.js");
 phantom.injectJs("./test-webpage-callPhantom.js");
 phantom.injectJs("./test-webpage-onerror.js");
 phantom.injectJs("./test-webpage-navigation.js");
+phantom.injectJs("./test-webpage-headers.js");
 
 var webserverTest = webServerFactory.create();
 webserverTest.listen(8083, function(request, response) {
@@ -56,6 +57,30 @@ webserverTest.listen(8083, function(request, response) {
         response.statusCode = 301;
         response.headers['Location'] = 'http://localhost:8083/simplehello.html';
         response.write('');
+        response.close();
+        return;
+    }
+
+    if (request.url == '/getHeaders') {
+        response.statusCode = 200;
+        response.headers = { "Content-Type": "text/plain"}
+        try {
+            let headers = {}
+            let headersEnum = request.headers;
+            for (let i in headersEnum) {
+                headers[i] = headersEnum[i];
+            }
+            /*while(headersEnum.hasMoreElements()) {
+                let headerName =headersEnum.getNext()
+                                           .QueryInterface(Ci.nsISupportsString)
+                                           .data;
+                headers[headerName] = request.getHeader(headerName);
+            }*/
+            response.write(JSON.stringify(headers));
+        }
+        catch(e) {
+            response.write("Error:"+e)
+        }
         response.close();
         return;
     }

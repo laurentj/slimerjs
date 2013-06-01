@@ -262,6 +262,14 @@ function create() {
      */
     function getNetLoggerOptions(webpage, deferred) {
         return {
+            _onRequest: function(request) {
+                request = request.QueryInterface(Ci.nsIHttpChannel);
+                if (webpage.settings.userAgent)
+                    request.setRequestHeader("User-Agent", webpage.settings.userAgent, true);
+                for (var hname in webpage.customHeaders) {
+                    request.setRequestHeader(hname, webpage.customHeaders[hname], true);
+                }
+            },
             onRequest: function(request) {webpage.resourceRequested(request);},
             onResponse:  function(res) {webpage.resourceReceived(res);},
             captureTypes: webpage.captureContent,
@@ -515,13 +523,7 @@ function create() {
             throw new Error("webpage.cookies not implemented")
         },
 
-        get customHeaders() {
-            throw new Error("webpage.customHeaders not implemented")
-        },
-
-        set customHeaders(val) {
-            throw new Error("webpage.customHeaders not implemented")
-        },
+        customHeaders : {},
 
         addCookie: function(cookie) {
             throw new Error("webpage.addCookie not implemented")

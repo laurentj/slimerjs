@@ -98,7 +98,19 @@ cookies
 customHeaders
 -----------------------------------------
 
+This property is an object defining additionnal HTTP headers that will be send
+with each HTTP request, both for pages and resources.
 
+Example:
+
+.. code-block:: javascript
+
+    webpage.customHeaders = {
+        "foo": "bar"
+    }
+
+
+To define user agent, prefer to use ``webpage.settings.userAgent``
 
 .. _webpage-event:
 
@@ -238,6 +250,24 @@ scrollPosition
 settings
 -----------------------------------------
 
+This property allows to set some options for the load of a page.
+Changing them after the load has no effect.
+
+- ``javascriptEnabled`` (not supported yet)
+- ``javascriptCanCloseWindows``  (not supported yet)
+- ``javascriptCanOpenWindows``  (not supported yet)
+- ``loadImages``  (not supported yet)
+- ``localToRemoteUrlAccessEnabled``  (not supported yet)
+- ``maxAuthAttempts``  (not supported yet)
+- ``password``  (not supported yet)
+- ``userAgent``: string to define the user Agent in HTTP requests
+- ``userName``  (not supported yet)
+- ``XSSAuditingEnabled``  (not supported yet)
+- ``webSecurityEnabled``  (not supported yet)
+
+.. code-block:: javascript
+
+    webpage.settings.userAgent = "My Super Agent / 1.0"
 
 
 .. _webpage-title:
@@ -245,7 +275,7 @@ settings
 title
 -----------------------------------------
 
-
+It allows to retrieve the title of the loaded page. (Readonly)
 
 .. _webpage-url:
 

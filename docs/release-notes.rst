@@ -23,6 +23,9 @@ New API
 - Support of ``webpage.onCallback`` and ``window.callPhantom()``
 - Support of ``webpage.onError``
 - Support of ``webpage.onNavigationRequested`` and ``webpage.navigationLocked``
+- Support of ``webpage.customHeaders``
+- Support of ``webpage.settings.userAgent``
+
 
 Improvements
 ------------
@@ -62,7 +65,6 @@ implementation is planed in future releases.
 - most of options for the command line are not supported
 - no API to manage HTTP cookies, although cookies are supported (they are stored
   automatically)
-- no API to manage HTTP headers
 - no support of the ``webpage.offlineStorage*`` properties, although offlineStorage
   is supported natively and usable by a web page
 - no API to manage child windows

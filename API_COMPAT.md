@@ -118,7 +118,7 @@ It will contain API that does not exists in PhantomJS.
                                                         property of the response object received by your <br>
                                                         onResourceReceived callback (SlimerJS only)</td></tr>
     <tr><td>cookies                             </td><td></td></tr>
-    <tr><td>customHeaders                       </td><td></td></tr>
+    <tr><td>customHeaders                       </td><td>Implemented</td></tr>
     <tr><td>event                               </td><td></td></tr>
     <tr><td>focusedFrameName                    </td><td>Implemented</td></tr>
     <tr><td>frameContent                        </td><td>Implemented. Setter is not implemented yet.</td></tr>
@@ -146,7 +146,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>settings.webSecurityEnabled         </td><td></td></tr>
     <tr><td>settings.javascriptCanOpenWindows   </td><td></td></tr>
     <tr><td>settings.javascriptCanCloseWindows  </td><td></td></tr>
-    <tr><td>settings.userAgent                  </td><td></td></tr>
+    <tr><td>settings.userAgent                  </td><td>Implemented</td></tr>
     <tr><td>settings.userName                   </td><td></td></tr>
     <tr><td>settings.password                   </td><td></td></tr>
     <tr><td>settings.maxAuthAttempts            </td><td></td></tr>
@@ -234,7 +234,7 @@ Methods that send signals (private methods):
     <tr><td>javaScriptConsoleMessageSent(message)</td><td>Implemented</td></tr>
     <tr><td>loadFinished(status)                </td><td>Implemented</td></tr>
     <tr><td>loadStarted()                       </td><td>Implemented</td></tr>
-    <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td></td></tr>
+    <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td>Implemented</td></tr>
     <tr><td>rawPageCreated(page)                </td><td>Implemented</td></tr>
     <tr><td>resourceReceived(request)           </td><td>Implemented</td></tr>
     <tr><td>resourceRequested(resource)         </td><td>Implemented</td></tr>
