@@ -76,10 +76,10 @@ describe("WebPage.onError", function(){
             webpage.evaluateJavaScript('(function(){throw new Error("error from evaluateJavascript");})()');
             expect(errorMessage).toEqual("Error: error from evaluateJavascript");
             expect(errorStack.length).toEqual(2)
-            expect(errorStack[0].file).toEqual("phantomjs://webpage.evaluate()")
+            expect(errorStack[0].file).toEqual("phantomjs://webpage.evaluateJavaScript()")
             expect(errorStack[0].line).toEqual(1)
             expect(errorStack[0]["function"]).toEqual("")
-            expect(errorStack[1].file).toEqual("phantomjs://webpage.evaluate()")
+            expect(errorStack[1].file).toEqual("phantomjs://webpage.evaluateJavaScript()")
             expect(errorStack[1].line).toEqual(1)
             expect(errorStack[1]["function"]).toEqual("")
 
@@ -128,6 +128,8 @@ describe("WebPage.onError", function(){
             //expect(errorStack[1].file).toEqual("http://127.0.0.1:8083/doerror.js")
             //expect(errorStack[1].line).toEqual(5)
             //expect(errorStack[1]["function"]).toEqual("")
+
+            webpage.close();
         });
     });
 });

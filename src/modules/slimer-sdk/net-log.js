@@ -468,6 +468,9 @@ ProgressListener.prototype = {
     },
 
     getLoadContext: function (aChannel) {
+        if (!aChannel)
+            return null;
+
         let notificationCallbacks =
                 aChannel.notificationCallbacks ? aChannel.notificationCallbacks : aChannel.loadGroup.notificationCallbacks;
 

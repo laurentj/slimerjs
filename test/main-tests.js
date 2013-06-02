@@ -63,7 +63,7 @@ webserverTest.listen(8083, function(request, response) {
 
     if (request.url == '/getHeaders') {
         response.statusCode = 200;
-        response.headers = { "Content-Type": "text/plain"}
+        response.headers = { "Content-Type": "text/plain;charset=UTF-8"}
         try {
             let headers = {}
             let headersEnum = request.headers;
@@ -101,9 +101,9 @@ webserverTest.listen(8083, function(request, response) {
             else if (filepath.match(/\.js$/))
                 h['Content-Type'] = 'text/javascript';
             else if (filepath.match(/\.txt$/))
-               h['Content-Type'] = 'text/plain';
+               h['Content-Type'] = 'text/plain;charset=UTF-8';
             else {
-                h['Content-Type'] = 'text/html';
+                h['Content-Type'] = 'text/html;charset=UTF-8';
             }
             h['Content-Length'] = str.length;
             response.headers = h;

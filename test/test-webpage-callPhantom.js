@@ -33,7 +33,7 @@ describe("WebPage.onCallback", function(){
             expect(result).toEqual("received");
             expect(receivedResults.hello).toEqual("world");
 
-            // verirfy that we receive exception from onCallback
+            // verify that we receive exception from onCallback
             var result = webpage.evaluate(function(){
                 try {
                  return window.callPhantom("doerror");
@@ -42,8 +42,10 @@ describe("WebPage.onCallback", function(){
                     return "error in evaluate: "+e;
                 }
             })
-            expect(result).toEqual("error in evaluate: Error: oups");
+            expect(result).toEqual("error in evaluate: oups");
             expect(receivedResults).toEqual("doerror");
+            webpage.onCallback = null;
+            webpage.close();
         });
     });
 });

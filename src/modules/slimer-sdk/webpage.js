@@ -36,8 +36,8 @@ const PHANTOMCALLBACK =
 '    var arg = (arguments.length?arguments[0]:null);'+
 '    var event = new CustomEvent("callphantom", {"detail":arg});' +
 '    window.top.dispatchEvent(event);' +
-'    if (window.__phantomCallbackError) throw window.__phantomCallbackError;' +
-'    return window.__phantomCallbackResult;' +
+'    if (window.__phantomCallbackResult.error) throw window.__phantomCallbackResult.error;' +
+'    return window.__phantomCallbackResult.result;' +
 '}';
 
 /**
@@ -306,18 +306,28 @@ function create() {
                 let channel = browser.docShell.currentDocumentChannel;
                 if (channel.contentType == "text/html") {
                     // listener called by the window.callPhantom function
-                    browser.contentWindow.addEventListener("callphantom", function(event) {
+                    var win = browser.contentWindow
+                    win.wrappedJSObject.__phantomCallbackResult = {
+                        result:null,
+                        error:null,
+                        __exposedProps__: {
+                            result:'rw',
+                            error:'rw'
+                        }
+                    }
+                    win.addEventListener("callphantom", function(event) {
                         if (webpage.onCallback) {
                             try {
-                                browser.contentWindow.wrappedJSObject.__phantomCallbackResult = webpage.onCallback(event.detail)
-                                browser.contentWindow.wrappedJSObject.__phantomCallbackError = null;
+                                win.wrappedJSObject.__phantomCallbackResult.result = webpage.onCallback(event.detail)
+                                win.wrappedJSObject.__phantomCallbackResult.error = null;
                             }catch(e){
-                                browser.contentWindow.wrappedJSObject.__phantomCallbackError = e;
+                                win.wrappedJSObject.__phantomCallbackResult.error = e.message;
                             }
                         }
                     }, true);
+
                     // inject the function window.callPhantom
-                    evalInWindow(browser.contentWindow, PHANTOMCALLBACK);
+                    evalInWindow(win, PHANTOMCALLBACK);
                     try {
                         Services.console.unregisterListener(jsErrorListener);
                     }catch(e){}
@@ -929,7 +939,7 @@ function create() {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            return evalInSandbox(src, 'phantomjs://webpage.evaluate()');
+            return evalInSandbox(src, 'phantomjs://webpage.evaluateJavaScript()');
         },
 
         evaluateAsync: function(func) {
@@ -937,7 +947,7 @@ function create() {
                 throw new Error("WebPage not opened");
             func = '('+func.toSource()+')();';
             browser.contentWindow.setTimeout(function() {
-                evalInSandbox(func, 'phantomjs://webpage.evaluate()');
+                evalInSandbox(func, 'phantomjs://webpage.evaluateAsync()');
             }, 0)
         },
 
