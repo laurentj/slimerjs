@@ -351,7 +351,7 @@ function prepareLoader(fileURI, dirFile) {
                 file = fileHandler.getFileFromURLSpec(module.uri);
             }
             catch(e) {
-                dump("err for "+module.uri+" :"+e+"\n")
+                dump("err for "+module.uri+": "+e+"\n")
                 throw e;
             }
             let filename = file.leafName;

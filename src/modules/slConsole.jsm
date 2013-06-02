@@ -10,7 +10,10 @@ function getTraceException(e, fileURI) {
     let stackRes = [];
 
     if (typeof e == 'object' && 'stack' in e) {
-        msg = e.message;
+        if (e.message == undefined)
+            msg = "" +e;
+        else
+            msg = e.message;
 
         let r = /^\s*(.*)@(.*):(\d+)\s*$/gm;
         let m, a = [];
