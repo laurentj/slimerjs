@@ -179,12 +179,12 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
     <tr><td>open(url)                           </td><td>Implemented. SlimerJS only: it returns a promise</td></tr>
     <tr><td>open(url, callback)                 </td><td>Implemented. SlimerJS only: it returns a promise</td></tr>
-    <tr><td>open(url, httpmethod)               </td><td></td></tr>
-    <tr><td>open(url, httpmethod, callback)     </td><td></td></tr>
-    <tr><td>open(url, httpmethod, data)         </td><td></td></tr>
-    <tr><td>open(url, httpmethod, data, callback)</td><td></td></tr>
-    <tr><td>open(url, httpmethod, data, headers, callback)</td><td></td></tr>
-    <tr><td>openUrl(url, httpConf, settings)    </td><td></td></tr>
+    <tr><td>open(url, httpConf)                 </td><td></td></tr>
+    <tr><td>open(url, httpConf, callback)       </td><td></td></tr>
+    <tr><td>open(url, operation, data)          </td><td></td></tr>
+    <tr><td>open(url, operation, data, callback)</td><td></td></tr>
+    <tr><td>open(url, operation, data, headers, callback)</td><td></td></tr>
+    <tr><td>openUrl(url, httpConf, settings)    </td><td>Partially implemented: httpConf is not supported yet</td></tr>
     <tr><td>release()                           </td><td></td></tr>
     <tr><td>reload()                            </td><td>Implemented</td></tr>
     <tr><td>render(filename, ratio)             </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter (value between 0 and 1)</td></tr>

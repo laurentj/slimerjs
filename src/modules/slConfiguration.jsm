@@ -11,6 +11,10 @@ const Ci = Components.interfaces;
 
 Cu.import('resource://slimerjs/slErrorLogger.jsm');
 
+var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
+                      .getService(Ci.nsIHttpProtocolHandler)
+                      .userAgent;
+
 var optionsSpec = {
     // name: [ 'cmdline option name', 'parser function name', 'default value',  supported],
     cookiesFile : ['cookies-file', 'file', '', false],
@@ -189,6 +193,7 @@ var slConfiguration = {
     },
 
     getDefaultWebpageConfig : function() {
+        
         return Object.freeze({
             javascriptEnabled: true,
             loadImages: this.loadImages,
@@ -197,7 +202,7 @@ var slConfiguration = {
             webSecurityEnabled: this.webSecurityEnabled,
             javascriptCanOpenWindows: this.javascriptCanOpenWindows,
             javascriptCanCloseWindows: this.javascriptCanCloseWindows,
-            userAgent: 'SlimerJS',
+            userAgent: defaultUA,
             userName: undefined,
             password: undefined,
             maxAuthAttempts: undefined,

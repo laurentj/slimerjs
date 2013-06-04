@@ -589,11 +589,133 @@ function create() {
 
         /**
          * Open a web page in a browser
+         *
+         * It can accept several arguments and only the first
+         * one is required:
+         *
+         * open(url)
+         * open(url, callback)
+         * open(url, httpConf) - not supported yet
+         * open(url, httpConf, callback) - not supported yet
+         * open(url, operation, data) - not supported yet
+         * open(url, operation, data, callback) - not supported yet
+         * open(url, operation, data, headers, callback) - not supported yet
+         *
          * @param string url    the url of the page to open
          * @param function callback  a function called when the page is loaded. it
          *                           receives "success" or "fail" as parameter.
+         * @param string|object httpConf see httpConf arg of openUrl
+         * @param string operation
+         * @param string data
+         * @param object headers
          */
-        open: function(url, callback) {
+        open: function(url, arg1, arg2, arg3, arg4) {
+
+            switch(arguments.length) {
+                case 1:
+                    return this.openUrl(url, 'get');
+                    break;
+                case 2:
+                    if (typeof arg1 === 'function') {
+                        return this.openUrl(url, 'get', null, arg1);
+                    }
+                    else {
+                        return this.openUrl(url, arg1);
+                    }
+                    break;
+                case 3:
+                    if (typeof arg2 === 'function') {
+                        return this.openUrl(url, arg1, null, arg2);
+                    }
+                    else {
+                        return this.openUrl(url, {
+                            operation: arg1,
+                            data: arg2
+                        });
+                    }
+                    break;
+                case 4:
+                    return this.openUrl(url, {
+                            operation: arg1,
+                            data: arg2
+                        }, null, arg3);
+                    break;
+                case 5:
+                    return this.openUrl(url, {
+                            operation: arg1,
+                            data: arg2,
+                            headers: arg3
+                        }, null, arg4);
+                    break;
+            }
+            throw "open: arguments are missing";
+        },
+
+        /**
+         * @private
+         */
+        _openBlankBrowser: function(parentWindow) {
+            var me = this;
+
+            if (browser) {
+                throw Cr.NS_ERROR_UNEXPECTED;
+            }
+            var options = getNetLoggerOptions(this, null);
+            var ready = false;
+            var win = slLauncher.openBrowser(function(nav){
+                browser = nav;
+                browser.webpage = me;
+                Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
+                netLog.registerBrowser(browser, options);
+                me.initialized();
+                ready = true;
+            }, parentWindow);
+
+            win.QueryInterface(Ci.nsIDOMChromeWindow)
+               .browserDOMWindow = slBrowserDOMWindow;
+
+            // we're waiting synchronously after the initialisation of the new window, because we need
+            // to have a ready browser element and then to have an existing win.content.
+            // slBrowserDOMWindow.openURI needs to return this win.content so the
+            // caller will load the URI into this window object.
+            let thread = Services.tm.currentThread;
+            while (!ready)
+                thread.processNextEvent(true);
+            return win;
+        },
+
+        /**
+         * open a webpage
+         * @param string url       the url of the page to load
+         * @param string httpConf  the http method 'get', 'post', 'head', 'post', 'delete'
+         * @param object httpConf  an object with two properties
+         *          operation: http method (default: get)
+         *          data: body of the request
+         *          headers: (optional)
+         *          encoding: (optional, default utf8)
+         * @param object settings  it replaces webpage.settings.
+         * @return void
+         */
+        openUrl: function(url, httpConf, settings, callback) {
+
+            if (settings)
+                this.settings = settings;
+
+            if (!httpConf) {
+                httpConf = {
+                    operation: 'get',
+                    data : '',
+                    headers : {}
+                }
+            }
+            else if (typeof httpConf == 'string') {
+                httpConf = {
+                    operation: httpConf,
+                    data : '',
+                    headers : {}
+                }
+            }
+
             var me = this;
             let deferred = Q.defer();
 
@@ -637,43 +759,6 @@ function create() {
             win.QueryInterface(Ci.nsIDOMChromeWindow)
                .browserDOMWindow= slBrowserDOMWindow;
             return deferred.promise;
-        },
-
-        /**
-         * @private
-         */
-        _openBlankBrowser: function(parentWindow) {
-            var me = this;
-
-            if (browser) {
-                throw Cr.NS_ERROR_UNEXPECTED;
-            }
-            var options = getNetLoggerOptions(this, null);
-            var ready = false;
-            var win = slLauncher.openBrowser(function(nav){
-                browser = nav;
-                browser.webpage = me;
-                Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
-                netLog.registerBrowser(browser, options);
-                me.initialized();
-                ready = true;
-            }, parentWindow);
-
-            win.QueryInterface(Ci.nsIDOMChromeWindow)
-               .browserDOMWindow = slBrowserDOMWindow;
-
-            // we're waiting synchronously after the initialisation of the new window, because we need
-            // to have a ready browser element and then to have an existing win.content.
-            // slBrowserDOMWindow.openURI needs to return this win.content so the
-            // caller will load the URI into this window object.
-            let thread = Services.tm.currentThread;
-            while (!ready)
-                thread.processNextEvent(true);
-            return win;
-        },
-
-        openUrl: function(url, httpConf, settings) {
-            throw new Error("webpage.openUrl not implemented")
         },
 
         /**
