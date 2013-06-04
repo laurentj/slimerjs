@@ -135,22 +135,17 @@ var phantom = {
      * set the handler for errors
      */
     set onError (val) {
-        errorHandler = val;
+        slLauncher.errorHandler = val;
     },
     /**
      * get the handler for errors
      */
     get onError () {
-        return errorHandler;
+        return slLauncher.errorHandler;
     },
 
-    defaultErrorHandler : function (msg, stack) {
-        dump("\nScript Error: "+msg+"\n");
-        dump("       Stack:\n");
-        stack.forEach(function(t) {
-            dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
-        })
-        dump("\n");
+    get defaultErrorHandler () {
+        return slLauncher.defaultErrorHandler;
     },
 
     __exposedProps__ : {
@@ -168,8 +163,6 @@ var phantom = {
         defaultPageSettings : 'r'
     }
 }
-
-errorHandler = phantom.defaultErrorHandler;
 
 /**
  * cookie object for http requests

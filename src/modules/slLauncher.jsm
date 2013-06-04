@@ -14,40 +14,39 @@ Cu.import('resource://slimerjs/addon-sdk/toolkit/loader.js'); //Sandbox, Require
 Cu.import('resource://slimerjs/slConsole.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 
-var windowMediator = Cc["@mozilla.org/appshell/window-mediator;1"]
+const windowMediator = Cc["@mozilla.org/appshell/window-mediator;1"]
                      .getService(Ci.nsIWindowMediator);
 
-var fileHandler = Cc["@mozilla.org/network/protocol;1?name=file"]
+const fileHandler = Cc["@mozilla.org/network/protocol;1?name=file"]
                      .getService(Ci.nsIFileProtocolHandler)
+const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
+                        .createInstance(Ci.nsIPrincipal)
 
-var mainSandbox = null;
 var mainLoader = null;
+var mainWindow = null;
 
 var slLauncher = {
     launchMainScript: function (contentWindow, scriptFile) {
-
-        mainSandbox = Cu.Sandbox(contentWindow,
-                            {
-                                'sandboxName': 'slimerjs',
-                                'sandboxPrototype': contentWindow,
-                                'wantXrays': true
-                            });
-
-        // import the slimer/phantom API into the sandbox
-        Cu.import('resource://slimerjs/slimer.jsm', mainSandbox);
-        Cu.import('resource://slimerjs/phantom.jsm', mainSandbox);
+        mainWindow = contentWindow;
 
         // load and execute the provided script
         let fileURI = Services.io.newFileURI(scriptFile).spec;
         mainLoader = prepareLoader(fileURI, scriptFile.parent);
 
         try {
-            loadMainScript(mainLoader, mainSandbox);
+            // first load the bootstrap module
+            let bsModule = Loader.Module('slimer-sdk/bootstrap', 'resource://slimerjs/slimer-sdk/bootstrap.js');
+            mainLoader.load(mainLoader, bsModule);
+
+            // load the main module
+            let uri =resolveMainURI(mainLoader.mapping);
+            let module = mainLoader.main = mainLoader.modules[uri] = Loader.Module('main', uri);
+            mainLoader.load(mainLoader, module);
         }
         catch(e) {
-            if (mainSandbox.phantom.onError) {
+            if (this.errorHandler) {
                 let [msg, stackRes] = getTraceException(e, fileURI);
-                mainSandbox.phantom.onError(msg, stackRes);
+                this.errorHandler(msg, stackRes);
             }
             else
                 throw e;
@@ -55,6 +54,8 @@ var slLauncher = {
     },
 
     injectJs : function (source, uri) {
+        // FIXME: Verify that we really have to inject always
+        // in the main module
         let sandbox = mainLoader.sandboxes[mainLoader.main.uri];
 
         let evalOptions =  {
@@ -62,6 +63,20 @@ var slLauncher = {
           source: source
         }
         Loader.evaluate(sandbox, uri, evalOptions);
+    },
+
+    // can be changed by the phantom module
+    errorHandler : function(msg, stack) {
+        this.defaultErrorHandler(msg, stack)
+    },
+
+    defaultErrorHandler : function (msg, stack) {
+        dump("\nScript Error: "+msg+"\n");
+        dump("       Stack:\n");
+        stack.forEach(function(t) {
+            dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
+        })
+        dump("\n");
     },
 
     /**
@@ -122,6 +137,12 @@ function isFile(filename, base) {
     catch(e){
     }
     return false;
+}
+
+function fillDescriptor(object, host) {
+    Object.getOwnPropertyNames(object).forEach(function(name) {
+        host[name] = Object.getOwnPropertyDescriptor(object, name)
+    });
 }
 
 const nativeModules = {
@@ -240,6 +261,7 @@ function prepareLoader(fileURI, dirFile) {
         id:'slimerjs@innophi.com',
         name: 'SlimerJs',
         rootURI: dirURI,
+        // metadata: needed by some modules of the addons sdk
         metadata: Object.freeze(metadata),
         paths:pathsMapping,
         globals: {
@@ -294,7 +316,13 @@ function prepareLoader(fileURI, dirFile) {
             }
             return id;
         },
+
+        // It loads the given module into a sandbox.
+        // It replaces the default loader, Loader.load
         load : function(loader, module) {
+
+            // let's prepare the require function that will
+            // be available in the sandbox.
             var require = Loader.Require(loader, module);
 
             Object.defineProperty(require, 'paths',
@@ -316,36 +344,43 @@ function prepareLoader(fileURI, dirFile) {
                                     writable:false,
                                   });
 
-            // we create the prototype of the new sandbox.
-            // we don't import directly require and module.exports
-            // into the current sandbox else properties of module.exports
-            // are shadowed and an __exposedProps__ should be needed.
-            // this is why we create a new sandbox with a new prototype
-            // that contains properties of the initial sandbox and
-            // the properties we want to inject
-            let proto = Loader.override(globalProperties, loader.globals);
-            proto = Loader.override( proto,
-                {
-                require: require,
-                module: module,
-                exports: module.exports
-            });
-
+            // let's create the sandbox
             let sandbox = Loader.Sandbox({
-              name: module.uri,
-              prototype: mainSandbox,
-              wantXrays: false
+                principal: systemPrincipal,
+                name: module.uri,
+                prototype:mainWindow,
+                wantXrays: true
             });
-            Object.defineProperties(sandbox, Loader.descriptor(proto));
 
+            // let's define some object available in the sandbox
+            Cu.import('resource://slimerjs/slimer.jsm', sandbox);
+            Cu.import('resource://slimerjs/phantom.jsm', sandbox);
+
+            let properties = {};
+            fillDescriptor(globalProperties, properties)
+            fillDescriptor(loader.globals, properties)
+            fillDescriptor({
+                    require: require,
+                    module: module,
+                    exports: module.exports
+                }, properties);
+            Object.defineProperties(sandbox, properties);
+
+            // this method is called by extension handlers
+            // @see require.extensions, and the extensions var
             module._compile = function (content, filename) {
                 Loader.load(loader, module, sandbox, content);
             }
 
+            // for modules that are provided as JSM modules,
+            // load them with Loader
+            // we assume that it is always a javascript script
             if (module.uri.indexOf('file://') == -1) {
                 Loader.load(loader, module, sandbox);
                 return;
             }
+
+            // the module is an external file
             let file;
             try {
                 file = fileHandler.getFileFromURLSpec(module.uri);
@@ -356,6 +391,8 @@ function prepareLoader(fileURI, dirFile) {
             }
             let filename = file.leafName;
             let source = '';
+            // depending of the extension of the module file,
+            // we load the module with the corresponding handler
             for(let ext in extensions) {
                 let idx = filename.lastIndexOf(ext);
                 if (idx == -1 || idx != (filename.length - ext.length)) {
@@ -379,13 +416,3 @@ function resolveMainURI(mapping) {
     return null;
 }
 
-function loadMainScript(loader, sandbox) {
-    // first load the bootstrap module
-    let bsModule = Loader.Module('slimer-sdk/bootstrap', 'resource://slimerjs/slimer-sdk/bootstrap.js');
-    loader.load(loader, bsModule);
-
-    // load the main module
-    let uri =resolveMainURI(loader.mapping);
-    let module = loader.main = loader.modules[uri] = Loader.Module('main', uri);
-    loader.load(loader, module);
-}

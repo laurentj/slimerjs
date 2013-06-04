@@ -27,7 +27,8 @@ const base64 = require("sdk/base64");
 const Q = require("sdk/core/promise");
 const timer = require("sdk/timers");
 const heritage = require("sdk/core/heritage");
-
+const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
+                        .createInstance(Ci.nsIPrincipal);
 const netLog = require('net-log');
 netLog.startTracer();
 
@@ -65,6 +66,7 @@ function create() {
     function createSandBox(win) {
         let sandbox = Cu.Sandbox(win,
             {
+                'principal':systemPrincipal,
                 'sandboxName': browser.currentURI.spec,
                 'sandboxPrototype': win,
                 'wantXrays': false

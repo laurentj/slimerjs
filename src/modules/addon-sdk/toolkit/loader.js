@@ -388,7 +388,7 @@ exports.main = main;
 // Makes module object that is made available to CommonJS modules when they
 // are evaluated, along with `exports` and `require`.
 const Module = iced(function Module(id, uri) {
-  return create(null, {
+  return create({}, {
     id: { enumerable: true, value: id },
     exports: { enumerable: true, writable: true, value: create({}) },
     uri: { value: uri }
