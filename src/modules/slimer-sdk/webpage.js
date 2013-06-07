@@ -493,7 +493,7 @@ function create() {
      */
     function browserLoadURI(browser, uri, httpConf) {
 
-        let hasDataToPost = ('data' in httpConf && httpConf.data != '')
+        let hasDataToPost = ('data' in httpConf && httpConf.data)
 
         // prepare headers
         let contentType = '';
@@ -1085,8 +1085,8 @@ function create() {
                 throw new Error("WebPage not opened");
 
             let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
-            func = '('+func.toString()+').apply(this, ' + args + ');';
-            return evalInSandbox(func, 'phantomjs://webpage.evaluate()');
+            let f = '('+func.toString()+').apply(this, ' + args + ');';
+            return evalInSandbox(f, 'phantomjs://webpage.evaluate()');
         },
 
         evaluateJavaScript: function(src) {
@@ -1099,9 +1099,9 @@ function create() {
         evaluateAsync: function(func) {
             if (!browser)
                 throw new Error("WebPage not opened");
-            func = '('+func.toSource()+')();';
+            let f = '('+func.toSource()+')();';
             browser.contentWindow.setTimeout(function() {
-                evalInSandbox(func, 'phantomjs://webpage.evaluateAsync()');
+                evalInSandbox(f, 'phantomjs://webpage.evaluateAsync()');
             }, 0)
         },
 
