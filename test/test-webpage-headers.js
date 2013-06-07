@@ -21,9 +21,10 @@ describe("WebPage", function(){
         waitsFor(function(){ return loaded;}, 1000);
 
         runs(function(){
-            var headers = JSON.parse(webpage.content)
-            expect(headers['user-agent']).toEqual("Super Browser / 1.0");
-            expect(headers['x-foo']).toEqual("bar");
+            var content = JSON.parse(webpage.content)
+            expect(content.headers['User-Agent']).toEqual("Super Browser / 1.0");
+            expect(content.headers['X-foo']).toEqual("bar");
+            expect(content.body).toEqual('');
         });
     });
 });

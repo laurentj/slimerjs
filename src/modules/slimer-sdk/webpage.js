@@ -13,6 +13,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
+Cu.import('resource://slimerjs/httpUtils.jsm');
 
 const fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
 const de = Ci.nsIDocumentEncoder
@@ -483,6 +484,85 @@ function create() {
         return win;
     }
 
+    /**
+     * load the page corresponding to the given uri, into the browser.
+     * @param DOMXULElement browser
+     * @param string uri
+     * @param object httpConf
+     * @see webpage.open
+     */
+    function browserLoadURI(browser, uri, httpConf) {
+
+        let hasDataToPost = ('data' in httpConf && httpConf.data != '')
+
+        // prepare headers
+        let contentType = '';
+        let hasContentLength = false;
+        let headersStream = null;
+        if ('headers' in httpConf) {
+            let headers = '';
+            for(let i in httpConf.headers) {
+                let headerName = headerUtils.normalizeFieldName(i);
+                let headerValue = headerUtils.normalizeFieldValue(httpConf.headers[i].toString());
+                if (hasDataToPost) {
+                    // if there are data to post, we will indicate the
+                    // content type in the data stream
+                    if (headerName.toLowerCase() == 'content-type') {
+                        contentType = headerValue;
+                        continue;
+                    }
+                    else if (headerName.toLowerCase() == 'content-length') {
+                        hasContentLength = true;
+                    }
+                }
+                headers += headerName + ': '+headerValue+"\r\n";
+            }
+            if (headers) {
+                headersStream = Cc["@mozilla.org/io/string-input-stream;1"].
+                                createInstance(Ci.nsIStringInputStream);
+                headersStream.data = headers;
+            }
+        }
+
+        // prepare data to post
+        // nsDocShell use implicitely a POST method
+        // when data are provided for an URI loading.
+        // (no way to indicate explictely an other method unfortunately)
+        let postStream = null;
+        if (hasDataToPost) {
+            let dataStream = Cc["@mozilla.org/io/string-input-stream;1"].
+                            createInstance(Ci.nsIStringInputStream);
+            dataStream.data = httpConf.data;
+
+            postStream = Cc["@mozilla.org/network/mime-input-stream;1"].
+                            createInstance(Ci.nsIMIMEInputStream);
+            if (contentType)
+                postStream.addHeader("Content-Type", contentType);
+            else
+                postStream.addHeader("Content-Type", "application/x-www-form-urlencoded");
+            if (!hasContentLength)
+                postStream.addContentLength = true;
+            postStream.setData(dataStream);
+        }
+
+        // let's reproduce behavior we have in browser.loadURIWithFlags
+        browser.userTypedClear++;
+
+        try {
+          browser.webNavigation.loadURI(uri,
+                                     0,
+                                     null,
+                                     postStream,
+                                     headersStream);
+        } finally {
+            // if content is not loaded because of navigation locked,
+            // we have an exception;
+            if (browser.userTypedClear)
+                browser.userTypedClear--;
+        }
+    }
+
+
     // ----------------------------------- webpage
 
     /**
@@ -595,11 +675,11 @@ function create() {
          *
          * open(url)
          * open(url, callback)
-         * open(url, httpConf) - not supported yet
-         * open(url, httpConf, callback) - not supported yet
-         * open(url, operation, data) - not supported yet
-         * open(url, operation, data, callback) - not supported yet
-         * open(url, operation, data, headers, callback) - not supported yet
+         * open(url, httpConf)
+         * open(url, httpConf, callback)
+         * open(url, operation, data)
+         * open(url, operation, data, callback)
+         * open(url, operation, data, headers, callback)
          *
          * @param string url    the url of the page to open
          * @param function callback  a function called when the page is loaded. it
@@ -704,21 +784,18 @@ function create() {
             if (!httpConf) {
                 httpConf = {
                     operation: 'get',
-                    data : '',
-                    headers : {}
                 }
             }
             else if (typeof httpConf == 'string') {
                 httpConf = {
                     operation: httpConf,
-                    data : '',
-                    headers : {}
                 }
             }
 
             var me = this;
-            let deferred = Q.defer();
 
+            // create a promise that we will return
+            let deferred = Q.defer();
             deferred.promise.then(function(result) {
                 if (callback) {
                     callback(result);
@@ -732,12 +809,7 @@ function create() {
             if (browser) {
                 // don't recreate a browser if already opened.
                 netLog.registerBrowser(browser, options);
-                try {
-                    browser.loadURI(url);
-                } catch(e) {
-                    // if content is not loaded because of navigation locked,
-                    // we have an exception;
-                }
+                browserLoadURI(browser, url, httpConf);
                 return deferred.promise;
             }
 
@@ -748,12 +820,7 @@ function create() {
                 browser.stop();
                 me.initialized();
                 netLog.registerBrowser(browser, options);
-                try {
-                    browser.loadURI(url);
-                } catch(e) {
-                    // if content is not loaded because of navigation locked,
-                    // we have an exception;
-                }
+                browserLoadURI(browser, url, httpConf);
             });
             // to catch window.open()
             win.QueryInterface(Ci.nsIDOMChromeWindow)

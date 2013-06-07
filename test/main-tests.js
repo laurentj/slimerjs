@@ -50,6 +50,7 @@ phantom.injectJs("./test-webpage-onerror.js");
 phantom.injectJs("./test-webpage-navigation.js");
 phantom.injectJs("./test-webpage-headers.js");
 
+
 var webserverTest = webServerFactory.create();
 webserverTest.listen(8083, function(request, response) {
 
@@ -65,18 +66,12 @@ webserverTest.listen(8083, function(request, response) {
         response.statusCode = 200;
         response.headers = { "Content-Type": "text/plain;charset=UTF-8"}
         try {
-            let headers = {}
-            let headersEnum = request.headers;
-            for (let i in headersEnum) {
-                headers[i] = headersEnum[i];
-            }
-            /*while(headersEnum.hasMoreElements()) {
-                let headerName =headersEnum.getNext()
-                                           .QueryInterface(Ci.nsISupportsString)
-                                           .data;
-                headers[headerName] = request.getHeader(headerName);
-            }*/
-            response.write(JSON.stringify(headers));
+            var data = {
+                method: request.method,
+                headers: request.headers,
+                body: request.postRaw
+            };
+            response.write(JSON.stringify(data));
         }
         catch(e) {
             response.write("Error:"+e)

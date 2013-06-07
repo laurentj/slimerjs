@@ -25,6 +25,7 @@ New API
 - Support of ``webpage.onNavigationRequested`` and ``webpage.navigationLocked``
 - Support of ``webpage.customHeaders``
 - Support of ``webpage.settings.userAgent``
+- Support of ``webpage.openUrl()``
 
 Improvements
 ------------
@@ -55,6 +56,7 @@ Fixed PhantomJS conformance issues
   PhantomJS does.
 - callbacks ``webpage.onLoadStarted`` and  ``webpage.onLoadFinished`` are called when
   a frame is loading a new document inside the web page.
+- Issue #11: support of all possible arguments on webpage.open()
 
 Missing APIS
 ------------
@@ -69,7 +71,6 @@ implementation is planed in future releases.
   is supported natively and usable by a web page
 - no API to manage child windows
 - no support of settings on the webpage object
-- ``webpage.open()`` only supports an url and a callback as parameter
 - no support of file uploading in web page (``webpage.uploadFile()``, ``webpage.onFilePicker``..)
 - no support of Ghost Driver
 

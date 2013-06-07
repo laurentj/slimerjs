@@ -1,10 +1,21 @@
+.. index:: webpage
 
 =======
 webpage
 =======
 
+This module provide a ``create()`` function that returns a webpage object. This
+object allows to load and manipulate a web page.
 
-Documentation soon. Please help us to fill this page :-)
+
+.. code-block:: javascript
+
+   var page = require("webpage").create();
+
+In the ``page`` variable, you have then an object with many properties and
+methods. See below.
+
+Note: most of properties and methods are implemented, but not documented. Help us to document them ;-)
 
 
 Webpage object
@@ -97,6 +108,8 @@ cookies
 
 customHeaders
 -----------------------------------------
+
+.. index:: customHeaders
 
 This property is an object defining additionnal HTTP headers that will be send
 with each HTTP request, both for pages and resources.
@@ -250,6 +263,8 @@ scrollPosition
 settings
 -----------------------------------------
 
+.. index:: settings
+
 This property allows to set some options for the load of a page.
 Changing them after the load has no effect.
 
@@ -260,15 +275,16 @@ Changing them after the load has no effect.
 - ``localToRemoteUrlAccessEnabled``  (not supported yet)
 - ``maxAuthAttempts``  (not supported yet)
 - ``password``  (not supported yet)
-- ``userAgent``: string to define the user Agent in HTTP requests
+- ``userAgent``: string to define the user Agent in HTTP requests. By default, it is
+  something like ``"Mozilla/5.0 (X11; Linux x86_64; rv:21.0) Gecko/20100101 SlimerJS/0.7"``
+  (depending of the version of Firefox/XulRunner you use)
 - ``userName``  (not supported yet)
 - ``XSSAuditingEnabled``  (not supported yet)
 - ``webSecurityEnabled``  (not supported yet)
 
 .. code-block:: javascript
 
-    webpage.settings.userAgent = "My Super Agent / 1.0"
-
+    page.settings.userAgent = "My Super Agent / 1.0"
 
 .. _webpage-title:
 
@@ -419,17 +435,125 @@ injectJs()
 
 .. _webpage-open:
 
-open()
+open(url...)
 -----------------------------------------
 
+.. index:: open, promise
+
+This method allows to open a page into a virtual browser.
+
+Since this operation is asynchronous, you cannot do something on
+the page after the call of ``open()``. You should provide a callback
+or you should use the returned promise (not compatible with PhantomJS),
+to do something on the loaded page. The callback or the promise receives
+a string "success" if the loading has been succeded.
+
+Example with a callback function:
+
+.. code-block:: javascript
+
+   page.open("http://slimerjs.org", function(status){
+        if (status == "success") {
+            console.log("The title of the page is: "+ page.title);
+        }
+        else {
+            console.log("Sorry, the page is not loaded");
+        }
+   })
+
+Example with the returned promise (not compatible with PhantomJS):
+
+.. code-block:: javascript
+
+   page.open("http://slimerjs.org")
+       .then(function(status){
+            if (status == "success") {
+                console.log("The title of the page is: "+ page.title);
+            }
+            else {
+                console.log("Sorry, the page is not loaded");
+            }
+       })
+
+
+To load two pages, one after an other, here is how to do:
+
+.. code-block:: javascript
+
+   page.open("http://example.com/page1", function(status){
+        // do something on the page...
+        
+        page.open("http://example.com/page2", function(status){
+            // do something on the page...
+        })
+   })
+
+With the promise, it's better in term of code (not compatible with PhantomJS):
+
+.. code-block:: javascript
+
+   page.open("http://example.com/page1")
+       .then(function(status){
+           // do something on the page...
+           
+           return page.open("http://example.com/page2")
+       })
+       .then(function(status){
+           // do something on the page...
+           
+           // etc...
+           return page.open("http://example.com/page3")
+       })
+
+**Other arguments:**
+
+The ``open()`` method accepts several arguments:
+
+- ``open(url)``
+- ``open(url, callback)``
+- ``open(url, httpConf)``
+- ``open(url, httpConf, callback)``
+- ``open(url, operation, data)``
+- ``open(url, operation, data, callback)``
+- ``open(url, operation, data, headers, callback)``
+
+Remember that in all cases, the method returns a promise.
+
+``httpConf`` is an object. See :ref:`webpage.openUrl <webpage-openUrl>` below.
+``operation``, ``data`` and ``headers`` should have same type of values
+as you can find in ``httpConf``.
+
+Note that ``open()`` call in fact ``openUrl()``.
 
 
 .. _webpage-openUrl:
 
-openUrl()
------------------------------------------
+openUrl(url, httpConf, settings, callback)
+-------------------------------------------
 
+.. index:: openUrl, promise
+
+Like ``open()``, it loads a webpage. The only difference is the number
+and the type of arguments.
  
+``httpConf`` is an object with these properties:
+
+- ``httpConf.operation``: the http method. Allowed values: ``'get'`` or ``'post'`` (other methods are not supported in SlimerJS)
+- ``httpConf.data``: the body. Useful only for ``'post'`` method
+- ``httpConf.headers``: the headers to send. An object like :ref:`webpage.customHeaders <webpage-customHeaders>`, but it
+  doesn't replace ``webpage.customHeaders``. It allows you to specify additionnal headers
+  for this specific load.
+
+``httpConf`` is optional and you can give ``null`` instead of an object.
+The default method will be ``'get'``, without data and without specific headers.s
+
+``settings`` is an object like :ref:`webpage.settings <webpage-settings>`. In
+fact the given value changes ``webpage.settings``. You can indicate ``null`` if
+you don't want to set new settings.
+
+``callback`` is a callback function, called when the page is loaded.
+
+``openUrl()`` returns a promise.
 
 .. _webpage-release:
 

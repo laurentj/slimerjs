@@ -331,3 +331,170 @@ describe("WebPage.zoomFactor", function(){
         });
     });
 });
+
+
+
+
+describe("WebPage.open()", function(){
+    var webpage = require("webpage").create();
+    var url = "http://127.0.0.1:8083/getHeaders";
+
+    var async = new AsyncSpec(this);
+    async.it("can be called with url, httpConf",function(done) {
+        webpage.open(url, 'get')
+        .then(function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('GET');
+            expect(requestdata.body).toEqual('');
+            expect('User-Agent' in requestdata.headers).toBeTruthy();
+            expect(requestdata.headers['User-Agent']).toNotEqual('');
+            expect(requestdata.headers['Host']).toEqual('127.0.0.1:8083');
+
+            return webpage.open(url, {operation:'get'})
+        })
+        .then(function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('GET');
+            expect(requestdata.body).toEqual('');
+            expect('User-Agent' in requestdata.headers).toBeTruthy();
+            expect(requestdata.headers['User-Agent']).toNotEqual('');
+            expect(requestdata.headers['Host']).toEqual('127.0.0.1:8083');
+
+        // POST data
+            let content = 'foo=bar&z=3';
+            return webpage.open(url,
+                            {
+                                operation:'post',
+                                data: content,
+                                headers : {
+                                   'Content-Type':'application/x-www-form-urlencoded',
+                                   'Content-length': content.length
+                                }
+                            })
+        })
+        .then(function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('POST');
+            expect(requestdata.body).toEqual('foo=bar&z=3');
+            expect(requestdata.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
+
+        // POST data by forcing content type other than urlencoded
+            return webpage.open(url,
+                            {
+                                operation:'post',
+                                data: 'hello',
+                                headers : {
+                                    'X-foo':'bar',
+                                    'Content-Type' : 'text/plain',
+                                    'Content-length': 5
+                                }
+                })
+        })
+        .then(function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('POST');
+            expect(requestdata.body).toEqual('hello');
+            expect(requestdata.headers['Content-Type']).toEqual('text/plain');
+            expect(requestdata.headers['X-foo']).toEqual('bar')
+            webpage.close();
+            done();
+        })
+    });
+
+    async.it("can be called with (url, httpConf, callback)",function(done) {
+        webpage.open(url, 'get', function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('GET');
+            expect(requestdata.body).toEqual('');
+            expect('User-Agent' in requestdata.headers).toBeTruthy();
+            expect(requestdata.headers['User-Agent']).toNotEqual('');
+            expect(requestdata.headers['Host']).toEqual('127.0.0.1:8083');
+            webpage.close();
+            done();
+        })
+    });
+
+    async.it("can be called with (url, operation, data)",function(done) {
+        webpage.open(url, 'get', '')
+        .then(function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('GET');
+            expect(requestdata.body).toEqual('');
+            expect('User-Agent' in requestdata.headers).toBeTruthy();
+            expect(requestdata.headers['User-Agent']).toNotEqual('');
+            expect(requestdata.headers['Host']).toEqual('127.0.0.1:8083');
+
+            return webpage.open(url, 'post', 'foo=bar&z=3')
+        })
+        .then(function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('POST');
+            expect(requestdata.body).toEqual('foo=bar&z=3');
+            expect(requestdata.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
+            webpage.close();
+            done();
+        })
+    });
+
+    async.it("can be called with (url, 'get', data, callback)",function(done) {
+        webpage.open(url, 'get', '', function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('GET');
+            expect(requestdata.body).toEqual('');
+            expect('User-Agent' in requestdata.headers).toBeTruthy();
+            expect(requestdata.headers['User-Agent']).toNotEqual('');
+            expect(requestdata.headers['Host']).toEqual('127.0.0.1:8083');
+            webpage.close();
+            done();
+        })
+    });
+
+    async.it("can be called with (url, 'post', data, callback)",function(done) {
+        webpage.open(url, 'post', 'foo=bar&z=3', function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('POST');
+            expect(requestdata.body).toEqual('foo=bar&z=3');
+            expect(requestdata.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
+            webpage.close();
+            done();
+        })
+    });
+
+    async.it("can be called with (url, 'get', data, headers, callback)",function(done) {
+        webpage.open(url, 'get', '', { 'X-foo':'xbar' }, function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('GET');
+            expect(requestdata.body).toEqual('');
+            expect('User-Agent' in requestdata.headers).toBeTruthy();
+            expect(requestdata.headers['User-Agent']).toNotEqual('');
+            expect(requestdata.headers['Host']).toEqual('127.0.0.1:8083');
+            expect(requestdata.headers['X-foo']).toEqual('xbar');
+            webpage.close();
+            done();
+        })
+    });
+
+    async.it("can be called with (url, 'post', data, headers, callback)",function(done) {
+        webpage.open(url, 'post', 'foo=bar&z=3',  { 'X-foo':'xbar' }, function(success){
+            expect(webpage.content).toNotEqual('');
+            var requestdata = JSON.parse(webpage.content);
+            expect(requestdata.method).toEqual('POST');
+            expect(requestdata.body).toEqual('foo=bar&z=3');
+            expect(requestdata.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
+            expect(requestdata.headers['X-foo']).toEqual('xbar');
+            webpage.close();
+            done();
+        })
+    });
+
+});

@@ -4727,7 +4727,7 @@ const headerUtils =
       }
     }
 
-    return fieldName.toLowerCase();
+    return fieldName //.toLowerCase();
   },
 
   /**
