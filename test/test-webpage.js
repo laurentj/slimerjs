@@ -293,7 +293,18 @@ describe("WebPage.content", function(){
         });
     });
 
+    it("can be changed with HTML content",function() {
+        var content = "<!DOCTYPE html>\n<html><head>\n"
+            +"        <meta charset=\"utf-8\">\n"
+            +"        <title>An other content</title></head>\n"
+            +"    <body><p>new content</p></body>";
+        webpage.content = content;
+        expect(webpage.title).toEqual('An other content');
+        expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("new content");
+    });
+
     it("contain the content of a text page",function() {
+        webpage.close();
         var loaded = false;
         runs(function() {
             webpage.open("http://127.0.0.1:8083/hello.txt", function(success){
@@ -305,6 +316,41 @@ describe("WebPage.content", function(){
         runs(function(){
             var content = "hello I am a file requested by XHR"
             expect(webpage.content).toEqual(content);
+            webpage.close();
+        });
+    });
+});
+
+describe("WebPage.setContent", function(){
+    var webpage = require("webpage").create();
+    
+    it("can set the content on a new browser",function() {
+
+        var content = "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">\n"
+            +"        <title>An other content #2</title></head>\n"
+            +"    <body><div>content set with setContent</div></body>";
+        webpage.setContent(content, 'http://127.0.0.1:8083/foo.html');
+        expect(webpage.title).toEqual('An other content #2');
+        expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("content set with setContent");
+    });
+
+    it("can set the content on an existing browser",function() {
+        webpage.close();
+        var loaded = false;
+        runs(function() {
+            webpage.open("http://127.0.0.1:8083/simplehello.html", function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var content = "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">\n"
+                +"        <title>An other content #3</title></head>\n"
+                +"    <body><b>setContent is working</b></body>";
+            webpage.setContent(content, 'http://127.0.0.1:8083/foo.html');
+            expect(webpage.title).toEqual('An other content #3');
+            expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("setContent is working");
             webpage.close();
         });
     });

@@ -26,6 +26,8 @@ New API
 - Support of ``webpage.customHeaders``
 - Support of ``webpage.settings.userAgent``
 - Support of ``webpage.openUrl()``
+- Implementation of setters of ``webpage.content`` and ``webpage.frameContent``
+- Implementation of ``webpage.setContent()``
 
 Improvements
 ------------

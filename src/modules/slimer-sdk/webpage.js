@@ -734,7 +734,7 @@ function create() {
         /**
          * @private
          */
-        _openBlankBrowser: function(parentWindow) {
+        _openBlankBrowser: function(parentWindow, noInitializedEvent) {
             var me = this;
 
             if (browser) {
@@ -747,7 +747,8 @@ function create() {
                 browser.webpage = me;
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
                 netLog.registerBrowser(browser, options);
-                me.initialized();
+                if (!noInitializedEvent)
+                    me.initialized();
                 ready = true;
             }, parentWindow);
 
@@ -1047,7 +1048,14 @@ function create() {
         },
 
         set frameContent(val) {
-            throw new Error("webpage.frameContent setter not implemented")
+            var win = getCurrentFrame();
+            if (!win){
+                return;
+            }
+            let f = '(function(){document.open();';
+            f += 'document.write(decodeURIComponent("'+ encodeURIComponent (val)+'"));';
+            f += 'document.close();})()'
+            evalInWindow (win, f);
         },
 
         get framePlainText() {
@@ -1165,7 +1173,7 @@ function create() {
         },
 
         set content(val) {
-            throw new Error("webpage.content setter not implemented")
+            this.setContent(val, null);
         },
 
         get offlineStoragePath() {
@@ -1318,7 +1326,18 @@ function create() {
         },
 
         setContent: function(content, url) {
-            throw new Error("webpage.setContent not implemented")
+            if (!browser) {
+                this._openBlankBrowser(null, true);
+            }
+            if (url) {
+                let uri = Services.io.newURI(url, null, null);
+                browser.docShell.setCurrentURI(uri);
+            }
+
+            let f = '(function(){document.open();';
+            f += 'document.write(decodeURIComponent("'+ encodeURIComponent (content)+'"));';
+            f += 'document.close();})()'
+            evalInWindow (browser.contentWindow, f);
         },
 
         uploadFile: function(selector, filename) {

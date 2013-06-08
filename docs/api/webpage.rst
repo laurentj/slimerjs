@@ -95,7 +95,9 @@ canGoForward
 content
 -----------------------------------------
 
-
+This property contain the source code of the actual webpage.
+You can set this property with the source code of an HTML page
+to replace the content of the current web page.
 
 .. _webpage-cookies:
 
@@ -144,6 +146,9 @@ focusedFrameName
 frameContent
 -----------------------------------------
 
+This property contain the source code of the current frame.
+You can set this property with the source code of an HTML page
+to replace the content of the current frame.
 
 
 .. _webpage-frameName:
@@ -591,9 +596,12 @@ sendEvent()
 
 .. _webpage-setContent:
 
-setContent()
+setContent(content, url)
 -----------------------------------------
 
+This method allows to replace the content of the current page
+with the given HTML source code. The URL indicates the url
+of this new content.
 
 
 .. _webpage-stop:
@@ -601,7 +609,7 @@ setContent()
 stop()
 -----------------------------------------
 
-
+It stops the loading of the page.
 
 .. _webpage-switchToFocusedFrame:
 

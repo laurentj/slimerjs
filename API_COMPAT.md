@@ -111,7 +111,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>canGoBack                           </td><td>Implemented</td></tr>
     <tr><td>canGoForward                        </td><td>Implemented</td></tr>
     <tr><td>clipRect                            </td><td>Implemented</td></tr>
-    <tr><td>content                             </td><td>Implemented. Setter not implemented yet</td></tr>
+    <tr><td>content                             </td><td>Implemented.</td></tr>
     <tr><td>captureContent                      </td><td>Implemented. list of regexp matching content <br>
                                                         types of resources for which you want to retrieve <br>
                                                         the content. The content is then set on the body <br>
@@ -121,7 +121,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>customHeaders                       </td><td>Implemented</td></tr>
     <tr><td>event                               </td><td></td></tr>
     <tr><td>focusedFrameName                    </td><td>Implemented</td></tr>
-    <tr><td>frameContent                        </td><td>Implemented. Setter is not implemented yet.</td></tr>
+    <tr><td>frameContent                        </td><td>Implemented</td></tr>
     <tr><td>frameName                           </td><td>Implemented</td></tr>
     <tr><td>framePlainText                      </td><td>Implemented</td></tr>
     <tr><td>frameTitle                          </td><td>Implemented</td></tr>
@@ -192,7 +192,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>renderBase64(format, ratio)         </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter (value between 0 and 1)</td></tr>
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td>Implemented</td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
-    <tr><td>setContent(content, url)            </td><td></td></tr>
+    <tr><td>setContent(content, url)            </td><td>Implemented</td></tr>
     <tr><td>stop()                              </td><td>Implemented</td></tr>
     <tr><td>switchToFocusedFrame()              </td><td>Implemented</td></tr>
     <tr><td>switchToFrame(frameName)            </td><td>Implemented</td></tr>
