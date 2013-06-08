@@ -185,7 +185,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>open(url, operation, data, callback)</td><td>Implemented. SlimerJS only: it returns a promise. Only GET and POST method are supported.</td></tr>
     <tr><td>open(url, operation, data, headers, callback)</td><td>Implemented. SlimerJS only: it returns a promise. Only GET and POST method are supported.</td></tr>
     <tr><td>openUrl(url, httpConf, settings)    </td><td>Implemented. SlimerJS only: it returns a promise. Only GET and POST method are supported.</td></tr>
-    <tr><td>release()                           </td><td></td></tr>
+    <tr><td>release()                           </td><td>Implemented</td></tr>
     <tr><td>reload()                            </td><td>Implemented</td></tr>
     <tr><td>render(filename, ratio)             </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter (value between 0 and 1)</td></tr>
     <tr><td>renderBytes(format, ratio)          </td><td>Implemented. SlimerJS only. Only PNG et JPG supported.</td></tr>

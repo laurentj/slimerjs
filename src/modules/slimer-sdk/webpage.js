@@ -870,7 +870,7 @@ function create() {
         },
 
         release : function() {
-            throw new Error("webpage.release not implemented")
+            this.close();
         },
 
         get scrollPosition() {

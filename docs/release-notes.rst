@@ -28,6 +28,7 @@ New API
 - Support of ``webpage.openUrl()``
 - Implementation of setters of ``webpage.content`` and ``webpage.frameContent``
 - Implementation of ``webpage.setContent()``
+- Implementation of ``webpage.release()`` (deprecated method in PhantomJS, replaced by ``webpage.close()``.
 
 Improvements
 ------------

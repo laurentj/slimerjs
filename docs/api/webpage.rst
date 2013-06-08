@@ -565,7 +565,9 @@ you don't want to set new settings.
 release()
 -----------------------------------------
 
-
+Similar to :ref:`close() <webpage-close>`.
+This method is deprecated in PhantomJS.  ``webpage.close()`` should
+be used instead.
 
 .. _webpage-reload:
 
