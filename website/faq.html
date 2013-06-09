@@ -100,10 +100,15 @@
         <ol>
             <li><span class="slm">SlimerJS</span> does not implement yet all the PhantomJS API</li>
             <li>CasperJS does not know SlimerJS but
-                <a href="https://github.com/n1k0/casperjs/issues/482">we are working on this issue</a>.
+                <a href="https://github.com/n1k0/casperjs/issues/482">we are working on
+                this issue</a>.
             </li>
         </ol>
-        We hope that SlimerJS 0.7 or 0.8 will work with CasperJS.
+        If you know how to build CasperJS, you can retrieve its source code from
+        <a href="https://github.com/laurentj/casperjs/tree/slimerjs-2">our specific branch</a>.
+        This experimental version supports SlimerJS 0.7+ by launching Casperjs with <code>--engine=slimerjs</code>.
+        However you may find some troubles when running your tests since SlimerJS is
+        not yet 100% compatible with PhantomJS.
     </dd>
 
     <dt>Why is it called "SlimerJs"?</dt>
