@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Features · SlimerJS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Features of the scriptabel web browser SlimerJS">
+    <meta name="description" content="Features of the scriptable web browser SlimerJS">
     <meta name="author" content="Laurent Jouanneau">
 
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -73,6 +73,8 @@
               <h1>title</h1>
             </div-->
 
+            <h2>A scriptable browser</h2>
+
             <p><span class="slm">SlimerJS</span> allows you to execute a javascript script outside a classical
              web browser.</p>
             
@@ -96,10 +98,20 @@
             <p>All of these features are executed on top of the core of Firefox.
             and are already implemented in <span class="slm">SlimerJS</span>.</p>
 
+            <h2>Disadvantages over PhantomJS</h2>
+
             <p>These APIs are similar to the APIs of <a href="http://phantomjs.org/">Phantomjs</a>
-            but for the moment, <span class="slm">SlimerJS</span> is not fully compatible with PhantomJS.
-            However in a near future, it will be. It's the main goal for the
-            next version SlimerJS 1.0.</p>
+            but the implementation is not fully compatible yet with PhantomJS. This is a work
+            in progress and this compatibility is the main goal for the release of SlimerJS 1.0.</p>
+
+            <p>Contrary to PhantomJS, SlimerJS is not headless: you see windows and it needs
+            a graphical environment. You can use a tool
+               like <code>xvfb</code> on a Linux/MacOS system to have this headless feature
+               and to execute SlimerJS on Linux boxes that have not Xorg installed.</p>
+
+            <p>But...</p>
+
+            <h2>Advantages over PhantomJS</h2>
 
             <p><span class="slm">SlimerJS</span> is not only a PhantomJS clone, it contains also additional features
             right now:</p>
@@ -113,11 +125,13 @@
                 <li>Supports all last HTML5 standards implemented in Firefox, including things that
                 are not available into PhantomJS: Audio, Video, WebGL etc..</li>
                 <li><span class="slm">SlimerJS</span> is able to load flash content if the Flash plugin is installed</li>
-                <li>You can use "promises" when opening a web page! <code>webpage.open()</code>
-                    returns <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html">a promise</a>.</li>
+                <li>You can use <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html">promises</a>
+                    when opening a web page with <code>webpage.open()</code>!</li>
+                <li>SlimerJS is not really stuck to a specific version of Gecko: it can use any recent version of Firefox/XulRunner 18+</li>
             </ul>
 
             <p><strong><a href="index.html#download">Try SlimerJS</a></strong> for your web projects!</p>
+
         </section>
       </div>
     </div>
