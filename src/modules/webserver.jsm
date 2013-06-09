@@ -82,6 +82,41 @@ function parseQueryString(qs) {
     return result;
 }
 
+function guessContentType(data) {
+    var stringStream = Components.classes["@mozilla.org/io/string-input-stream;1"]
+                            .createInstance(Components.interfaces.nsIStringInputStream);
+    stringStream.setData(data, data.length);
+
+    let binInput = Components.classes["@mozilla.org/binaryinputstream;1"].
+                    createInstance(Components.interfaces.nsIBinaryInputStream);
+    binInput.setInputStream(stringStream);
+
+    let first = binInput.read8();
+    let second = binInput.read8();
+    let third = binInput.read8();
+    let fourth = binInput.read8();
+    if (first == 0xFF && second == 0xD8 && third == 0xFF
+        && (fourth == 0xE0 || fourth == 0xE1)) {
+        return ['image/jpg', true];
+    }
+    else if (first == 0x49 && second == 0x48 && third == 0x2A) {
+        return ['image/tiff', true];
+    }
+    else if (first == 0x4D && second == 0x4D && third == 0x2A) {
+        return ['image/tiff', true];
+    }
+    else if (first == 0x49 && second == 0x47 && second == 0x46) {
+        return ['image/gif', true];
+    }
+    else if (first == 0x42 && second == 0x4d) {
+        return ['image/bmp', true];
+    }
+    else if (first == 0x89 && second == 0x50 && third == 0x4E
+             && fourth == 0x47) {
+        return ['image/png', true];
+    }
+    return ['', false];
+}
 
 function HttpRequest(request) {
     this._request = request;
@@ -145,6 +180,7 @@ function HttpResponse(response) {
     this._response = response;
     this._headersSent = false;
     this._encoding = null;
+    this._bodySendingStarted = false;
 }
 const PR_UINT32_MAX = Math.pow(2, 32) - 1;
 HttpResponse.prototype = {
@@ -154,8 +190,11 @@ HttpResponse.prototype = {
     },
 
     header:function(name) {
-        if (name in this.headers)
-            return this.headers[name];
+        let n = name.toLowerCase();
+        for (let n2 in this.headers) {
+            if (n2.toLowerCase() == n)
+                return this.headers[n2];
+        }
         return '';
     },
 
@@ -167,16 +206,30 @@ HttpResponse.prototype = {
         if (!this._headersSent) {
             sendHeaders(this);
             this._headersSent = true;
+        }
+
+        let encoding = this._encoding;
+
+        if (!this._bodySendingStarted) {
+            if (this.header('Content-Type') == '' && data) {
+                let [contentType, binaryEncoding] = guessContentType(data);
+                if (contentType) {
+                    this._response.setHeader('Content-Type', contentType, false);
+                    if (binaryEncoding && !encoding) {
+                        encoding = 'binary';
+                    }
+                }
+            }
+            this._bodySendingStarted = true;
             this._response.processAsync();
         }
 
-        if (data == '' || !this._encoding) {
+        if (data == '' || !encoding) {
             this._response.write(data);
         }
-        else if (this._encoding == 'binary') {
+        else if (encoding == 'binary') {
             let pipe = Components.classes["@mozilla.org/pipe;1"].createInstance(Components.interfaces.nsIPipe);
             pipe.init(true, false, 8192, PR_UINT32_MAX, null);
-
             let binOutput = Components.classes["@mozilla.org/binaryoutputstream;1"].
                            createInstance(Components.interfaces.nsIBinaryOutputStream);
             binOutput.setOutputStream(pipe.outputStream);
@@ -191,7 +244,7 @@ HttpResponse.prototype = {
             var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
                         .createInstance(Components.interfaces.nsIConverterOutputStream);
 
-            os.init(pipe.outputStream, this._encoding, 0, 0x0000);
+            os.init(pipe.outputStream, encoding, 0, 0x0000);
             os.writeString(data);
             this._response.bodyOutputStream.writeFrom(pipe.inputStream, data.length);
         }

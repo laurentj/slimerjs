@@ -60,6 +60,7 @@ Fixed PhantomJS conformance issues
 - callbacks ``webpage.onLoadStarted`` and  ``webpage.onLoadFinished`` are called when
   a frame is loading a new document inside the web page.
 - Issue #11: support of all possible arguments on webpage.open()
+- The webserver guesses now the content type of some files (images..)
 
 Missing APIS
 ------------

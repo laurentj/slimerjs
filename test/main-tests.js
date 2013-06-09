@@ -88,8 +88,8 @@ webserverTest.listen(8083, function(request, response) {
             var h = {};
             var enc = '';
             if (filepath.match(/\.png$/)) {
-                response.setEncoding("binary");
-                h['Content-Type'] = 'image/png';
+                //response.setEncoding("binary");
+                //h['Content-Type'] = 'image/png';
             }
             else if (filepath.match(/\.css$/))
                 h['Content-Type'] = 'text/css';
