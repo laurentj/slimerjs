@@ -8,9 +8,10 @@ Release Notes
 version 0.7
 ===========
 
-SlimerJS 0.7 has not been released yet.
+SlimerJS 0.7 has been released on June 10, 2013.
 
-It is usable, although its API is not yet 100% compatible with PhantomJS.
+Many improvements have been made to have a better compatibility with
+PhantomJS, although it is not 100% compatible yet.
 
 New API
 -------
