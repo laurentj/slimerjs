@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+version 0.8
+===========
+
+This version is in development.
+
+No improvements yet.
+
+
 version 0.7
 ===========
 
