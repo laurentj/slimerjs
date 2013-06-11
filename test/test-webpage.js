@@ -155,6 +155,12 @@ describe("WebPage.evaluate()", function(){
             }
         })
         expect(injectedVariableValue).toEqual("bobchange by modify")
+    });
+    it("can evaluate a function that returns nothing", function(){
+        var result = webpage.evaluate(function(){
+            document.getElementById('test').textContent = 'abc';
+        })
+        expect(result === null).toBeTruthy()
         webpage.close();
     });
 });

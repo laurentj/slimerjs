@@ -10,8 +10,11 @@ version 0.8
 
 This version is in development.
 
-No improvements yet.
+Fixed PhantomJS conformance issues
+----------------------------------
 
+- webpage.evaluate() should return null when the result of the
+  given javascript function is undefined.
 
 version 0.7
 ===========

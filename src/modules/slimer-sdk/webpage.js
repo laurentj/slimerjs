@@ -90,7 +90,13 @@ function create() {
         if (!webPageSandbox.has(win))
             webPageSandbox.set(win, createSandBox(win));
         try {
-            return Cu.evalInSandbox(src, webPageSandbox.get(win), '1.8', file, 1);
+            let res = Cu.evalInSandbox(src, webPageSandbox.get(win), '1.8', file, 1);
+            // QWebFrame.evaluateJavascript() used by PhantomJS
+            // always returns null when no value are returned by
+            // the script.
+            if (res === undefined)
+                return null;
+            return res;
         }
         catch(e) {
             if (webpage.onError) {
@@ -104,7 +110,7 @@ function create() {
                 }
                 else err[1] = [];
                 webpage.onError('Error: '+err[0], err[1]);
-                return undefined;
+                return null;
             }
             else {
                 throw new Error('Error during javascript evaluation in the web page: '+e)
