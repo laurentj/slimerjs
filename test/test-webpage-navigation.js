@@ -10,9 +10,29 @@ describe("WebPage.onNavigationRequested", function(){
         webpage.onNavigationRequested = function(url, navigationType, willNavigate, isMainFrame) {
             navCall.push([url, navigationType, willNavigate, isMainFrame]);
         }
-
+        /*webpage.onConsoleMessage = function(msg) {
+            dump("console:"+msg+"\n")
+        }*/
         runs(function() {
             webpage.open(url, function(success){
+                // click on a js link
+                webpage.sendEvent("click",5,35, 'left', 0);
+                //dump(".... jsclick1 done\n")
+                var result = webpage.evaluate(function(){
+                    return jsclick1
+                });
+                //dump(".... jsclick1 retrieved\n")
+                expect(result).toBeTruthy();
+
+                // click on a js link
+                webpage.sendEvent("click",5,55, 'left', 0);
+                //dump(".... jsclick2 done\n")
+                result = webpage.evaluate(function(){
+                    return jsclick2
+                });
+                //dump(".... jsclick2 retrieved\n")
+                expect(result).toBeTruthy();
+                // click on an html link
                 webpage.sendEvent("click", 5, 5, 'left', 0);
                 setTimeout(function(){ // we should wait after the new page loading
                     loaded = true;

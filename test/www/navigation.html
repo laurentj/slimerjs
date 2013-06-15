@@ -3,8 +3,17 @@
     <head>
         <meta charset="utf-8">
         <title>navigation</title>
+        <script type="text/javascript">
+            var jsclick1 = false;
+            var jsclick2 = false;
+            /*document.addEventListener('click', function(event) {
+                dump('click on '+event.target.localName+' - '+event.target.id+'\n')
+            }, true);*/
+        </script>
     </head>
     <body>
-        <a href="simplehello.html" style="position:absolute; top:0px; left:0px">Simple Hello </a>
+        <a id="a" href="simplehello.html" style="position:absolute; top:0px; left:0px">Simple Hello </a>
+        <a  id="b" href="javascript: jsclick1 = true;" style="position:absolute; top:30px; left:0px">click</a>
+        <a  id="c" href="#" onclick="jsclick2 = true; return false" style="position:absolute; top:50px; left:0px">click2</a>
     </body>
 </html>

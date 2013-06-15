@@ -14,6 +14,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 Cu.import('resource://slimerjs/httpUtils.jsm');
+Cu.import('resource://slimerjs/webpageUtils.jsm');
 
 const fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
 const de = Ci.nsIDocumentEncoder
@@ -1281,6 +1282,7 @@ function create() {
 
                 domWindowUtils.sendMouseEvent(eventType,
                         x, y, btn, 1, modifier);
+                webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
                 return;
             }
             else if (eventType == "mousedoubleclick") {
@@ -1289,6 +1291,7 @@ function create() {
                 // note that is undocumented (2013-02-22)
                 domWindowUtils.sendMouseEvent("mousedown",
                         x, y, btn, 2, modifier);
+                webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
                 return;
             }
             else if (eventType == "doubleclick") {
@@ -1300,6 +1303,7 @@ function create() {
                         x, y, btn, 2, modifier);
                 domWindowUtils.sendMouseEvent("mouseup",
                         x, y, btn, 2, modifier);
+                webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
                 return;
             }
             else if (eventType == "click") {
@@ -1307,6 +1311,7 @@ function create() {
                         x, y, btn, 1, modifier);
                 domWindowUtils.sendMouseEventToWindow("mouseup",
                         x, y, btn, 1, modifier);
+                webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
                 return;
             }
 
