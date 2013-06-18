@@ -13,8 +13,9 @@ This version is in development.
 Fixed PhantomJS conformance issues
 ----------------------------------
 
-- webpage.evaluate() should return null when the result of the
+- ``webpage.evaluate()`` should return null when the result of the
   given javascript function is undefined.
+- Added ``webpage.objectName`` and ``webserver.objectName``
 
 version 0.7
 ===========

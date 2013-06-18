@@ -586,6 +586,10 @@ function create() {
          */
         __type : 'qtruntimeobject',
 
+        get objectName () {
+            return "WebPage";
+        },
+
         /**
           Object containing various settings of the web page
 

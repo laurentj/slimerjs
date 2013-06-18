@@ -10,6 +10,10 @@ function create() {
     var server = Components.classes["@mozilla.org/server/jshttp;1"]
                            .createInstance(Components.interfaces.nsIHttpServer);
     return {
+        get objectName () {
+            return "WebServer";
+        },
+
         listen: function(port, callback) {
             if (callback) {
                 this.registerPrefixHandler("/", callback);
