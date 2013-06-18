@@ -579,6 +579,14 @@ function create() {
     var webpage = {
 
         /**
+         * toString on a webpage object indicates
+         * qtruntimeobject in PhantomJS.
+         * here is an alternate way to know if the
+         * object is a webpage object
+         */
+        __type : 'qtruntimeobject',
+
+        /**
           Object containing various settings of the web page
 
             - javascriptEnabled: false if scripts of the page should not be executed (defaults to true).
