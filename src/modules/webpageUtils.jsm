@@ -22,7 +22,6 @@ var webpageUtils = {
      * is not the case. So let's wait a bit before continuing the execution.
      */
     sleepIfJavascriptURI : function(domWindowUtils, x, y) {
-        try {
         var target = domWindowUtils.elementFromPoint(x, y, true, false);
         if (!target || target.localName.toLowerCase() != 'a') {
             return;
@@ -36,9 +35,6 @@ var webpageUtils = {
         let thread = Services.tm.currentThread;
         while (!ready)
             thread.processNextEvent(true);
-        }catch(e) {
-            dump("error in sleepIfJavascriptURI:"+e)
-        }
     }
 }
 
