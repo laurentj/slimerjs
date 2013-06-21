@@ -176,6 +176,7 @@ function create() {
      * build an object of options for the netlogger
      */
     function getNetLoggerOptions(webpage, deferred) {
+        var wycywigReg = /^wyciwyg:\/\//;
         return {
             _onRequest: function(request) {
                 request = request.QueryInterface(Ci.nsIHttpChannel);
@@ -188,10 +189,23 @@ function create() {
             onRequest: function(request) {webpage.resourceRequested(request);},
             onResponse:  function(res) {webpage.resourceReceived(res);},
             captureTypes: webpage.captureContent,
-            onLoadStarted: function(url){ webpage.loadStarted(url, false); },
-            onURLChanged: function(url){ webpage.urlChanged(url);},
+            onLoadStarted: function(url){
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                webpage.loadStarted(url, false);
+            },
+            onURLChanged: function(url){
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                webpage.urlChanged(url);
+            },
             onTransferStarted :null,
             onContentLoaded: function(url, success){
+                if (wycywigReg.test(url)) {
+                    return;
+                }
                 // phantomjs call onInitialized not only at the page creation
                 // but also after the content loading.. don't know why.
                 // let's imitate it. Only after a success
@@ -219,6 +233,9 @@ function create() {
             },
             onLoadFinished: function(url, success){
                 let channel = browser.docShell.currentDocumentChannel;
+                if (wycywigReg.test(url)) {
+                    return;
+                }
                 if (channel.contentType == "text/html") {
                     // listener called by the window.callPhantom function
                     var win = browser.contentWindow
@@ -254,10 +271,16 @@ function create() {
                     deferred.resolve(success);
             },
             onFrameLoadStarted : function(url, duringMainLoad) {
+                if (wycywigReg.test(url)) {
+                    return;
+                }
                 if (!duringMainLoad)
                     webpage.loadStarted(url, true)
             },
             onFrameLoadFinished : function(url, success, frameWindow, duringMainLoad) {
+                if (wycywigReg.test(url)) {
+                    return;
+                }
                 let channel =frameWindow.QueryInterface(Ci.nsIInterfaceRequestor)
                          .getInterface(Ci.nsIWebNavigation)
                          .QueryInterface(Ci.nsIDocShell)
