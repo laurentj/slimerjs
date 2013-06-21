@@ -63,9 +63,17 @@ exit()
 
 .. _phantom-injectJs:
 
-injectJs()
+injectJs(filename)
 -----------------------------------------
 
+Use it if you want to "include" a javascript script into the main script, in
+other words, if you want to evaluate the given javascript file into the context
+of the main script.
+
+Note that the file can be a Javascript script or a CoffeeScript script.
+
+The method returns ``true`` if the injection is successful, or ``false``
+if not (the file is not found for example).
 
 .. _phantom-libraryPath:
 

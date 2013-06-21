@@ -127,8 +127,7 @@ var phantom = {
         }
 
         let source = readSyncStringFromFile(f);
-        slLauncher.injectJs(source, Services.io.newFileURI(f).spec);
-        return true;
+        return slLauncher.injectJs(source, Services.io.newFileURI(f).spec);
     },
 
     /**

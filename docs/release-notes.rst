@@ -10,12 +10,15 @@ version 0.8
 
 This version is in development.
 
+This version can be used with Firefox 24.
+
 Fixed PhantomJS conformance issues
 ----------------------------------
 
 - ``webpage.evaluate()`` should return null when the result of the
   given javascript function is undefined.
 - Added ``webpage.objectName`` and ``webserver.objectName``
+- ``phantom.injectJs()`` supports now CoffeeScripts scripts.
 
 version 0.7
 ===========

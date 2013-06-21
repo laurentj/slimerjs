@@ -4,10 +4,13 @@
  */
 "use strict";
 var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "getMozFile", "readSyncStringFromFile",
+                        "readChromeFile",
                         "getWebpageFromContentWindow", "getWebpageFromDocShell"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+const scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
 
 function dumpex(ex, msg) {
     if (msg)
@@ -90,6 +93,17 @@ function readSyncStringFromFile (file) {
     }
     cstream.close(); // this closes fstream
     return data;
+}
+
+function readChromeFile(url) {
+    let channel = ioService.newChannel(url,null,null);
+    let input = channel.open();
+
+    scriptableStream.init(input);
+    let str = scriptableStream.read(input.available());
+    scriptableStream.close();
+    input.close();
+    return str;
 }
 
 
