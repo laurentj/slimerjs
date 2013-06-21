@@ -13,10 +13,8 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
-Cu.import('resource://slimerjs/httpUtils.jsm');
 Cu.import('resource://slimerjs/webpageUtils.jsm');
 
-const fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
 const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
 const {
@@ -27,7 +25,6 @@ const {
 const fs = require("sdk/io/file");
 const base64 = require("sdk/base64");
 const Q = require("sdk/core/promise");
-const timer = require("sdk/timers");
 const heritage = require("sdk/core/heritage");
 const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
                         .createInstance(Ci.nsIPrincipal);
@@ -120,98 +117,6 @@ function create() {
     }
 
     /**
-     * evaluate a script directly into the content window
-     */
-    function evalInWindow (win, source, url, callback) {
-        // we don't use the sandbox, because with it, scripts
-        // of the loaded page cannot access to variables/functions
-        // created by the injected script. And this behavior
-        // is necessary to be compatible with phantomjs.
-        let doc = win.document;
-        let script = doc.createElement('script');
-        script.setAttribute('type', 'text/javascript');
-        if (url) {
-            script.setAttribute('src', url);
-            if (callback) {
-                let listener = function(event){
-                    script.removeEventListener('load', listener, true);
-                    callback();
-                }
-                script.addEventListener('load', listener, true);
-            }
-        }
-        else {
-            script.textContent = source;
-        }
-        doc.documentElement.appendChild(script);
-    }
-
-    /**
-     * says if the given outer window id is the ID of the window
-     * of the webpage or the window of an iframe of the webpage
-     */
-    function isOurWindow(outerWindowId) {
-        let domWindowUtils = browser.contentWindow
-                    .QueryInterface(Ci.nsIInterfaceRequestor)
-                    .getInterface(Ci.nsIDOMWindowUtils);
-        if (domWindowUtils.outerWindowID == outerWindowId) {
-            return true;
-        }
-        // probably the window is an iframe of the webpage. check if this is
-        // the case
-        let iframe = domWindowUtils.getOuterWindowWithId(outerWindowId);
-        if (iframe) {
-            let dwu = iframe.top.QueryInterface(Ci.nsIInterfaceRequestor)
-                            .getInterface(Ci.nsIDOMWindowUtils);
-            if (dwu.outerWindowID == domWindowUtils.outerWindowID) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * returns the content of the document
-     * @param nsIDOMWindow window
-     * @param nsIDocShell docShell
-     * @param boolean onlyPlainText only the text content
-     */
-    function getWindowContent(window, docShell, onlyPlainText) {
-        if (!docShell) {
-            docShell = window.QueryInterface(Ci.nsIInterfaceRequestor)
-                         .getInterface(Ci.nsIWebNavigation)
-                         .QueryInterface(Ci.nsIDocShell)
-        }
-        let channel = docShell.currentDocumentChannel;
-        let doc = window.document;
-        if (channel.contentType != "text/html") {
-            // for text document, the DOMDocument content
-            // a <pre> element with the text in it
-            if (channel.contentType.indexOf("text/") === 0)
-                return doc.body.getElementsByTagName('pre')[0].textContent;
-            // FIXME retrieve content for other resource type
-            return null
-        }
-        else {
-            // this is an HTML document, use the document encoder
-            // to retrieve the text version of the DOM
-            let encoder;
-            if (onlyPlainText) {
-                encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-                encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly | de.OutputRaw);
-            }
-            else {
-                encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-                encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
-            }
-            encoder.setNode(doc);
-            return encoder.encodeToString();
-        }
-    }
-
-    /**
      * an observer for the Observer Service.
      * It observes console events.
      */
@@ -225,7 +130,7 @@ function create() {
                 // aData == outer window id
                 // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js#254
                 var consoleEvent = aSubject.wrappedJSObject;
-                if (isOurWindow(aData)) {
+                if (webpageUtils.isOurWindow(browser, aData)) {
                     webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
                     return
                 }
@@ -248,7 +153,7 @@ function create() {
                 if (msg instanceof Ci.nsIScriptError
                     && !(msg.flags & Ci.nsIScriptError.warningFlag)
                     && msg.outerWindowID
-                    && isOurWindow(msg.outerWindowID)
+                    && webpageUtils.isOurWindow(browser, msg.outerWindowID)
                     && msg.category == "content javascript"
                     ) {
                     webpage.onError(aMessage.errorMessage, [{file:aMessage.sourceName, line:aMessage.lineNumber, 'function':null}]);
@@ -337,7 +242,7 @@ function create() {
                     }, true);
 
                     // inject the function window.callPhantom
-                    evalInWindow(win, PHANTOMCALLBACK);
+                    webpageUtils.evalInWindow(win, PHANTOMCALLBACK);
                     try {
                         Services.console.unregisterListener(jsErrorListener);
                     }catch(e){}
@@ -359,7 +264,7 @@ function create() {
                          .currentDocumentChannel;
                 if (channel.contentType == "text/html") {
                     // inject the function window.callPhantom
-                    evalInWindow(frameWindow, PHANTOMCALLBACK);
+                    webpageUtils.evalInWindow(frameWindow, PHANTOMCALLBACK);
                 }
                 if (!duringMainLoad)
                     webpage.loadFinished(success, url, true);
@@ -461,112 +366,6 @@ function create() {
                 win = null;
         });
         return win;
-    }
-
-    function isChromeWindow(win) {
-        try  {
-            win.QueryInterface(Ci.nsIDOMChromeWindow)
-            return true;
-        }catch(e) {
-            return false;
-        }
-    }
-
-    /**
-     * a function to return the focusedWindow.
-     * The focus given to a window can take time asynchronously
-     * so we're waiting that the focus is done.
-     */
-    function getFocusedWindow() {
-        let win = fm.focusedWindow;
-        let stop = false;
-        timer.setTimeout(function(){ stop = true},300);
-        let thread = Services.tm.currentThread;
-        while (!stop && (!win || isChromeWindow(win))) {
-            thread.processNextEvent(true);
-            win = fm.focusedWindow;
-        }
-        if (stop)
-            return null;
-        return win;
-    }
-
-    /**
-     * load the page corresponding to the given uri, into the browser.
-     * @param DOMXULElement browser
-     * @param string uri
-     * @param object httpConf
-     * @see webpage.open
-     */
-    function browserLoadURI(browser, uri, httpConf) {
-
-        let hasDataToPost = ('data' in httpConf && httpConf.data)
-
-        // prepare headers
-        let contentType = '';
-        let hasContentLength = false;
-        let headersStream = null;
-        if ('headers' in httpConf) {
-            let headers = '';
-            for(let i in httpConf.headers) {
-                let headerName = headerUtils.normalizeFieldName(i);
-                let headerValue = headerUtils.normalizeFieldValue(httpConf.headers[i].toString());
-                if (hasDataToPost) {
-                    // if there are data to post, we will indicate the
-                    // content type in the data stream
-                    if (headerName.toLowerCase() == 'content-type') {
-                        contentType = headerValue;
-                        continue;
-                    }
-                    else if (headerName.toLowerCase() == 'content-length') {
-                        hasContentLength = true;
-                    }
-                }
-                headers += headerName + ': '+headerValue+"\r\n";
-            }
-            if (headers) {
-                headersStream = Cc["@mozilla.org/io/string-input-stream;1"].
-                                createInstance(Ci.nsIStringInputStream);
-                headersStream.data = headers;
-            }
-        }
-
-        // prepare data to post
-        // nsDocShell use implicitely a POST method
-        // when data are provided for an URI loading.
-        // (no way to indicate explictely an other method unfortunately)
-        let postStream = null;
-        if (hasDataToPost) {
-            let dataStream = Cc["@mozilla.org/io/string-input-stream;1"].
-                            createInstance(Ci.nsIStringInputStream);
-            dataStream.data = httpConf.data;
-
-            postStream = Cc["@mozilla.org/network/mime-input-stream;1"].
-                            createInstance(Ci.nsIMIMEInputStream);
-            if (contentType)
-                postStream.addHeader("Content-Type", contentType);
-            else
-                postStream.addHeader("Content-Type", "application/x-www-form-urlencoded");
-            if (!hasContentLength)
-                postStream.addContentLength = true;
-            postStream.setData(dataStream);
-        }
-
-        // let's reproduce behavior we have in browser.loadURIWithFlags
-        browser.userTypedClear++;
-
-        try {
-          browser.webNavigation.loadURI(uri,
-                                     0,
-                                     null,
-                                     postStream,
-                                     headersStream);
-        } finally {
-            // if content is not loaded because of navigation locked,
-            // we have an exception;
-            if (browser.userTypedClear)
-                browser.userTypedClear--;
-        }
     }
 
 
@@ -829,7 +628,7 @@ function create() {
             if (browser) {
                 // don't recreate a browser if already opened.
                 netLog.registerBrowser(browser, options);
-                browserLoadURI(browser, url, httpConf);
+                webpageUtils.browserLoadURI(browser, url, httpConf);
                 return deferred.promise;
             }
 
@@ -840,7 +639,7 @@ function create() {
                 browser.stop();
                 me.initialized();
                 netLog.registerBrowser(browser, options);
-                browserLoadURI(browser, url, httpConf);
+                webpageUtils.browserLoadURI(browser, url, httpConf);
             });
             // to catch window.open()
             win.QueryInterface(Ci.nsIDOMChromeWindow)
@@ -966,7 +765,7 @@ function create() {
             if (!browser) {
                 return '';
             }
-            var win = getFocusedWindow();
+            var win = webpageUtils.getFocusedWindow();
             if (win && win.name && win.name != 'webpage')
                 return win.name;
             return '';
@@ -1004,7 +803,7 @@ function create() {
             if (!browser) {
                 return false;
             }
-            var win = getFocusedWindow();
+            var win = webpageUtils.getFocusedWindow();
             if (!win)
                 return -1;
             var l = [];
@@ -1063,7 +862,7 @@ function create() {
             if (!win){
                 return false;
             }
-            return getWindowContent(win, null, false);
+            return webpageUtils.getWindowContent(win, null, false);
         },
 
         set frameContent(val) {
@@ -1074,7 +873,7 @@ function create() {
             let f = '(function(){document.open();';
             f += 'document.write(decodeURIComponent("'+ encodeURIComponent (val)+'"));';
             f += 'document.close();})()'
-            evalInWindow (win, f);
+            webpageUtils.evalInWindow (win, f);
         },
 
         get framePlainText() {
@@ -1083,7 +882,7 @@ function create() {
                 return false;
             }
 
-            return getWindowContent(win, null, true);
+            return webpageUtils.getWindowContent(win, null, true);
         },
 
         get frameTitle() {
@@ -1139,7 +938,7 @@ function create() {
             if (!win){
                 throw new Error("No window available");
             }
-            evalInWindow (win, null, url, callback);
+            webpageUtils.evalInWindow (win, null, url, callback);
         },
 
         get libraryPath () {
@@ -1187,7 +986,7 @@ function create() {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            return getWindowContent(browser.contentWindow,
+            return webpageUtils.getWindowContent(browser.contentWindow,
                                     browser.docShell, false);
         },
 
@@ -1215,11 +1014,12 @@ function create() {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            return getWindowContent(browser.contentWindow,
+            return webpageUtils.getWindowContent(browser.contentWindow,
                                     browser.docShell, true);
         },
 
         sendEvent: function(eventType, arg1, arg2, button, modifier) {
+
             if (!browser)
                 throw new Error("WebPage not opened");
 
@@ -1291,7 +1091,6 @@ function create() {
             if (eventType == "mousedown" ||
                 eventType == "mouseup" ||
                 eventType == "mousemove") {
-
                 domWindowUtils.sendMouseEvent(eventType,
                         x, y, btn, 1, modifier);
                 webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
@@ -1360,7 +1159,7 @@ function create() {
             let f = '(function(){document.open();';
             f += 'document.write(decodeURIComponent("'+ encodeURIComponent (content)+'"));';
             f += 'document.close();})()'
-            evalInWindow (browser.contentWindow, f);
+            webpageUtils.evalInWindow (browser.contentWindow, f);
         },
 
         uploadFile: function(selector, filename) {
