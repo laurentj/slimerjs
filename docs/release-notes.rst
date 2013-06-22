@@ -19,6 +19,7 @@ Fixed PhantomJS conformance issues
   given javascript function is undefined.
 - Added ``webpage.objectName`` and ``webserver.objectName``
 - ``phantom.injectJs()`` supports now CoffeeScripts scripts.
+- ``window.callPhantom()`` can now be called during page loading
 
 version 0.7
 ===========

@@ -31,15 +31,6 @@ const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
 const netLog = require('net-log');
 netLog.startTracer();
 
-const PHANTOMCALLBACK =
-'window.callPhantom =  function() {' +
-'    var arg = (arguments.length?arguments[0]:null);'+
-'    var event = new CustomEvent("callphantom", {"detail":arg});' +
-'    window.top.dispatchEvent(event);' +
-'    if (window.__phantomCallbackResult.error) throw window.__phantomCallbackResult.error;' +
-'    return window.__phantomCallbackResult.result;' +
-'}';
-
 /**
  * create a webpage object
  * @module webpage
@@ -237,29 +228,6 @@ function create() {
                     return;
                 }
                 if (channel.contentType == "text/html") {
-                    // listener called by the window.callPhantom function
-                    var win = browser.contentWindow
-                    win.wrappedJSObject.__phantomCallbackResult = {
-                        result:null,
-                        error:null,
-                        __exposedProps__: {
-                            result:'rw',
-                            error:'rw'
-                        }
-                    }
-                    win.addEventListener("callphantom", function(event) {
-                        if (webpage.onCallback) {
-                            try {
-                                win.wrappedJSObject.__phantomCallbackResult.result = webpage.onCallback(event.detail)
-                                win.wrappedJSObject.__phantomCallbackResult.error = null;
-                            }catch(e){
-                                win.wrappedJSObject.__phantomCallbackResult.error = e.message;
-                            }
-                        }
-                    }, true);
-
-                    // inject the function window.callPhantom
-                    webpageUtils.evalInWindow(win, PHANTOMCALLBACK);
                     try {
                         Services.console.unregisterListener(jsErrorListener);
                     }catch(e){}
@@ -280,14 +248,6 @@ function create() {
             onFrameLoadFinished : function(url, success, frameWindow, duringMainLoad) {
                 if (wycywigReg.test(url)) {
                     return;
-                }
-                let channel =frameWindow.QueryInterface(Ci.nsIInterfaceRequestor)
-                         .getInterface(Ci.nsIWebNavigation)
-                         .QueryInterface(Ci.nsIDocShell)
-                         .currentDocumentChannel;
-                if (channel.contentType == "text/html") {
-                    // inject the function window.callPhantom
-                    webpageUtils.evalInWindow(frameWindow, PHANTOMCALLBACK);
                 }
                 if (!duringMainLoad)
                     webpage.loadFinished(success, url, true);

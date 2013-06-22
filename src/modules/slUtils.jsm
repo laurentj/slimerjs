@@ -3,14 +3,30 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 "use strict";
-var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "getMozFile", "readSyncStringFromFile",
-                        "readChromeFile",
+var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "dumpo",
+                        "getMozFile", "readSyncStringFromFile", "readChromeFile",
                         "getWebpageFromContentWindow", "getWebpageFromDocShell"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 const scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
+
+
+function dumpo(obj, indent) {
+    if (typeof obj != 'object') {
+        dump(""+obj+"\n")
+        return
+    }
+    let i = indent || "";
+    dump(i+"{\n");
+    for(let p in obj) {
+        dump(p+": ");
+        dumpo(obj[p], i+"   ")
+        dump(",\n")
+    }
+    dump(i+"}\n")
+}
 
 function dumpex(ex, msg) {
     if (msg)

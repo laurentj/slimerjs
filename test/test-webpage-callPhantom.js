@@ -1,7 +1,7 @@
 
 describe("WebPage.onCallback", function(){
     var webpage = require("webpage").create();
-    var url = "http://127.0.0.1:8083/simplehello.html";
+    var url = "http://127.0.0.1:8083/callback.html";
 
     it("is called when calling window.callPhantom",function() {
         var loaded = false;
@@ -15,6 +15,7 @@ describe("WebPage.onCallback", function(){
 
         runs(function() {
             webpage.open(url, function(success){
+                expect(receivedResults).toEqual("Hello test");
                 loaded = true;
             });
         });
@@ -24,7 +25,7 @@ describe("WebPage.onCallback", function(){
         runs(function(){
             var result = webpage.evaluate(function(){
                 try {
-                 return window.callPhantom({ hello: 'world' });
+                    return window.callPhantom({ hello: 'world' });
                 }
                 catch(e){
                     return "error in evaluate: "+e;
@@ -36,13 +37,13 @@ describe("WebPage.onCallback", function(){
             // verify that we receive exception from onCallback
             var result = webpage.evaluate(function(){
                 try {
-                 return window.callPhantom("doerror");
+                    return window.callPhantom("doerror");
                 }
                 catch(e){
                     return "error in evaluate: "+e;
                 }
             })
-            expect(result).toEqual("error in evaluate: oups");
+            expect(result).toEqual("error in evaluate: Error: oups");
             expect(receivedResults).toEqual("doerror");
             webpage.onCallback = null;
             webpage.close();

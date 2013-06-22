@@ -31,7 +31,7 @@ var slimerEnv = this;
 var webServerFactory = require("webserver");
 var fs = require("fs");
 
-
+/*
 phantom.injectJs("./test-environment.js");
 phantom.injectJs("./test-require.js");
 phantom.injectJs("./test-system.js");
@@ -44,12 +44,12 @@ phantom.injectJs("./test-webpage-callbacks.js");
 phantom.injectJs("./test-webpage-render.js");
 phantom.injectJs("./test-webpage-prompt.js");
 phantom.injectJs("./test-webpage-open.js");
-phantom.injectJs("./test-webpage-frames.js");
+phantom.injectJs("./test-webpage-frames.js");*/
 phantom.injectJs("./test-webpage-callPhantom.js");
-phantom.injectJs("./test-webpage-onerror.js");
+/*phantom.injectJs("./test-webpage-onerror.js");
 phantom.injectJs("./test-webpage-navigation.js");
 phantom.injectJs("./test-webpage-headers.js");
-
+*/
 
 var webserverTest = webServerFactory.create();
 webserverTest.listen(8083, function(request, response) {

@@ -18,6 +18,8 @@ var webpageUtils = {
 
     /**
      * evaluate a script directly into the content window
+     * @see onLoadFinished, onFrameLoadFinished, to inject phantomjs callback
+     * @see webpage.setContent(), webpage.setFrameContent(), webpage.includeJs()
      */
     evalInWindow : function (win, source, url, callback) {
         // we don't use the sandbox, because with it, scripts
