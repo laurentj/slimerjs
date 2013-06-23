@@ -33,7 +33,30 @@ callPhantomAPI.prototype = {
                 return;
             }
             if (self.webpage.onCallback) {
-                return self.webpage.onCallback(arg);
+                try {
+                    let result = self.webpage.onCallback(arg);
+                    if (typeof result == "object") {
+                        let expose = {}
+                        for (let p in result) {
+                            expose[p] = 'rw';
+                        }
+                        result.__exposedProps__ = expose;
+                    }
+                    return result;
+                }
+                catch(e) {
+                    if (typeof e == 'object') {
+                        let expose = {
+                            message:'r',
+                            name:'r'
+                        }
+                        for (let p in e) {
+                            expose[p] = 'r';
+                        }
+                        e.__exposedProps__ = expose;
+                    }
+                    throw e;
+                }
             }
         }
     }

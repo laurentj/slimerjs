@@ -21,6 +21,8 @@ Fixed PhantomJS conformance issues
 - ``phantom.injectJs()`` supports now CoffeeScripts scripts.
 - ``window.callPhantom()`` can now be called during page loading
 
+
+
 version 0.7
 ===========
 
