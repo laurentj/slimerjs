@@ -1013,7 +1013,7 @@ function create() {
                                         .getInterface(Ci.nsIDOMWindowUtils);
             if (modifier) {
                 let  m = 0;
-                let mod = this.event.modifiers;
+                let mod = this.event.modifier;
                 if (modifier & mod.shift) m |= domWindowUtils.MODIFIER_SHIFT;
                 if (modifier & mod.alt) m |= domWindowUtils.MODIFIER_ALT;
                 if (modifier & mod.ctrl) m |= domWindowUtils.MODIFIER_CONTROL;
@@ -1113,7 +1113,7 @@ function create() {
         },
 
         event : {
-            modifiers : {
+            modifier : {
                 shift:  0x02000000,
                 ctrl:   0x04000000,
                 alt:    0x08000000,
