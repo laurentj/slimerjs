@@ -209,12 +209,12 @@ exports.Sandbox = Sandbox;
 // - `options.encoding`: Source encoding, defaults to 'UTF-8'.
 // - `options.line`: Line number to start count from for stack traces.
 //    Defaults to 1.
-// - `options.version`: Version of JS used, defaults to '1.8'.
+// - `options.version`: Version of JS used, defaults to 'ECMAv5'.
 const evaluate = iced(function evaluate(sandbox, uri, options) {
   let { source, line, version, encoding } = override({
     encoding: 'UTF-8',
     line: 1,
-    version: '1.8',
+    version: 'ECMAv5',
     source: null
   }, options);
 
@@ -425,14 +425,14 @@ exports.unload = unload;
 //   If `resolve` does not returns `uri` string exception will be thrown by
 //   an associated `require` call.
 // - `javascriptVersion` to indicate with which javascript version modules
-//   will be executed (default: 1.8)
+//   will be executed (default: ECMAv5)
 const Loader = iced(function Loader(options) {
   let { modules, globals, resolve, paths, javascriptVersion } = override({
     paths: {},
     modules: {},
     globals: {},
     resolve: exports.resolve,
-    javascriptVersion : '1.8'
+    javascriptVersion : 'ECMAv5'
   }, options);
 
   // We create an identity object that will be dispatched on an unload

@@ -39,7 +39,7 @@ var slLauncher = {
                                 'wantXrays': true
                             });
         let src = readChromeFile("resource://slimerjs/coffee-script/extras/coffee-script.js");
-        Cu.evalInSandbox(src, coffeeScriptSandbox, '1.8', 'coffee-scripts.js', 1);
+        Cu.evalInSandbox(src, coffeeScriptSandbox, 'ECMAv5', 'coffee-scripts.js', 1);
 
         // load and execute the provided script
         let fileURI = Services.io.newFileURI(scriptFile).spec;
@@ -75,7 +75,7 @@ var slLauncher = {
         if (isCoffeeScript) {
             coffeeScriptSandbox.source = source
             let src = "this.CoffeeScript.compile(this.source);";
-            source = Cu.evalInSandbox(src, coffeeScriptSandbox, '1.8', 'slLauncher::injectJs', 1);
+            source = Cu.evalInSandbox(src, coffeeScriptSandbox, 'ECMAv5', 'slLauncher::injectJs', 1);
         }
 
         let sandbox = mainLoader.sandboxes[mainLoader.main.uri];

@@ -79,7 +79,7 @@ function create() {
         if (!webPageSandbox.has(win))
             webPageSandbox.set(win, createSandBox(win));
         try {
-            let res = Cu.evalInSandbox(src, webPageSandbox.get(win), '1.8', file, 1);
+            let res = Cu.evalInSandbox(src, webPageSandbox.get(win), 'ECMAv5', file, 1);
             // QWebFrame.evaluateJavascript() used by PhantomJS
             // always returns null when no value are returned by
             // the script.
