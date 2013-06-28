@@ -1,7 +1,14 @@
 
 describe("WebPage.onCallback", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/callback.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("is called when calling window.callPhantom",function() {
         var loaded = false;

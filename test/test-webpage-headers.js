@@ -1,8 +1,14 @@
 
 describe("WebPage", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/getHeaders";
 
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
     it("can set headers",function() {
         var loaded = false;
 

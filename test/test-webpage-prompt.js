@@ -1,7 +1,14 @@
 
 describe("WebPage.onAlert", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/alert.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("has no effect if it is empty",function() {
         var loaded = false;
@@ -39,8 +46,15 @@ describe("WebPage.onAlert", function(){
 
 
 describe("WebPage.onConfirm", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/alert.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("has no effect if it is empty",function() {
         var loaded = false;
@@ -85,8 +99,15 @@ describe("WebPage.onConfirm", function(){
 
 
 describe("WebPage.onPrompt", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/alert.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("has no effect if it is empty",function() {
         var loaded = false;

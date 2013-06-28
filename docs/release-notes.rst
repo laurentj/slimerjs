@@ -17,11 +17,12 @@ Fixed PhantomJS conformance issues
 
 - ``webpage.evaluate()`` should return null when the result of the
   given javascript function is undefined.
-- Added ``webpage.objectName`` and ``webserver.objectName``
+- Added ``webpage.objectName`` and ``webserver.objectName``.
 - ``phantom.injectJs()`` supports now CoffeeScripts scripts.
-- ``window.callPhantom()`` can now be called during page loading
-- Changed ``webpage.event.modifiers`` to ``webpage.event.modifier``
-
+- ``window.callPhantom()`` can now be called during page loading.
+- Changed ``webpage.event.modifiers`` to ``webpage.event.modifier``.
+- After creating a ``webpage``, evaluating javascript should be possible.
+  The window is now opened immediately when calling create();
 
 version 0.7
 ===========

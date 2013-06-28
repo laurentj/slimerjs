@@ -15,8 +15,16 @@ describe("webpage.sendEvent", function() {
     var right = 2;
     var middle = 1;
         
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/mouseevent.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
+
 
     /*webpage.onConsoleMessage = function(message, l, s) {
         console.log(message);

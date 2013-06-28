@@ -1,35 +1,40 @@
 
 describe("webpage.onConsoleMessage", function() {
 
-    var webpage = require("webpage").create();
-    var webpage2 = require("webpage").create();
+    var webpage, webpage2;
+    var message, message2;
 
     var url = "http://127.0.0.1:8083/";
 
-    var message = null;
-    var message2 = null;
-
-    webpage.onConsoleMessage= function(msg, lineNum, sourceId) {
-        var m = {m:msg,
-            l:lineNum,
-            s:sourceId}
-        if (message) {
-            message = [ message, m ]
+    beforeEach(function() {
+        if (webpage) {
+            return;
         }
-        else
-            message = m
-    }
+        webpage = require("webpage").create();
+        webpage2 = require("webpage").create();
 
-    webpage2.onConsoleMessage= function(msg, lineNum, sourceId) {
-        var m = {m:msg,
-            l:lineNum,
-            s:sourceId}
-        if (message2) {
-            message2 = [ message2, m ]
+        webpage.onConsoleMessage= function(msg, lineNum, sourceId) {
+            var m = {m:msg,
+                l:lineNum,
+                s:sourceId}
+            if (message) {
+                message = [ message, m ]
+            }
+            else
+                message = m
         }
-        else
-            message2 = m
-    }
+    
+        webpage2.onConsoleMessage= function(msg, lineNum, sourceId) {
+            var m = {m:msg,
+                l:lineNum,
+                s:sourceId}
+            if (message2) {
+                message2 = [ message2, m ]
+            }
+            else
+                message2 = m
+        }
+    });
 
     it("should receive the message",function() {
         message = null;

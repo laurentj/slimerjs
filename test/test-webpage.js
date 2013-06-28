@@ -1,10 +1,11 @@
 
 describe("WebPage object on hello world", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8082/";
 
     var async = new AsyncSpec(this);
     async.it("should be opened",function(done) {
+        webpage = require("webpage").create();
         webpage.open(url, function(success){
             expect(success).toEqual("success");
             done();
@@ -32,9 +33,15 @@ describe("WebPage object on hello world", function(){
 
 
 describe("WebPage object", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/";
 
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("can open a page and a promise can be used",function() {
         var loaded = false;
@@ -93,8 +100,16 @@ describe("WebPage object", function(){
 
 
 describe("WebPage.evaluate()", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/inject.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
+
 
     it("can evaluate a given function",function() {
         var loaded = false;
@@ -167,8 +182,15 @@ describe("WebPage.evaluate()", function(){
 
 
 describe("WebPage.injectJs()", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/inject.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("can injects js",function() {
         var loaded = false;
@@ -254,8 +276,15 @@ describe("WebPage.injectJs()", function(){
 
 
 describe("WebPage.title", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8082/hello.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("can be retrieved",function() {
         var loaded = false;
@@ -274,8 +303,15 @@ describe("WebPage.title", function(){
 });
 
 describe("WebPage.content", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/simplehello.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("contain the source code of the HTML page",function() {
         var loaded = false;
@@ -328,8 +364,15 @@ describe("WebPage.content", function(){
 });
 
 describe("WebPage.setContent", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
+
     it("can set the content on a new browser",function() {
 
         var content = "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">\n"
@@ -363,8 +406,15 @@ describe("WebPage.setContent", function(){
 });
 
 describe("WebPage.zoomFactor", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8082/hello.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("can be retrieved",function() {
         var loaded = false;
@@ -388,11 +438,12 @@ describe("WebPage.zoomFactor", function(){
 
 
 describe("WebPage.open()", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/getHeaders";
 
     var async = new AsyncSpec(this);
     async.it("can be called with url, httpConf",function(done) {
+        webpage = require("webpage").create();
         webpage.open(url, 'get')
         .then(function(success){
             expect(webpage.content).toNotEqual('');

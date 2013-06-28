@@ -1,7 +1,14 @@
 
 describe("WebPage.onPageCreated", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/windowopen.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("is called when window.open",function() {
         var loaded = false;
@@ -44,8 +51,15 @@ describe("WebPage.onPageCreated", function(){
 });
 
 describe("WebPage.onClosing", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/windowclose.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("is called when window.close",function() {
         var loaded = false;

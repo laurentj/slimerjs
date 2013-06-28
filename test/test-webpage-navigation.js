@@ -1,7 +1,14 @@
 
 describe("WebPage.onNavigationRequested", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/navigation.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("is called when a click is made on a link",function() {
         var loaded = false;

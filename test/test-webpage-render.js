@@ -1,7 +1,14 @@
 
 describe("WebPage.viewportSize", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8082/hello.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("can change the size of the window",function() {
         var loaded = false;
@@ -28,8 +35,15 @@ describe("WebPage.viewportSize", function(){
 });
 
 describe("WebPage.renderBase64()", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8082/hello.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("can capture and return a base64 content",function() {
         var loaded = false;
@@ -59,8 +73,15 @@ describe("WebPage.renderBase64()", function(){
 
 
 describe("WebPage.render()", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8082/hello.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("can capture and save it into a file",function() {
         var loaded = false;
