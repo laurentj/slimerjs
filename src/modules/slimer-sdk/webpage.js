@@ -36,6 +36,14 @@ netLog.startTracer();
  * @module webpage
  */
 function create() {
+    let [webpage, win] = _create(null);
+    return webpage;
+}
+
+/**
+ * @return [webpage, window]
+ */
+function _create(aParentWindow) {
 
     // -----------------------  private properties and functions for the webpage object
 
@@ -44,6 +52,7 @@ function create() {
      */
     var browser = null;
 
+    var browserJustCreated = true;
     /**
      * library path
      */
@@ -278,9 +287,7 @@ function create() {
         openURI : function(aURI, aOpener, aWhere, aContext)
         {
             // create the webpage object for this child window
-            var childPage = create();
-            // open the window
-            var win = childPage._openBlankBrowser(aOpener);
+            let [childPage, win] = _create(aOpener);
 
             privProp.childWindows.push(childPage);
 
@@ -351,6 +358,33 @@ function create() {
         return win;
     }
 
+    function openBlankBrowser(noInitializedEvent) {
+        let options = getNetLoggerOptions(webpage, null);
+        let ready = false;
+        let win = slLauncher.openBrowser(function(nav){
+            browser = nav;
+            browser.webpage = webpage;
+            browserJustCreated = true;
+            Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
+            netLog.registerBrowser(browser, options);
+            if (!noInitializedEvent)
+                webpage.initialized();
+            ready = true;
+        }, aParentWindow);
+
+        win.QueryInterface(Ci.nsIDOMChromeWindow)
+           .browserDOMWindow = slBrowserDOMWindow;
+    
+        // we're waiting synchronously after the initialisation of the new window, because we need
+        // to have a ready browser element and then to have an existing win.content.
+        // slBrowserDOMWindow.openURI needs to return this win.content so the
+        // caller will load the URI into this window object.
+        let thread = Services.tm.currentThread;
+        while (!ready)
+            thread.processNextEvent(true);
+    
+        return [webpage, win];
+    }
 
     // ----------------------------------- webpage
 
@@ -533,40 +567,6 @@ function create() {
         },
 
         /**
-         * @private
-         */
-        _openBlankBrowser: function(parentWindow, noInitializedEvent) {
-            var me = this;
-
-            if (browser) {
-                throw Cr.NS_ERROR_UNEXPECTED;
-            }
-            var options = getNetLoggerOptions(this, null);
-            var ready = false;
-            var win = slLauncher.openBrowser(function(nav){
-                browser = nav;
-                browser.webpage = me;
-                Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
-                netLog.registerBrowser(browser, options);
-                if (!noInitializedEvent)
-                    me.initialized();
-                ready = true;
-            }, parentWindow);
-
-            win.QueryInterface(Ci.nsIDOMChromeWindow)
-               .browserDOMWindow = slBrowserDOMWindow;
-
-            // we're waiting synchronously after the initialisation of the new window, because we need
-            // to have a ready browser element and then to have an existing win.content.
-            // slBrowserDOMWindow.openURI needs to return this win.content so the
-            // caller will load the URI into this window object.
-            let thread = Services.tm.currentThread;
-            while (!ready)
-                thread.processNextEvent(true);
-            return win;
-        },
-
-        /**
          * open a webpage
          * @param string url       the url of the page to load
          * @param string httpConf  the http method 'get', 'post', 'head', 'post', 'delete'
@@ -609,6 +609,10 @@ function create() {
             var options = getNetLoggerOptions(this, deferred);
 
             if (browser) {
+                if (browserJustCreated){
+                    webpage.initialized();
+                    browserJustCreated = false;
+                }
                 // don't recreate a browser if already opened.
                 netLog.registerBrowser(browser, options);
                 webpageUtils.browserLoadURI(browser, url, httpConf);
@@ -621,6 +625,7 @@ function create() {
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
                 browser.stop();
                 me.initialized();
+                browserJustCreated = false;
                 netLog.registerBrowser(browser, options);
                 webpageUtils.browserLoadURI(browser, url, httpConf);
             });
@@ -1132,7 +1137,7 @@ function create() {
 
         setContent: function(content, url) {
             if (!browser) {
-                this._openBlankBrowser(null, true);
+                openBlankBrowser(true);
             }
             if (url) {
                 let uri = Services.io.newURI(url, null, null);
@@ -1343,7 +1348,8 @@ function create() {
         }
     };
 
-    return webpage;
+    // initialization
+    return openBlankBrowser(false);
 }
 exports.create = create;
 
