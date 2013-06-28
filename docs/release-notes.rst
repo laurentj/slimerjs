@@ -22,7 +22,7 @@ Fixed PhantomJS conformance issues
 - ``window.callPhantom()`` can now be called during page loading.
 - Changed ``webpage.event.modifiers`` to ``webpage.event.modifier``.
 - After creating a ``webpage``, evaluating javascript should be possible.
-  The window is now opened immediately when calling create();
+  The window is now opened immediately with about:blank when calling create().
 
 version 0.7
 ===========

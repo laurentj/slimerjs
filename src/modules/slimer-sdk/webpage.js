@@ -1150,6 +1150,12 @@ function _create(aParentWindow) {
             webpageUtils.evalInWindow (browser.contentWindow, f);
         },
 
+        /**
+         * set a file to an <input type="file">. this can be a list of files
+         * a click event is generated on the element.
+         * @param string selector  a CSS selector to an <input type="file">
+         * @param string|array      list of files to select
+         */
         uploadFile: function(selector, filename) {
             throw new Error("webpage.uploadFile not implemented")
         },
