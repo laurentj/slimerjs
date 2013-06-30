@@ -7,14 +7,42 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://slimerjs/slUtils.jsm");
- 
+
+/**
+ * implements a file picker that replaces the default filepicker
+ * of mozilla. This file picker does not show a dialog
+ * and gives file setted by webpage.onFilePicker or webpage.uploadFile
+ */
 function filePicker() {
+    this.fileName = null;
+    this._nsfile = null;
+    this._nsfiles = [];
+    this.browser = null;
+    this.supportsMultiple = false;
+    this.domWindowUtils = null;
 }
 
 filePicker.prototype = {
     classID          : Components.ID("{4d447d76-5205-4685-9237-9a35c7349adf}"),
     classDescription: "file picker for SlimerJS",
-    QueryInterface   : XPCOMUtils.generateQI([Ci.nsIFilePicker]), // "@mozilla.org/filepicker;1"
+    QueryInterface   : XPCOMUtils.generateQI([Ci.nsIFilePicker]),
+
+    _filterFiles : function(list) {
+        let finalList = []
+        list.forEach(function(file){
+            try {
+                let selectedFile = Cc['@mozilla.org/file/local;1']
+                                .createInstance(Ci.nsILocalFile);
+                selectedFile.initWithPath(file);
+                if (selectedFile.exists()) {
+                    finalList.push(selectedFile);
+                }
+            }
+            catch(e) {
+            }
+        });
+        return finalList;
+    },
 
     // ------------------------------------- nsIFilePicker interface
 
@@ -30,8 +58,15 @@ filePicker.prototype = {
      */
     init : function (parent, title, mode) {
         // retrieve the webpage object corresponding to the parent
+        this.browser = getBrowserFromContentWindow(parent);
+        this.domWindowUtils = parent.QueryInterface(Ci.nsIInterfaceRequestor)
+                                    .getInterface(Ci.nsIDOMWindowUtils);
         // take account of mode if multi files
-        // set displayDirectory
+        if (mode & Ci.nsIFilePicker.modeOpenMultiple) {
+            this.supportsMultiple = true;
+        }
+        else
+            this.supportsMultiple = false;
     },
 
     /**
@@ -68,7 +103,7 @@ filePicker.prototype = {
      * want to work with.  On some platforms, this extension will be
      * automatically appended to filenames the user enters, if needed.  
      */
-    defaultExtension : '',
+    defaultExtension : '.*',
 
     /**
      * The filter which is currently selected in the File Picker dialog
@@ -92,7 +127,7 @@ filePicker.prototype = {
      * @readonly
      */
     get file () {
-        return null;
+        return this._nsfile;
     },
 
     /**
@@ -102,6 +137,8 @@ filePicker.prototype = {
      * @readonly
      */
     get fileURL () {
+        if (this._nsfile)
+            return Services.io.newFileURI(this._nsfile);
         return null;
     },
 
@@ -113,7 +150,7 @@ filePicker.prototype = {
      * @readonly
      */
     get files () {
-        return null;
+        return slUtils.createSimpleEnumerator(this._nsfiles);
     },
 
     /**
@@ -123,7 +160,8 @@ filePicker.prototype = {
      * @readonly
      */
     get domfile () {
-        // see nsDOMWindowUtils::WrapDOMFile
+        if (this._nsfile)
+            return this.domWindowUtils.wrapDOMFile(this._nsfile);
         return null;
     },
 
@@ -135,8 +173,11 @@ filePicker.prototype = {
      * @readonly
      */
     get domfiles () {
-        // see nsDOMWindowUtils::WrapDOMFile
-        return null;
+        let list = []
+        this._nsfiles.forEach(function(file){
+            list.push(this.domWindowUtils.wrapDOMFile(file))
+        })
+        return slUtils.createSimpleEnumerator(list);
     },
 
     /**
@@ -154,13 +195,51 @@ filePicker.prototype = {
      *
      */
     show : function () {
+        if (!this.browser || !this.browser.webpage) {
+            return Ci.nsIFilePicker.returnCancel;
+        }
+
+        let oldFile = '';
+        if (this.defaultString != '' && this.displayDirectory) {
+            let f = this.displayDirectory.clone();
+            f.append(this.defaultString);
+            oldFile = f.path;
+        }
+
         // call the onFilePicker callback on the corresponding webpage
+        let selectedFileName = '';
+        let selectedFiles = [];
+        if (this.browser.webpage.onFilePicker) {
             // the callback receives the old selected file
-            // and should returns the new file. this returned file is taken
-            // account only if the file exists
+            // and should returns the new file.
+            selectedFileName = this.browser.webpage.onFilePicker(oldFile);
+            if (selectedFileName) {
+                if (!Array.isArray(selectedFileName))
+                    selectedFiles = this._filterFiles([selectedFileName]);
+                else
+                    selectedFiles = this._filterFiles(selectedFileName);
+            }
+        }
 
         // if no file is given, take the file set by webpage.uploadFile()
-        return Ci.nsIFilePicker.returnCancel;
+        if (!selectedFiles.length
+            && 'uploadFiles' in this.browser
+            && this.browser.uploadFiles.length != 0) {
+            selectedFiles = this.browser.uploadFiles;
+        }
+
+        this._nsfiles = selectedFiles;
+        if (selectedFiles.length) {
+            this._nsfile = selectedFiles[0];
+            if (!this.supportsMultiple) {
+                this._nsfiles = [selectedFiles[0]];
+            }
+            return Ci.nsIFilePicker.returnOK;
+        }
+        else {
+            this._nsfile = null;
+            return Ci.nsIFilePicker.returnCancel;
+        }
     },
 
     /**
@@ -169,9 +248,9 @@ filePicker.prototype = {
      * @param nsIFilePickerShownCallback aFilePickerShownCallback
      */
     open : function (aFilePickerShownCallback) {
-        let res = this.show;
+        let res = this.show();
         aFilePickerShownCallback.done(res);
     }
 }
 
-this.NSGetFactory = XPCOMUtils.generateNSGetFactory([Navigation]);
+this.NSGetFactory = XPCOMUtils.generateNSGetFactory([filePicker]);

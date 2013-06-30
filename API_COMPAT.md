@@ -201,7 +201,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>switchToChildFrame(framePosition)   </td><td>Implemented. deprecated</td></tr>
     <tr><td>switchToMainFrame()                 </td><td>Implemented</td></tr>
     <tr><td>switchToParentFrame()               </td><td>Implemented</td></tr>
-    <tr><td>uploadFile(selector, filename)      </td><td></td></tr>
+    <tr><td>uploadFile(selector, filename)      </td><td>Implemented</td></tr>
 </table>
 
 ## callbacks
@@ -213,7 +213,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onConfirm                           </td><td>Implemented</td></tr>
     <tr><td>onConsoleMessage                    </td><td>Implemented (SlimerJS only: the callback receives the lineNumber and the sourceID, contrary to PhantomJS)</td></tr>
     <tr><td>onError                             </td><td>Implemented. (SlimerJS issue: For errors from the webpage directly, the stack is not available..)</td></tr>
-    <tr><td>onFilePicker                        </td><td></td></tr>
+    <tr><td>onFilePicker                        </td><td>Implemented</td></tr>
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented<br>SlimerJS only: the callback receives 3 parameters: the status ("success" or "fail"), the url and true if this is a frame that is loaded</td></tr>
     <tr><td>onLoadStarted                       </td><td>Implemented<br>SlimerJS only: the callback receives 2 parameters: the url and true if this is a frame that is loaded</td></tr>

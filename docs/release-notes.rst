@@ -12,6 +12,12 @@ This version is in development.
 
 This version can be used with Firefox 24.
 
+New API
+-------
+
+- Implementation of ``webpage.uploadFile()`` and support of ``webpage.onFilePicker``
+
+
 Fixed PhantomJS conformance issues
 ----------------------------------
 

@@ -649,9 +649,21 @@ switchToParentFrame()
 
 .. _webpage-uploadFile:
 
-uploadFile()
+uploadFile(selector, filename)
 -----------------------------------------
 
+A form may content an ``<input type="file">`` element. Of course, because
+SlimerJs is a scriptable browser, you cannot manipulate the file picker
+opened when you click on this element. ``uploadFile()`` allows you to set the
+value of such elements.
+
+Arguments are the CSS selector of the input element, and the full path of the file.
+The file must exist. You can also indicate an array of path, if the input element
+accepts several files.
+
+Note that a virtual file picker is opened when calling ``uploadFile()``, and
+so the ``onFilePicker`` callback is called. If this callback exists and
+returns a filename, the filename given to ``uploadFile()`` is ignored.
 
 .. _webpage-onAlert:
 
@@ -700,7 +712,12 @@ onError
 onFilePicker
 -----------------------------------------
 
+This callback is called when the browser needs to open a file picker.
+This is the case when a click is made on an ``<input type="file">`` element.
 
+The callback receives the previous selected file, and should return
+the path of the new selected file. If the target element accepts
+several files, you can return an array of file path.
 
 .. _webpage-onInitialized:
 

@@ -1151,13 +1151,57 @@ function _create(aParentWindow) {
         },
 
         /**
-         * set a file to an <input type="file">. this can be a list of files
+         * set a file to an <input type="file">. this can be a list of files.
          * a click event is generated on the element.
          * @param string selector  a CSS selector to an <input type="file">
          * @param string|array      list of files to select
          */
         uploadFile: function(selector, filename) {
-            throw new Error("webpage.uploadFile not implemented")
+
+            if (!browser) {
+                return;
+            }
+            // retrieve coordinates of the input
+            // to send the click
+            let coord = this.evaluate(function(sel){
+                    var el = document.querySelector(sel)
+                    if (!el)
+                        return null;
+                    return [el.offsetLeft, el.offsetTop];
+                }, selector);
+
+            if (coord === null) {
+                return;
+            }
+
+            // set files. Only take existing files.
+            let files;
+            if (!Array.isArray(filename))
+                files = [filename];
+            else
+                files = filename;
+
+            browser.uploadFiles = [];
+            files.forEach(function(file) {
+                try {
+                    let selectedFile = Cc['@mozilla.org/file/local;1']
+                                    .createInstance(Ci.nsILocalFile);
+                    selectedFile.initWithPath(file);
+                    if (selectedFile.exists()) {
+                        browser.uploadFiles.push(selectedFile);
+                    }
+                }
+                catch(e) {
+                }
+            });
+
+            if (!browser.uploadFiles.length) {
+                return
+            }
+            // send a click. It will open the file picker which will
+            // take browser.uploadFiles
+            this.sendEvent("click", coord[0], coord[1], "left");
+            slUtils.sleep(200); // wait after the file picker opening
         },
 
         // ------------------------------- Screenshot and pdf export
@@ -1252,13 +1296,7 @@ function _create(aParentWindow) {
 
         onConsoleMessage : null,
 
-        get onFilePicker() {
-            throw new Error("webpage.onFilePicker not implemented")
-        },
-
-        set onFilePicker(callback) {
-            throw new Error("webpage.onFilePicker not implemented")
-        },
+        onFilePicker : null,
 
         onPrompt : null,
 

@@ -49,6 +49,7 @@ phantom.injectJs("./test-webpage-callPhantom.js");
 phantom.injectJs("./test-webpage-onerror.js");
 phantom.injectJs("./test-webpage-navigation.js");
 phantom.injectJs("./test-webpage-headers.js");
+phantom.injectJs("./test-webpage-filepicker.js");
 
 
 var webserverTest = webServerFactory.create();

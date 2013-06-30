@@ -5,13 +5,18 @@
 "use strict";
 var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "dumpo",
                         "getMozFile", "readSyncStringFromFile", "readChromeFile",
-                        "getWebpageFromContentWindow", "getWebpageFromDocShell"];
+                        "getWebpageFromContentWindow", "getWebpageFromDocShell",
+                        "getBrowserFromContentWindow", "getBrowserFromDocShell",
+                        "createSimpleEnumerator", "slUtils"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cr = Components.results;
+const Cu = Components.utils;
 const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 const scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
 
+Cu.import("resource://gre/modules/Services.jsm");
 
 function dumpo(obj, indent) {
     if (typeof obj != 'object') {
@@ -122,8 +127,14 @@ function readChromeFile(url) {
     return str;
 }
 
-
 function getWebpageFromContentWindow(contentWin) {
+    let browser = getBrowserFromContentWindow(contentWin);
+    if (browser)
+        return browser.webpage;
+    return null;
+}
+
+function getBrowserFromContentWindow(contentWin) {
     try {
         /*
         let win = contentWin.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
@@ -137,7 +148,7 @@ function getWebpageFromContentWindow(contentWin) {
         var docShell = contentWin.top.QueryInterface(Ci.nsIInterfaceRequestor)
                          .getInterface(Ci.nsIWebNavigation)
                          .QueryInterface(Ci.nsIDocShell);
-        return getWebpageFromDocShell(docShell);
+        return getBrowserFromDocShell(docShell);
     }
     catch(e) {
         return null;
@@ -145,6 +156,13 @@ function getWebpageFromContentWindow(contentWin) {
 }
 
 function getWebpageFromDocShell(docShell) {
+    let browser = getBrowserFromDocShell(docShell)
+    if (browser)
+        return browser.webpage;
+    return null;
+}
+
+function getBrowserFromDocShell(docShell) {
     try {
         var browser= docShell.chromeEventHandler;
         if (!browser) {
@@ -157,9 +175,48 @@ function getWebpageFromDocShell(docShell) {
         if (browser.ownerDocument.documentElement.getAttribute("windowtype") != 'slimerpage') {
             return null;
         }
-        return browser.webpage;
+        return browser;
     }
     catch(e) {
         return null;
+    }
+}
+
+
+function nsSimpleEnumerator(items) {
+  this._items = items;
+  this._nextIndex = 0;
+}
+nsSimpleEnumerator.prototype = {
+  hasMoreElements: function() {
+    return this._nextIndex < this._items.length;
+  },
+  getNext: function() {
+    if (!this.hasMoreElements())
+      throw Cr.NS_ERROR_NOT_AVAILABLE;
+
+    return this._items[this._nextIndex++];
+  },
+  QueryInterface: function(aIID) {
+    if (Ci.nsISimpleEnumerator.equals(aIID) ||
+        Ci.nsISupports.equals(aIID))
+      return this;
+
+    throw Cr.NS_ERROR_NO_INTERFACE;
+  }
+};
+
+var slUtils = {
+    sleep: function(time) {
+        let ready = false;
+        let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+        timer.initWithCallback(function(){ready = true;}, time, timer.TYPE_ONE_SHOT);
+        let thread = Services.tm.currentThread;
+        while (!ready)
+            thread.processNextEvent(true);
+    },
+
+    createSimpleEnumerator: function(anArray) {
+        return new nsSimpleEnumerator(anArray);
     }
 }
