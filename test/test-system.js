@@ -1,7 +1,4 @@
 
-
-var system = require("system");
-
 describe("system module", function() {
     it("should be in a system object", function(){
         expect('system' in slimerEnv).toBeTruthy();

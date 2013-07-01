@@ -30,27 +30,31 @@ phantom.injectJs("./jasmine/jasmine.async.min.js");
 var slimerEnv = this;
 var webServerFactory = require("webserver");
 var fs = require("fs");
+var system = require("system");
 
-
-phantom.injectJs("./test-environment.js");
-phantom.injectJs("./test-require.js");
-phantom.injectJs("./test-system.js");
-phantom.injectJs("./test-webpage.js");
-phantom.injectJs("./test-webpage-listeners.js");
-phantom.injectJs("./test-webpage-keyevent.js");
-phantom.injectJs("./test-webpage-keyevent2.js");
-phantom.injectJs("./test-webpage-mouseevent.js");
-phantom.injectJs("./test-webpage-callbacks.js");
-phantom.injectJs("./test-webpage-render.js");
-phantom.injectJs("./test-webpage-prompt.js");
-phantom.injectJs("./test-webpage-open.js");
-phantom.injectJs("./test-webpage-frames.js");
-phantom.injectJs("./test-webpage-callPhantom.js");
-phantom.injectJs("./test-webpage-onerror.js");
-phantom.injectJs("./test-webpage-navigation.js");
-phantom.injectJs("./test-webpage-headers.js");
-phantom.injectJs("./test-webpage-filepicker.js");
-
+if (system.args.length == 2) {
+    phantom.injectJs("./test-"+system.args[1]+".js");
+}
+else {
+    phantom.injectJs("./test-environment.js");
+    phantom.injectJs("./test-require.js");
+    phantom.injectJs("./test-system.js");
+    phantom.injectJs("./test-webpage.js");
+    phantom.injectJs("./test-webpage-listeners.js");
+    phantom.injectJs("./test-webpage-keyevent.js");
+    phantom.injectJs("./test-webpage-keyevent2.js");
+    phantom.injectJs("./test-webpage-mouseevent.js");
+    phantom.injectJs("./test-webpage-callbacks.js");
+    phantom.injectJs("./test-webpage-render.js");
+    phantom.injectJs("./test-webpage-prompt.js");
+    phantom.injectJs("./test-webpage-open.js");
+    phantom.injectJs("./test-webpage-frames.js");
+    phantom.injectJs("./test-webpage-callPhantom.js");
+    phantom.injectJs("./test-webpage-onerror.js");
+    phantom.injectJs("./test-webpage-navigation.js");
+    phantom.injectJs("./test-webpage-headers.js");
+    phantom.injectJs("./test-webpage-filepicker.js");
+}
 
 var webserverTest = webServerFactory.create();
 webserverTest.listen(8083, function(request, response) {
