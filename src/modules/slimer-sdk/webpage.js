@@ -898,8 +898,29 @@ function _create(aParentWindow) {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
-            let f = '('+func.toString()+').apply(this, ' + args + ');';
+            if (!(func instanceof Function
+                  || typeof func === 'function'
+                  || typeof func === 'string'
+                  || func instanceof String)) {
+                throw new Error("Wrong use of WebPage#evaluate");
+            }
+
+            let args = Array.prototype.slice.call(arguments).slice(1).map(
+                          function(arg){
+                                let type = typeof arg;
+                                switch(type) {
+                                    case 'object':
+                                        if (!arg || arg instanceof RegExp) {
+                                            return ""+arg;
+                                        }
+                                    case 'string':
+                                        return JSON.stringify(arg);
+                                    default:
+                                        return ""+arg
+                                }
+                          });
+
+            let f = '('+func.toString()+').apply(this, [' + args.join(",") + ']);';
             return evalInSandbox(f, 'phantomjs://webpage.evaluate()');
         },
 

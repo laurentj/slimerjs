@@ -18,6 +18,12 @@ New API
 - Implementation of ``webpage.uploadFile()`` and support of ``webpage.onFilePicker``
 
 
+Fixed bugs
+----------
+
+- ``webpage.evaluate()``: functions as arguments for the function to evaluate,
+  were not passed correctly to it.
+
 Fixed PhantomJS conformance issues
 ----------------------------------
 

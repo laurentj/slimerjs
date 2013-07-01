@@ -132,7 +132,22 @@ describe("WebPage.evaluate()", function(){
             expect(r).toEqual("okeval");
         });
     });
-    
+
+    it("accepts any arguments type for the function",function() {
+        // test inspired by a test in casperjs
+        var result = webpage.evaluate(
+                            function(_boolean_true, _boolean_false, _int_number,
+                                      _float_number, _string, _array, _object, _function) {
+            return [].map.call(arguments, function(arg) {
+                return typeof(arg);
+            });
+        }, true, false, 42, 1337.42, "plop! \"Ÿ£$\" 'no'", [1, 2, 3], {a: 1, b: 2},
+          function(){console.log('ok')});
+
+        expect(result.toString())
+          .toEqual(['boolean', 'boolean', 'number', 'number', 'string', 'object', 'object', 'function'].toString());
+    });
+
     // FIXME: modifying a variable in a sandbox
     // that inherits of the context of a window,
     // does not propagate the modification into
