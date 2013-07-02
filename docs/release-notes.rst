@@ -35,6 +35,7 @@ Fixed PhantomJS conformance issues
 - Changed ``webpage.event.modifiers`` to ``webpage.event.modifier``.
 - After creating a ``webpage``, evaluating javascript should be possible.
   The window is now opened immediately with about:blank when calling create().
+- ``webpage.onResourceRequested`` should receive a request object as second parameter
 
 version 0.7
 ===========

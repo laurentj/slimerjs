@@ -186,8 +186,12 @@ function _create(aParentWindow) {
                     request.setRequestHeader(hname, webpage.customHeaders[hname], true);
                 }
             },
-            onRequest: function(request) {webpage.resourceRequested(request);},
-            onResponse:  function(res) {webpage.resourceReceived(res);},
+            onRequest: function(requestData, request) {
+                webpage.resourceRequested(requestData, request);
+            },
+            onResponse:  function(res) {
+                webpage.resourceReceived(res);
+            },
             captureTypes: webpage.captureContent,
             onLoadStarted: function(url){
                 if (wycywigReg.test(url)) {
@@ -1401,9 +1405,9 @@ function _create(aParentWindow) {
                 this.onResourceReceived(request);
         },
 
-        resourceRequested: function(resource) {
+        resourceRequested: function(resource, request) {
             if (this.onResourceRequested)
-                this.onResourceRequested(resource);
+                this.onResourceRequested(resource, request);
         },
 
         urlChanged: function(url) {

@@ -139,7 +139,7 @@ const onRequestStart = function(subject, data) {
     }
 
     if (typeof(options.onRequest) === "function") {
-        options.onRequest(traceRequest(index, subject));
+        options.onRequest(traceRequest(index, subject), requestController(subject, index, options));
     }
 };
 
@@ -304,6 +304,41 @@ TracingListener.prototype = {
     }
 };
 
+
+
+const requestController = function(request, index, options) {
+    return {
+        abort: function() {
+            request.cancel(0);
+            if (typeof(options.onResponse) == "function") {
+                options.onResponse(
+                    {
+                        id: index,
+                        url: "",
+                        time: null,
+                        headers: [],
+                        bodySize: 0,
+                        contentType: null,
+                        contentCharset: null,
+                        redirectURL: null,
+                        stage: "end",
+                        status: null,
+                        statusText: null,
+                        referrer: "",
+                        body: ""
+                    });
+            }
+            if (typeof(options.onLoadFinished) == "function") {
+                options.onLoadFinished(request.URI.spec, "fail")
+            }
+        },
+        changeUrl : function(url) {
+            let uri = ioService.newURI(url, null, null);
+            request.redirectTo(uri);
+            options.onLoadFinished(url, "success")
+        }
+    }
+}
 
 /*
 Request & Response objects

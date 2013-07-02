@@ -760,20 +760,77 @@ onPrompt
 -----------------------------------------
 
 
+.. _webpage-onResourceReceived:
+
+onResourceReceived
+-----------------------------------------
+This callback is invoked when the browser received a part of a resource. It can
+be called several times with multiple chunk of data, during the load of this resource.
+A resource can be the web page itself, or any other resources like
+images, frames, css files etc.
+
+The unique parameter received by the callback is an object containing these
+informations:
+ 
+- ``id``: the number of the requested resource
+- ``url``:  the url of the resource
+- ``time``: a Date object
+- ``headers``: the list of headers (list of objects ``{name:'', value:''}``)
+- ``bodySize``: the size of the received content (may increase during multiple call of the callback)
+- ``contentType``: the content type of the resource
+- ``contentCharset``: the charset used for the content of the resource
+- ``redirectURL``: if the request has been redirected, this is the redirected url
+- ``stage``: "start", "end" or "" for intermediate chunk of data
+- ``status``: the HTTP response code (200..)
+- ``statusText``: the HTTP response text for the status ("Ok"...)
+- ``referrer``: the referer url (slimerjs only)
+- ``body``: the content, it may change during multiple call for the same request (slimerjs only).
+
+
+.. code-block:: javascript
+
+    page.onResourceReceived = function(response) {
+        console.log('Response (#' + response.id + ', stage "' + response.stage + '"): ' + JSON.stringify(response));
+    };
+
+
+
 
 .. _webpage-onResourceRequested:
 
 onResourceRequested
 -----------------------------------------
 
+This callback is invoked when the browser starts to load a resource.
+A resource can be the web page itself, or any other resources like
+images, frames, css files etc.
 
+The callback may accept two parameters :
 
-.. _webpage-onResourceReceived:
+- ``requestData``, a metadata object containing informations about the resource
+- ``networkRequest``, an object to manipulate the network request.
 
-onResourceReceived
------------------------------------------
+.. code-block:: javascript
 
- 
+    page.onResourceRequested = function(requestData, networkRequest) {
+        console.log('Request (#' + requestData.id + '): ' + JSON.stringify(requestData));
+    };
+
+Properties of ``requestData`` are:
+
+- ``id``: the number of the requested resource
+- ``method``: the http method ("get", "post"..)
+- ``url``: the url of the resource
+- ``time``: a Date object
+- ``headers``: the list of headers (list of objects ``{name:'', value:''}``)
+
+The ``networkRequest`` object has two methods:
+
+- ``abort()``: call it to cancel the request. ``onResourceReceived`` and ``onLoadFinished``
+   will be called.
+- ``changeUrl(url)``: abort the current request and do an immediate redirection to
+   the given url.
+
 
 .. _webpage-onUrlChanged:
 
@@ -783,78 +840,98 @@ onUrlChanged
 
 .. _webpage-closing:
 
-closing()
+closing(page)
 -----------------------------------------
 
-
+Call the callback :ref:`onClosing <webpage-onClosing>`  with given
+parameters, if the callback has been set.
 
 .. _webpage-initialized:
 
 initialized()
 -----------------------------------------
 
+Call the callback :ref:`onInitialized <webpage-onInitialized>` if it has been set.
  
 
 .. _webpage-javaScriptAlertSent:
 
-javaScriptAlertSent()
+javaScriptAlertSent(message)
 -----------------------------------------
+
+Call the callback  :ref:`onAlert <webpage-onAlert>` with given
+parameters, if the callback has been set.
 
 
 
 .. _webpage-javaScriptConsoleMessageSent:
 
-javaScriptConsoleMessageSent()
------------------------------------------
+javaScriptConsoleMessageSent(message, lineNumber, fileName)
+------------------------------------------------------------
 
+Call the callback  :ref:`onConsoleMessage <webpage-onConsoleMessage>` with given
+parameters, if the callback has been set.
 
 
 .. _webpage-loadFinished:
 
-loadFinished()
+loadFinished(status, url, isFrame)
 -----------------------------------------
+Call the callback :ref:`onLoadFinished <webpage-onLoadFinished>` with given
+parameters, if the callback has been set.
 
- 
 
 .. _webpage-loadStarted:
 
-loadStarted()
+loadStarted(url, isFrame)
 -----------------------------------------
 
+Call the callback :ref:`onLoadStarted <webpage-onLoadStarted>` with given
+parameters, if the callback has been set.
 
 
 .. _webpage-navigationRequested:
 
-navigationRequested()
------------------------------------------
+navigationRequested(url, navigationType, willNavigate, isMainFrame)
+--------------------------------------------------------------------
 
-
+Call the callback  :ref:`onNavigationRequested <webpage-onNavigationRequested>` with given
+parameters, if the callback has been set.
 
 .. _webpage-rawPageCreated:
 
-rawPageCreated()
+rawPageCreated(page)
 -----------------------------------------
 
- 
+Call the callback :ref:`onPageCreated <webpage-onPageCreated>` with given
+parameters, if the callback has been set.
+
 
 .. _webpage-resourceReceived:
 
-resourceReceived()
+resourceReceived(response)
 -----------------------------------------
 
+Call the callback :ref:`onResourceReceived <webpage-onResourceReceived>`  with given
+parameters, if the callback has been set.
 
 
 .. _webpage-resourceRequested:
 
-resourceRequested()
------------------------------------------
+resourceRequested(requestData, networkRequest)
+----------------------------------------------
 
+Call the callback :ref:`onResourceRequested <webpage-onResourceRequested>` with given
+parameters, if the callback has been set.
 
 
 .. _webpage-urlChanged:
 
-urlChanged()
+urlChanged(url)
 -----------------------------------------
+
+Call the callback :ref:`onUrlChanged <webpage-onUrlChanged>` with given
+parameters, if the callback has been set.
 
  
 
