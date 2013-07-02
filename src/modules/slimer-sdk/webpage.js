@@ -181,9 +181,9 @@ function _create(aParentWindow) {
             _onRequest: function(request) {
                 request = request.QueryInterface(Ci.nsIHttpChannel);
                 if (webpage.settings.userAgent)
-                    request.setRequestHeader("User-Agent", webpage.settings.userAgent, true);
+                    request.setRequestHeader("User-Agent", webpage.settings.userAgent, false);
                 for (var hname in webpage.customHeaders) {
-                    request.setRequestHeader(hname, webpage.customHeaders[hname], true);
+                    request.setRequestHeader(hname, webpage.customHeaders[hname], false);
                 }
             },
             onRequest: function(requestData, request) {
