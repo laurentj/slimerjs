@@ -418,6 +418,15 @@ describe("WebPage.setContent", function(){
             webpage.close();
         });
     });
+    it("can set a DOM Element",function() {
+        var html = document.createElement('html');
+        var body = document.createElement('body');
+        body.textContent = 'it works';
+        html.appendChild(body);
+        webpage.setContent(html, 'http://127.0.0.1:8083/foo.html');
+        expect(webpage.title).toEqual('');
+        expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("it works");
+    });
 });
 
 describe("WebPage.zoomFactor", function(){

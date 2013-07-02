@@ -1168,6 +1168,13 @@ function _create(aParentWindow) {
                 let uri = Services.io.newURI(url, null, null);
                 browser.docShell.setCurrentURI(uri);
             }
+            if ((typeof content) != "string") {
+                let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
+                                .createInstance(Ci.nsIDocumentEncoder);
+                encoder.init(document, "text/html", de.OutputLFLineBreak | de.OutputRaw);
+                encoder.setNode(content);
+                content = encoder.encodeToString();
+            }
 
             let f = '(function(){document.open();';
             f += 'document.write(decodeURIComponent("'+ encodeURIComponent (content)+'"));';
