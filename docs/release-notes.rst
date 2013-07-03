@@ -24,6 +24,8 @@ Fixed bugs
 - ``webpage.evaluate()``: functions as arguments for the function to evaluate,
   were not passed correctly to it.
 - Fixed conformance to CommonJS filesystem/A module in ``fs.directory()``
+- Fixed ``webpage.render()`` and ``webpage.renderBase64()``: default screenshot
+  size were not well calculated.
 
 Fixed PhantomJS conformance issues
 ----------------------------------

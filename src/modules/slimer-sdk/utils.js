@@ -24,8 +24,7 @@ const COLOR = "rgb(255,255,255)";
 
 
 const getScreenshotCanvas = function(window, clip, ratio) {
-    let scrollbarWidth = 0;
-    scrollbarWidth = window.innerWidth - window.document.body.clientWidth;
+    let scrollbarWidth = window.innerWidth - window.document.body.clientWidth;
 
     if (clip) {
         window.resizeTo(clip.width + scrollbarWidth, clip.height);
@@ -36,11 +35,14 @@ const getScreenshotCanvas = function(window, clip, ratio) {
 
     let top = clip && clip.top || 0;
     let left = clip && clip.left || 0;
-    let width = clip && clip.width;
-    let height = clip && clip.height || window.document.body.scrollHeight;
+    let width = clip && clip.width || null;
+    let height = clip && clip.height || null;
 
     if (width === null) {
-        width = window.document.body.clientWidth;
+        width = window.innerWidth;
+    }
+    if (height === null) {
+        height = window.innerHeight;
     }
 
     let canvas = AppShellService.hiddenDOMWindow.document.createElementNS(NS, "canvas");

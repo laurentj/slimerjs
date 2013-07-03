@@ -49,6 +49,7 @@ describe("WebPage.renderBase64()", function(){
         var loaded = false;
         runs(function() {
             webpage.open(url, function(success){
+                webpage.viewportSize = { width:300, height:210 };
                 loaded = true;
             });
         });
@@ -57,7 +58,7 @@ describe("WebPage.renderBase64()", function(){
         runs(function(){
             var capture = webpage.renderBase64();
             expect(typeof capture).toEqual("string");
-            expect(capture.length > 0).toBeTruthy();
+            expect(capture.length > 2400).toBeTruthy();
         });
     });
 
