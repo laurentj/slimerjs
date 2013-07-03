@@ -211,13 +211,25 @@ exports.split = function split(path) {
 }
 
 exports.directory = function directory(path) {
-  var parent = MozFile(path).parent;
-  return parent ? parent.path : "";
+  if (!path) {
+    return '';
+  }
+  return path.toString()
+            .replace(/\\/g, '/') // replace \ by /
+            .replace(/\/$/, "")  // remove trailing slash
+            .replace(/\/[^\/]*$/, ''); // remove last path component
 };
 
 // @deprecated
 exports.dirname = function dirname(path) {
-    return exports.directory(path);
+  if (!path) {
+    return '';
+  }
+  var p = path.toString().replace(/\\/g, '/') // replace \ by /
+  if (p.endsWith('/')) {
+    return p.replace(/\/$/, "")  // remove trailing slash
+  }
+  return p.replace(/\/[^\/]*$/, ''); // remove last path component
 };
 
 exports.base = function base(path) {

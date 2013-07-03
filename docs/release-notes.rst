@@ -23,6 +23,7 @@ Fixed bugs
 
 - ``webpage.evaluate()``: functions as arguments for the function to evaluate,
   were not passed correctly to it.
+- Fixed conformance to CommonJS filesystem/A module in ``fs.directory()``
 
 Fixed PhantomJS conformance issues
 ----------------------------------
