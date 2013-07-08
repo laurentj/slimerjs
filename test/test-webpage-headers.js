@@ -27,7 +27,7 @@ describe("WebPage", function(){
         waitsFor(function(){ return loaded;}, 1000);
 
         runs(function(){
-            var content = JSON.parse(webpage.content)
+            var content = JSON.parse(webpage.plainText)
             expect(content.headers['User-Agent']).toEqual("Super Browser / 1.0");
             expect(content.headers['X-foo']).toEqual("bar");
             expect(content.body).toEqual('');

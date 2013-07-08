@@ -371,8 +371,7 @@ describe("WebPage.content", function(){
 
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
-            var content = "hello I am a file requested by XHR"
-            expect(webpage.content).toEqual(content);
+            expect(webpage.content).toMatch(/<pre( [^>].+)?>hello I am a file requested by XHR<\/pre>/);
             webpage.close();
         });
     });
@@ -470,8 +469,8 @@ describe("WebPage.open()", function(){
         webpage = require("webpage").create();
         webpage.open(url, 'get')
         .then(function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('GET');
             expect(requestdata.body).toEqual('');
             expect('User-Agent' in requestdata.headers).toBeTruthy();
@@ -481,8 +480,8 @@ describe("WebPage.open()", function(){
             return webpage.open(url, {operation:'get'})
         })
         .then(function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('GET');
             expect(requestdata.body).toEqual('');
             expect('User-Agent' in requestdata.headers).toBeTruthy();
@@ -502,8 +501,8 @@ describe("WebPage.open()", function(){
                             })
         })
         .then(function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('POST');
             expect(requestdata.body).toEqual('foo=bar&z=3');
             expect(requestdata.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
@@ -521,8 +520,8 @@ describe("WebPage.open()", function(){
                 })
         })
         .then(function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('POST');
             expect(requestdata.body).toEqual('hello');
             expect(requestdata.headers['Content-Type']).toEqual('text/plain');
@@ -534,8 +533,8 @@ describe("WebPage.open()", function(){
 
     async.it("can be called with (url, httpConf, callback)",function(done) {
         webpage.open(url, 'get', function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('GET');
             expect(requestdata.body).toEqual('');
             expect('User-Agent' in requestdata.headers).toBeTruthy();
@@ -549,8 +548,8 @@ describe("WebPage.open()", function(){
     async.it("can be called with (url, operation, data)",function(done) {
         webpage.open(url, 'get', '')
         .then(function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('GET');
             expect(requestdata.body).toEqual('');
             expect('User-Agent' in requestdata.headers).toBeTruthy();
@@ -560,8 +559,8 @@ describe("WebPage.open()", function(){
             return webpage.open(url, 'post', 'foo=bar&z=3')
         })
         .then(function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('POST');
             expect(requestdata.body).toEqual('foo=bar&z=3');
             expect(requestdata.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
@@ -572,8 +571,8 @@ describe("WebPage.open()", function(){
 
     async.it("can be called with (url, 'get', data, callback)",function(done) {
         webpage.open(url, 'get', '', function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('GET');
             expect(requestdata.body).toEqual('');
             expect('User-Agent' in requestdata.headers).toBeTruthy();
@@ -586,8 +585,8 @@ describe("WebPage.open()", function(){
 
     async.it("can be called with (url, 'post', data, callback)",function(done) {
         webpage.open(url, 'post', 'foo=bar&z=3', function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('POST');
             expect(requestdata.body).toEqual('foo=bar&z=3');
             expect(requestdata.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
@@ -598,8 +597,8 @@ describe("WebPage.open()", function(){
 
     async.it("can be called with (url, 'get', data, headers, callback)",function(done) {
         webpage.open(url, 'get', '', { 'X-foo':'xbar' }, function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('GET');
             expect(requestdata.body).toEqual('');
             expect('User-Agent' in requestdata.headers).toBeTruthy();
@@ -613,8 +612,8 @@ describe("WebPage.open()", function(){
 
     async.it("can be called with (url, 'post', data, headers, callback)",function(done) {
         webpage.open(url, 'post', 'foo=bar&z=3',  { 'X-foo':'xbar' }, function(success){
-            expect(webpage.content).toNotEqual('');
-            var requestdata = JSON.parse(webpage.content);
+            expect(webpage.plainText).toNotEqual('');
+            var requestdata = JSON.parse(webpage.plainText);
             expect(requestdata.method).toEqual('POST');
             expect(requestdata.body).toEqual('foo=bar&z=3');
             expect(requestdata.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');

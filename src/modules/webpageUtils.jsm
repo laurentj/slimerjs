@@ -220,7 +220,7 @@ var webpageUtils = {
         }
         let channel = docShell.currentDocumentChannel;
         let doc = window.document;
-        if (channel.contentType != "text/html") {
+        if (channel.contentType != "text/html" && onlyPlainText) {
             // for text document, the DOMDocument content
             // a <pre> element with the text in it
             if (channel.contentType.indexOf("text/") === 0)
