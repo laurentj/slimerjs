@@ -18,8 +18,7 @@ Cu.import('resource://slimerjs/webpageUtils.jsm');
 const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
 const {
-    getScreenshotCanvas, setAuthHeaders, removeAuthPrompt,
-    getCookies, setCookies, Cookie
+    getScreenshotCanvas, setAuthHeaders, removeAuthPrompt
 } = require("./utils");
 
 const fs = require("sdk/io/file");

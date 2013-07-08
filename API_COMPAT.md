@@ -54,8 +54,8 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
 
 <table>
     <tr><td>args                                </td><td>Implemented (deprecated)</td></tr>
-    <tr><td>cookies                             </td><td></td></tr>
-    <tr><td>cookiesEnabled                      </td><td></td></tr>
+    <tr><td>cookies                             </td><td>Implemented</td></tr>
+    <tr><td>cookiesEnabled                      </td><td>Implemented</td></tr>
     <tr><td>defaultPageSettings                 </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented (deprecated)</td></tr>
     <tr><td>outputEncoding                      </td><td></td></tr>
@@ -69,11 +69,11 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
 ## methods
 
 <table>
-    <tr><td>addCookie(cookie)                   </td><td></td></tr>
+    <tr><td>addCookie(cookie)                   </td><td>Implemented</td></tr>
     <tr><td>callback(callback)                  </td><td></td></tr>
-    <tr><td>clearCookies()                      </td><td></td></tr>
+    <tr><td>clearCookies()                      </td><td>Implemented</td></tr>
     <tr><td>defaultErrorHandler(message, stack) </td><td>Implemented</td></tr>
-    <tr><td>deleteCookie(cookieName)            </td><td></td></tr>
+    <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
     <tr><td>exit(returnValue)                   </td><td>Partial implementation. The exit code cannot be returned
                                                     to the shell console because the Mozilla toolkit does not
                                                     provide a way to return it.</td></tr>

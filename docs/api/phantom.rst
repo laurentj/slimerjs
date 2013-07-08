@@ -10,9 +10,13 @@ Documentation soon. Please help us to fill this page :-)
 
 .. _phantom-addCookie:
 
-addCookie()
+addCookie(cookie)
 -----------------------------------------
 
+Add a cookie in the cookies storage of the current profile. The parameter
+is :doc:`a Cookie object <cookie>`. The cookie can be for any domains.
+
+Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 
 .. _phantom-args:
 
@@ -25,16 +29,28 @@ args
 clearCookies()
 -----------------------------------------
 
+Delete all cookies that are stored in the current profile.
 
 .. _phantom-cookies:
 
 cookies
 -----------------------------------------
 
+This is an array of all :doc:`Cookie objects <cookie>` stored in the current
+profile.
+
+Note: modifying an object in the array won't modify the cookie. You should
+retrieve the array, modify it, and then set the ``cookies`` property with this array.
+
+Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
+
 .. _phantom-cookiesEnabled:
 
 cookiesEnabled
 -----------------------------------------
+
+Indicates if the cookie manager is enabled (true) or disabled (false). You can
+modify this property to enable or disable the cookie manager.
 
 
 .. _phantom-defaultErrorHandler:
@@ -51,9 +67,10 @@ defaultPageSettings
 
 .. _phantom-deleteCookie:
 
-deleteCookie()
+deleteCookie(cookiename)
 -----------------------------------------
 
+It deletes all cookies that have the given name, in any domain.
 
 .. _phantom-exit:
 

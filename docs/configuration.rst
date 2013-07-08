@@ -108,6 +108,8 @@ Note that even if ``settings`` and ``phantom.defaultPageSettings`` are usable, s
 are not taken account yet by any webpage object.
 
 
+.. _profiles:
+
 Profiles
 ========
 

@@ -9,7 +9,9 @@ Components.utils.import('resource://slimerjs/slUtils.jsm');
 Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
 
-var httpCookies = [];
+var cookieManager = Components.classes["@mozilla.org/cookiemanager;1"]
+                    .getService(Components.interfaces.nsICookieManager2);
+
 
 var libPath = slConfiguration.scriptFile.parent.clone();
 
@@ -30,11 +32,17 @@ var phantom = {
     // ------------------------  cookies
 
     /**
-     * set a list of cookies
+     * set a list of cookies for any domain
      * @param cookie[] val
      */
     set cookies (val) {
-        httpCookies = val;
+        if (!Array.isArray(val))
+            throw new Error("Invalid value");
+        cookieManager.removeAll();
+        let self = this;
+        val.forEach(function (cookie) {
+            self.addCookie(cookie);
+        })
     },
 
     /**
@@ -42,34 +50,90 @@ var phantom = {
      * @return cookie[]
      */
     get cookies () {
-        return httpCookies;
+        let cookiesList = []
+        let cookiesEnum = cookieManager.enumerator;
+        while(cookiesEnum.hasMoreElements()) {
+            let cookie = cookiesEnum.getNext()
+                                    .QueryInterface(Components.interfaces.nsICookie2);
+            let c = new Cookie(cookie.name, cookie.value, cookie.host, cookie.path);
+            c.httponly = cookie.isHttpOnly;
+            c.secure =  cookie.isSecure;
+            c.expires = cookie.expires;
+            c.expiry = cookie.expiry;
+            cookiesList.push(c);
+        }
+        return cookiesList;
     },
 
     /**
      * if set to true, cookies will be send in requests
      */
-    cookiesEnabled : true,
+    get cookiesEnabled () {
+        return (Services.prefs.getIntPref("network.cookie.cookieBehavior") != 2);
+    },
+
+    set cookiesEnabled(val) {
+        Services.prefs.setIntPref("network.cookie.cookieBehavior", (val?0:2));
+    },
 
     /**
      * add a cookie in the cookie jar
      * @param cookie cookie
      */
     addCookie : function(cookie) {
-        throw new Error("phantom.addCookie not implemented");
+        let expires = 0;
+        // in phantomJs, expiry and expires can be a string or a number
+        if ("expiry" in cookie) {
+            expires = cookie.expiry;
+        }
+        else if ("expires" in cookie) {
+            expires = cookie.expires;
+        }
+        if (typeof(expires) == "string") {
+            expires = Math.ceil(Date.parse(expires) / 1000);
+        }
+        else if (expires > 2983305600){ // if date > 2200, let's assume that this is in milliseconds
+            expires = Math.ceil(expires / 1000);
+        }
+
+        let isSession = (expires <= 0);
+
+        cookieManager.add(
+            "domain" in cookie ? cookie.domain:'',
+            "path" in cookie ? cookie.path:'/',
+            "name" in cookie ? cookie.name:'',
+            "value" in cookie ? cookie.value:'',
+            "secure" in cookie ? cookie.secure:false,
+            "httponly" in cookie ? cookie.httponly:true,
+            isSession,
+            expires
+            );
     },
 
     /**
      * erase all cookies
      */
     clearCookies : function() {
-        httpCookies = [];
+        cookieManager.removeAll();
     },
 
     /**
-     * delete a cookie
+     * delete all cookies that have the given name
      */
     deleteCookie : function(cookieName) {
-        throw new Error("phantom.deleteCookie not implemented");
+        if (cookieName == '') {
+            // matches phantomjs behavior
+            cookieManager.removeAll();
+            return
+        }
+        let cookiesEnum = cookieManager.enumerator;
+        while(cookiesEnum.hasMoreElements()) {
+            let cookie = cookiesEnum.getNext()
+                                    .QueryInterface(Components.interfaces.nsICookie2);
+            if (cookie.name == cookieName) {
+                cookieManager.remove(cookie.host, cookie.name, cookie.path, false);
+            }
+        }
     },
 
     /**
@@ -166,7 +230,7 @@ var phantom = {
 /**
  * cookie object for http requests
  */
-function cookie(name, value, domain, path) {
+function Cookie(name, value, domain, path) {
     this.name = name;
     this.value = value;
     this.domain = domain || 'localhost';

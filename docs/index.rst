@@ -29,6 +29,7 @@ Objects and functions
    api/require
    api/phantom
    api/slimer
+   api/cookie
 
 Modules
 

@@ -54,6 +54,7 @@ else {
     phantom.injectJs("./test-webpage-navigation.js");
     phantom.injectJs("./test-webpage-headers.js");
     phantom.injectJs("./test-webpage-filepicker.js");
+    phantom.injectJs("./test-phantom-cookies.js");
 }
 
 var webserverTest = webServerFactory.create();
@@ -77,6 +78,21 @@ webserverTest.listen(8083, function(request, response) {
                 body: request.postRaw
             };
             response.write(JSON.stringify(data));
+        }
+        catch(e) {
+            response.write("Error:"+e)
+        }
+        response.close();
+        return;
+    }
+    if (request.url == '/getCookies') {
+        response.statusCode = 200;
+        response.headers = {
+            "Content-Type": "text/plain;charset=UTF-8",
+            "Set-Cookie": "UserID=JohnDoe; Max-Age=3600;"
+        }
+        try {
+            response.write(JSON.stringify(request.headers));
         }
         catch(e) {
             response.write("Error:"+e)

@@ -16,7 +16,7 @@ New API
 -------
 
 - Implementation of ``webpage.uploadFile()`` and support of ``webpage.onFilePicker``
-
+- Implementation of the cookie API on the ``phantom`` object
 
 Fixed bugs
 ----------
