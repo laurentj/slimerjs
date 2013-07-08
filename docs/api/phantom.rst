@@ -16,6 +16,9 @@ addCookie(cookie)
 Add a cookie in the cookies storage of the current profile. The parameter
 is :doc:`a Cookie object <cookie>`. The cookie can be for any domains.
 
+It returns true if the cookie has been really added. If cookies are
+disabled, the cookie is not added into the cookie database.
+
 Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 
 .. _phantom-args:
@@ -41,6 +44,10 @@ profile.
 
 Note: modifying an object in the array won't modify the cookie. You should
 retrieve the array, modify it, and then set the ``cookies`` property with this array.
+Probably you would prefer to use the ``addCookie()`` method to modify a cookie.
+
+If cookies are disabled, modifying this property does nothing.
+
 
 Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 
@@ -71,6 +78,9 @@ deleteCookie(cookiename)
 -----------------------------------------
 
 It deletes all cookies that have the given name, in any domain.
+
+It returns true if some cookies have been deleted.
+It works only if cookies are enabled.
 
 .. _phantom-exit:
 

@@ -456,6 +456,13 @@ function _create(aParentWindow) {
         customHeaders : {},
 
         addCookie: function(cookie) {
+            /*
+             * recupère url de la page. si pas init,
+             * utilisera le domaine du cookie
+             * et si pas de domaine -> n'est pas stocké
+             *
+             *
+             **/
             throw new Error("webpage.addCookie not implemented")
         },
 
@@ -690,7 +697,7 @@ function _create(aParentWindow) {
             throw new Error("webpage.scrollPosition not implemented")
         },
         get url() {
-            if (browser)
+            if (browser && !browserJustCreated)
                 return browser.currentURI.spec;
             return "";
         },
