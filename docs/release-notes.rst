@@ -21,6 +21,7 @@ New API
 - Implementation of the cookie API on the ``phantom`` object
 - Implementation of the cookie API on the ``webpage`` object
 - support of the ``--load-images`` option on the command line
+- support of ``javascriptEnabled`` and ``loadImages`` in settings
 
 Fixed bugs
 ----------

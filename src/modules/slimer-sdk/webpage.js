@@ -1400,6 +1400,11 @@ function _create(aParentWindow) {
 
         initialized: function() {
             webPageSandbox = null;
+            if (browser) {
+                let ds = browser.docShell;
+                ds.allowImages = privProp.settings.loadImages;
+                ds.allowJavascript = privProp.settings.javascriptEnabled;
+            }
             if (this.onInitialized)
                 this.onInitialized();
         },

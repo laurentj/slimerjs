@@ -139,8 +139,8 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>plainText                           </td><td>Implemented</td></tr>
     <tr><td>scrollPosition                      </td><td></td></tr>
     <tr><td>settings                            </td><td>Implemented</td></tr>
-    <tr><td>settings.javascriptEnabled          </td><td></td></tr>
-    <tr><td>settings.loadImages                 </td><td></td></tr>
+    <tr><td>settings.javascriptEnabled          </td><td>Implemented</td></tr>
+    <tr><td>settings.loadImages                 </td><td>Implemented</td></tr>
     <tr><td>settings.localToRemoteUrlAccessEnabled</td><td></td></tr>
     <tr><td>settings.XSSAuditingEnabled         </td><td></td></tr>
     <tr><td>settings.webSecurityEnabled         </td><td></td></tr>
