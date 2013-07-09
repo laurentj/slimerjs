@@ -21,7 +21,7 @@ var optionsSpec = {
     diskCacheEnabled : ['disk-cache', 'bool', false, false],
     maxDiskCacheSize : ['max-disk-cache-size', 'int', -1, false],
     ignoreSslErrors : ['ignore-ssl-errors', 'bool', false, false],
-    loadImages: ['load-images', 'bool', true, false],
+    loadImages: ['load-images', 'bool', true, true],
     localToRemoteUrlAccessEnabled : ['local-to-remote-url-access', 'bool', false, false],
     outputEncoding : ['output-encoding', 'encoding', 'UTF-8', false],
     proxyType : ['proxy-type', 'proxytype', 'http', false],

@@ -23,7 +23,7 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
     <tr><td>--disk-cache=[yes|no]                </td><td></td></tr>
     <tr><td>--help or -h                         </td><td>Implemented</td></tr>
     <tr><td>--ignore-ssl-errors=[yes|no]         </td><td></td></tr>
-    <tr><td>--load-images=[yes|no]               </td><td></td></tr>
+    <tr><td>--load-images=[yes|no]               </td><td>Implemented</td></tr>
     <tr><td>--local-storage-path=/path/to/file   </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--local-storage-quota=number         </td><td></td></tr>
     <tr><td>--local-to-remote-url-access=[yes|no]</td><td></td></tr>

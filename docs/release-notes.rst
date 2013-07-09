@@ -20,6 +20,7 @@ New API
 - Implementation of ``webpage.uploadFile()`` and support of ``webpage.onFilePicker``
 - Implementation of the cookie API on the ``phantom`` object
 - Implementation of the cookie API on the ``webpage`` object
+- support of the ``--load-images`` option on the command line
 
 Fixed bugs
 ----------
