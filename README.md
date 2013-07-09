@@ -9,7 +9,8 @@ it runs Gecko instead of Webkit, and it is not (yet) natively headless.
 However, it can be headless with the use of xvfb under Linux or MacOS.
 
 SlimerJS provide almost the same API of PhantomJS. The current version of SlimerJS
-is not 100% compatible. See current release notes in docs/release-notes.rst, and
+is highly compatible with PhantomJS even if it is not 100% compatible yet.
+See current release notes in docs/release-notes.rst, and
 read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md)
 to know the implementation progress.
 
@@ -37,7 +38,7 @@ it [on the web site](http://docs.slimerjs.org/current/)
 # Roadmap
 
 The goal for a first stable release 1.0 is to have a full implementation of
-the API of PhantomJS 1.9, with the support of Coffee scripts and Ghost Driver.
+the API of PhantomJS 1.9.1, with the support of Coffee scripts and Ghost Driver.
 
 After this release, the goal will be to hack XulRunner to run headless windows.
 

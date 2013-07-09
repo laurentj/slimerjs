@@ -105,6 +105,19 @@ cookies
 -----------------------------------------
 
 
+This is an array of all :doc:`Cookie objects <cookie>` stored in the current
+profile, and which corresponds to the current url of the webpage.
+
+When you set an array of Cookie to this property, cookies will be set
+for the current url: their domain and path properties will be changed.
+
+Note: modifying an object in the array won't modify the cookie. You should
+retrieve the array, modify it, and then set the ``cookies`` property with this array.
+Probably you would prefer to use the ``addCookie()`` method to modify a cookie.
+
+If cookies are disabled, modifying this property does nothing.
+
+Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 
 .. _webpage-customHeaders:
 
@@ -303,7 +316,9 @@ It allows to retrieve the title of the loaded page. (Readonly)
 url
 -----------------------------------------
 
-
+This property contains the current url of the page. If nothing
+is loaded yet, this is an empty string.
+Read only.
 
 .. _webpage-viewportSize:
 
@@ -328,9 +343,18 @@ zoomFactor
 
 .. _webpage-addCookie:
 
-addCookie()
+addCookie(cookie)
 -----------------------------------------
 
+Add a cookie in the cookies storage of the current profile, for the
+current url. The parameter is :doc:`a Cookie object <cookie>`.
+The domain and the path of the cookie will be set to the domain
+and the path of the current url.
+
+It returns true if the cookie has been really added. If cookies are
+disabled, the cookie is not added into the cookie database.
+
+Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 
 
 .. _webpage-childFramesCount:
@@ -352,6 +376,7 @@ childFramesName()
 clearCookies()
 -----------------------------------------
 
+Delete all cookies corresponding to the current url.
 
 
 .. _webpage-close:
@@ -370,10 +395,14 @@ currentFrameName()
 
 .. _webpage-deleteCookie:
 
-deleteCookie()
+deleteCookie(cookiename)
 -----------------------------------------
 
+It deletes all cookies that have the given name and corresponding
+to the current url.
 
+It returns true if some cookies have been deleted.
+It works only if cookies are enabled.
 
 .. _webpage-evaluateJavaScript:
 

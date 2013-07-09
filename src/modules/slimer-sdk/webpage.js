@@ -14,6 +14,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 Cu.import('resource://slimerjs/webpageUtils.jsm');
+Cu.import('resource://slimerjs/slCookiesManager.jsm');
 
 const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
@@ -445,33 +446,61 @@ function _create(aParentWindow) {
         captureContent : [],
 
         // ------------------------ cookies and headers
-        get cookies() {
-            throw new Error("webpage.cookies not implemented")
-        },
 
-        set cookies(val) {
-            throw new Error("webpage.cookies not implemented")
-        },
-
+        /**
+         * list of headers to set on every request for the webpage
+         */
         customHeaders : {},
 
+        /**
+         * retrieve the list of cookies of the domain of the current url
+         * @return cookie[]
+         */
+        get cookies() {
+            if (!browser || browserJustCreated)
+                return [];
+            return slCookiesManager.getCookiesForUri(browser.currentURI);
+        },
+
+        /**
+         * set a list of cookies for the domain of the web page
+         * @param cookie[] val
+         */
+        set cookies(val) {
+            if (!browser || browserJustCreated)
+                return;
+            slCookiesManager.setCookies(val, browser.currentURI);
+        },
+
+        /**
+         * add a cookie in the cookie manager for the current url
+         * @param cookie cookie
+         * @return boolean true if the cookie has been set
+         */
         addCookie: function(cookie) {
-            /*
-             * recupère url de la page. si pas init,
-             * utilisera le domaine du cookie
-             * et si pas de domaine -> n'est pas stocké
-             *
-             *
-             **/
-            throw new Error("webpage.addCookie not implemented")
+            if (!browser || browserJustCreated)
+                return false;
+            return slCookiesManager.addCookie(cookie, browser.currentURI);
         },
 
+        /**
+         * erase all cookies of the current domain
+         */
         clearCookies: function() {
-            throw new Error("webpage.clearCookies not implemented")
+            if (browser && !browserJustCreated)
+                slCookiesManager.clearCookies(browser.currentURI);
         },
 
+        /**
+         * delete all cookies that have the given name
+         * on the current domain
+         * @param string cookieName  the cookie name
+         * @return boolean true if deletion is ok
+         */
         deleteCookie: function(cookieName) {
-            throw new Error("webpage.deleteCookie not implemented")
+            if (!browser || browserJustCreated)
+                return false;
+            return slCookiesManager.deleteCookie(cookieName, browser.currentURI);
         },
 
         // -------------------------------- History
@@ -1171,6 +1200,7 @@ function _create(aParentWindow) {
             if (!browser) {
                 openBlankBrowser(true);
             }
+            browserJustCreated = false;
             if (url) {
                 let uri = Services.io.newURI(url, null, null);
                 browser.docShell.setCurrentURI(uri);

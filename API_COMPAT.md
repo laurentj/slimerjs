@@ -18,13 +18,13 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
 
 <table>
     <tr><td>--config=/path/to/config.json        </td><td></td></tr>
-    <tr><td>--cookies-file=/path/to/cookies.txt  </td><td></td></tr>
+    <tr><td>--cookies-file=/path/to/cookies.txt  </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--debug=[yes|no]                     </td><td></td></tr>
     <tr><td>--disk-cache=[yes|no]                </td><td></td></tr>
     <tr><td>--help or -h                         </td><td>Implemented</td></tr>
     <tr><td>--ignore-ssl-errors=[yes|no]         </td><td></td></tr>
     <tr><td>--load-images=[yes|no]               </td><td></td></tr>
-    <tr><td>--local-storage-path=/path/to/file   </td><td></td></tr>
+    <tr><td>--local-storage-path=/path/to/file   </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--local-storage-quota=number         </td><td></td></tr>
     <tr><td>--local-to-remote-url-access=[yes|no]</td><td></td></tr>
     <tr><td>--max-disk-cache-size=size           </td><td></td></tr>
@@ -36,7 +36,7 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
     <tr><td>--remote-debugger-autorun=[yes|no]   </td><td></td></tr>
     <tr><td>--script-encoding=encoding           </td><td></td></tr>
     <tr><td>--ssl-protocol=[SSLv3|SSLv2|TLSv1|any] </td><td></td></tr>
-    <tr><td>--ssl-certificates-path=/path/to/dir </td><td></td></tr>
+    <tr><td>--ssl-certificates-path=/path/to/dir </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--version or -v                      </td><td>Implemented</td></tr>
     <tr><td>--webdriver or --wd or -w            </td><td></td></tr>
     <tr><td>--webdriver=ip:port                  </td><td></td></tr>
@@ -117,7 +117,7 @@ It will contain API that does not exists in PhantomJS.
                                                         the content. The content is then set on the body <br>
                                                         property of the response object received by your <br>
                                                         onResourceReceived callback (SlimerJS only)</td></tr>
-    <tr><td>cookies                             </td><td></td></tr>
+    <tr><td>cookies                             </td><td>Implemented</td></tr>
     <tr><td>customHeaders                       </td><td>Implemented</td></tr>
     <tr><td>event                               </td><td></td></tr>
     <tr><td>focusedFrameName                    </td><td>Implemented</td></tr>
@@ -161,13 +161,13 @@ It will contain API that does not exists in PhantomJS.
 ## methods
 
 <table>
-    <tr><td>addCookie(Cookie)                   </td><td></td></tr>
+    <tr><td>addCookie(Cookie)                   </td><td>Implemented</td></tr>
     <tr><td>childFramesCount()                  </td><td>Implemented. deprecated</td></tr>
     <tr><td>childFramesName()                   </td><td>Implemented. deprecated</td></tr>
-    <tr><td>clearCookies()                      </td><td></td></tr>
+    <tr><td>clearCookies()                      </td><td>Implemented</td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
     <tr><td>currentFrameName()                  </td><td>Implemented. deprecated</td></tr>
-    <tr><td>deleteCookie(cookieName)            </td><td></td></tr>
+    <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
     <tr><td>evaluateJavascript(str)             </td><td>implemented</td></tr>
     <tr><td>evaluate(function, arg1, arg2,...)  </td><td>implemented</td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td>implemented</td></tr>

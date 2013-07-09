@@ -49,12 +49,10 @@ var slCookiesManager = {
     },
 
     /**
-     * retrieve the list of cookies.
-     * If url is given, it returns only cookies available for this url
-     * @param string url (optional)
+     * retrieve the list of all cookies.
      * @return Array list of Cookie objects.
      */
-    getCookies: function (url) {
+    getCookies: function () {
         let cookiesList = []
         let cookiesEnum = nsCookieManager.enumerator;
         while(cookiesEnum.hasMoreElements()) {
@@ -71,23 +69,52 @@ var slCookiesManager = {
     },
 
     /**
+     * retrieve the list of cookies corresponding to the given url
+     * @param nsIURI uri
+     * @return Array list of Cookie objects.
+     */
+    getCookiesForUri: function (uri) {
+        let cookiesList = [];
+        let cookiesEnum = nsCookieManager.getCookiesFromHost(uri.host);
+        while (cookiesEnum.hasMoreElements()) {
+            let cookie = cookiesEnum.getNext()
+                                    .QueryInterface(Ci.nsICookie2);
+            if (uri.path.indexOf(cookie.path) !== 0)
+                continue;
+            if (cookie.isSecure && uri.scheme !== 'https' )
+                continue;
+            let c = new Cookie(cookie.name, cookie.value, cookie.host, cookie.path);
+            c.httponly = cookie.isHttpOnly;
+            c.secure =  cookie.isSecure;
+            c.expires = cookie.expires;
+            c.expiry = cookie.expiry;
+            cookiesList.push(c);
+        }
+        return cookiesList;
+    },
+
+    /**
      * set a new list of cookies.
      * Cookies already set are deleted.
      * If an url is given, cookies will be assigned to the given domain
      * @param array cookies list of Cookie objects
-     * @param string url (optional)
+     * @param nsIURI uri (optional)
      * @return boolean true if cookies have been set
      */
-    setCookies: function (cookies, url) {
+    setCookies: function (cookies, uri) {
         if (!Array.isArray(cookies))
             throw new Error("Invalid value");
         if (!this.isCookiesEnabled())
             return false;
 
-        nsCookieManager.removeAll();
+        if (uri) {
+            this.clearCookies(uri);
+        }
+        else
+            nsCookieManager.removeAll();
         let cookieAdded = false;
         cookies.forEach(function (cookie) {
-            if (slCookiesManager._addCookie(cookie))
+            if (slCookiesManager._addCookie(cookie, uri))
                 cookieAdded = true;
         })
         return cookieAdded;
@@ -97,7 +124,7 @@ var slCookiesManager = {
      * add a cookie in the cookie jar
      * If an url is given, the cookie will be assigned to the given domain
      * @param cookie cookie
-     * @param string url (optional)
+     * @param nsIURI url (optional)
      * @return boolean true if the cookie has been set
      */
     addCookie: function (cookie, url) {
@@ -109,7 +136,7 @@ var slCookiesManager = {
     /**
      * @private
      */
-    _addCookie: function (cookie, url) {
+    _addCookie: function (cookie, uri) {
         let expires = 0;
         // in phantomJs, expiry and expires can be a string or a number
         if ("expiry" in cookie) {
@@ -126,11 +153,23 @@ var slCookiesManager = {
         }
 
         let isSession = (expires <= 0);
+        let domain = '';
+        let path = '/';
+        if (uri) {
+            domain = uri.host;
+            path = uri.path;
+        }
+        else {
+            domain = "domain" in cookie ? cookie.domain:'';
+            if (domain == '')
+                return false;
+            path = "path" in cookie ? cookie.path:'/';
+        }
 
         try {
             nsCookieManager.add(
-                "domain" in cookie ? cookie.domain:'',
-                "path" in cookie ? cookie.path:'/',
+                domain,
+                path,
                 "name" in cookie ? cookie.name:'',
                 "value" in cookie ? cookie.value:'',
                 "secure" in cookie ? cookie.secure:false,
@@ -148,14 +187,22 @@ var slCookiesManager = {
     /**
      * delete all cookies if cookies are enabled.
      * If an url is given, only delete cookies attached to
-     * @param string url (optional)
+     * @param nsIURI url (optional)
      * @return boolean true if deletion is ok
      */
-    clearCookies: function (url) {
+    clearCookies: function (uri) {
         if (!this.isCookiesEnabled())
             return false;
-
-        nsCookieManager.removeAll();
+        if (!uri) {
+            nsCookieManager.removeAll();
+            return true;
+        }
+        let cookies = this.getCookiesForUri(uri);
+        if (!cookies.length)
+            return false;
+        cookies.forEach(function(cookie) {
+            nsCookieManager.remove(cookie.domain, cookie.name, cookie.path, false);
+        });
         return true;
     },
 
@@ -163,10 +210,10 @@ var slCookiesManager = {
      * delete all cookies that have the given name
      * If an url is given, only delete cookies attached to
      * @param string cookieName  the cookie name
-     * @param string url (optional)
+     * @param nsIURI uri (optional)
      * @return boolean true if deletion is ok
      */
-    deleteCookie: function (cookieName, url) {
+    deleteCookie: function (cookieName, uri) {
         if (!this.isCookiesEnabled())
             return false;
 
@@ -175,11 +222,22 @@ var slCookiesManager = {
             nsCookieManager.removeAll();
             return true;
         }
-        let cookiesEnum = nsCookieManager.enumerator;
+        let cookiesEnum;
+        if (uri)
+            cookiesEnum = nsCookieManager.getCookiesFromHost(uri.host);
+        else
+            cookiesEnum = nsCookieManager.enumerator;
         let hasBeenDeleted = false;
         while(cookiesEnum.hasMoreElements()) {
             let cookie = cookiesEnum.getNext()
                                     .QueryInterface(Ci.nsICookie2);
+            if (uri) {
+                if (uri.path.indexOf(cookie.path) !== 0)
+                    continue;
+                if (cookie.isSecure && uri.scheme !== 'https' )
+                    continue;
+            }
+
             if (cookie.name == cookieName) {
                 nsCookieManager.remove(cookie.host, cookie.name, cookie.path, false);
                 hasBeenDeleted = true;

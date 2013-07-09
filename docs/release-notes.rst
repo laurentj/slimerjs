@@ -10,13 +10,16 @@ version 0.8
 
 This version is in development.
 
-This version can be used with Firefox 24.
+This version can be used with Firefox 24. The compatibility with PhantomJS has been
+strongly increased and some tools like CasperJS (version 1.1 or higher) work almost
+perfectly with SlimerJS 0.8.
 
 New API
 -------
 
 - Implementation of ``webpage.uploadFile()`` and support of ``webpage.onFilePicker``
 - Implementation of the cookie API on the ``phantom`` object
+- Implementation of the cookie API on the ``webpage`` object
 
 Fixed bugs
 ----------
@@ -40,6 +43,23 @@ Fixed PhantomJS conformance issues
   The window is now opened immediately with about:blank when calling create().
 - ``webpage.onResourceRequested`` should receive a request object as second parameter
 - ``webpage.setContent()`` should be able to receive a DOM element, not only a string 
+
+
+Missing APIS in SlimerJS 0.8
+----------------------------
+
+Here are the PhantomJS APIs that are missing in SlimerJS 0.8. Of course, their
+implementation is planed in future releases.
+
+- most of options for the command line are not supported
+- no support of the ``webpage.offlineStorage*`` properties, although offlineStorage
+  is supported natively and usable by a web page
+- no API to manage child windows
+- no support of settings on the webpage object
+- no support of Ghost Driver
+
+You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_ to know details.
+
 
 version 0.7
 ===========
@@ -102,8 +122,8 @@ Fixed PhantomJS conformance issues
 - Issue #11: support of all possible arguments on webpage.open()
 - The webserver guesses now the content type of some files (images..)
 
-Missing APIS
-------------
+Missing APIS in SlimerJS 0.7
+----------------------------
 
 Here are the PhantomJS APIs that are missing in SlimerJS 0.7. Of course, their
 implementation is planed in future releases.
@@ -162,8 +182,8 @@ release of SlimerJS.
 
 It is usable, although its API is not still 100% compatible with PhantomJS.
 
-Missing APIS
-------------
+Missing APIS in SlimerJS 0.6
+----------------------------
 
 Here are the PhantomJS APIs that are missing in SlimerJS 0.6. Of course, their
 implementation is planed in future releases.

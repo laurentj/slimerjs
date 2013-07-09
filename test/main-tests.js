@@ -55,6 +55,7 @@ else {
     phantom.injectJs("./test-webpage-headers.js");
     phantom.injectJs("./test-webpage-filepicker.js");
     phantom.injectJs("./test-phantom-cookies.js");
+    phantom.injectJs("./test-webpage-cookies.js");
 }
 
 var webserverTest = webServerFactory.create();
