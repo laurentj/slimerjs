@@ -1420,6 +1420,7 @@ function _create(aParentWindow) {
         },
 
         loadFinished: function(status, url, isFrame) {
+            browserJustCreated = false;
             webPageSandbox = null;
             if (this.onLoadFinished)
                 this.onLoadFinished(status, url, isFrame);
