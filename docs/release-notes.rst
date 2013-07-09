@@ -14,6 +14,10 @@ This version can be used with Firefox 24. The compatibility with PhantomJS has b
 strongly increased and some tools like CasperJS (version 1.1 or higher) work almost
 perfectly with SlimerJS 0.8.
 
+Some packages of SlimerJS 0.8 embed directly XulRunner 22 (Gecko 22): you don't have to
+install XulRunner or Firefox separately, nor to set a SLIMERJSLAUNCHER environment variable.
+Unless you want to use a different version of Gecko.
+
 New API
 -------
 

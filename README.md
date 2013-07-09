@@ -19,8 +19,8 @@ in a near future, you could use tools like [CasperJS](http://casperjs.org)...
 
 SlimerJS is not only a PhantomJS clone, it contains also [additional features](http://slimerjs.org/features.html).
 
-Technically, SlimerJS is a XUL/JS application that can be launched with
-XULRunner or Firefox (without its interface).
+Technically, SlimerJS is a XUL/JS application that is launched with
+XULRunner (or optionaly with any version of Firefox).
 
 # Community
 

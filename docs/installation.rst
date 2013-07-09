@@ -5,7 +5,16 @@
 Installation
 ============
 
+Installation of SlimerJS
+------------------------
 
+Download the latest zip package of SlimerJS and extract files
+into a directory somewhere on your disk. You'll have a ``slimerjs/`` directory
+with some files and a script called ``slimerjs`` (and ``slimerjs.bat`` for Windows).
+
+If you downloaded a SlimerJS package for a dedicated platform, it contains all needed
+binaries and you don't have to install Firefox or Xulrunner, you can skip the
+following section and go to the section :ref:`Launching SlimerJS <launch>`.
 
 Installation of Firefox or Xulrunner
 ------------------------------------
@@ -13,22 +22,17 @@ Installation of Firefox or Xulrunner
 .. index:: Firefox, XulRunner
 
 SlimerJS runs on any platform on which Firefox (Desktop version) is available.
-It needs XulRunner or Firefox. So install them first, for your prefered operating system.
+It needs XulRunner or Firefox. If you didn't download a SlimerJS package dedicated
+to a specific plateform, or if you want to launch SlimerJS with a different version
+of Gecko, you have to install Firefox or Xulrunner separately.
 
 - `Download Firefox <http://getfirefox.com>`_ (version 18 or higher)
-- or `Download Xulrunner <http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0.2/runtimes/>`_ (version 18 or higher)
-
-Installation of SlimerJs
-------------------------
-
-Download the latest zip package of SlimerJS and extract files
-into somewhere on your disk. You'll have a ``slimerjs/`` directory with some files and
-a script ``slimerjs`` (and ``slimerjs.bat`` for Windows).
+- or `Download Xulrunner <http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/runtimes/>`_ (version 18 or higher)
 
 During its launch, SlimerJS tries to discover itself the path of Firefox or
-XulRunner. In case it fails, you should create an environment variable
-containing the path of the Firefox/XulRunner binary. To create this environment
-variable from a command line:
+XulRunner. In case it fails, or if you want to launch SlimerJS with a specific version
+of Firefox, you should create an environment variable containing the path of the
+Firefox/XulRunner binary. To create this environment variable from a command line:
 
 - On linux:
    .. code-block:: bash
@@ -51,10 +55,12 @@ variable from a command line:
 You can of course set this variable in your .bashrc, .profile or in the computer
 properties on Windows.
 
+.. _launch:
+
 Launching SlimerJS
 ------------------
 
-From a command line, call the <code>slimerjs</code> executable with the path
+From a command line, call the `slimerjs` executable with the path
 of a javascript file.
 
 .. code-block:: bash

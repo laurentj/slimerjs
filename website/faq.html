@@ -39,7 +39,7 @@
             <ul class="nav">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="features.html">Features</a></li>
-                <li><a href="install.html">Install</a></li>
+                <li><a href="download.html">Download</a></li>
                 <li><a href="http://docs.slimerjs.org">Documentation</a></li>
                 <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
                 <li class="active"><a href="faq.html">FAQ</a></li>
@@ -84,31 +84,23 @@
         However you can launch <span class="slm">SlimerJS</span> with xvfb if you are under
         linux or MacOSx, to have a headless <span class="slm">SlimerJS</span>.</dd>
 
-    <dt>Why do we need Firefox or XulRunner?</dt>
-    <dd><span class="slm">SlimerJS</span> does not embed Gecko directly, because the Mozilla plateform is a huge library.
-        Most of time, web developers have already Firefox installed, so downloading and installing
-        an other Gecko is useless. With only its 350kb, <span class="slm">SlimerJS</span> saves megabytes of bandwidth and
-        it avoid to distribute a version for each platform (linux, macos, windows...). It allows
-        you to choose your Firefox version.<br>
-        Probably in the future <span class="slm">SlimerJS</span> will embed its own version of Gecko, if we had to hack
-        Gecko for some reason (headless feature for example), or if users really want to
-        have it.
+    <dt>What is Gecko?</dt>
+    <dd>Gecko is the core engine of Firefox</dd>
+    
+    <dt>To which version of Firefox, SlimerJS is compatible?</dt>
+    <dd>It depends of the package you downloaded. If you choosed
+        a package dedicated to a specific plateform, <span class="slm">SlimerJS</span>
+        embed Gecko 22. So it is compatible with Firefox 22.<br>
+        If you choose the lightweight package, it runs with <em>your</em> Firefox, so
+        it can run with any version since Firefox 18.
     </dd>
 
-    <dt>Hey, CapserJS does not work with <span class="slm">SlimerJS</span>!</dt>
-    <dd>Yes, because:
-        <ol>
-            <li><span class="slm">SlimerJS</span> does not implement yet all the PhantomJS API</li>
-            <li>CasperJS does not know SlimerJS but
-                <a href="https://github.com/n1k0/casperjs/issues/482">we are working on
-                this issue</a>.
-            </li>
-        </ol>
+    <dt>Can CapserJS be launched with <span class="slm">SlimerJS</span>?</dt>
+    <dd>Yes, since SlimerJS 0.8, and if you use our specific version of CasperJS.
         If you know how to build CasperJS, you can retrieve its source code from
         <a href="https://github.com/laurentj/casperjs/tree/slimerjs-2">our specific branch</a>.
-        This experimental version supports SlimerJS 0.7+ by launching Casperjs with <code>--engine=slimerjs</code>.
-        However you may find some troubles when running your tests since SlimerJS is
-        not yet 100% compatible with PhantomJS.
+        This experimental version supports SlimerJS 0.8+ by launching CasperJS
+        with <code>--engine=slimerjs</code>.
     </dd>
 
     <dt>Why is it called "SlimerJs"?</dt>
@@ -136,8 +128,8 @@
     <dd>Yes, each days a build is made from the "master" branch of the source code.
     This is the nightly build. Since this is a version in development, don't use it
     in production.<br>
-    <a href="http://download.slimerjs.org/slimerjs-nightly.zip">Download the archive here</a> and
-    <a href="http://download.slimerjs.org/slimerjs-doc-nightly.zip">its documentation</a>
+    <a href="http://download.slimerjs.org/nightly/slimerjs-nightly.zip">Download the archive here</a> and
+    <a href="http://download.slimerjs.org/nightly/slimerjs-doc-nightly.zip">its documentation</a>
     (that you can view <a href="http://docs.slimerjs.org/nightly/">online here</a>).
     </dd>
 

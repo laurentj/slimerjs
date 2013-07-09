@@ -3,7 +3,7 @@
 SET SLIMERJSLAUNCHER=%SLIMERJSLAUNCHER%
 REM % ~ d[rive] p[ath] 0[script name] is the absolute path to this bat file, without quotes, always.
 REM ~ strips quotes from the argument
-SET SCRIPTDIR=%~dp0
+SET SLIMERDIR=%~dp0
 REM %* is every argument passed to this script.
 SET __SLIMER_ARGS=%*
 SET LISTVAR=
@@ -61,6 +61,11 @@ FOR %%A IN (%*) DO (
 )
 
 if not exist %SLIMERJSLAUNCHER% (
+    if exist "%SLIMERDIR%\xulrunner\xulrunner.exe" (
+        SET SLIMERJSLAUNCHER="%SLIMERDIR%\xulrunner\xulrunner.exe"
+    )
+)
+if not exist %SLIMERJSLAUNCHER% (
     call :findFirefox
 )
 if not exist %SLIMERJSLAUNCHER% (
@@ -102,7 +107,7 @@ REM FIXME: This solution is not optimal, since we cannot see messages at realtim
 REM FIXME: an other solution to redirect directly to the console ?
 set TMPFILE=%TMP%\slimer-output-%RANDOM%.tmp
 
-%SLIMERJSLAUNCHER% -app "%SCRIPTDIR%application.ini" %PROFILE% -no-remote -envs "%LISTVAR%" %__SLIMER_ARGS% >%TMPFILE% 2>&1
+%SLIMERJSLAUNCHER% -app "%SLIMERDIR%application.ini" %PROFILE% -no-remote -envs "%LISTVAR%" %__SLIMER_ARGS% >%TMPFILE% 2>&1
 
 if ["%CREATETEMP%"]==["Y"] (
      rmdir /S /Q %PROFILEDIR%
@@ -121,8 +126,6 @@ REM the character % is escaped by doubling it to %%
 REM if delayed variable expansion is turned on then the character ! needs to be escaped as ^^!
 	echo   Available options are:
 	echo.
-REM    echo   --cookies-file=^<file^>              Sets the file name to store the persistent
-REM    echo                                      cookies.
 REM    echo   --config=^<filename^>                Load the given configuration file
 REM    echo                                      (JSON formated)
 REM    echo   --debug=[yes^|no]                   Prints additional warning and debug message
@@ -130,9 +133,7 @@ REM    echo                                      (default is no)
 REM    echo   --disk-cache=[yes^|no]              Enables disk cache (default is no).
     echo   --help or -h                       Show this help
 REM    echo   --ignore-ssl-errors=[yes^|no]       Ignores SSL errors (default is no).
-REM    echo   --load-images=[yes^|no]             Loads all inlined images (default is yes)
-REM    echo   --local-storage-path=^<path^>        Specifies the location for offline local
-REM    echo                                      storage
+    echo   --load-images=[yes^|no]            Loads all inlined images (default is yes)
 REM    echo   --local-storage-quota=^<number^>     Sets the maximum size of the offline
 REM    echo                                      local storage (in KB)
 REM    echo   --local-to-remote-url-access=[yes^|no] Allows local content to access remote
@@ -152,7 +153,6 @@ REM    echo   --script-encoding=^<enc^>            Sets the encoding used for th
 REM    echo                                      script (default is utf8)
 REM    echo   --web-security=[yes^|no]            Enables web security (default is yes)
 REM    echo   --ssl-protocol=[SSLv3^|SSLv2^|TLSv1^|any]  Sets the SSL protocol
-REM    echo   --ssl-certificates-path=^<path^>     Sets the location for custom CA certificates
     echo   --version or v                     Prints out SlimerJS version
 REM    echo   --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded
 REM    echo                                      GhostDriver) '127.0.0.1:8910'

@@ -4,6 +4,9 @@ SLIMERDIR=`dirname $0`
 SLIMERDIR=`cd $SLIMERDIR;pwd`
 CURRENTDIR=`pwd`
 
+XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/runtimes/"
+XULRUNNER_PACK_NAME="xulrunner-22.0.en-US"
+
 cd $SLIMERDIR
 
 if [ "$1" == "nightly" ]
@@ -15,6 +18,7 @@ else
 fi
 
 TARGETDIR="$SLIMERDIR/_dist/slimerjs-$VERSION"
+XRDIR="$SLIMERDIR/_dist/xrbin"
 
 if [ -d "$TARGETDIR" ]
 then
@@ -22,6 +26,12 @@ then
 else
     mkdir -p "$TARGETDIR"
 fi
+
+if [ ! -d "$XRDIR" ]
+then
+    mkdir -p "$XRDIR"
+fi
+
 
 # copy files
 cd src
@@ -41,9 +51,63 @@ BUILDDATE=`date +%Y%m%d`
 sed -i -e "s/BuildID=.*/BuildID=$BUILDDATE/g" application.ini
 
 # create the final package
+echo "Build the platform independant package..."
 cd $SLIMERDIR/_dist
 zip -r "slimerjs-$VERSION.zip" "slimerjs-$VERSION"
 
+cd $XRDIR
+
+if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.linux-i686.tar.bz2" ]
+then
+    wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.linux-i686.tar.bz2"
+fi
+
+if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.linux-x86_64.tar.bz2" ]
+then
+    wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.linux-x86_64.tar.bz2"
+fi
+
+if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.mac.tar.bz2" ]
+then
+    wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.mac.tar.bz2"
+fi
+
+if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.win32.zip" ]
+then
+    wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.win32.zip"
+fi
+
+echo "Build linux-i686 package.."
+tar xjf "$XULRUNNER_PACK_NAME.linux-i686.tar.bz2"
+mv xulrunner $TARGETDIR
+cd ..
+tar cjf "slimerjs-$VERSION-linux-i686.tar.bz2" "slimerjs-$VERSION"
+rm -rf $TARGETDIR/xulrunner
+
+echo "Build linux-x86_64 package..."
+cd $XRDIR
+tar xjf "$XULRUNNER_PACK_NAME.linux-x86_64.tar.bz2"
+mv xulrunner $TARGETDIR
+cd ..
+tar cjf "slimerjs-$VERSION-linux-x86_64.tar.bz2" "slimerjs-$VERSION"
+rm -rf $TARGETDIR/xulrunner
+
+echo "Build Windows package..."
+cd $XRDIR
+unzip "$XULRUNNER_PACK_NAME.win32.zip"
+mv xulrunner $TARGETDIR
+cd ..
+zip -r "slimerjs-$VERSION-win32.zip" "slimerjs-$VERSION"
+rm -rf $TARGETDIR/xulrunner
+
+echo "Build MacOS package..."
+cd $XRDIR
+tar xjf "$XULRUNNER_PACK_NAME.mac.tar.bz2"
+mv XUL.framework/Versions/Current $TARGETDIR/xulrunner
+cd ..
+tar cjf "slimerjs-$VERSION-mac.tar.bz2" "slimerjs-$VERSION"
+rm -rf $TARGETDIR/xulrunner
+
 # the end
 cd $CURRENTDIR
-echo "The package is in $SLIMERDIR/_dist/slimerjs-$VERSION.zip"
+echo "Packages are in $SLIMERDIR/_dist/"
