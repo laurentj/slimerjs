@@ -139,7 +139,30 @@ const onRequestStart = function(subject, data) {
     }
 
     if (typeof(options.onRequest) === "function") {
-        options.onRequest(traceRequest(index, subject), requestController(subject, index, options));
+        options.onRequest(traceRequest(index, subject),
+                          requestController(subject, index, options));
+    }
+};
+
+const onFileRequestStart = function(subject, browser) {
+    let {options, requestList} = browserMap.get(browser);
+    requestList.push(subject.name);
+    let index = requestList.length;
+
+    /*if (typeof(options._onRequest) === "function") {
+        options._onRequest(subject);
+    }*/
+
+    if (typeof(options.onRequest) === "function") {
+        let request = {
+            id: index,
+            method: 'GET',
+            url: subject.URI.spec,
+            time: new Date(),
+            headers: []
+        }
+        options.onRequest(request,
+                          requestController(subject, index, options));
     }
 };
 
@@ -159,20 +182,95 @@ const onRequestResponse = function(subject, data) {
         }
         return val;
     });
-
     if (typeof(options._onResponse) === "function") {
         options._onResponse(subject);
     }
 
-    let listener = new TracingListener(subject, index, browserMap.get(browser).options);
+    let listener = new TracingListener(subject, index, options);
     subject.QueryInterface(Ci.nsITraceableChannel);
     listener.originalListener = subject.setNewListener(listener);
 };
 
 
-const TracingListener = function(subject, index, options) {
+const onFileRequestResponse = function(subject, browser) {
+
+    // Get request ID
+    let index;
+    let {options, requestList} = browserMap.get(browser);
+    requestList = requestList.map(function(val, i) {
+        if (subject.name == val) {
+            index = i + 1;
+            return val;
+        }
+        return val;
+    });
+    /*if (typeof(options._onResponse) === "function") {
+        options._onResponse(subject);
+    }*/
+
+    let response = {
+        id: index,
+        url: subject.URI.spec,
+        time: new Date(),
+        headers: [],
+        bodySize: 0,
+        contentType: null,
+        contentCharset: null,
+        redirectURL: null,
+        stage: "start",
+        status: null,
+        statusText: null,
+
+        // Extensions
+        referrer: "",
+        body: ""
+    };
+    if (typeof(options.onResponse) == "function") {
+        options.onResponse(mix({}, response));
+    }
+};
+
+const onFileRequestResponseDone = function(subject, browser) {
+
+    // Get request ID
+    let index;
+    let {options, requestList} = browserMap.get(browser);
+    requestList = requestList.map(function(val, i) {
+        if (subject.name == val) {
+            index = i + 1;
+            return val;
+        }
+        return val;
+    });
+    /*if (typeof(options._onResponse) === "function") {
+        options._onResponse(subject);
+    }*/
+
+    let response = {
+        id: index,
+        url: subject.URI.spec,
+        time: new Date(),
+        headers: [],
+        bodySize: subject.contentLength,
+        contentType: null, //subject.contentType, phantomjs doesn't provide it
+        contentCharset: subject.contentCharset,
+        redirectURL: null,
+        stage: "end",
+        status: null,
+        statusText: null,
+
+        // Extensions
+        referrer: "",
+        body: ""
+    };
+    if (typeof(options.onResponse) == "function") {
+        options.onResponse(mix({}, response));
+    }
+};
+
+const TracingListener = function(subject, index, options, response) {
     this.options = options;
-    this.response = traceResponse(index, subject);
+    this.response = response || traceResponse(index, subject);
     this.data = [];
     this.dataLength = 0;
 };
@@ -471,7 +569,7 @@ exports.getWindowForRequest = getWindowForRequest;
 const getBrowserForRequest = function(request) {
     if (request instanceof Ci.nsIRequest) {
         try {
-            request.QueryInterface(Ci.nsIHttpChannel);
+            request.QueryInterface(Ci.nsIChannel);
             let window = getWindowForRequest(request);
             if (window) {
                 let browser = window.QueryInterface(Ci.nsIInterfaceRequestor)
@@ -612,6 +710,11 @@ ProgressListener.prototype = {
                     if (typeof(this.options.onLoadStarted) === "function") {
                         this.options.onLoadStarted(uri, false);
                     }
+                    if (request.URI.scheme == 'file') {
+                        // for file:// protocol, we don't have http-on-* events
+                        // let's call options.onRequest...
+                        onFileRequestStart(request, this.browser);
+                    }
                 }
                 return;
             }
@@ -621,6 +724,11 @@ ProgressListener.prototype = {
             }
 
             if (this.isStart(flags)) {
+                if (request.URI.scheme == 'file') {
+                    // for file:// protocol, we don't have http-on-* events
+                    // let's call options.onResponse...
+                    onFileRequestResponse(request, this.browser);
+                }
                 if (typeof(this.options.onTransferStarted) === "function") {
                     this.options.onTransferStarted(uri);
                 }
@@ -628,6 +736,11 @@ ProgressListener.prototype = {
             }
 
             if (this.isTransferDone(flags)) {
+                if (request.URI.scheme == 'file') {
+                    // for file:// protocol, we don't have http-on-* events
+                    // let's call options.onResponse...
+                    onFileRequestResponseDone(request, this.browser);
+                }
                 if (typeof(this.options.onContentLoaded) === "function") {
                     this.options.onContentLoaded(uri, (request.status?false:true));
                 }
@@ -656,7 +769,6 @@ ProgressListener.prototype = {
                 // in some case, request.responseStatus is not available
             }
 
-            return;
         } catch(e) {
             console.exception(e);
         }

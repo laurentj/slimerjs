@@ -76,10 +76,63 @@ describe("webpage with listeners", function() {
     }
 
     var domain = "http://localhost:8083/";
+    var file = 'file://'+ phantom.libraryPath + '/www/simplehello.html';
 
     var async = new AsyncSpec(this);
 
+    async.it("should be opened with a simple file",function(done) {
+        testWebpageListenerCreateWebPage()
+        webpage.open(file, function(success){
+            trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("success");
+            done();
+        });
+    });
+
+    async.it("should generate the expected trace for a simple file", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "  loading url="+file+"\n";
+        expectedTrace += "URLCHANGED:"+file+"\n";
+        expectedTrace += "INITIALIZED 1\n";
+        expectedTrace += "LOADFINISHED:"+file+" - 2 success\n";
+        expectedTrace += "  loaded url="+file+"\n";
+        expectedTrace += "CALLBACK:success\n";
+        expect(trace).toEqual(expectedTrace);
+        trace = "";
+        done();
+    });
+
+    async.it("should have received file://..../simplehello.html", function(done){
+        var r;
+        r = receivedRequest.filter(function(result, i) {
+            if (i == 0)
+                return false;
+            return result.req.url == file;
+        })[0];
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toBe(null);
+        expect(r.start.statusText).toBe(null);
+        expect(r.end.status).toBe(null);
+        expect(r.end.statusText).toBe(null);
+        expect(r.start.contentType).toBe(null);
+        expect(r.end.contentType).toBe(null);
+        done();
+    });
+
+
     async.it("should be opened",function(done) {
+        trace = '';
+        receivedRequest = [];
+        initializedCounter = 0;
+
         testWebpageListenerCreateWebPage()
         webpage.open(domain + 'hello.html', function(success){
             trace += "CALLBACK:"+success+"\n";

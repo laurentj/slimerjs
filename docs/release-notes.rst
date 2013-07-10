@@ -48,7 +48,9 @@ Fixed PhantomJS conformance issues
 - After creating a ``webpage``, evaluating javascript should be possible.
   The window is now opened immediately with about:blank when calling create().
 - ``webpage.onResourceRequested`` should receive a request object as second parameter
-- ``webpage.setContent()`` should be able to receive a DOM element, not only a string 
+- ``webpage.setContent()`` should be able to receive a DOM element, not only a string
+- ``webpage.onResourceRequested`` and ``webpage.onResourceReceived`` should
+  be called for 'file://' url.
 
 
 Missing APIS in SlimerJS 0.8
