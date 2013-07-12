@@ -159,6 +159,7 @@ There is a ``modifier`` property containing constants
 for key modifiers:
 
 .. code-block:: javascript
+
     page.event.modifier.shift
     page.event.modifier.ctrl
     page.event.modifier.alt
