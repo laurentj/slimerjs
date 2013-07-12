@@ -175,15 +175,24 @@ function _create(parentWebpageInfo) {
     /**
      * build an object of options for the netlogger
      */
-    function getNetLoggerOptions(webpage, deferred) {
+    function getNetLoggerOptions(webpage, deferred, firstRequestHeaders) {
         var wycywigReg = /^wyciwyg:\/\//;
+        var firstRequestHeadersUsed = false;
         return {
             _onRequest: function(request) {
                 request = request.QueryInterface(Ci.nsIHttpChannel);
                 if (webpage.settings.userAgent)
                     request.setRequestHeader("User-Agent", webpage.settings.userAgent, false);
-                for (var hname in webpage.customHeaders) {
-                    request.setRequestHeader(hname, webpage.customHeaders[hname], false);
+                let h;
+                if (firstRequestHeadersUsed) {
+                    h = webpage.customHeaders;
+                }
+                else {
+                    h = firstRequestHeaders;
+                    firstRequestHeadersUsed = true;
+                }
+                for (var hname in h) {
+                    request.setRequestHeader(hname, h[hname], false);
                 }
             },
             onRequest: function(requestData, request) {
@@ -381,7 +390,7 @@ function _create(parentWebpageInfo) {
      *  @return array 0:the webpage object, 1:the chrome window
      */
     function openBlankBrowser(noInitializedEvent) {
-        let options = getNetLoggerOptions(webpage, null);
+        let options = getNetLoggerOptions(webpage, null, webpage.customHeaders);
         let ready = false;
         let parentWindow = (parentWebpageInfo?parentWebpageInfo.window:null);
         let win = slLauncher.openBrowser(function(nav){
@@ -664,7 +673,7 @@ function _create(parentWebpageInfo) {
                 return result;
             });
 
-            var options = getNetLoggerOptions(this, deferred);
+            var options = getNetLoggerOptions(this, deferred, this.customHeaders);
 
             if (browser) {
                 if (browserJustCreated){
@@ -826,6 +835,7 @@ function _create(parentWebpageInfo) {
                                     .getInterface(Ci.nsIDOMWindowUtils);
             domWindowUtils. setCSSViewport(w,h);
             win.resizeTo(w,h);
+            domWindowUtils.redraw(1);
         },
 
         get windowName () {
