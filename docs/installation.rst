@@ -10,8 +10,8 @@ Installation of SlimerJS
 
 .. index::  ArchLinux
 
-A `package is available for ArchLinux <https://aur.archlinux.org/packages/slimerjs/>`_,
-thanks to a contributor. So if you use ArchLinux just type in a terminal:
+A `package is available for Arch Linux <https://aur.archlinux.org/packages/slimerjs/>`_,
+thanks to a contributor. So if you use Arch Linux just type in a terminal:
 
 .. code-block:: bash
 
