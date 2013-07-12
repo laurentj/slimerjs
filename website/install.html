@@ -72,17 +72,42 @@
     <div class="row-fluid">
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
-          <li><a href="#download-bootstrap"><i class="icon-chevron-right"></i> Installation of Firefox or Xulrunner</a></li>
-          <li><a href="#file-structure"><i class="icon-chevron-right"></i> Installation of SlimerJs</a></li>
-          <li><a href="#contents"><i class="icon-chevron-right"></i> Launching SlimerJS</a></li>
+          <li><a href="#install-slimerjs"><i class="icon-chevron-right"></i> Installation of SlimerJs</a></li>
+          <li><a href="#install-firefox"><i class="icon-chevron-right"></i> Installation of Firefox or Xulrunner</a></li>
+          <li><a href="#configure"><i class="icon-chevron-right"></i> Configuring SlimerJS</a></li>
+          <li><a href="#launch"><i class="icon-chevron-right"></i> Launching SlimerJS</a></li>
         </ul>
       </div>
       
       <div class="span9">
 
-        <section id="download-bootstrap">
+        <section id="install-slimerjs">
           <div class="page-header">
-            <h1 class="install">1. Installation of Firefox or Xulrunner</h1>
+            <h1 class="install">1. Installation of SlimerJs</h1>
+          </div>
+          <p class="lead">You can either install it from the website or from
+          ArchLinux if you use this operating system.</p>
+          
+          <p>A <a href="https://aur.archlinux.org/packages/slimerjs/">package is available for ArchLinux</a>,
+          thanks to a contributor. So if you use ArchLinux just type in a terminal:</p>
+          <pre><code>yaourt slimerjs</code></pre>
+          <p>It will install all needed packages. You can then jump directly to the
+          <a href="#launch">Lauching Slimerjs</a> section.</p>
+    
+
+
+           <p>With others operating systems,
+            <a href="index.html#download">download
+             the latest zip package</a> of <span class="slm">SlimerJS</span>
+             and extract files into a directory somewhere on your disk. You'll have a
+             <code>slimerjs/</code> directory with some files and a script
+             <code>slimerjs</code> (and <code>slimerjs.bat</code> for Windows).</p>
+        </section>
+
+
+        <section id="install-firefox">
+          <div class="page-header">
+            <h1 class="install">2. Installation of Firefox or Xulrunner</h1>
           </div>
           <p class="lead"><span class="slm">SlimerJS</span> runs on any platform
             on which <b>Firefox</b> (Desktop version) is available. It needs
@@ -107,19 +132,13 @@
       	</div>
        </section>
 
-
-        <section id="file-structure">
+        <section id="configure">
           <div class="page-header">
-            <h1 class="install">2. Installation of SlimerJs</h1>
+            <h1 class="install">3. Configuring SlimerJS</h1>
           </div>
-          <p class="lead"><a href="index.html#download">Download
-             the latest zip package</a> of <span class="slm">SlimerJS</span>
-             and extract files into somewhere on your disk. You'll have a
-             <code>slimerjs/</code> directory with some files and a script
-             <code>slimerjs</code> (and <code>slimerjs.bat</code> for Windows).</p>
-        
-        <p>During its launch, <span class="slm">SlimerJS</span> tries to discover itself the path of Firefox or
-            XulRunner. In case it fails, you should create an environment variable
+          <p class="lead">During its launch, <span class="slm">SlimerJS</span> tries to discover
+          itself the path of Firefox or XulRunner.</p>
+          <p>In the case it fails, you should create an environment variable
             containing the path of the Firefox/XulRunner binary. To create this environment
             variable from a command line:</p>
         
@@ -143,9 +162,9 @@
             <code>.profile</code> or in the computer properties on Windows.</p> 
      </section>
 
-        <section id="contents">
+        <section id="launch">
           <div class="page-header">
-            <h1 class="install">3. Launching SlimerJS</h1>
+            <h1 class="install">4. Launching SlimerJS</h1>
           </div>
 
           <h2>On Linux or MacOS</h2>

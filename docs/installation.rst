@@ -5,6 +5,25 @@
 Installation
 ============
 
+Installation of SlimerJs
+------------------------
+
+.. index::  ArchLinux
+
+A `package is available for ArchLinux <https://aur.archlinux.org/packages/slimerjs/>`_,
+thanks to a contributor. So if you use ArchLinux just type in a terminal:
+
+.. code-block:: bash
+
+    yaourt slimerjs
+
+It will install all needed packages. You can then jump to the
+:ref:`Lauching Slimerjs <launch>` section.
+
+With others operating systems, download the latest zip package of SlimerJS
+`from the website <http://slimerjs.org>`_ and extract files into a directory
+somewhere on your disk. You'll have a ``slimerjs/`` directory with some files and
+a script ``slimerjs`` (and ``slimerjs.bat`` for Windows).
 
 
 Installation of Firefox or Xulrunner
@@ -18,12 +37,8 @@ It needs XulRunner or Firefox. So install them first, for your prefered operatin
 - `Download Firefox <http://getfirefox.com>`_ (version 18 or higher)
 - or `Download Xulrunner <http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0.2/runtimes/>`_ (version 18 or higher)
 
-Installation of SlimerJs
+Configuring SlimerJs
 ------------------------
-
-Download the latest zip package of SlimerJS and extract files
-into somewhere on your disk. You'll have a ``slimerjs/`` directory with some files and
-a script ``slimerjs`` (and ``slimerjs.bat`` for Windows).
 
 During its launch, SlimerJS tries to discover itself the path of Firefox or
 XulRunner. In case it fails, you should create an environment variable
@@ -50,6 +65,8 @@ variable from a command line:
 
 You can of course set this variable in your .bashrc, .profile or in the computer
 properties on Windows.
+
+.. _launch:
 
 Launching SlimerJS
 ------------------
