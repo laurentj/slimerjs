@@ -25,9 +25,11 @@ New API
 - Implementation of the cookie API on the ``phantom`` object
 - Implementation of the cookie API on the ``webpage`` object
 - support of the ``--load-images`` option on the command line
+- support of the ``--local-storage-quota`` option on the command line
 - support of ``javascriptEnabled`` and ``loadImages`` in settings
 - Implementation of ``webpage.ownsPage``, ``webpage.getPage()``, ``webpage.pages``, ``webpage.pagesWindowName``
 - Implementation of ``webpage.scrollPosition``
+- Implementation of ``webpage.offlineStoragePath`` and  ``webpage.offlineStorageQuota``
 
 Fixed bugs
 ----------

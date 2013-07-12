@@ -10,6 +10,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Cu.import('resource://slimerjs/slErrorLogger.jsm');
+Cu.import("resource://gre/modules/Services.jsm");
 
 var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
                       .getService(Ci.nsIHttpProtocolHandler)
@@ -34,7 +35,7 @@ var optionsSpec = {
     scriptEncoding : ['script-encoding', 'encoding', 'UTF-8', false],
     webSecurityEnabled : ['web-security', 'bool', true, false],
     offlineStoragePath : ['local-storage-path', 'file', '', false],
-    offlineStorageDefaultQuota : ['local-storage-quota', 'int', -1, false],
+    offlineStorageDefaultQuota : ['local-storage-quota', 'int', -1, true],
     printDebugMessages : ['debug', 'bool', false, false],
     javascriptCanOpenWindows : ['', '', true, false],
     javascriptCanCloseWindows : ['', '', true, false],
@@ -101,6 +102,16 @@ var slConfiguration = {
                 else
                     this[opt] = optValue;
             }
+        }
+        let profd = Services.dirsvc.get("ProfD", Ci.nsIFile);
+        profd.append("webappsstore.sqlite");
+        this.offlineStoragePath = profd.path;
+
+        if (this.offlineStorageDefaultQuota === null || this.offlineStorageDefaultQuota === -1) {
+            this.offlineStorageDefaultQuota = Services.prefs.getIntPref("dom.storage.default_quota") * 1024;
+        }
+        else {
+            Services.prefs.setIntPref("dom.storage.default_quota", Math.ceil(this.offlineStorageDefaultQuota /1024));
         }
     },
 

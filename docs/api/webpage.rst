@@ -225,6 +225,11 @@ navigationLocked
 offlineStoragePath
 -----------------------------------------
 
+Indicates the path of the sqlite file where content of window.localStorage is stored. Read only.
+
+Note: in PhantomJS, this is the path of a directory. The storage is different than in Gecko.
+Contrary to PhantomJS, this property cannot be changed with the ``--local-storage-path`` flag
+from the command line.
 
 
 .. _webpage-offlineStorageQuota:
@@ -232,6 +237,10 @@ offlineStoragePath
 offlineStorageQuota
 -----------------------------------------
 
+Contains the maximum size of data for a page, stored in window.localStorage.
+The number is in Bytes. Default is 5 242 880 (5MB).  Read only.
+
+To change this number, use the ``--local-storage-quota`` flag in the command line.
 
 
 .. _webpage-ownsPages:

@@ -1111,19 +1111,11 @@ function _create(parentWebpageInfo) {
         },
 
         get offlineStoragePath() {
-            throw new Error("webpage.offlineStoragePath not implemented")
-        },
-
-        set offlineStoragePath(val) {
-            throw new Error("webpage.offlineStoragePath not implemented")
+            return slConfiguration.offlineStoragePath;
         },
 
         get offlineStorageQuota() {
-            throw new Error("webpage.offlineStorageQuota not implemented")
-        },
-
-        set offlineStorageQuota(val) {
-            throw new Error("webpage.offlineStorageQuota not implemented")
+            return slConfiguration.offlineStorageDefaultQuota;
         },
 
         get plainText() {

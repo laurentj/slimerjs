@@ -624,3 +624,25 @@ describe("WebPage.open()", function(){
     });
 
 });
+
+
+describe("WebPage.offline*", function(){
+    var webpage;
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
+
+    it("offlineStoragePath is not empty",function() {
+        expect(webpage.offlineStoragePath).toNotEqual("");
+    });
+
+    it("offlineStorageQuota is ok",function() {
+        expect(webpage.offlineStorageQuota).toEqual(5120*1024);
+    });
+});
+
+

@@ -25,7 +25,7 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
     <tr><td>--ignore-ssl-errors=[yes|no]         </td><td></td></tr>
     <tr><td>--load-images=[yes|no]               </td><td>Implemented</td></tr>
     <tr><td>--local-storage-path=/path/to/file   </td><td>not applicable. Use profiles instead.</td></tr>
-    <tr><td>--local-storage-quota=number         </td><td></td></tr>
+    <tr><td>--local-storage-quota=number         </td><td>Implemented</td></tr>
     <tr><td>--local-to-remote-url-access=[yes|no]</td><td></td></tr>
     <tr><td>--max-disk-cache-size=size           </td><td></td></tr>
     <tr><td>--output-encoding=encoding           </td><td></td></tr>
@@ -130,11 +130,11 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>framesName                          </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented</td></tr>
     <tr><td>navigationLocked                    </td><td>Implemented</td></tr>
-    <tr><td>offlineStoragePath                  </td><td></td></tr>
-    <tr><td>offlineStorageQuota                 </td><td></td></tr>
-    <tr><td>ownsPages                           </td><td></td>Implemented</tr>
-    <tr><td>pages                               </td><td></td>Implemented</tr>
-    <tr><td>pagesWindowName                     </td><td></td>Implemented</tr>
+    <tr><td>offlineStoragePath                  </td><td>Implemented</td></tr>
+    <tr><td>offlineStorageQuota                 </td><td>Implemented</td></tr>
+    <tr><td>ownsPages                           </td><td>Implemented</td></tr>
+    <tr><td>pages                               </td><td>Implemented</td></tr>
+    <tr><td>pagesWindowName                     </td><td>Implemented</td></tr>
     <tr><td>paperSize                           </td><td></td></tr>
     <tr><td>plainText                           </td><td>Implemented</td></tr>
     <tr><td>scrollPosition                      </td><td>Implemented</td></tr>
