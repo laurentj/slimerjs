@@ -58,7 +58,11 @@ describe("WebPage.renderBase64()", function(){
         runs(function(){
             var capture = webpage.renderBase64();
             expect(typeof capture).toEqual("string");
-            expect(capture.length > 2400).toBeTruthy();
+            expect(capture.length > 1600).toBeTruthy();
+
+            var capture = webpage.renderBase64({format:'jpg', quality:0.5});
+            expect(typeof capture).toEqual("string");
+            expect(capture.length > 2500).toBeTruthy();
         });
     });
 

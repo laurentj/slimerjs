@@ -59,7 +59,7 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
     <tr><td>defaultPageSettings                 </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented (deprecated)</td></tr>
     <tr><td>outputEncoding                      </td><td></td></tr>
-    <tr><td>page                                </td><td></td></tr>
+    <tr><td>page                                </td><td>Not implemented. Irrelevant for SlimerJS</td></tr>
     <tr><td>scriptName                          </td><td>Implemented</td></tr>
     <tr><td>version                             </td><td>Implemented. Gives the PhantomJS version which is compatible to
                                                         the SlimerJS implementation.</td></tr>
@@ -70,7 +70,6 @@ is that SlimerJS does not implement yet all the PhantomJS API. Help us!
 
 <table>
     <tr><td>addCookie(cookie)                   </td><td>Implemented</td></tr>
-    <tr><td>callback(callback)                  </td><td></td></tr>
     <tr><td>clearCookies()                      </td><td>Implemented</td></tr>
     <tr><td>defaultErrorHandler(message, stack) </td><td>Implemented</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
@@ -187,9 +186,9 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>openUrl(url, httpConf, settings)    </td><td>Implemented. SlimerJS only: it returns a promise. Only GET and POST method are supported.</td></tr>
     <tr><td>release()                           </td><td>Implemented</td></tr>
     <tr><td>reload()                            </td><td>Implemented</td></tr>
-    <tr><td>render(filename, ratio)             </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter (value between 0 and 1)</td></tr>
-    <tr><td>renderBytes(format, ratio)          </td><td>Implemented. SlimerJS only. Only PNG et JPG supported.</td></tr>
-    <tr><td>renderBase64(format, ratio)         </td><td>Implemented. Only PNG et JPG supported. SlimerJS only: ratio parameter (value between 0 and 1)</td></tr>
+    <tr><td>render(filename, options)             </td><td>Implemented. Only PNG et JPG supported for now. </td></tr>
+    <tr><td>renderBytes(format, options)          </td><td>Implemented. SlimerJS only. Only PNG et JPG supported for now.</td></tr>
+    <tr><td>renderBase64(format, options)         </td><td>Implemented. Only PNG et JPG supported for now.</td></tr>
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td>Implemented</td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
     <tr><td>setContent(content, url)            </td><td>Implemented</td></tr>

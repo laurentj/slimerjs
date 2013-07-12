@@ -55,6 +55,7 @@ Fixed PhantomJS conformance issues
 - ``webpage.setContent()`` should be able to receive a DOM element, not only a string
 - ``webpage.onResourceRequested`` and ``webpage.onResourceReceived`` should
   be called for 'file://' url.
+- Fixed ``webpage.render()`` and ``webpage.renderBase64()``: support of options parameters
 
 
 Missing APIS in SlimerJS 0.8
@@ -64,10 +65,7 @@ Here are the PhantomJS APIs that are missing in SlimerJS 0.8. Of course, their
 implementation is planed in future releases.
 
 - most of options for the command line are not supported
-- no support of the ``webpage.offlineStorage*`` properties, although offlineStorage
-  is supported natively and usable by a web page
-- no API to manage child windows
-- no support of settings on the webpage object
+- no support of all settings on the webpage object
 - no support of Ghost Driver
 
 You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_ to know details.

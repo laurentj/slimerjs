@@ -28,6 +28,10 @@ var phantom = {
         return slConfiguration.args[0];
     },
 
+    get page () {
+        throw new Error("phantom.page not implemented. Irrelevant for Slimerjs");
+    },
+
     // ------------------------  cookies
 
     /**
@@ -166,6 +170,7 @@ var phantom = {
         clearCookies : 'r',
         deleteCookie : 'r',
         exit : 'r',
+        page : 'r',
         injectJs : 'r',
         onError : 'rw',
         defaultErrorHandler : 'r',

@@ -74,7 +74,14 @@ Internal methods to trigger callbacks:
 clipRect
 -----------------------------------------
 
+This is an object indicating the coordinates of an area to capture, used
+by the ``render()`` method. It contains four properties: ``top``, ``left``, ``width``, ``height``.
 
+To modify it, set an entire object on this property.
+
+.. code-block:: javascript
+
+    page.clipRect = { top: 14, left: 3, width: 400, height: 300 };
 
 .. _webpage-canGoBack:
 
@@ -658,16 +665,35 @@ reload()
 
 .. _webpage-render:
 
-render()
+render(filename, options)
 -----------------------------------------
+
+This method takes a screenshot of the web page and stores it into the given file.
+You can limit the area to capture by setting the ``clipRect`` property.
+
+By default, it determines the format of the file by inspecting its extension.
+It supports only jpg and png format (PDF and gif probably in future version).
+
+The second parameter is an object containing options. Here are its possible properties:
+
+- ``format``: indicate the file format (ignore then the file extension). possible
+  values: ``jpg``, ``png``, ``jpeg``.
+- ``quality``: the compression quality. A number between 0 and 1.
+- ``ratio``: (SlimerJS only), a number between 0 and 1, indicating the "zoom level" of the capture.
 
  
 .. _webpage-renderBase64:
 
-renderBase64()
+renderBase64(format)
 -----------------------------------------
 
+This method takes a screenshot of the web page and returns it as a string containing the
+image in base64. The format indicates the format of the image: ``jpg``, ``png``, ``jpeg``.
 
+You can limit the area to capture by setting the ``clipRect`` property.
+
+Instead of giving the format, you can give an object containing options (SlimerJS only).
+See reh ``render()`` function.
 
 .. _webpage-sendEvent:
 

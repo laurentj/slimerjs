@@ -1381,29 +1381,58 @@ function _create(parentWebpageInfo) {
                 throw new Error("WebPage not opened");
             browser.markupDocumentViewer.fullZoom = val;
         },
-        render: function(filename, ratio) {
+
+        render: function(filename, options) {
             if (!browser)
                 throw new Error("WebPage not opened");
-            let format = fs.extension(filename).toLowerCase() || 'png';
-            let content = this.renderBytes(format, ratio);
-            fs.write(filename, content, "wb");
+            let opt = heritage.mix({}, options || {});
+            let format = 'png';
+            if ('format' in opt) {
+                format = opt.format;
+            }
+            else {
+                let ext = fs.extension(filename);
+                if (ext)
+                    format = ext;
+            }
+            opt.format = format;
+            if (format == 'jpg' || format == 'jpeg' || format == 'png') {
+                let content = this.renderBytes(options?opt:format);
+                fs.write(filename, content, "wb");
+                return true;
+            }
+            else {
+                //throw new Error("render(): format "+format+" not supported");
+                return false;
+            }
         },
 
-        renderBytes: function(format, ratio) {
-            return base64.decode(this.renderBase64(format, ratio));
+        renderBytes: function(options) {
+            return base64.decode(this.renderBase64(options));
         },
 
-        renderBase64: function(format, ratio) {
+        renderBase64: function(options) {
             if (!browser)
                 throw new Error("WebPage not opened");
 
+            let format = 'png';
+            let quality = undefined;
+            let ratio = 1;
+            if (typeof(options) == 'object') {
+                if ('format' in options)
+                    format = options.format;
+                if ('ratio' in options)
+                    ratio = options.ratio;
+                if ('quality' in options)
+                    quality = options.quality;
+            }
             format = (format || "png").toString().toLowerCase();
-            let qual = undefined;
             if (format == "png") {
                 format = "image/png";
-            } else if (format == "jpeg") {
+            } else if (format == "jpeg" || format == 'jpg') {
                 format = "image/jpeg";
-                qual = 0.8;
+                if (quality == undefined)
+                    quality = 0.8;
             } else {
                 throw new Error("Render format \"" + format + "\" is not supported");
             }
@@ -1411,7 +1440,7 @@ function _create(parentWebpageInfo) {
             let canvas = getScreenshotCanvas(browser.contentWindow,
                                              privProp.clipRect, ratio);
 
-            return canvas.toDataURL(format, qual).split(",", 2)[1];
+            return canvas.toDataURL(format, quality).split(",", 2)[1];
         },
 
         //--------------------------------------------------- window popup callback
