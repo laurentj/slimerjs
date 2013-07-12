@@ -145,6 +145,21 @@ To define user agent, prefer to use ``webpage.settings.userAgent``
 event
 -----------------------------------------
 
+This is an object (read only) that hosts some constants
+to use with ``sendEvent()``.
+
+There is a ``modifier`` property containing constants
+for key modifiers:
+
+.. code-block:: javascript
+    page.event.modifier.shift
+    page.event.modifier.ctrl
+    page.event.modifier.alt
+    page.event.modifier.meta
+    page.event.modifier.keypad
+
+There is a ``key`` property containing constants
+for key codes.
 
 
 .. _webpage-focusedFrameName:

@@ -119,7 +119,7 @@ It will contain API that does not exists in PhantomJS.
                                                         onResourceReceived callback (SlimerJS only)</td></tr>
     <tr><td>cookies                             </td><td>Implemented</td></tr>
     <tr><td>customHeaders                       </td><td>Implemented</td></tr>
-    <tr><td>event                               </td><td></td></tr>
+    <tr><td>event                               </td><td>Implemented</td></tr>
     <tr><td>focusedFrameName                    </td><td>Implemented</td></tr>
     <tr><td>frameContent                        </td><td>Implemented</td></tr>
     <tr><td>frameName                           </td><td>Implemented</td></tr>
