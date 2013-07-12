@@ -8,7 +8,20 @@ Installation
 Installation of SlimerJS
 ------------------------
 
-Download the latest zip package of SlimerJS and extract files
+.. index::  ArchLinux
+
+A `package is available for ArchLinux <https://aur.archlinux.org/packages/slimerjs/>`_,
+thanks to a contributor. So if you use ArchLinux just type in a terminal:
+
+.. code-block:: bash
+
+    yaourt slimerjs
+
+It will install all needed packages. You can then jump to the
+:ref:`Lauching SlimerJS <launch>` section.
+
+With others operating systems, download the latest zip package of SlimerJS
+<a href="http://slimerjs.org/download.html">from the web site</a> and extract files
 into a directory somewhere on your disk. You'll have a ``slimerjs/`` directory
 with some files and a script called ``slimerjs`` (and ``slimerjs.bat`` for Windows).
 
