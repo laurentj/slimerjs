@@ -476,7 +476,7 @@ function _create(parentWebpageInfo) {
          * @return cookie[]
          */
         get cookies() {
-            if (!browser || browserJustCreated)
+            if (!browser || browserJustCreated || !browser.currentURI)
                 return [];
             return slCookiesManager.getCookiesForUri(browser.currentURI);
         },
@@ -1344,24 +1344,24 @@ function _create(parentWebpageInfo) {
         set clipRect (value) {
             let requirements = {
                 top: {
-                    is: ["number"],
-                    ok: function(val) val >= 0,
-                    msg: "top should be a positive integer"
+                    is: ["undefined", "number"],
+                    ok: function(val)  val === undefined || val >= 0,
+                    msg: "clipRect.top should be a positive integer"
                 },
                 left: {
-                    is: ["number"],
-                    ok: function(val) val >= 0,
-                    msg: "left should be a positive integer"
+                    is: ["undefined", "number"],
+                    ok: function(val)  val === undefined || val >= 0,
+                    msg: "clipRect.left should be a positive integer"
                 },
                 width: {
-                    is: ["number"],
-                    ok: function(val) val > 0,
-                    msg: "width should be a positive integer"
+                    is: ["undefined", "number"],
+                    ok: function(val) val === undefined || val > 0,
+                    msg: "clipRect.width should be a positive integer"
                 },
                 height: {
-                    is: ["number"],
-                    ok: function(val) val > 0,
-                    msg: "height should be a positive integer"
+                    is: ["undefined", "number"],
+                    ok: function(val) val === undefined || val > 0,
+                    msg: "clipRect.height should be a positive integer"
                 },
             }
             if (typeof(value) === "object") {

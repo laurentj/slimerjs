@@ -75,6 +75,8 @@ var slCookiesManager = {
      */
     getCookiesForUri: function (uri) {
         let cookiesList = [];
+        if (uri.scheme != 'http' && uri.scheme != 'https')
+            return cookiesList;
         let cookiesEnum = nsCookieManager.getCookiesFromHost(uri.host);
         while (cookiesEnum.hasMoreElements()) {
             let cookie = cookiesEnum.getNext()
