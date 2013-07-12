@@ -43,7 +43,7 @@ function create() {
 /**
  * @return [webpage, window]
  */
-function _create(aParentWindow) {
+function _create(parentWebpageInfo) {
 
     // -----------------------  private properties and functions for the webpage object
 
@@ -292,8 +292,20 @@ function _create(aParentWindow) {
         {
             // create the webpage object for this child window
             let opener = (webpage.ownsPages?aOpener:null);
-
-            let [childPage, win] = _create(opener);
+            let parentWPInfo = null;
+            let childPage, win;
+            if (webpage.ownsPages) {
+                parentWPInfo = {
+                    window: opener,
+                    detachChild:function(child){
+                        let idx = privProp.childWindows.indexOf(child);
+                        if (idx != -1) {
+                            privProp.childWindows.splice(0,1);
+                        }
+                    }
+                }
+            }
+            [childPage, win] = _create(parentWPInfo);
 
             if (webpage.ownsPages)
                 privProp.childWindows.push(childPage);
@@ -371,6 +383,7 @@ function _create(aParentWindow) {
     function openBlankBrowser(noInitializedEvent) {
         let options = getNetLoggerOptions(webpage, null);
         let ready = false;
+        let parentWindow = (parentWebpageInfo?parentWebpageInfo.window:null);
         let win = slLauncher.openBrowser(function(nav){
             browser = nav;
             browser.webpage = webpage;
@@ -380,7 +393,7 @@ function _create(aParentWindow) {
             if (!noInitializedEvent)
                 webpage.initialized();
             ready = true;
-        }, aParentWindow);
+        }, parentWindow);
 
         win.QueryInterface(Ci.nsIDOMChromeWindow)
            .browserDOMWindow = slBrowserDOMWindow;
@@ -693,6 +706,9 @@ function _create(aParentWindow) {
                 this.closing(this);
                 browser.webpage = null;
                 slLauncher.closeBrowser(browser);
+                if (parentWebpageInfo) {
+                    parentWebpageInfo.detachChild(this);
+                }
             }
             webPageSandbox = null;
             browser=null;
