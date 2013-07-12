@@ -31,9 +31,9 @@ PhantomJS options
 --disk-cache=[yes|no]                
 --help or -h                                    Supported           Displays help about options
 --ignore-ssl-errors=[yes|no]         
---load-images=[yes|no]                          Supported
+--load-images=[yes|no]                          Supported           
 --local-storage-path=/path/to/file              N/A. see profiles
---local-storage-quota=number                    Supported (number in Bytes)
+--local-storage-quota=number                    Supported           number in Bytes
 --local-to-remote-url-access=[yes|no]
 --max-disk-cache-size=size           
 --output-encoding=encoding           

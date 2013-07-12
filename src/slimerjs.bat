@@ -134,8 +134,8 @@ REM    echo   --disk-cache=[yes^|no]              Enables disk cache (default is
     echo   --help or -h                       Show this help
 REM    echo   --ignore-ssl-errors=[yes^|no]       Ignores SSL errors (default is no).
     echo   --load-images=[yes^|no]            Loads all inlined images (default is yes)
-REM    echo   --local-storage-quota=^<number^>     Sets the maximum size of the offline
-REM    echo                                      local storage (in KB)
+    echo   --local-storage-quota=^<number^>   Sets the maximum size of the offline
+    echo                                      local storage (in KB)
 REM    echo   --local-to-remote-url-access=[yes^|no] Allows local content to access remote
 REM    echo                                         URL (default is no)
 REM    echo   --max-disk-cache-size=^<number^>     Limits the size of the disk cache (in KB)
