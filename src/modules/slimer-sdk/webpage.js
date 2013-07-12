@@ -291,9 +291,12 @@ function _create(aParentWindow) {
         openURI : function(aURI, aOpener, aWhere, aContext)
         {
             // create the webpage object for this child window
-            let [childPage, win] = _create(aOpener);
+            let opener = (webpage.ownsPages?aOpener:null);
 
-            privProp.childWindows.push(childPage);
+            let [childPage, win] = _create(opener);
+
+            if (webpage.ownsPages)
+                privProp.childWindows.push(childPage);
 
             // call the callback
             webpage.rawPageCreated(childPage);
@@ -319,7 +322,7 @@ function _create(aParentWindow) {
     var privProp = {
         clipRect : null,
         framePath : [],
-        childWindows : [],
+        childWindows : [], // list of webpage of child windows
         settings: {}
     }
 
@@ -362,6 +365,9 @@ function _create(aParentWindow) {
         return win;
     }
 
+    /**
+     *  @return array 0:the webpage object, 1:the chrome window
+     */
     function openBlankBrowser(noInitializedEvent) {
         let options = getNetLoggerOptions(webpage, null);
         let ready = false;
@@ -378,7 +384,7 @@ function _create(aParentWindow) {
 
         win.QueryInterface(Ci.nsIDOMChromeWindow)
            .browserDOMWindow = slBrowserDOMWindow;
-    
+
         // we're waiting synchronously after the initialisation of the new window, because we need
         // to have a ready browser element and then to have an existing win.content.
         // slBrowserDOMWindow.openURI needs to return this win.content so the
@@ -386,7 +392,7 @@ function _create(aParentWindow) {
         let thread = Services.tm.currentThread;
         while (!ready)
             thread.processNextEvent(true);
-    
+
         return [webpage, win];
     }
 
@@ -698,20 +704,60 @@ function _create(aParentWindow) {
          */
         onClosing: null,
 
-        get ownsPages () {
-            throw new Error("webpage.ownsPages not implemented")
-        },
+        /**
+         * This boolean indicates if pages opening by the webpage (by window.open())
+         * should be children of the webpage (true) or not (false). Default is true.
+         *
+         * If true, children pages can be retrieved by getPage(), pages, pagesWindowName
+         */
+        ownsPages : true,
 
+        /**
+         * Returns a Child Page that matches the given "window.name".
+         *
+         * @param string windowName
+         * @return webpage the found webpage
+         */
         getPage: function (windowName) {
-            throw new Error("webpage.getPage not implemented")
+            let pages = privProp.childWindows.filter(function(page){
+                if(page.windowName == windowName)
+                    return true;
+                return false;
+            });
+            if (pages.length)
+                return pages[0];
+            return null;
         },
 
+        /**
+         * Returns a list of child pages that this page has currently opened
+         * with `window.open()`.
+         * If a child page is closed (by `window.close()` or by `webpage.close()`),
+         * the page is automatically removed from this list.
+         *
+         * You should not keep a strong reference to this array since you obtain
+         * only a copy, so you won't see changes.
+         *
+         * If "ownsPages" is "false", this list won't owns the child pages.
+         *
+         * @return array list of child pages currently opened.
+         */
         get pages () {
-            throw new Error("webpage.pages not implemented")
+            return privProp.childWindows.filter(function(page){ return true;});
         },
 
+        /**
+         * Returns a list of window name of child pages.
+         *
+         * The window name is the name given to `window.open()`.
+         *
+         * The list is only from child pages that have been created when
+         * ownsPages was true.
+         *
+         * @return array  list of strings
+         */
         get pagesWindowName () {
-            throw new Error("webpage.pagesWindowName not implemented")
+            return privProp.childWindows.map(function(page){ return page.windowName;});
         },
 
         release : function() {

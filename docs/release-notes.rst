@@ -26,6 +26,7 @@ New API
 - Implementation of the cookie API on the ``webpage`` object
 - support of the ``--load-images`` option on the command line
 - support of ``javascriptEnabled`` and ``loadImages`` in settings
+- Implementation of ``webpage.ownsPage``, ``webpage.getPage()``, ``webpage.pages``, ``webpage.pagesWindowName``
 
 Fixed bugs
 ----------

@@ -239,13 +239,25 @@ offlineStorageQuota
 ownsPages
 -----------------------------------------
 
+This boolean indicates if pages opening by the webpage (by `window.open()`)
+should be children of the webpage (true) or not (false). Default is true.
 
+When it is true, child pages appears in the `pages` property.
 
 .. _webpage-pages:
 
 pages
 -----------------------------------------
 
+This is the list of child pages that the page has currently opened with `window.open()`.
+
+If a child page is closed (by `window.close()` or by `webpage.close()`),
+the page is automatically removed from this list.
+
+You should not keep a strong reference to this array since you obtain
+only a copy, so in this case you won't see changes.
+ 
+If "ownsPages" is "false", this list won't owns the child pages.
 
 
 .. _webpage-pagesWindowName:
@@ -253,7 +265,12 @@ pages
 pagesWindowName
 -----------------------------------------
 
+list of window name (strings) of child pages.
 
+The window name is the name given to `window.open()`.
+
+The list is only from child pages that have been created when
+ownsPages was true.
 
 .. _webpage-paperSize:
 
@@ -427,10 +444,12 @@ evaluateAsync()
 
 .. _webpage-getPage:
 
-getPage()
+getPage(windowName)
 -----------------------------------------
 
+This methods returns the child page that matches the given "window.name".
 
+Only children opened when ownsPage was true are checked.
 
 .. _webpage-go:
 

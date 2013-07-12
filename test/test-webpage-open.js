@@ -30,6 +30,9 @@ describe("WebPage.onPageCreated", function(){
         waitsFor(function(){ return loaded;}, 1000);
         // open a child page
         runs(function(){
+            expect(webpage.pages.length).toEqual(0)
+            expect(webpage.pagesWindowName.length).toEqual(0)
+            expect(webpage.getPage('plop')).toEqual(null);
             var result = webpage.evaluate(function(){
                 return launchWindow(); 
                 /*var evt = document.createEvent("MouseEvents");
@@ -42,8 +45,17 @@ describe("WebPage.onPageCreated", function(){
         // wait after the page loading
         waitsFor(function(){ return childLoaded;}, 2000);
         runs(function(){
+            expect(webpage.pages.length).toEqual(1);
+            expect(webpage.pages[0]).toEqual(childPage);
+            expect(webpage.getPage('plop')).toEqual(childPage);
+            expect(webpage.pagesWindowName.length).toEqual(1);
+            expect(webpage.pagesWindowName[0]).toEqual('plop');
+
             expect(childPage.title).toEqual("hello in frame");
             childPage.close();
+            //expect(webpage.pages.length).toEqual(0)
+            //expect(webpage.pagesWindowName.length).toEqual(0)
+            //expect(webpage.getPage('plop')).toEqual(null);
             webpage.close();
         });
     });

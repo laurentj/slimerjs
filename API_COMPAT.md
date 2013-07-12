@@ -132,9 +132,9 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>navigationLocked                    </td><td>Implemented</td></tr>
     <tr><td>offlineStoragePath                  </td><td></td></tr>
     <tr><td>offlineStorageQuota                 </td><td></td></tr>
-    <tr><td>ownsPages                           </td><td></td></tr>
-    <tr><td>pages                               </td><td></td></tr>
-    <tr><td>pagesWindowName                     </td><td></td></tr>
+    <tr><td>ownsPages                           </td><td></td>Implemented</tr>
+    <tr><td>pages                               </td><td></td>Implemented</tr>
+    <tr><td>pagesWindowName                     </td><td></td>Implemented</tr>
     <tr><td>paperSize                           </td><td></td></tr>
     <tr><td>plainText                           </td><td>Implemented</td></tr>
     <tr><td>scrollPosition                      </td><td></td></tr>
@@ -171,7 +171,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>evaluateJavascript(str)             </td><td>implemented</td></tr>
     <tr><td>evaluate(function, arg1, arg2,...)  </td><td>implemented</td></tr>
     <tr><td>evaluateASync(function, arg1, arg2,...)</td><td>implemented</td></tr>
-    <tr><td>getPage(windowName)                 </td><td></td></tr>
+    <tr><td>getPage(windowName)                 </td><td>Implemented</td></tr>
     <tr><td>go(index)                           </td><td>Implemented</td></tr>
     <tr><td>goBack()                            </td><td>Implemented</td></tr>
     <tr><td>goForward()                         </td><td>Implemented</td></tr>
