@@ -39,6 +39,7 @@ Fixed bugs
 - Fixed conformance to CommonJS filesystem/A module in ``fs.directory()``
 - Fixed ``webpage.render()`` and ``webpage.renderBase64()``: default screenshot
   size were not well calculated.
+- Fixed bad encoding of responses sent by the http server
 
 Fixed PhantomJS conformance issues
 ----------------------------------

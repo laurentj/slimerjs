@@ -228,7 +228,7 @@ HttpResponse.prototype = {
             this._response.processAsync();
         }
 
-        if (data == '' || !encoding) {
+        if (data == '') { // || !encoding) {
             this._response.write(data);
         }
         else if (encoding == 'binary') {
@@ -248,7 +248,7 @@ HttpResponse.prototype = {
             var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
                         .createInstance(Components.interfaces.nsIConverterOutputStream);
 
-            os.init(pipe.outputStream, encoding, 0, 0x0000);
+            os.init(pipe.outputStream, encoding || 'UTF-8', 0, 0x0000);
             os.writeString(data);
             this._response.bodyOutputStream.writeFrom(pipe.inputStream, data.length);
         }
