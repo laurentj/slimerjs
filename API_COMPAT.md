@@ -137,7 +137,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>pagesWindowName                     </td><td></td>Implemented</tr>
     <tr><td>paperSize                           </td><td></td></tr>
     <tr><td>plainText                           </td><td>Implemented</td></tr>
-    <tr><td>scrollPosition                      </td><td></td></tr>
+    <tr><td>scrollPosition                      </td><td>Implemented</td></tr>
     <tr><td>settings                            </td><td>Implemented</td></tr>
     <tr><td>settings.javascriptEnabled          </td><td>Implemented</td></tr>
     <tr><td>settings.loadImages                 </td><td>Implemented</td></tr>

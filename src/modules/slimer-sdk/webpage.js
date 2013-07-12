@@ -781,12 +781,17 @@ function _create(parentWebpageInfo) {
         },
 
         get scrollPosition() {
-            throw new Error("webpage.scrollPosition not implemented")
+            let pos = {top:0, left:0}
+            pos.top = browser.contentWindow.scrollY;
+            pos.left = browser.contentWindow.scrollX;
+            return pos;
         },
 
         set scrollPosition(val) {
-            throw new Error("webpage.scrollPosition not implemented")
+            let pos = heritage.mix({top:0, left:0}, val);
+            browser.contentWindow.scrollTo(pos.left, pos.top);
         },
+
         get url() {
             if (browser && !browserJustCreated)
                 return browser.currentURI.spec;

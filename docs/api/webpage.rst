@@ -291,6 +291,14 @@ plainText
 scrollPosition
 -----------------------------------------
 
+This property contains an object indicating the scrolling position. You can read or
+modify it. The object contains two properties: ``top`` and ``left``
+
+Example:
+
+.. code-block:: javascript
+
+    page.scrollPosition = { top: 100, left: 0 };
 
 
 .. _webpage-settings:

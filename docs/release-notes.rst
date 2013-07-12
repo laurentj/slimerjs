@@ -27,6 +27,7 @@ New API
 - support of the ``--load-images`` option on the command line
 - support of ``javascriptEnabled`` and ``loadImages`` in settings
 - Implementation of ``webpage.ownsPage``, ``webpage.getPage()``, ``webpage.pages``, ``webpage.pagesWindowName``
+- Implementation of ``webpage.scrollPosition``
 
 Fixed bugs
 ----------
