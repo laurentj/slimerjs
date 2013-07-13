@@ -122,6 +122,10 @@ hr.soften {
     line-height: 1.25;
 }
 
+#download .newfeature {
+    font-size: 18px;
+}
+
 a {
     color: rgb(22, 120, 127);
 }
