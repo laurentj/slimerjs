@@ -74,6 +74,8 @@ Here are the PhantomJS APIs that are missing in SlimerJS 0.8 but planed in futur
 
 You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_ to know details.
 
+See also :doc:`the differences in APIs and behaviors <differences-with-phantomjs>` between
+SlimerJS and PhantomJS.
 
 Known issues
 ------------

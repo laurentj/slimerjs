@@ -1,0 +1,87 @@
+
+==========================
+Differences with PhantomJS
+==========================
+
+There are some differences between SlimerJS and PhantomJS
+although we tried to implement the same behaviors of
+PhantomJS APIs.
+
+PhantomsJS is built on top of Webkit and JavascriptCore (like Safari)
+and SlimerJS is built on top of Gecko and SpiderMonkey (like Firefox).
+
+Many of differences come from differences between these two
+web platforms, Webkit and Gecko. So we couldn't suppress these
+differences in SlimerJS. There are also some few differences that exist
+in the API because it was our choice.
+
+So here are some of these differences. This list is not exhaustive of course!
+We found most of them during the port of CasperJS on SlimerJS.
+
+
+Javascript Engine
+------------------
+
+- The property ``name`` on JS functions is read only in Gecko.
+- Error message for a ``ReferenceError`` is not strictly equal between Gecko and Webkit.
+- The name of an exception for a syntax error is ``"SyntaxError"`` in gecko, and ``"SYNTAX_ERR"``
+  for Webkit
+- PhantomJS has hacked the ``Error`` object in QTWebkit, to add a ``stackArray`` property.
+  Of course, this property does not exist in the SpiderMonkey implementation, but it
+  has a `stack property <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/Stack>`_.
+  So you should use it if ``stackArray`` is not present.
+
+DOM
+----
+
+- In Gecko, the value of a ``<input type=file>`` is only the filename.
+  PhantomJS generates a path starting with ``c:\\fakepath\\``.
+- Contrary to PhantomJs/Webkit, Gecko does not support the non-standard property
+  ``innerText`` on DOM elements.
+- Using ``typeof`` on a window object returns ``"window"`` with PhantomJS/Webkit,
+  and ``"domwindow"`` in Gecko.
+- ``"javascript:"`` links are executed asynchronously in Gecko
+- Gecko does not support these non-standard properties on events: ``x`` and ``y``
+  The equivalent standard properties are ``clientX`` and ``clientY``.
+- Changing the viewport is done asynchronously in Gecko, so ``webpage.viewportSize``
+  is done asynchronously in SlimerJS
+
+Network
+--------
+
+- It seems that Gecko has a different behavior than Phantomjs's webkit
+  on some HTTP response with code 102, 118 and 408.
+
+In the API
+-----------
+
+- ``webpage.sendEvent()`` for key events is more consistent. In PhantomJS, there are `several issues <http://code.google.com/p/phantomjs/issues/detail?id=1094>`_.
+- ``webpage.open()`` returns `a promise <https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html>`_.
+  It's easier to chain things executed asynchronously
+- The call of ``webpage.open()`` (or ``openUrl()``) is synchronous in PhantomJS,
+  but is asynchronous in SlimerJS (because it opens a real window etc..).
+- The webserver object has more methods to configure it easily
+- ``toString()`` on a webpage object returns "qtruntimeobject" in PhantomJS
+  and "Object" in SlimerJS. There are no way to change this behavior in SlimerJS
+  (it is developped in pure Javascript). So to test if a given object is a
+  ``webpage`` object in SlimerJS, you should test a specific property ``__type``.
+  Its value is then "qtruntimeobject" (to mimic PhantomJS).
+- PhantomJS has a strange behavior on ``fs.read()`` : it seems it reads
+  files always as binary files. However SlimerJS's ``fs.read()`` strictly
+  respect the 'b' flag parameter.
+- The module system has a different behavior than PhantomJS's one
+   - global variables declared in the main script are not accessible in
+     modules loaded with ``require``
+   - Modules are completely impervious. They are executed in a truly javascript
+     sandbox
+   - SlimerJS provides an API to indicate paths where modules can be found:
+     ``require.paths`` (CommonJS specification).
+- Exit code doesn't work with SlimerJS (There is no API for that in Gecko)
+- The callback ``webpage.onNavigationRequest`` receives bad parameters.
+  Don't rely on the ``navigationType`` and the ``isMainFrame`` values (because of
+  some limitations in the Gecko API).
+- Callbacks ``webpage.onLoadStarted`` and ``webpage.onLoadFinished`` receive additionnal
+  parameters in SlimerJS (the url, a boolean indicated if it is in a frame...)
+
+
+

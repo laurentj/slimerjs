@@ -1,18 +1,11 @@
-SlimerJS will implement all [the API of Phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference)
-except deprecated API (at least in first releases).
+SlimerJS will implement all [the API of Phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference).
 
 Here are compatibility tables and other specific API to SlimerJS.
 
-# Main differences with PhantomJS 1.9
+# Main differences with PhantomJS 1.9.1
 
-* webpage.sendEvent() for key events is more consistent. In phantomJS, there are
-  [several issues](http://code.google.com/p/phantomjs/issues/detail?id=1094)
-* ```webpage.open()``` returns [a promise](https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html). It's easier to chain things executed asynchronously
-* The webserver object has more methods to configure it easily
-
-Of course, since SlimerJS is still under developpement, the other main difference
-is that SlimerJS does not implement yet all the PhantomJS API. Help us!
-
+You'll found in the documentation [a list of differences](https://github.com/laurentj/slimerjs/blob/master/docs/differences-with-phantomjs.rst).
+of behaviors in the APIs implementation and in the web platform.
 
 # Command-line arguments and options
 
@@ -216,7 +209,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented<br>SlimerJS only: the callback receives 3 parameters: the status ("success" or "fail"), the url and true if this is a frame that is loaded</td></tr>
     <tr><td>onLoadStarted                       </td><td>Implemented<br>SlimerJS only: the callback receives 2 parameters: the url and true if this is a frame that is loaded</td></tr>
-    <tr><td>onNavigationRequested               </td><td>Implemented.<br>SlimerJS issue: navigationType is always "Undefined"</td></tr>
+    <tr><td>onNavigationRequested               </td><td>Implemented.<br>SlimerJS issue: navigationType is always "Undefined" and isMainFrame is irrelevant</td></tr>
     <tr><td>onPageCreated                       </td><td>Implemented</td></tr>
     <tr><td>onPrompt                            </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
