@@ -227,17 +227,18 @@ filePicker.prototype = {
             && this.browser.uploadFiles.length != 0) {
             selectedFiles = this.browser.uploadFiles;
         }
-
         this._nsfiles = selectedFiles;
         if (selectedFiles.length) {
             this._nsfile = selectedFiles[0];
             if (!this.supportsMultiple) {
                 this._nsfiles = [selectedFiles[0]];
             }
+            this.browser.uploadFilesReaded = true;
             return Ci.nsIFilePicker.returnOK;
         }
         else {
             this._nsfile = null;
+            this.browser.uploadFilesReaded = true;
             return Ci.nsIFilePicker.returnCancel;
         }
     },

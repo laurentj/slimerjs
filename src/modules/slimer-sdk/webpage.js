@@ -1299,16 +1299,14 @@ function _create(parentWebpageInfo) {
             if (!browser) {
                 return;
             }
-            // retrieve coordinates of the input
-            // to send the click
-            let coord = this.evaluate(function(sel){
+            // check the selector
+            let exists = this.evaluate(function(sel){
                     var el = document.querySelector(sel)
-                    if (!el)
-                        return null;
-                    return [el.offsetLeft, el.offsetTop];
+                    return (el?true:false);
                 }, selector);
 
-            if (coord === null) {
+            if (!exists) {
+                console.log("Warning uploadFile: "+selector+" does not exist");
                 return;
             }
 
@@ -1336,10 +1334,20 @@ function _create(parentWebpageInfo) {
             if (!browser.uploadFiles.length) {
                 return
             }
+            browser.uploadFilesReaded = false;
             // send a click. It will open the file picker which will
             // take browser.uploadFiles
-            this.sendEvent("click", coord[0], coord[1], "left");
-            slUtils.sleep(200); // wait after the file picker opening
+            this.evaluate(function(sel){
+                    var el = document.querySelector(sel);
+                    if (!el) {
+                        return;
+                    }
+                    var ev = document.createEvent('MouseEvents');
+                    ev.initEvent("click", true, true);
+                    el.dispatchEvent(ev);
+                }, selector);
+
+            slUtils.sleep(500, function(){ return browser.uploadFilesReaded;} ); // wait after the file picker opening
         },
 
         // ------------------------------- Screenshot and pdf export

@@ -207,13 +207,17 @@ nsSimpleEnumerator.prototype = {
 };
 
 var slUtils = {
-    sleep: function(time) {
+    sleep: function(time, wakeupFunc) {
         let ready = false;
         let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
         timer.initWithCallback(function(){ready = true;}, time, timer.TYPE_ONE_SHOT);
         let thread = Services.tm.currentThread;
-        while (!ready)
+        let wakeup = false;
+        while (!ready && !wakeup) {
             thread.processNextEvent(true);
+            if (wakeupFunc)
+                wakeup = wakeupFunc();
+        }
     },
 
     createSimpleEnumerator: function(anArray) {
