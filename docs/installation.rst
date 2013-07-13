@@ -69,6 +69,8 @@ launching SlimerJS.
 
 .. index:: SLIMERJSLAUNCHER
 
+.. _setup:
+
 Configuring SlimerJS
 --------------------
 
