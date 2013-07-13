@@ -8,7 +8,7 @@ Release Notes
 version 0.8
 ===========
 
-This version is in development.
+SlimerJS 0.8 has been released on July 13, 2013.
 
 The compatibility with PhantomJS has been strongly increased and
 some tools like CasperJS (version 1.1beta1 or higher) work almost
