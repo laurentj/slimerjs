@@ -5,6 +5,17 @@
 Release Notes
 =============
 
+version 0.8.1
+=============
+
+SlimerJS 0.8.1 is still in development.
+
+Fixed bugs
+----------
+
+- ``webpage.render()`` should create directories indicated in the given path (issue #51)
+
+
 version 0.8
 ===========
 

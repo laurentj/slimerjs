@@ -1403,20 +1403,25 @@ function _create(parentWebpageInfo) {
         render: function(filename, options) {
             if (!browser)
                 throw new Error("WebPage not opened");
+            let file = fs.absolute(filename);
+            let dir = fs.directory(file);
+            if (!fs.exists(dir)) {
+                fs.makeTree(dir);
+            }
             let opt = heritage.mix({}, options || {});
             let format = 'png';
             if ('format' in opt) {
                 format = opt.format;
             }
             else {
-                let ext = fs.extension(filename);
+                let ext = fs.extension(file);
                 if (ext)
                     format = ext;
             }
             opt.format = format;
             if (format == 'jpg' || format == 'jpeg' || format == 'png') {
                 let content = this.renderBytes(options?opt:format);
-                fs.write(filename, content, "wb");
+                fs.write(file, content, "wb");
                 return true;
             }
             else {
