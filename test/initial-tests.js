@@ -45,7 +45,7 @@ if ("slimer" in this) {
     assertExists(slimer, "has slimer object? ");
     assertExists(slimer.version, "has slimer.version object? ");
     assertEquals("0", slimer.version.major, "slimer has the good major version");
-    assertEquals("8", slimer.version.minor, "slimer has the good minor version");
+    assertEquals("9", slimer.version.minor, "slimer has the good minor version");
     assertEquals("0", slimer.version.patch, "slimer has the good patch version");
 }
 else
