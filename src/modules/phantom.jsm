@@ -130,17 +130,17 @@ var phantom = {
      */
     injectJs: function(filename) {
         // resolve the filename against the current working directory
-        let f = getMozFile(filename, Services.dirsvc.get("CurWorkD", Components.interfaces.nsIFile));
+        let f = slUtils.getMozFile(filename, Services.dirsvc.get("CurWorkD", Components.interfaces.nsIFile));
         if (!f.exists()) {
             // filename resolved against the libraryPath property
-            f = getMozFile(filename, libPath);
+            f = slUtils.getMozFile(filename, libPath);
             if (!f.exists()) {
                 dump("Can't open '"+filename+"'\n");
                 return false;
             }
         }
 
-        let source = readSyncStringFromFile(f);
+        let source = slUtils.readSyncStringFromFile(f);
         return slLauncher.injectJs(source, Services.io.newFileURI(f).spec);
     },
 

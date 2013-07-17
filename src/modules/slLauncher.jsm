@@ -38,7 +38,7 @@ var slLauncher = {
                                 'sandboxPrototype': {},
                                 'wantXrays': true
                             });
-        let src = readChromeFile("resource://slimerjs/coffee-script/extras/coffee-script.js");
+        let src = slUtils.readChromeFile("resource://slimerjs/coffee-script/extras/coffee-script.js");
         Cu.evalInSandbox(src, coffeeScriptSandbox, 'ECMAv5', 'coffee-scripts.js', 1);
 
         // load and execute the provided script
@@ -254,11 +254,11 @@ function prepareLoader(fileURI, dirFile) {
     // list of extensions and their compiler
     var extensions = {
         '.js': function(module, filename) {
-            let content = readSyncStringFromFile(getFile(filename));
+            let content = slUtils.readSyncStringFromFile(getFile(filename));
             return module._compile(content, filename);
         },
         '.json': function(module, filename) {
-            let content = readSyncStringFromFile(getFile(filename));
+            let content = slUtils.readSyncStringFromFile(getFile(filename));
             module.exports = JSON.parse(content);
         }
     }

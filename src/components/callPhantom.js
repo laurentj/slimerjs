@@ -25,7 +25,7 @@ callPhantomAPI.prototype = {
     init: function (aWindow) {
         let self = this;
         this.window = XPCNativeWrapper.unwrap(aWindow);
-        this.webpage = getWebpageFromContentWindow(aWindow);
+        this.webpage = slUtils.getWebpageFromContentWindow(aWindow);
         return function() {
             var arg = (arguments.length?arguments[0]:null);
             if (!self.webpage) {

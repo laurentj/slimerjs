@@ -147,7 +147,7 @@ Navigation.prototype = {
         return [null, null]
     },
     _getWebPage : function(docshell) {
-        return getWebpageFromDocShell(docshell);
+        return slUtils.getWebpageFromDocShell(docshell);
     },
     _getNavType : function(docshell) {
         let navType = "Undefined";

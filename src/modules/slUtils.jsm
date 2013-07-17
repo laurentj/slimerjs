@@ -3,11 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 "use strict";
-var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "dumpo",
-                        "getMozFile", "readSyncStringFromFile", "readChromeFile",
-                        "getWebpageFromContentWindow", "getWebpageFromDocShell",
-                        "getBrowserFromContentWindow", "getBrowserFromDocShell",
-                        "createSimpleEnumerator", "slUtils"];
+var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "dumpo", "slUtils"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -17,6 +13,8 @@ const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOSer
 const scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
 
 Cu.import("resource://gre/modules/Services.jsm");
+
+var slUtils = {};
 
 function dumpo(obj, indent) {
     if (typeof obj != 'object') {
@@ -66,7 +64,7 @@ function dumpStack(aStack) {
  * @param string path
  * @param nsIFile basepath
  */
-function getMozFile(path, basepath) {
+slUtils.getMozFile = function getMozFile(path, basepath) {
     var file = basepath.clone();
     var pathElements = path.split(/[\\\/]/);
     var first = pathElements[0];
@@ -96,8 +94,7 @@ function getMozFile(path, basepath) {
     return file;
 }
 
-
-function readSyncStringFromFile (file) {
+slUtils.readSyncStringFromFile = function readSyncStringFromFile (file) {
     let fstream = Cc["@mozilla.org/network/file-input-stream;1"].
                    createInstance(Ci.nsIFileInputStream);
     let cstream = Cc["@mozilla.org/intl/converter-input-stream;1"].
@@ -116,7 +113,7 @@ function readSyncStringFromFile (file) {
     return data;
 }
 
-function readChromeFile(url) {
+slUtils.readChromeFile = function readChromeFile(url) {
     let channel = ioService.newChannel(url,null,null);
     let input = channel.open();
 
@@ -127,14 +124,14 @@ function readChromeFile(url) {
     return str;
 }
 
-function getWebpageFromContentWindow(contentWin) {
-    let browser = getBrowserFromContentWindow(contentWin);
+slUtils.getWebpageFromContentWindow = function getWebpageFromContentWindow(contentWin) {
+    let browser = slUtils.getBrowserFromContentWindow(contentWin);
     if (browser)
         return browser.webpage;
     return null;
 }
 
-function getBrowserFromContentWindow(contentWin) {
+slUtils.getBrowserFromContentWindow = function getBrowserFromContentWindow(contentWin) {
     try {
         /*
         let win = contentWin.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
@@ -148,21 +145,21 @@ function getBrowserFromContentWindow(contentWin) {
         var docShell = contentWin.top.QueryInterface(Ci.nsIInterfaceRequestor)
                          .getInterface(Ci.nsIWebNavigation)
                          .QueryInterface(Ci.nsIDocShell);
-        return getBrowserFromDocShell(docShell);
+        return slUtils.getBrowserFromDocShell(docShell);
     }
     catch(e) {
         return null;
     }
 }
 
-function getWebpageFromDocShell(docShell) {
-    let browser = getBrowserFromDocShell(docShell)
+slUtils.getWebpageFromDocShell = function getWebpageFromDocShell(docShell) {
+    let browser = slUtils.getBrowserFromDocShell(docShell)
     if (browser)
         return browser.webpage;
     return null;
 }
 
-function getBrowserFromDocShell(docShell) {
+slUtils.getBrowserFromDocShell = function getBrowserFromDocShell(docShell) {
     try {
         var browser= docShell.chromeEventHandler;
         if (!browser) {
@@ -181,6 +178,7 @@ function getBrowserFromDocShell(docShell) {
         return null;
     }
 }
+
 
 
 function nsSimpleEnumerator(items) {
@@ -206,21 +204,21 @@ nsSimpleEnumerator.prototype = {
   }
 };
 
-var slUtils = {
-    sleep: function(time, wakeupFunc) {
-        let ready = false;
-        let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-        timer.initWithCallback(function(){ready = true;}, time, timer.TYPE_ONE_SHOT);
-        let thread = Services.tm.currentThread;
-        let wakeup = false;
-        while (!ready && !wakeup) {
-            thread.processNextEvent(true);
-            if (wakeupFunc)
-                wakeup = wakeupFunc();
-        }
-    },
 
-    createSimpleEnumerator: function(anArray) {
-        return new nsSimpleEnumerator(anArray);
+slUtils.sleep = function sleep(time, wakeupFunc) {
+    let ready = false;
+    let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+    timer.initWithCallback(function(){ready = true;}, time, timer.TYPE_ONE_SHOT);
+    let thread = Services.tm.currentThread;
+    let wakeup = false;
+    while (!ready && !wakeup) {
+        thread.processNextEvent(true);
+        if (wakeupFunc)
+            wakeup = wakeupFunc();
     }
 }
+
+slUtils.createSimpleEnumerator = function createSimpleEnumerator (anArray) {
+    return new nsSimpleEnumerator(anArray);
+}
+

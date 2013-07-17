@@ -478,7 +478,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
     },
 
     _findWebPage : function () {
-        return getWebpageFromContentWindow(this.domWin)
+        return slUtils.getWebpageFromContentWindow(this.domWin)
     },
 
     /*

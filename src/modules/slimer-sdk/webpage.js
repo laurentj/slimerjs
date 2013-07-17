@@ -1090,16 +1090,16 @@ function _create(parentWebpageInfo) {
             if (!browser) {
                 throw new Error("WebPage not opened");
             }
-            let f = getMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            let f = slUtils.getMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
             if (!f.exists()) {
                 // filename resolved against the libraryPath property
-                f = getMozFile(filename, libPath);
+                f = slUtils.getMozFile(filename, libPath);
                 if (!f.exists()) {
                     dump("Can't open '"+filename+"'\n");
                     return false;
                 }
             }
-            let source = readSyncStringFromFile(f);
+            let source = slUtils.readSyncStringFromFile(f);
             evalInSandbox(source, filename);
             return true;
         },

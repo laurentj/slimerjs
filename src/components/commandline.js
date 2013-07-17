@@ -110,7 +110,7 @@ slCommandLine.prototype = {
                     slConfiguration.scriptFile = cmdLine.resolveFile(slConfiguration.args[0]);
                 }
                 catch(e) {
-                    slConfiguration.scriptFile = getMozFile(slConfiguration.args[0], cmdLine.workingDirectory)
+                    slConfiguration.scriptFile = slUtils.getMozFile(slConfiguration.args[0], cmdLine.workingDirectory)
                 }
             }
             else {

@@ -58,7 +58,7 @@ filePicker.prototype = {
      */
     init : function (parent, title, mode) {
         // retrieve the webpage object corresponding to the parent
-        this.browser = getBrowserFromContentWindow(parent);
+        this.browser = slUtils.getBrowserFromContentWindow(parent);
         this.domWindowUtils = parent.QueryInterface(Ci.nsIInterfaceRequestor)
                                     .getInterface(Ci.nsIDOMWindowUtils);
         // take account of mode if multi files
