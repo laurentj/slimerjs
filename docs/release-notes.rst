@@ -6,7 +6,7 @@ Release Notes
 =============
 
 version 0.9
-=======
+===========
 
 This version is in development.
 
