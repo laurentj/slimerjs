@@ -76,18 +76,18 @@
             </div-->
 
 
-<dl>
-    <dt>Why is it not natively headless?</dt>
+<dl id="faq">
+    <dt id="why-not-headless">Why is it not natively headless?</dt>
     <dd>You see windows during the execution of your script? It's normal.
         Gecko, the rendering engine of Firefox, cannot render web content without a graphical window.
         See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=446591">Mozilla bug 446591</a>.
         However you can launch <span class="slm">SlimerJS</span> with xvfb if you are under
         linux or MacOSx, to have a headless <span class="slm">SlimerJS</span>.</dd>
 
-    <dt>What is Gecko?</dt>
+    <dt id="gecko">What is Gecko?</dt>
     <dd>Gecko is the core engine of Firefox</dd>
     
-    <dt>To which version of Firefox, SlimerJS is compatible?</dt>
+    <dt id="firefox-compatibility">To which version of Firefox, SlimerJS is compatible?</dt>
     <dd>It depends of the package you downloaded. If you choosed
         a package dedicated to a specific plateform, <span class="slm">SlimerJS</span>
         embed Gecko 22. So it is compatible with Firefox 22.<br>
@@ -96,18 +96,18 @@
         but you could have some issues; Not tested).
     </dd>
 
-    <dt>Can CapserJS be launched with <span class="slm">SlimerJS</span>?</dt>
+    <dt id="launch-casperjs">Can CapserJS be launched with <span class="slm">SlimerJS</span>?</dt>
     <dd>Yes, since SlimerJS 0.8, and with CasperJS 1.1beta1 or higher.
         Just launch CasperJS as usual by adding <code>--engine=slimerjs</code>
         on the command line.
     </dd>
 
-    <dt>Why is it called "SlimerJs"?</dt>
+    <dt id="why-slimerjs-name">Why is it called "SlimerJs"?</dt>
     <dd>Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox
         source code uses some references from this movie, and since PhantomJS,
         CasperJs and other related tools, is a matter of ghosts... ;-)</dd>
 
-    <dt>How can I contribute?</dt>
+    <dt id="how-to-contribute">How can I contribute?</dt>
     <dd>
         You can contribute in many ways:
         <ul>
@@ -123,7 +123,7 @@
         </ul>
     </dd>
 
-    <dt>Is there a build of SlimerJS containing latest improvements?</dt>
+    <dt id="nightlies">Is there a build of SlimerJS containing latest improvements?</dt>
     <dd>Yes, each days a build is made from the "master" branch of the source code.
     This is the nightly build. Since this is a version in development, don't use it
     in production.<br>

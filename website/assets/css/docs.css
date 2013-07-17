@@ -740,12 +740,12 @@ pre {
 	text-align:left;
 	font-size:11px;
 	font-family: "Courier New", Menlo, Consolas, Monaco, monospace;
-	color: #58534D;
+	color: #47433E;
 	line-height: 20px;
 	display: block;
 	margin-bottom:10px;
   padding: 7px;
-	background-color: #BEB3A5;
+	background-color: #EFE9E1;
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
   -webkit-border-radius: 4px;
@@ -779,3 +779,14 @@ code {
 dt {
     margin-top:1em;
 }
+
+#faq dt:target,
+#faq dt:target + dd
+{
+    background-color: #EFE9E1;
+}
+
+#faq dt:target {
+    padding-top:4em;
+}
+
