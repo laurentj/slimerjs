@@ -5,7 +5,7 @@ by others project or contributors, is Laurent Jouanneau.
 ## Contributors
 
 * Matthew Kastor
-    - bin/slimerjs.bat
+* Vincent Meurisse
 
 ## Other authors
 
