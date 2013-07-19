@@ -1,6 +1,6 @@
 @echo off
 
-SET SLIMERJSLAUNCHER=%SLIMERJSLAUNCHER%
+SET SLIMERJSLAUNCHER="%SLIMERJSLAUNCHER%"
 REM % ~ d[rive] p[ath] 0[script name] is the absolute path to this bat file, without quotes, always.
 REM ~ strips quotes from the argument
 SET SLIMERDIR=%~dp0
