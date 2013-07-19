@@ -14,7 +14,7 @@ Fixed bugs
 ----------
 
 - ``webpage.render()`` should create directories indicated in the given path (issue #51)
-
+- Fixed some errors in ``slimerjs.bat`` (for windows)
 
 version 0.8
 ===========
