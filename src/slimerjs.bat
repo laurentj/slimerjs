@@ -60,15 +60,15 @@ FOR %%A IN (%*) DO (
     )
 )
 
-if not exist %SLIMERJSLAUNCHER% (
+if not exist "%SLIMERJSLAUNCHER%" (
     if exist "%SLIMERDIR%\xulrunner\xulrunner.exe" (
         SET SLIMERJSLAUNCHER="%SLIMERDIR%\xulrunner\xulrunner.exe"
     )
 )
-if not exist %SLIMERJSLAUNCHER% (
+if not exist "%SLIMERJSLAUNCHER%" (
     call :findFirefox
 )
-if not exist %SLIMERJSLAUNCHER% (
+if not exist "%SLIMERJSLAUNCHER%" (
     echo SLIMERJSLAUNCHER environment variable is missing or the path is invalid.
     echo Set it with the path to Firefox or xulrunner.
     echo The current value of SLIMERJSLAUNCHER is: %SLIMERJSLAUNCHER%
