@@ -13,6 +13,8 @@ This version is in development.
 New API
 -------
 
+- Support of ``--config`` on the command line, to indicate a configuration file
+
 
 Fixed bugs
 ----------
@@ -47,7 +49,7 @@ Previous release notes
 
 .. toctree::
    :maxdepth: 1
-   
+
    release-notes-0.8
    release-notes-0.7
    release-notes-0.6

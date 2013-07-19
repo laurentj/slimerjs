@@ -43,11 +43,6 @@ slCommandLine.prototype = {
 
         slConfiguration.workingDirectory = cmdLine.workingDirectory;
 
-        let configFile = cmdLine.handleFlagWithParam("config", false);
-        if (configFile) {
-            dump("--config not supported yet\n");
-        }
-
         try {
             slConfiguration.handleFlags(cmdLine);
         }
@@ -97,8 +92,8 @@ slCommandLine.prototype = {
         cmdLine.removeArguments(0, nbArgs-1);
 
         if (slConfiguration.args[0].substr(0,1) == '-') {
-            Components.utils.reportError("unknown option");
-            dump("unknown option\n");
+            Components.utils.reportError("unknown option "+slConfiguration.args[0]);
+            dump("unknown option "+slConfiguration.args[0]+" \n");
             cmdLine.preventDefault = true
             return;
         }

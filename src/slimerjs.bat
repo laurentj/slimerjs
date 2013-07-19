@@ -126,7 +126,7 @@ REM the character % is escaped by doubling it to %%
 REM if delayed variable expansion is turned on then the character ! needs to be escaped as ^^!
 	echo   Available options are:
 	echo.
-REM    echo   --config=^<filename^>                Load the given configuration file
+    echo   --config=^<filename^>                Load the given configuration file
 REM    echo                                      (JSON formated)
 REM    echo   --debug=[yes^|no]                   Prints additional warning and debug message
 REM    echo                                      (default is no)

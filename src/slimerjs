@@ -45,7 +45,7 @@ fi
 function showHelp() {
 
     #echo "                                     cookies."
-    #echo "  --config=<file>                    Load the given configuration file"
+    echo "  --config=<file>                    Load the given configuration file"
     #echo "                                     (JSON formated)"
     #echo "  --debug=[yes|no]                   Prints additional warning and debug message"
     #echo "                                     (default is no)"

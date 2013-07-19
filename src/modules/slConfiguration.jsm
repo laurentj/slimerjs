@@ -10,6 +10,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Cu.import('resource://slimerjs/slErrorLogger.jsm');
+Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 
 var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
@@ -18,6 +19,7 @@ var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
 
 var optionsSpec = {
     // name: [ 'cmdline option name', 'parser function name', 'default value',  supported],
+    errorLogFile: ['error-log-file', 'file', '', true],
     cookiesFile : ['cookies-file', 'file', '', false],
     diskCacheEnabled : ['disk-cache', 'bool', false, false],
     maxDiskCacheSize : ['max-disk-cache-size', 'int', -1, false],
@@ -81,10 +83,6 @@ var slConfiguration = {
 
     handleFlags : function(cmdline) {
 
-        let filename = cmdline.handleFlagWithParam("error-log-file", false);
-        if (filename) {
-            initErrorLogger(filename, this.workingDirectory);
-        }
 
         for (let opt in optionsSpec) {
             let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
@@ -103,6 +101,16 @@ var slConfiguration = {
                     this[opt] = optValue;
             }
         }
+
+        let configFile = cmdline.handleFlagWithParam("config", false);
+        if (configFile) {
+            this.handleConfigFile(configFile);
+        }
+
+        if (this.errorLogFile) {
+            initErrorLogger(this.errorLogFile, this.workingDirectory);
+        }
+
         let profd = Services.dirsvc.get("ProfD", Ci.nsIFile);
         profd.append("webappsstore.sqlite");
         this.offlineStoragePath = profd.path;
@@ -120,10 +128,10 @@ var slConfiguration = {
     },
 
     parse_bool : function (val, cmdlineOpt) {
-        if (val == 'true' || val == 'yes') {
+        if (val === 'true' || val === 'yes' || val === true) {
             return true;
         }
-        if (val == 'false' || val == 'no') {
+        if (val === 'false' || val === 'no' || val === false) {
             return false;
         }
         throw new Error("Invalid value for '"+cmdlineOpt+"' option. It should be yes or no");
@@ -203,6 +211,44 @@ var slConfiguration = {
         return val;
     },
 
+    handleConfigFile: function(fileName) {
+        let file = slUtils.getMozFile(fileName, this.workingDirectory);
+        let fileContent = slUtils.readSyncStringFromFile(file);
+        let config;
+        try {
+            config = JSON.parse(fileContent);
+        }
+        catch(e) {
+            throw new Error ("Config file content is not a valid JSON content");
+        }
+        if (typeof config != 'object')
+            throw new Error ("The config file does not contain a JSON object");
+
+
+        for (let opt in config) {
+            if (! (opt in optionsSpec)) {
+                throw new Error ("Unknow option "+opt+" in the config file");
+            }
+            let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
+            if (cmdlineOpt == '') {
+                throw new Error ("Unknow option "+opt+" in the config file");
+            }
+
+            let optValue = config[opt];
+            if (optValue) {
+                if (!supported) {
+                    dump("Option "+opt+" in the config file, not supported yet\n");
+                    continue;
+                }
+                if (parser) {
+                    this[opt] = this['parse_'+parser](optValue, cmdlineOpt);
+                }
+                else
+                    this[opt] = optValue;
+            }
+        }
+    },
+
     getDefaultWebpageConfig : function() {
         
         return Object.freeze({
@@ -220,7 +266,7 @@ var slConfiguration = {
             resourceTimeout: undefined,
         })
     },
-
+    errorLogFile : '',
     cookiesFile : '',
     diskCacheEnabled : true,
     maxDiskCacheSize : null,

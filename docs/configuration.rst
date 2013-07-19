@@ -25,7 +25,7 @@ they don't make sens with the existing profile system.
 =============================================  =================== =============================================
 PhantomJS options
 =============================================  =================== =============================================
---config=/path/to/config.json        
+--config=/path/to/config.json                   Supported           indicate a config file
 --cookies-file=/path/to/cookies.txt             N/A. see profiles
 --debug=[yes|no]                     
 --disk-cache=[yes|no]                
@@ -70,10 +70,21 @@ Options specific to SlimerJS
 Configuration file
 ==================
 
-Not supported for the moment.
-
 A configuration file could be given with the ``--config`` option.
 
+This file does contain a JSON object. Each of its properties correspond to
+a configuration parameter with a de-dashed and camel-cased name.
+
+.. code-block:: javascript
+
+    {
+        "loadImages":true,
+        "errorLogFile":"error2.log",
+        "maxDiskCacheSize": 123
+    }
+
+Some options are not supported in the configuration file, since they are processed before
+the execution of the core of SlimerJS: ``--help``, ``--version``, ``-jsconsole``, ``-P``, ``CreateProfile``, ``-profile``,
 
 Options in your script
 ======================
