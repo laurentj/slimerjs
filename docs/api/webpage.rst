@@ -88,14 +88,16 @@ To modify it, set an entire object on this property.
 canGoBack
 -----------------------------------------
 
-
+Indicates if there is a previous page in the navigation history. This is a boolean.
+Read-only.
 
 .. _webpage-canGoForward:
 
 canGoForward
 -----------------------------------------
 
-
+Indicates if there is a next page in the navigation history. This is a boolean.
+Read-only.
 
 .. _webpage-content:
 
@@ -166,7 +168,7 @@ for key modifiers:
     page.event.modifier.meta
     page.event.modifier.keypad
 
-There is a ``key`` property containing constants
+There is also a ``key`` property containing constants
 for key codes.
 
 
@@ -241,7 +243,8 @@ libraryPath
 navigationLocked
 -----------------------------------------
 
-
+This is a property to lock navigation. If it is ``true``, clicking on a link in
+the web page to load a new page, submitting a form etc, will not have effect.
 
 .. _webpage-offlineStoragePath:
 
@@ -316,7 +319,10 @@ paperSize
 plainText
 -----------------------------------------
 
+Contains the content of the web page as text. For html pages, you'll have
+only texts of the page.
 
+Read only.
 
 .. _webpage-scrollPosition:
 
@@ -441,6 +447,9 @@ Delete all cookies corresponding to the current url.
 close()
 -----------------------------------------
 
+Close the web page. It means that it closes the window displaying the web page.
+After the close, some methods cannot be used and you should call ``open()`` or ``openUrl()``
+to be able to reuse the webpage object.
 
 
 .. _webpage-currentFrameName:
@@ -463,23 +472,60 @@ It works only if cookies are enabled.
 
 .. _webpage-evaluateJavaScript:
 
-evaluateJavaScript()
+evaluateJavaScript(src)
 -----------------------------------------
 
-
+Evaluate the current javascript source (in a string), into the context of the
+loaded web page. It returns the result of the evaluation.
 
 .. _webpage-evaluate:
 
-evaluate()
+evaluate(func, arg1, arg2...)
 -----------------------------------------
 
- 
+It executes the given function in the context of the loaded web page. It means
+that the code of the function cannot access to objects and variables of your script.
+For example, in this function, the ``document`` and ``window`` objects are belongs
+to the loaded page, not to your script. In other terms, you cannot use closures.
+
+.. code-block:: javascript
+
+    var page = require('webpage').create();
+    page.open("http://example.com", function (status) {
+        var someContent = page.evaluate(function () {
+            return document.querySelector("#aDiv").textContent;
+        });
+        console.log('The introduction: ' + someContent);
+        slimer.exit()
+    });
+
+You can give additionnal parameters to ``evaluate()``. This will be the parameters
+for the function. For example, here the function will receive "#aDiv" as parameter:
+
+.. code-block:: javascript
+
+    var someContent = page.evaluate(function (selector) {
+        return document.querySelector(selector).textContent;
+    }, "#aDiv");
+
+Parameters can only some basic javascript objects or literal values. You cannot pass
+some objects like DOM elements. In other terms, you cannot pass parameters on which you
+cannot call a ``toString()`` or you cannot serialize as a JSON value.
+
+``evaluate()`` returns the value returned by the function.
 
 .. _webpage-evaluateAsync:
 
-evaluateAsync()
+evaluateAsync(func)
 -----------------------------------------
 
+It is equivalent to ``evaluate()``, but with some differences:
+
+- the function is executed asynchronously. It means that the call of ``evaluateAsync()``
+  does not wait after the execution of the given function to return. It does not
+  block your current script.
+- you cannot return values inside the given function
+- you cannot pass parameters.
 
 
 .. _webpage-getPage:
@@ -493,23 +539,32 @@ Only children opened when ownsPage was true are checked.
 
 .. _webpage-go:
 
-go()
+go(indexIncrement)
 -----------------------------------------
 
- 
+This method allows to navigate into the navigation history.
+The parameter, an integer, indicates how far to move forward or backward in the navigation history.
+
+.. code-block:: javascript
+
+    webpage.go(-3);
+    webpage.go(-1); // equivalent to webpage.goBack()
+    webpage.go(1);  // equivalent to webpage.goForward()
+    webpage.go(4);
 
 .. _webpage-goBack:
 
 goBack()
 -----------------------------------------
 
-
+Displays the previous page in the navigation history.
 
 .. _webpage-goForward:
 
 goForward()
 -----------------------------------------
 
+Displays the next page in the navigation history.
 
 
 .. _webpage-includeJs:
@@ -662,7 +717,7 @@ be used instead.
 reload()
 -----------------------------------------
 
-
+Reload the current web page.
 
 .. _webpage-render:
 
