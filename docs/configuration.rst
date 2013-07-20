@@ -22,20 +22,20 @@ as PhantomJS, plus some others. Indicate them before the script filename.
 However, all options are not supported yet. And some of them won't be supported because
 they don't make sens with the existing profile system.
 
-=============================================  =================== =============================================
+=============================================  =================== ===================================================
 PhantomJS options
-=============================================  =================== =============================================
+=============================================  =================== ===================================================
 --config=/path/to/config.json                   Supported           indicate a config file
 --cookies-file=/path/to/cookies.txt             N/A. see profiles
 --debug=[yes|no]                     
---disk-cache=[yes|no]                
+--disk-cache=[yes|no]                           Supported           Enable the disk cache or not. By default: disabled
 --help or -h                                    Supported           Displays help about options
 --ignore-ssl-errors=[yes|no]         
 --load-images=[yes|no]                          Supported           
 --local-storage-path=/path/to/file              N/A. see profiles
 --local-storage-quota=number                    Supported           number in Bytes
 --local-to-remote-url-access=[yes|no]
---max-disk-cache-size=size           
+--max-disk-cache-size=size                      Supported           Limits the size of the disk cache (in KB)
 --output-encoding=encoding           
 --proxy=address:port                 
 --proxy-auth=username:password       

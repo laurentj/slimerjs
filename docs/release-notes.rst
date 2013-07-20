@@ -14,6 +14,7 @@ New API
 -------
 
 - Support of ``--config`` on the command line, to indicate a configuration file
+- Support of ``--disk-cache`` and ``--max-disk-cache-size`` on the command line
 
 
 Fixed bugs

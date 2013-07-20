@@ -21,8 +21,8 @@ var optionsSpec = {
     // name: [ 'cmdline option name', 'parser function name', 'default value',  supported],
     errorLogFile: ['error-log-file', 'file', '', true],
     cookiesFile : ['cookies-file', 'file', '', false],
-    diskCacheEnabled : ['disk-cache', 'bool', false, false],
-    maxDiskCacheSize : ['max-disk-cache-size', 'int', -1, false],
+    diskCacheEnabled : ['disk-cache', 'bool', false, true],
+    maxDiskCacheSize : ['max-disk-cache-size', 'int', -1, true],
     ignoreSslErrors : ['ignore-ssl-errors', 'bool', false, false],
     loadImages: ['load-images', 'bool', true, true],
     localToRemoteUrlAccessEnabled : ['local-to-remote-url-access', 'bool', false, false],
@@ -121,6 +121,10 @@ var slConfiguration = {
         else {
             Services.prefs.setIntPref("dom.storage.default_quota", Math.ceil(this.offlineStorageDefaultQuota /1024));
         }
+
+        Services.prefs.setBoolPref('browser.cache.disk.enable', this.diskCacheEnabled);
+        if (this.maxDiskCacheSize > -1)
+            Services.prefs.setIntPref('browser.cache.disk.capacity', this.maxDiskCacheSize);
     },
 
     parse_int : function (val, cmdlineOpt) {

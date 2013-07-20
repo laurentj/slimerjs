@@ -130,7 +130,7 @@ REM if delayed variable expansion is turned on then the character ! needs to be 
 REM    echo                                      (JSON formated)
 REM    echo   --debug=[yes^|no]                   Prints additional warning and debug message
 REM    echo                                      (default is no)
-REM    echo   --disk-cache=[yes^|no]              Enables disk cache (default is no).
+    echo   --disk-cache=[yes^|no]              Enables disk cache (default is no).
     echo   --help or -h                       Show this help
 REM    echo   --ignore-ssl-errors=[yes^|no]       Ignores SSL errors (default is no).
     echo   --load-images=[yes^|no]            Loads all inlined images (default is yes)
@@ -138,7 +138,7 @@ REM    echo   --ignore-ssl-errors=[yes^|no]       Ignores SSL errors (default is
     echo                                      local storage (in KB)
 REM    echo   --local-to-remote-url-access=[yes^|no] Allows local content to access remote
 REM    echo                                         URL (default is no)
-REM    echo   --max-disk-cache-size=^<number^>     Limits the size of the disk cache (in KB)
+    echo   --max-disk-cache-size=^<number^>     Limits the size of the disk cache (in KB)
 REM    echo   --output-encoding=^<enc^>            Sets the encoding for the terminal output
 REM    echo                                      (default is 'utf8')
 REM    echo   --remote-debugger-port=^<number^>    Starts the script in a debug harness and

@@ -13,14 +13,14 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>--config=/path/to/config.json        </td><td>Implemented</td></tr>
     <tr><td>--cookies-file=/path/to/cookies.txt  </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--debug=[yes|no]                     </td><td></td></tr>
-    <tr><td>--disk-cache=[yes|no]                </td><td></td></tr>
+    <tr><td>--disk-cache=[yes|no]                </td><td>Implemented</td></tr>
     <tr><td>--help or -h                         </td><td>Implemented</td></tr>
     <tr><td>--ignore-ssl-errors=[yes|no]         </td><td></td></tr>
     <tr><td>--load-images=[yes|no]               </td><td>Implemented</td></tr>
     <tr><td>--local-storage-path=/path/to/file   </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--local-storage-quota=number         </td><td>Implemented</td></tr>
     <tr><td>--local-to-remote-url-access=[yes|no]</td><td></td></tr>
-    <tr><td>--max-disk-cache-size=size           </td><td></td></tr>
+    <tr><td>--max-disk-cache-size=size           </td><td>Implemented</td></tr>
     <tr><td>--output-encoding=encoding           </td><td></td></tr>
     <tr><td>--proxy=address:port                 </td><td></td></tr>
     <tr><td>--proxy-auth=username:password       </td><td></td></tr>
