@@ -8,19 +8,20 @@ It is in fact a tool like [PhantomJs](http://phantomjs.org/), except that
 it runs Gecko instead of Webkit, and it is not (yet) natively headless.
 However, it can be headless with the use of xvfb under Linux or MacOS.
 
-SlimerJS provide almost the same API of PhantomJS. The current version of SlimerJS
+SlimerJS provides almost the same API of PhantomJS. The current version of SlimerJS
 is highly compatible with PhantomJS even if it is not 100% compatible yet.
 See current release notes in docs/release-notes.rst, and
 read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md)
 to know the implementation progress.
 
 The main goal of SlimerJS is to allow to execute all scripts developed for PhantomJS. So
-in a near future, you could use tools like [CasperJS](http://casperjs.org)...
+you could use tools like [CasperJS](http://casperjs.org). In fact, CasperJs 1.1beta and higher
+can be executed with SlimerJS!
 
 SlimerJS is not only a PhantomJS clone, it contains also [additional features](http://slimerjs.org/features.html).
 
 Technically, SlimerJS is a XUL/JS application that is launched with
-XULRunner (or optionaly with any version of Firefox).
+XULRunner (or optionaly with any recent version of Firefox).
 
 # Community
 

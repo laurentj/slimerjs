@@ -91,7 +91,7 @@ Options in your script
 
 Values of some options are available through the ``phantom`` object and the ``webpage`` object.
 
-``phantom.defaultPageSettings`` is an object that contains this following properties :
+``phantom.defaultPageSettings`` is an object that contains this following properties:
 
 .. code-block:: javascript
 
@@ -115,8 +115,9 @@ Values of some options are available through the ``phantom`` object and the ``we
 The property ``settings`` of a webpage object contains the same object, except that it
 can be modified. The default value of ``settings`` is equal to ``phantom.defaultPageSettings``.
 
-Note that even if ``settings`` and ``phantom.defaultPageSettings`` are usable, settings
-are not taken account yet by any webpage object.
+Note that even if ``settings`` and ``phantom.defaultPageSettings`` are usable, only few
+settings are taken account by webpage objects: ``javascriptEnabled``, ``loadImages`` and
+``userAgent``.
 
 
 .. _profiles:
