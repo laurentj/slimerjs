@@ -1074,7 +1074,10 @@ function _create(parentWebpageInfo) {
         set libraryPath (path) {
             libPath = Cc['@mozilla.org/file/local;1']
                             .createInstance(Ci.nsILocalFile);
-            libPath.initWithPath(path);
+            if (libPath instanceof Ci.nsILocalFileWin)
+                libPath.initWithPath(path.replace('/', '\\'));
+            else
+                libPath.initWithPath(path);
         },
 
         /**

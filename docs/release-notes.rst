@@ -15,6 +15,8 @@ Fixed bugs
 
 - ``webpage.render()`` should create directories indicated in the given path (issue #51)
 - Fixed some errors in ``slimerjs.bat`` (for windows)
+- Fixed module loading on windows with path containing slashes (#61)
+- Fixed issue with ``phantom.libraryPath`` and ``webpage.libraryPath`` on windows with path containing slashes
 
 version 0.8
 ===========
