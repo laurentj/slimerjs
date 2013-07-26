@@ -52,7 +52,7 @@ PhantomJS options
 --webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]
 --webdriver-selenium-grid-hub=url    
 --web-security=[yes|no]              
-=============================================  =================== =============================================
+=============================================  =================== ===================================================
 
 SlimerJS has some specific options. Some of them are `options of Firefox/Xulrunner <https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options>`_
 

@@ -789,18 +789,17 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         let message = PromptUtils.makeAuthMessage(channel, authInfo);
 
         let [username, password] = PromptUtils.getAuthInfo(authInfo);
+        let [host, realm]  = PromptUtils.getAuthTarget(channel, authInfo);
+        let credentials = {
+            username:       username,
+            password:       password
+        }
 
-        let userParam = { value: username };
-        let passParam = { value: password };
-
-        let ok;
-        if (authInfo.flags & Ci.nsIAuthInformation.ONLY_PASSWORD)
-            ok = this.nsIPrompt_promptPassword(null, message, passParam, checkLabel, checkValue);
-        else
-            ok = this.nsIPrompt_promptUsernameAndPassword(null, message, userParam, passParam, checkLabel, checkValue);
-
-        if (ok)
-            PromptUtils.setAuthInfo(authInfo, userParam.value, passParam.value);
+        let ok = this._slimerPromptUsernameAndPassword(channel.URI.spec, authInfo, credentials, realm);
+        if (ok) {
+            checkValue.value = false;
+            PromptUtils.setAuthInfo(authInfo, credentials.username, credentials.password);
+        }
         return ok;
     },
 
@@ -812,6 +811,48 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         //
         // Bug 565582 will change this.
         throw Cr.NS_ERROR_NOT_IMPLEMENTED;
+    },
+
+    _slimerPromptUsernameAndPassword : function (url, authInfo, credentials, realm) {
+        let webpage;
+        let browser = slUtils.getBrowserFromContentWindow(this.domWin);
+        if (browser)
+            webpage = browser.webpage;
+        if (!webpage)
+            return false;
+
+        let onlyPassword = (authInfo.flags & Ci.nsIAuthInformation.ONLY_PASSWORD);
+        if (authInfo.flags & Ci.nsIAuthInformation.PREVIOUS_FAILED) {
+            browser.authAttempts ++;
+            let max = (webpage.settings.maxAuthAttempts === undefined?3:webpage.settings.maxAuthAttempts);
+            if (browser.authAttempts >= max) {
+                return false;
+            }
+        }
+        if (onlyPassword
+            && webpage.settings.password != ''
+            && webpage.settings.password != null
+            && webpage.settings.password != undefined
+            ) {
+            credentials.password = webpage.settings.password;
+        }
+        else if (!onlyPassword
+                 && webpage.settings.userName != ''
+                 && webpage.settings.userName != null
+                 && webpage.settings.userName != undefined 
+                 && webpage.settings.password != ''
+                 && webpage.settings.password != null
+                 && webpage.settings.password != undefined
+                 ) {
+            credentials.username = webpage.settings.userName;
+            credentials.password = webpage.settings.password;
+        }
+        else if (webpage.onAuthPrompt) { 
+            let type = (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY? 'proxy': 'http');
+            return webpage.onAuthPrompt(type, url, realm, credentials);
+        }
+
+        return true;
     },
 
     /* ----------  nsIWritablePropertyBag2 ---------- */

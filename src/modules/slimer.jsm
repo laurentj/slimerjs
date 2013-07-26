@@ -43,8 +43,22 @@ var slimer =  {
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },
 
+    /**
+     * clear all current FTP/HTTP authentication sessions
+     */
+    clearHttpAuth : function() {
+        // clear all auth tokens
+        let sdr = Components.classes["@mozilla.org/security/sdr;1"]
+                             .getService(Components.interfaces.nsISecretDecoderRing);
+        sdr.logoutAndTeardown();
+
+        // clear FTP and plain HTTP auth sessions
+        Services.obs.notifyObservers(null, "net:clear-active-logins", null);
+    },
+
     __exposedProps__ : {
         version : 'r',
-        exit : 'r'
+        exit : 'r',
+        clearHttpAuth : 'r'
     }
 }

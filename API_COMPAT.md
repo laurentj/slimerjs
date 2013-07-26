@@ -79,6 +79,7 @@ It will contain API that does not exists in PhantomJS.
 
 <table>
     <tr><td>version                             </td><td>Implemented. Gives the version of SlimerJS</td></tr>
+    <tr><td>clearHttpAuth()                     </td><td>Implemented.</td></tr>
     <tr><td>exit()                              </td><td>Implemented.</td></tr>
 </table>
 
@@ -139,9 +140,9 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>settings.javascriptCanOpenWindows   </td><td></td></tr>
     <tr><td>settings.javascriptCanCloseWindows  </td><td></td></tr>
     <tr><td>settings.userAgent                  </td><td>Implemented</td></tr>
-    <tr><td>settings.userName                   </td><td></td></tr>
-    <tr><td>settings.password                   </td><td></td></tr>
-    <tr><td>settings.maxAuthAttempts            </td><td></td></tr>
+    <tr><td>settings.userName                   </td><td>Implemented</td></tr>
+    <tr><td>settings.password                   </td><td>Implemented</td></tr>
+    <tr><td>settings.maxAuthAttempts            </td><td>Implemented</td></tr>
     <tr><td>settings.resourceTimeout            </td><td></td></tr>
     <tr><td>title                               </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
@@ -200,11 +201,12 @@ It will contain API that does not exists in PhantomJS.
 
 <table>
     <tr><td>onalert                             </td><td>Implemented</td></tr>
+    <tr><td>onAuthPrompt                        </td><td>Implemented (SlimerJS only)</td></tr>
     <tr><td>onCallback                          </td><td>Implemented</td></tr>
     <tr><td>onClosing                           </td><td>Implemented</td></tr>
     <tr><td>onConfirm                           </td><td>Implemented</td></tr>
     <tr><td>onConsoleMessage                    </td><td>Implemented (SlimerJS only: the callback receives the lineNumber and the sourceID, contrary to PhantomJS)</td></tr>
-    <tr><td>onError                             </td><td>Implemented. (SlimerJS issue: For errors from the webpage directly, the stack is not available..)</td></tr>
+    <tr><td>onError                             </td><td>Implemented (SlimerJS issue: For errors from the webpage directly, the stack is not available..)</td></tr>
     <tr><td>onFilePicker                        </td><td>Implemented</td></tr>
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented<br>SlimerJS only: the callback receives 3 parameters: the status ("success" or "fail"), the url and true if this is a frame that is loaded</td></tr>

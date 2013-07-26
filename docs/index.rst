@@ -14,11 +14,12 @@ Manual
    script-execution
    configuration
    differences-with-phantomjs
+   manual/http-authentication
 
 API reference
 -------------
 
-Objects and functions
+Objects and functions available in SlimerJS
 
 .. toctree::
    :maxdepth: 1

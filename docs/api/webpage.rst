@@ -52,7 +52,7 @@ Functions list:
 
 Callbacks list:
 
-:ref:`onAlert <webpage-onAlert>` :ref:`onCallback <webpage-onCallback>` :ref:`onClosing <webpage-onClosing>` 
+:ref:`onAlert <webpage-onAlert>` :ref:`onAuthPrompt <webpage-onAuthPrompt>`  :ref:`onCallback <webpage-onCallback>` :ref:`onClosing <webpage-onClosing>` 
 :ref:`onConfirm <webpage-onConfirm>` :ref:`onConsoleMessage <webpage-onConsoleMessage>` :ref:`onError <webpage-onError>` 
 :ref:`onFilePicker <webpage-onFilePicker>` :ref:`onInitialized <webpage-onInitialized>` :ref:`onLoadFinished <webpage-onLoadFinished>` 
 :ref:`onLoadStarted <webpage-onLoadStarted>` :ref:`onNavigationRequested <webpage-onNavigationRequested>` :ref:`onPageCreated <webpage-onPageCreated>` 
@@ -354,12 +354,12 @@ Changing them after the load has no effect.
 - ``javascriptCanOpenWindows``  (not supported yet)
 - ``loadImages``  (not supported yet)
 - ``localToRemoteUrlAccessEnabled``  (not supported yet)
-- ``maxAuthAttempts``  (not supported yet)
-- ``password``  (not supported yet)
+- ``maxAuthAttempts``: indicate the maximum of attempts of HTTP authentication.
+- ``password``: password to give to HTTP authentication
 - ``userAgent``: string to define the user Agent in HTTP requests. By default, it is
   something like ``"Mozilla/5.0 (X11; Linux x86_64; rv:21.0) Gecko/20100101 SlimerJS/0.7"``
   (depending of the version of Firefox/XulRunner you use)
-- ``userName``  (not supported yet)
+- ``userName``: username to give to HTTP authentication
 - ``XSSAuditingEnabled``  (not supported yet)
 - ``webSecurityEnabled``  (not supported yet)
 
@@ -833,6 +833,28 @@ onAlert
 -----------------------------------------
 
 
+
+.. _webpage-onAuthPrompt:
+
+onAuthPrompt
+-----------------------------------------
+
+This is a callback called when a webpage needs an HTTP authentication.
+(SlimerJS only: not available in PhantomJS).
+
+The callback accepts four arguments:
+
+- ``type``: its value is ``'http'``
+- ``url``: the url of the page that needs authentication
+- ``realm``: the message indicating the realm
+- ``credentials``: an object containing two properties, ``username`` and
+  ``password``. You should modify these properties to indicate the username
+  and the password.
+
+The callback should return ``true`` if it accepts to authenticate, else
+``false``.
+
+To know more, see  :doc:`doc about http authentication with SlimerJS <../manual/http-authentication>`.
 
 .. _webpage-onCallback:
 

@@ -7,6 +7,18 @@ slimer
 ``slimer`` is an object available automatically in scripts.
 
 
+
+.. _slimer-clearHttpAuth:
+
+clearHttpAuth()
+-----------------------------------------
+
+It clears all HTTP authentication that have been made. Then, when
+a webpage needs an HTTP auth, username and password will be asked again.
+
+See :doc:`doc about http authentication with SlimerJS <../manual/http-authentication>`.
+
+
 .. _slimer-exit:
 
 exit()

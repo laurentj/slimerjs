@@ -56,6 +56,7 @@ else {
     phantom.injectJs("./test-webpage-filepicker.js");
     phantom.injectJs("./test-phantom-cookies.js");
     phantom.injectJs("./test-webpage-cookies.js");
+    phantom.injectJs("./test-webpage-httpauth.js");
 }
 
 var webserverTest = webServerFactory.create();
@@ -98,6 +99,26 @@ webserverTest.listen(8083, function(request, response) {
         catch(e) {
             response.write("Error:"+e)
         }
+        response.close();
+        return;
+    }
+
+    if (request.url == '/needauth') {
+        let headers = { "Content-Type": "text/plain;charset=UTF-8"}
+        let message = '';
+        if (! ('Authorization' in request.headers)
+            || request.headers['Authorization'] != 'Basic bGF1cmVudDoxMjM0') {
+            headers['WWW-Authenticate'] = 'Basic realm="Slimer auth test"';
+            message = 'auth is needed';
+            response.statusCode = 401;
+        }
+        else {
+            message = "authentication is ok";
+            response.statusCode = 200;
+        }
+
+        response.headers = headers;
+        response.write(message);
         response.close();
         return;
     }

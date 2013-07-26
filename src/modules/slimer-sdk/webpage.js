@@ -397,6 +397,7 @@ function _create(parentWebpageInfo) {
             browser = nav;
             browser.webpage = webpage;
             browserJustCreated = true;
+            browser.authAttempts = 0;
             Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
             netLog.registerBrowser(browser, options);
             if (!noInitializedEvent)
@@ -454,8 +455,6 @@ function _create(parentWebpageInfo) {
             - javascriptCanOpenWindows
             - javascriptCanCloseWindows
             Note: The settings apply only during the initial call to the WebPage#open function. Subsequent modification of the settings object will not have any impact.
-
-            @notimplemented
          */
         get settings (){
             return privProp.settings;
@@ -693,6 +692,7 @@ function _create(parentWebpageInfo) {
                 browser.stop();
                 me.initialized();
                 browserJustCreated = false;
+                browser.authAttempts = 0;
                 netLog.registerBrowser(browser, options);
                 webpageUtils.browserLoadURI(browser, url, httpConf);
             });
@@ -1469,6 +1469,8 @@ function _create(parentWebpageInfo) {
         //--------------------------------------------------- window popup callback
 
         onAlert : null,
+
+        onAuthPrompt: null,
 
         onCallback : null,
 
