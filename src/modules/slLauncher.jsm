@@ -146,7 +146,11 @@ function isFile(filename, base) {
         let file;
         if (base) {
             file = base.clone();
-            file.appendRelativePath(filename);
+            if (file instanceof Ci.nsILocalFileWin) {
+                file.appendRelativePath(filename.replace("/", "\\"));
+            }
+            else
+                file.appendRelativePath(filename);
         }
         else {
             file = Cc['@mozilla.org/file/local;1']

@@ -301,10 +301,11 @@ function normalize(uri) { return uri.substr(-3) === '.js' ? uri : uri + '.js'; }
 // Utility function to join paths. In common case `base` is a
 // `requirer.uri` but in some cases it may be `baseURI`. In order to
 // avoid complexity we require `baseURI` with a trailing `/`.
+// SlimerJS patch: base can be a file path, with \ as separator on windows
 const resolve = iced(function resolve(id, base) {
   if (!isRelative(id)) return id;
   let paths = id.split('/');
-  let result = base.split('/');
+  let result = base.split(/\/|\\/);
   result.pop();
   while (paths.length) {
     let path = paths.shift();
@@ -313,6 +314,8 @@ const resolve = iced(function resolve(id, base) {
     else if (path !== '.')
       result.push(path);
   }
+  if (base.indexOf('\\') != -1)
+    return result.join('\\');
   return result.join('/');
 });
 exports.resolve = resolve;
