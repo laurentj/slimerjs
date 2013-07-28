@@ -15,7 +15,8 @@ object allows to load and manipulate a web page.
 In the ``page`` variable, you have then an object with many properties and
 methods. See below.
 
-Note: most of properties and methods are implemented, but not documented. Help us to document them ;-)
+Note: almost properties and methods are implemented, but some are not documented yet.
+Please help us to document them ;-).
 
 
 Webpage object
@@ -349,10 +350,10 @@ settings
 This property allows to set some options for the load of a page.
 Changing them after the load has no effect.
 
-- ``javascriptEnabled`` (not supported yet)
+- ``javascriptEnabled``: ``false`` to deactivate javascript in web pages (default is ``true``)
 - ``javascriptCanCloseWindows``  (not supported yet)
 - ``javascriptCanOpenWindows``  (not supported yet)
-- ``loadImages``  (not supported yet)
+- ``loadImages``: ``false`` to deactivate the loading of images (default is ``true``)
 - ``localToRemoteUrlAccessEnabled``  (not supported yet)
 - ``maxAuthAttempts``: indicate the maximum of attempts of HTTP authentication.
 - ``password``: password to give to HTTP authentication
@@ -569,17 +570,32 @@ Displays the next page in the navigation history.
 
 .. _webpage-includeJs:
 
-includeJs()
+includeJs(url, callback)
 -----------------------------------------
 
- 
+It loads into the current web page, the javascript file stored
+at the given url.
+
+When the load is done, the given callback is called.
 
 .. _webpage-injectJs:
 
-injectJs()
+injectJs(filename)
 -----------------------------------------
 
+It loads and executes the given javascript file into
+the context of the current script. So the loaded script
+has access to all variable of the current module.
 
+If the given filename is a relative path, SlimerJS tries
+to resolve the full path from the current working directory
+(that is the directory from which SlimerJS has been launched).
+If the file is not found, SlimerJS tries to resolve with
+the libraryPath.
+
+Note: there is a limitation in SlimerJS. If the loaded script
+wants to modify a variable of the current script/module, it should
+call ``window.myvariable = '..'`` instead of ``myvariable = '..'``.
 
 .. _webpage-open:
 
@@ -753,10 +769,92 @@ See reh ``render()`` function.
 
 .. _webpage-sendEvent:
 
-sendEvent()
------------------------------------------
+sendEvent(eventType, arg1, arg2, button, modifier)
+---------------------------------------------------
 
- 
+It sends hardware-like events to the web page, through the
+browser window, like a user does when he types on a keyboard or
+uses his mouse. Then the browser engine (Gecko) translates these events
+into DOM events into the web page.
+
+So this method does not synthetize directly DOM events. This is why
+you cannot indicate a DOM element as target.
+
+With this method, you can generate keyboard events and mouse events.
+Arguments depends which type of event you want to generate.
+
+The event type is given as the first argument.
+
+**Mouse events**
+
+You should indicate 'mouseup', 'mousedown', 'mousemove', 'doubleclick'
+or 'click' as event type. 
+
+Arguments arg1 and arg2 should represent the mouse position on the window.
+arg1 is the horizontal coordinate (x) and arg2 is the vertical coordinate (y).
+These arguments are optional. In this case, give null as value.
+
+The fourth argument is the pressed button. Indicates 'left', 'middle' or 'right'.
+
+The "modifier" argument is a combination of keyboard modifiers, i.e., a code
+indicating if a key like 'ctrl' or 'alt' is pressed. Codes are available
+on the ``webpage.event.modifier`` object:
+
+- ``webpage.event.modifier.ctrl``
+- ``webpage.event.modifier.shift``
+- ``webpage.event.modifier.alt``
+- ``webpage.event.modifier.meta``
+- ``webpage.event.modifier.keypad``
+
+If no modifiers key, just use 0 as value.
+
+.. code-block:: javascript
+
+    // we send a click with ctrl+shift and the left button
+    var mod = page.event.modifier.ctrl | page.event.modifier.shift;
+    page.sendEvent('click', null, null, 'left', mod);
+
+- with 'mouseup', the web page will receive a mouseup and a click DOM event.
+- with 'mousedown', the web page will receive a mousedown and a click DOM event.
+- with 'mousemove', the web page will receive a simple mousemove DOM event.
+- with 'doubleclick' and 'click', the web page will receive a mousedown
+  and a mouseup DOM events, followed by a click DOM event. And
+  followed by a dblclick DOM event in the case of 'doubleclick'.
+
+The targeted DOM element is the DOM element under the indicated coordinates.
+
+Note that if coordinates are outside the viewport of the window,
+the webpage will not receives DOM events.
+
+**Keyboard events**
+
+You should indicate 'keyup', 'keypress' or 'keydown' as event type.
+
+The second parameter is a key code (from webpage.event.key), or a string
+of one or more characters.
+
+You can also indicate a modifier key as fifth argument. See above for mouse events.
+
+Third and fourth argument are not taken account for keyboard events.
+Just give null for them.
+
+.. code-block:: javascript
+
+    page.sendEvent('keypress', page.event.key.B);
+    page.sendEvent('keypress', "C");
+    page.sendEvent('keypress', "abc");
+    
+    var mod = page.event.modifier.ctrl | page.event.modifier.shift;
+    page.sendEvent('keypress', page.event.key.A, null, null, mod);
+
+When you give a string as a second parameter, if its length is more
+than one character:
+
+- for keyup and keydown, only the first character is used
+- for keypress, it will generates a keydown+keypress+keyup DOM events
+  for each characters.
+
+The targeted DOM element is the DOM element that has the focus.
 
 .. _webpage-setContent:
 
@@ -764,8 +862,8 @@ setContent(content, url)
 -----------------------------------------
 
 This method allows to replace the content of the current page
-with the given HTML source code. The URL indicates the url
-of this new content.
+with the given HTML source code. The URL indicates the address
+assigned to this new content.
 
 
 .. _webpage-stop:

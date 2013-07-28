@@ -122,7 +122,10 @@ var phantom = {
     set libraryPath (path) {
         libPath = Components.classes['@mozilla.org/file/local;1']
                         .createInstance(Components.interfaces.nsILocalFile);
-        libPath.initWithPath(path);
+        if (libPath instanceof Components.interfaces.nsILocalFileWin)
+            libPath.initWithPath(path.replace('/', '\\'));
+        else
+            libPath.initWithPath(path);
     },
 
     /**
