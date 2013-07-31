@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 "use strict";
-var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "dumpo",
-                        "getMozFile", "readSyncStringFromFile", "readChromeFile",
+var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "dumpo", "getMozFile",
+                        "getAbsMozFile", "readSyncStringFromFile", "readChromeFile",
                         "getWebpageFromContentWindow", "getWebpageFromDocShell",
                         "getBrowserFromContentWindow", "getBrowserFromDocShell",
                         "createSimpleEnumerator", "slUtils"];
@@ -17,6 +17,9 @@ const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOSer
 const scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
 
 Cu.import("resource://gre/modules/Services.jsm");
+
+const isWin = (Services.dirsvc.get("CurWorkD", Ci.nsIFile) instanceof Ci.nsILocalFileWin);
+
 
 function dumpo(obj, indent) {
     if (typeof obj != 'object') {
@@ -63,10 +66,14 @@ function dumpStack(aStack) {
 }
 
 /**
+ * create an nsIFile object containing the given path. If the path
+ * is a relative path, the nsIFile object will contain the path resolved against
+ * the given base path.
  * @param string path
  * @param nsIFile basepath
+ * @return nsIFile
  */
-function getMozFile(path, basepath) {
+function getAbsMozFile(path, basepath) {
     var file = basepath.clone();
     var pathElements = path.split(/[\\\/]/);
     var first = pathElements[0];
@@ -76,12 +83,18 @@ function getMozFile(path, basepath) {
         return file;
     }
 
-    if (first.match(/\:$/) || first == '') {
+    if ( (isWin && first.match(/\:$/)) || (!isWin && first == '')) {
+        // this is an absolute path
         file = Cc['@mozilla.org/file/local;1']
                   .createInstance(Ci.nsILocalFile);
-        file.initWithPath(path);
+        if (isWin) {
+            file.initWithPath(path.replace(/\//g, "\\"));
+        }
+        else
+            file.initWithPath(path);
         return file;
     }
+
     while(pathElements.length) {
         first = pathElements.shift();
         if (first == '.' || first == '')
@@ -93,6 +106,31 @@ function getMozFile(path, basepath) {
         }
         file.append(first);
     }
+    return file;
+}
+
+/**
+ * create an nsIFile object containing the given path.
+ * @param string path  an absolute path
+ * @return nsIFile
+ */
+function getMozFile(path) {
+    let isAbs;
+    if (isWin) {
+        path = path.replace(/\//g, "\\");
+        isAbs = (/^([a-z]:)/i.test(path));
+    }
+    else {
+        isAbs = (/^\//i.test(path));
+    }
+
+    if (!isAbs) {
+        throw new Error("getMozFile - the path is not an absolute path: "+path);
+    }
+
+    let file = Cc['@mozilla.org/file/local;1']
+              .createInstance(Ci.nsILocalFile);
+    file.initWithPath(path);
     return file;
 }
 

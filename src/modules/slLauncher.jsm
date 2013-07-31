@@ -119,10 +119,9 @@ var slLauncher = {
 }
 
 function getFile(path, isDir) {
-    let file = Cc['@mozilla.org/file/local;1']
-              .createInstance(Ci.nsILocalFile);
+    let file;
     try {
-        file.initWithPath(path);
+        file = getMozFile(path);
     }
     catch(e){
         throw Error("Modules path "+path+" is not a valid path");
@@ -142,20 +141,12 @@ function getFile(path, isDir) {
  */
 function isFile(filename, base) {
     try {
-        // see if we have an absolute path
         let file;
         if (base) {
-            file = base.clone();
-            if (file instanceof Ci.nsILocalFileWin) {
-                file.appendRelativePath(filename.replace("/", "\\"));
-            }
-            else
-                file.appendRelativePath(filename);
+            file = getAbsMozFile(filename, base);
         }
         else {
-            file = Cc['@mozilla.org/file/local;1']
-                        .createInstance(Ci.nsILocalFile);
-            file.initWithPath(filename);
+            file = getMozFile(filename);
         }
         if (file.exists()) {
             return file.path;
@@ -320,7 +311,6 @@ function prepareLoader(fileURI, dirFile) {
 
             // let's resolve other id module as usual
             id = Loader.resolve(id, requirer);
-
             if (id.indexOf('sdk/') === 0
                 && requirer.indexOf('slimer-sdk/') === 0) {
                 return id;

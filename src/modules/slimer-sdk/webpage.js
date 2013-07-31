@@ -1072,12 +1072,7 @@ function _create(parentWebpageInfo) {
         },
 
         set libraryPath (path) {
-            libPath = Cc['@mozilla.org/file/local;1']
-                            .createInstance(Ci.nsILocalFile);
-            if (libPath instanceof Ci.nsILocalFileWin)
-                libPath.initWithPath(path.replace('/', '\\'));
-            else
-                libPath.initWithPath(path);
+            libPath = getMozFile(path);
         },
 
         /**
@@ -1093,10 +1088,10 @@ function _create(parentWebpageInfo) {
             if (!browser) {
                 throw new Error("WebPage not opened");
             }
-            let f = getMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            let f = getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
             if (!f.exists()) {
                 // filename resolved against the libraryPath property
-                f = getMozFile(filename, libPath);
+                f = getAbsMozFile(filename, libPath);
                 if (!f.exists()) {
                     dump("Can't open '"+filename+"'\n");
                     return false;
@@ -1323,9 +1318,7 @@ function _create(parentWebpageInfo) {
             browser.uploadFiles = [];
             files.forEach(function(file) {
                 try {
-                    let selectedFile = Cc['@mozilla.org/file/local;1']
-                                    .createInstance(Ci.nsILocalFile);
-                    selectedFile.initWithPath(file);
+                    let selectedFile = getMozFile(file);
                     if (selectedFile.exists()) {
                         browser.uploadFiles.push(selectedFile);
                     }

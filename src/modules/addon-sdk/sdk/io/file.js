@@ -28,24 +28,35 @@ var dirsvc = Cc["@mozilla.org/file/directory_service;1"]
 var currentWorkingDirectory = dirsvc.get("CurWorkD", Ci.nsIFile);
 
 var _separator = '/';
+var isWin = false;
 
-if (currentWorkingDirectory.path.charAt(0) != '/') {
-    _separator = '\\';
+if (currentWorkingDirectory instanceof Ci.nsILocalFileWin) {
+  _separator = '\\';
+  isWin = true;
 }
 
 
 function MozFile(path) {
-  var file = currentWorkingDirectory.clone();
-  try {
-    // if path is a relative path, there won't have exception
-    file.appendRelativePath(path);
-    return file;
+  let isAbs = false;
+  if (isWin) {
+    path = path.replace(/\//g, "\\");
+    isAbs = (/^([a-z]:)/i.test(path));
   }
-  catch(e) { }
-  // the given path is really an absolute path
-  file = Cc['@mozilla.org/file/local;1']
-            .createInstance(Ci.nsILocalFile);
-  file.initWithPath(path);
+  else {
+    isAbs = (/^\//i.test(path));
+  }
+
+  let file;
+  if (isAbs) {
+    file = Cc['@mozilla.org/file/local;1']
+                .createInstance(Ci.nsILocalFile);
+    file.initWithPath(path);
+  }
+  else {
+    file = currentWorkingDirectory.clone();
+    file.appendRelativePath(path);
+  }
+
   return file;
 }
 
@@ -200,12 +211,12 @@ exports.join = function join(base) {
 
 exports.split = function split(path) {
     var f;
-    if (_separator == '\\')
+    if (isWin)
         // normalize path with / and replace redondant separator by a single separator
-        f = path.replace('/\\+/',"/");
+        f = path.replace(/\\+/g,"/");
     else
         // replace redondant separators by a single separator
-        f = path.replace('/\/+/',"/");
+        f = path.replace(/\/+/g,"/");
 
     return f.replace(/\/$/, "").split("/")
 }
@@ -247,7 +258,8 @@ exports.basename = function basename(path) {
 };
 
 exports.absolute = function base(path) {
-    var f = exports.split(MozFile(path).path);
+    var mzf = MozFile(path).path;
+    var f = exports.split(mzf);
     var p = [];
     f.forEach(function(element){
         if (element == '.')
@@ -260,9 +272,12 @@ exports.absolute = function base(path) {
     })
     if (!p.length)
         return '';
-    p[0] = _separator+p[0];
-    if (p.length > 1)
-        return exports.join.apply(exports, p)
+    if (_separator != '\\')
+      p[0] = _separator+p[0];
+    if (p.length > 1) {
+      var ret = exports.join.apply(exports, p);
+      return ret;
+    }
     return p[0];
 }
 
@@ -497,14 +512,12 @@ exports.isAbsolute = function isAbsolute(path) {
   if (path == "")
     return false;
 
-  var file = currentWorkingDirectory.clone();
-  try {
-    // if path is a relative path, there won't have exception
-    file.appendRelativePath(path);
-    return false;
+  if (isWin) {
+    return (/^([a-z]:\\)/i.test(path.replace(/\//g, "\\")));
   }
-  catch(e) { }
-  return true;
+  else {
+    return (/^\//i.test(path));
+  }
 }
 
 exports.isExecutable = function isExecutable(path) {
