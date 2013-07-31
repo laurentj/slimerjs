@@ -1,4 +1,5 @@
 
+var URLUtils = require("sdk/url");
 
 describe("webpage with listeners", function() {
     var webpage;
@@ -76,7 +77,7 @@ describe("webpage with listeners", function() {
     }
 
     var domain = "http://localhost:8083/";
-    var file = 'file://'+ phantom.libraryPath + '/www/simplehello.html';
+    var file = URLUtils.fromFilename(phantom.libraryPath) + '/www/simplehello.html';
 
     var async = new AsyncSpec(this);
 

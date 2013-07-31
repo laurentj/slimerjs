@@ -32,7 +32,7 @@ function initErrorLogger(fileName, workingDir) {
         uconv.charset = "UTF-8";
 
         // open the log file
-        let file = slUtils.getMozFile(fileName, workingDir);
+        let file = slUtils.getAbsMozFile(fileName, workingDir);
         let openFlags = parseInt("0x1A");
         let permFlags = parseInt("0644", 8);
         outputStream = Cc['@mozilla.org/network/file-output-stream;1'].

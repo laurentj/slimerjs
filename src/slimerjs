@@ -11,6 +11,15 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SLIMERDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+SYSTEM=`uname -o`
+if [ "$SYSTEM" == "Cygwin" ]
+then
+   IN_CYGWIN=1
+   SLIMERDIR=`cygpath -w $SLIMERDIR`
+else
+   IN_CYGWIN=
+fi
+
 # retrieve the path of a gecko launcher
 if [ "$SLIMERJSLAUNCHER" == "" ]
 then
@@ -136,6 +145,9 @@ then
         echo "Error: cannot generate temp profile"
         exit 1
     fi
+    if [ "$IN_CYGWIN" == 1 ]; then
+        PROFILE_DIR=`cygpath -w $PROFILE_DIR`
+    fi
     PROFILE="--profile $PROFILE_DIR"
 else
     PROFILE="-purgecaches"
@@ -144,9 +156,10 @@ fi
 # put all arguments in a variable, to have original arguments before their transformation
 # by Mozilla
 export __SLIMER_ARGS="$@"
+export __SLIMER_ENV="$LISTVAR"
 
 # launch slimerjs with firefox/xulrunner
-"$SLIMERJSLAUNCHER" -app $SLIMERDIR/application.ini $PROFILE -no-remote --envs "$LISTVAR" "$@"
+"$SLIMERJSLAUNCHER" -app $SLIMERDIR/application.ini $PROFILE -no-remote "$@"
 
 EXITCODE=$?
 

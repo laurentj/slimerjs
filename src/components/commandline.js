@@ -39,7 +39,10 @@ slCommandLine.prototype = {
             dump("error cache service:"+ ex+"\n");
         }
 
-        slConfiguration.setEnvNames(cmdLine.handleFlagWithParam("envs", false).split(/,/));
+        if (envService.exists('__SLIMER_ENV')) {
+            let envs = envService.get('__SLIMER_ENV');
+            slConfiguration.setEnvNames(envs.split(/,/));
+        }
 
         slConfiguration.workingDirectory = cmdLine.workingDirectory;
 
@@ -105,10 +108,11 @@ slCommandLine.prototype = {
                     slConfiguration.scriptFile = cmdLine.resolveFile(slConfiguration.args[0]);
                 }
                 catch(e) {
-                    slConfiguration.scriptFile = slUtils.getMozFile(slConfiguration.args[0], cmdLine.workingDirectory)
+                    slConfiguration.scriptFile = slUtils.getAbsMozFile(slConfiguration.args[0], cmdLine.workingDirectory)
                 }
             }
             else {
+
                 slConfiguration.scriptFile = cmdLine.resolveFile(slConfiguration.args[0]);
             }
             if (!slConfiguration.scriptFile.exists())

@@ -120,12 +120,7 @@ var phantom = {
         return libPath.path;
     },
     set libraryPath (path) {
-        libPath = Components.classes['@mozilla.org/file/local;1']
-                        .createInstance(Components.interfaces.nsILocalFile);
-        if (libPath instanceof Components.interfaces.nsILocalFileWin)
-            libPath.initWithPath(path.replace('/', '\\'));
-        else
-            libPath.initWithPath(path);
+        libPath = slUtils.getMozFile(path);
     },
 
     /**
@@ -133,10 +128,10 @@ var phantom = {
      */
     injectJs: function(filename) {
         // resolve the filename against the current working directory
-        let f = slUtils.getMozFile(filename, Services.dirsvc.get("CurWorkD", Components.interfaces.nsIFile));
+        let f = slUtils.getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Components.interfaces.nsIFile));
         if (!f.exists()) {
             // filename resolved against the libraryPath property
-            f = slUtils.getMozFile(filename, libPath);
+            f = slUtils.getAbsMozFile(filename, libPath);
             if (!f.exists()) {
                 dump("Can't open '"+filename+"'\n");
                 return false;
