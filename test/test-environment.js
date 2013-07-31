@@ -91,8 +91,6 @@ if ("slimer" in this) {
             expect(slimer.version.major).toEqual(0);
             expect(slimer.version.minor).toEqual(9);
             expect(slimer.version.patch).toEqual(0);
-            expect(slimer.version.minor).toEqual(8);
-            expect(slimer.version.patch).toEqual(1);
         });
 
     });

@@ -47,8 +47,6 @@ if ("slimer" in this) {
     assertEquals("0", slimer.version.major, "slimer has the good major version");
     assertEquals("9", slimer.version.minor, "slimer has the good minor version");
     assertEquals("0", slimer.version.patch, "slimer has the good patch version");
-    assertEquals("8", slimer.version.minor, "slimer has the good minor version");
-    assertEquals("1", slimer.version.patch, "slimer has the good patch version");
 }
 else
     console.warn("==> No slimer object!")
