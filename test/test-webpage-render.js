@@ -20,8 +20,10 @@ describe("WebPage.viewportSize", function(){
 
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
-            expect(webpage.viewportSize.width).toEqual(400);
-            expect(webpage.viewportSize.height).toEqual(300);
+            if (!system.os.isWindows()) {
+                expect(webpage.viewportSize.width).toEqual(400);
+                expect(webpage.viewportSize.height).toEqual(300);
+            }
             webpage.viewportSize = { width:650, height:320 };
             var result = webpage.evaluate(function(){
                 return window.innerWidth +"-"+window.innerHeight;
@@ -58,7 +60,7 @@ describe("WebPage.renderBase64()", function(){
         runs(function(){
             var capture = webpage.renderBase64();
             expect(typeof capture).toEqual("string");
-            expect(capture.length > 1600).toBeTruthy();
+            expect(capture.length > 1300).toBeTruthy();
 
             var capture = webpage.renderBase64({format:'jpg', quality:0.5});
             expect(typeof capture).toEqual("string");
