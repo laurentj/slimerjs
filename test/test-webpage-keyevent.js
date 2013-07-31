@@ -642,11 +642,11 @@ describe("webpage.sendEvent", function() {
         // -> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent
         // and it don't send a keypress event !!
         webpage.evaluate(resetKeyCodeAndInit);
-        webpage.sendEvent("keypress", webpage.event.key.Delete, null, null, modifier.shift);
+        webpage.sendEvent("keypress", webpage.event.key.End, null, null, modifier.shift);
         readResult()
         expect(key.keydownK).toEqual(-1); // value with phantomjs is 46
         expect(key.keydownC).toEqual(-1); // value with phantomjs is 0
-        expect(key.keypressK).toEqual(46);// value with phantomjs is -1
+        expect(key.keypressK).toEqual(35);// value with phantomjs is -1
         expect(key.keypressC).toEqual(0); // value with phantomjs is -1
         expect(key.keyupK).toEqual(-1);   // value with phantomjs is 46
         expect(key.keyupC).toEqual(-1);   // value with phantomjs is 0
