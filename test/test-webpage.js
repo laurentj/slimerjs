@@ -218,7 +218,7 @@ describe("WebPage.injectJs()", function(){
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
             webpage.libraryPath += '/wwwfile';
-            webpage.injectJs('inject.js');
+            expect(webpage.injectJs('inject.js')).toBeTruthy();
         });
     });
 
