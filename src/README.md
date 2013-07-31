@@ -14,8 +14,7 @@ Go to [http://slimerjs.org] to know more and to access to the documentation
 - [Download the latest package](http://download.slimerjs.org/slimerjs-0.5RC1.zip) or
   [the source code of SlimerJS](https://github.com/laurentj/slimerjs/archive/master.zip) if you didn't it yet
 - On windows, a .bat is provided, but you can also launch slimer from a "true" console. In this case, you should install
-  [Cygwin](http://www.cygwin.com/) or any other unix environment to launch slimerjs. Note
-  that some issues are known with Cygwin.
+  [Cygwin](http://www.cygwin.com/) or any other unix environment to launch slimerjs.
 - SlimerJS needs to know where Firefox or XulRunner is stored. It tries to discover
   itself the path but can fail. You must then set the environment variable
   SLIMERJSLAUNCHER, which should contain the full path to the firefox binary:

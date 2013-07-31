@@ -6,7 +6,7 @@ REM ~ strips quotes from the argument
 SET SLIMERDIR=%~dp0
 REM %* is every argument passed to this script.
 SET __SLIMER_ARGS=%*
-SET LISTVAR=
+SET __SLIMER_ENV=
 
 SET CREATETEMP=Y
 
@@ -82,8 +82,8 @@ if not exist "%SLIMERJSLAUNCHER%" (
 
 SETLOCAL EnableDelayedExpansion
 
-REM store environment variable into LISTVAR for SlimerJS
-FOR /F "usebackq delims==" %%i IN (`set`) DO set LISTVAR=!LISTVAR!,%%i
+REM store environment variable into __SLIMER_ENV for SlimerJS
+FOR /F "usebackq delims==" %%i IN (`set`) DO set __SLIMER_ENV=!__SLIMER_ENV!,%%i
 
 REM let's create a temporary dir for the profile, if needed
 if ["%CREATETEMP%"]==[""] (
@@ -107,7 +107,7 @@ REM FIXME: This solution is not optimal, since we cannot see messages at realtim
 REM FIXME: an other solution to redirect directly to the console ?
 set TMPFILE=%TMP%\slimer-output-%RANDOM%.tmp
 
-%SLIMERJSLAUNCHER% -app "%SLIMERDIR%application.ini" %PROFILE% -no-remote -envs "%LISTVAR%" %__SLIMER_ARGS% >%TMPFILE% 2>&1
+%SLIMERJSLAUNCHER% -app "%SLIMERDIR%application.ini" %PROFILE% -no-remote %__SLIMER_ARGS% >%TMPFILE% 2>&1
 
 if ["%CREATETEMP%"]==["Y"] (
      rmdir /S /Q %PROFILEDIR%

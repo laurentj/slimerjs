@@ -5,8 +5,17 @@
 Installation
 ============
 
-SlimerJS runs on any platform on which Firefox or XulRunner is available. XulRunner
-is the core of Firefox without its user interface.
+Requirements
+------------
+
+SlimerJS runs on any platform on which Firefox or XulRunner is available: Linux (32bits and 64bits),
+Windows, MacOs X. XulRunner is the core of Firefox without its user interface.
+
+On windows, you should open a terminal. You can use the classical cmd.exe, or the recent PowerShell.exe.
+You can also install `Cygwin <http://www.cygwin.com/>`_ and use its terminal.
+
+You cannot use the MingW32 environment on Windows because there are some issues with
+(no output in the console, and it lacks on some commands like mktemp).
 
 Installation of SlimerJS
 ------------------------
