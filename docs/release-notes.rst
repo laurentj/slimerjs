@@ -8,15 +8,21 @@ Release Notes
 version 0.8.1
 =============
 
-SlimerJS 0.8.1 is still in development.
+SlimerJS 0.8.1 has been released on August 1st, 2013.
 
 Fixed bugs
 ----------
 
 - ``webpage.render()`` should create directories indicated in the given path (issue #51)
-- Fixed some errors in ``slimerjs.bat`` (for windows)
-- Fixed module loading on windows with path containing slashes (#61)
-- Fixed issue with ``phantom.libraryPath`` and ``webpage.libraryPath`` on windows with path containing slashes
+- Fixed many issues appearing when running SlimerJS under windows
+    - Fixed some errors in ``slimerjs.bat``
+    - Fixed module loading with path containing slashes (#61)
+    - Fixed issue with ``phantom.libraryPath`` and ``webpage.libraryPath`` with path containing slashes
+    - Fixed other path issues (#65)
+    - Fixed issues with Cygwin (#4)
+    - Fixed some unit tests
+- Improved documentation
+
 
 version 0.8
 ===========
