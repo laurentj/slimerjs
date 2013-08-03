@@ -5,6 +5,17 @@
 Release Notes
 =============
 
+version 0.8.2
+=============
+
+SlimerJS 0.8.2 has not been released yet.
+
+Fixed bugs
+----------
+
+- There was no error when trying to execute a file that is not a JS file (issue #67)
+
+
 version 0.8.1
 =============
 

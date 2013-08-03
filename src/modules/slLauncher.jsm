@@ -56,12 +56,10 @@ var slLauncher = {
             mainLoader.load(mainLoader, module);
         }
         catch(e) {
-            if (this.errorHandler) {
-                let [msg, stackRes] = getTraceException(e, fileURI);
-                this.errorHandler(msg, stackRes);
-            }
-            else
+            if (('name' in e && e.name == 'FatalError') || !this.errorHandler)
                 throw e;
+            let [msg, stackRes] = getTraceException(e, fileURI);
+            this.errorHandler(msg, stackRes);
         }
     },
 
@@ -95,11 +93,13 @@ var slLauncher = {
 
     defaultErrorHandler : function (msg, stack) {
         dump("\nScript Error: "+msg+"\n");
-        dump("       Stack:\n");
-        stack.forEach(function(t) {
-            dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
-        })
-        dump("\n");
+        if (stack && stack.length) {
+            dump("       Stack:\n");
+            stack.forEach(function(t) {
+                dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
+            })
+            dump("\n");
+        }
     },
 
     /**
@@ -410,12 +410,21 @@ function prepareLoader(fileURI, dirFile) {
             let source = '';
             // depending of the extension of the module file,
             // we load the module with the corresponding handler
+            let hasBeenLoaded = false;
             for(let ext in extensions) {
                 let idx = filename.lastIndexOf(ext);
                 if (idx == -1 || idx != (filename.length - ext.length)) {
                     continue;
                 }
                 extensions[ext](module, file.path);
+                hasBeenLoaded = true;
+                break;
+            }
+            if (!hasBeenLoaded) {
+                let err = new Error(file.path + " is not a supported type file")
+                if (module.id == "main")
+                    err.name = 'FatalError';
+                throw err;
             }
         }
     });
