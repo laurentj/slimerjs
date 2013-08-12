@@ -1358,7 +1358,9 @@ function _create(parentWebpageInfo) {
          * when calling render*() methods
          */
         get clipRect () {
-            return privProp.clipRect;
+            if (privProp.clipRect)
+                return privProp.clipRect;
+            return {top:0, left:0, width:0, height:0}
         },
         set clipRect (value) {
             let requirements = {

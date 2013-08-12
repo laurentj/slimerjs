@@ -16,6 +16,10 @@ Fixed bugs
 - There was no error when trying to execute a file that is not a JS file (issue #67)
 - Errors appearing during the execution of the callback of ``webpage.open()`` are now displayed
 
+Fixed PhantomJS conformance issues
+----------------------------------
+
+- webpage.clipRect should not be null by default.
 
 version 0.8.1
 =============
