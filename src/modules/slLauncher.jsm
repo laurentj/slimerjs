@@ -56,10 +56,7 @@ var slLauncher = {
             mainLoader.load(mainLoader, module);
         }
         catch(e) {
-            if (('name' in e && e.name == 'FatalError') || !this.errorHandler)
-                throw e;
-            let [msg, stackRes] = getTraceException(e, fileURI);
-            this.errorHandler(msg, stackRes);
+            this.showError(e, fileURI);
         }
     },
 
@@ -84,6 +81,13 @@ var slLauncher = {
         }
         Loader.evaluate(sandbox, uri, evalOptions);
         return true;
+    },
+
+    showError : function(e, fileURI) {
+        if (('name' in e && e.name == 'FatalError') || !this.errorHandler)
+            throw e;
+        let [msg, stackRes] = getTraceException(e, fileURI);
+        this.errorHandler(msg, stackRes);
     },
 
     // can be changed by the phantom module

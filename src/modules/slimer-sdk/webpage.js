@@ -667,8 +667,13 @@ function _create(parentWebpageInfo) {
             let deferred = Q.defer();
             deferred.promise.then(function(result) {
                 if (callback) {
-                    callback(result);
-                    callback = null;
+                    try {
+                        callback(result);
+                        callback = null;
+                    }
+                    catch(e) {
+                        slLauncher.showError(e);
+                    }
                 }
                 return result;
             });
