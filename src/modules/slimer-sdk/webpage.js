@@ -1441,6 +1441,7 @@ function _create(parentWebpageInfo) {
             let format = 'png';
             let quality = undefined;
             let ratio = 1;
+            let onlyViewport = false;
             if (typeof(options) == 'object') {
                 if ('format' in options)
                     format = options.format;
@@ -1448,6 +1449,11 @@ function _create(parentWebpageInfo) {
                     ratio = options.ratio;
                 if ('quality' in options)
                     quality = options.quality;
+                if ('onlyViewport' in options)
+                    onlyViewport = options.onlyViewport;
+            }
+            else if (typeof(options) == 'string') {
+                format = options;
             }
             format = (format || "png").toString().toLowerCase();
             if (format == "png") {
@@ -1461,7 +1467,7 @@ function _create(parentWebpageInfo) {
             }
 
             let canvas = webpageUtils.getScreenshotCanvas(browser.contentWindow,
-                                            ratio, this);
+                                            ratio, onlyViewport, this);
 
             return canvas.toDataURL(format, quality).split(",", 2)[1];
         },

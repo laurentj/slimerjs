@@ -752,7 +752,9 @@ The second parameter is an object containing options. Here are its possible prop
   values: ``jpg``, ``png``, ``jpeg``.
 - ``quality``: the compression quality. A number between 0 and 1.
 - ``ratio``: (SlimerJS only), a number between 0 and 1, indicating the "zoom level" of the capture.
-
+- ``onlyViewport``: (SlimerJS only), set to true if you only want to take a screenshot of
+  the current viewport. By default, it is false, and screenshot has the size of the content,
+  except when webpage.clipRect is set.
  
 .. _webpage-renderBase64:
 
