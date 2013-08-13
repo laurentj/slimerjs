@@ -18,9 +18,6 @@ Cu.import('resource://slimerjs/slCookiesManager.jsm');
 
 const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
-const {
-    getScreenshotCanvas, setAuthHeaders, removeAuthPrompt
-} = require("./utils");
 
 const fs = require("sdk/io/file");
 const base64 = require("sdk/base64");
@@ -814,7 +811,7 @@ function _create(parentWebpageInfo) {
 
         get viewportSize() {
             if (!browser)
-                return {width:0, height:0};
+                return {width:400, height:300};
             let win = browser.ownerDocument.defaultView.top;
             return {
                 width: win.innerWidth,
@@ -1463,8 +1460,8 @@ function _create(parentWebpageInfo) {
                 throw new Error("Render format \"" + format + "\" is not supported");
             }
 
-            let canvas = getScreenshotCanvas(browser.contentWindow,
-                                             privProp.clipRect, ratio);
+            let canvas = webpageUtils.getScreenshotCanvas(browser.contentWindow,
+                                            ratio, this);
 
             return canvas.toDataURL(format, quality).split(",", 2)[1];
         },

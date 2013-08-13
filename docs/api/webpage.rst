@@ -765,7 +765,7 @@ image in base64. The format indicates the format of the image: ``jpg``, ``png``,
 You can limit the area to capture by setting the ``clipRect`` property.
 
 Instead of giving the format, you can give an object containing options (SlimerJS only).
-See reh ``render()`` function.
+See the ``render()`` function.
 
 .. _webpage-sendEvent:
 

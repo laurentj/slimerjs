@@ -20,6 +20,8 @@ Fixed PhantomJS conformance issues
 ----------------------------------
 
 - webpage.clipRect should not be null by default.
+- ``webpage.render()`` now generates screenshot of the full webpage, instead of the viewport area.
+
 
 version 0.8.1
 =============

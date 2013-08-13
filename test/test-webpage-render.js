@@ -73,7 +73,7 @@ describe("WebPage.renderBase64()", function(){
         webpage.clipRect = {top:10, left:10, width:50, height:40};
         var capture = webpage.renderBase64();
         expect(typeof capture).toEqual("string");
-        expect(capture.length > 0).toBeTruthy();
+        expect(capture.length > 300).toBeTruthy();
         webpage.close();
     });
 
