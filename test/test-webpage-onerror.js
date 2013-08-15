@@ -26,7 +26,7 @@ describe("WebPage.onError", function(){
                 webpage.sendEvent("click", 15, 15, 'left', 0);
                 setTimeout(function(){ // error message are received asynchronously, wait a bit
                     loaded = true;
-                }, 200);
+                }, 300);
             });
         });
 

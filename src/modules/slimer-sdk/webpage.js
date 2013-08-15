@@ -18,9 +18,6 @@ Cu.import('resource://slimerjs/slCookiesManager.jsm');
 
 const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
-const {
-    getScreenshotCanvas, setAuthHeaders, removeAuthPrompt
-} = require("./utils");
 
 const fs = require("sdk/io/file");
 const base64 = require("sdk/base64");
@@ -666,8 +663,13 @@ function _create(parentWebpageInfo) {
             let deferred = Q.defer();
             deferred.promise.then(function(result) {
                 if (callback) {
-                    callback(result);
-                    callback = null;
+                    try {
+                        callback(result);
+                        callback = null;
+                    }
+                    catch(e) {
+                        slLauncher.showError(e);
+                    }
                 }
                 return result;
             });
@@ -809,7 +811,7 @@ function _create(parentWebpageInfo) {
 
         get viewportSize() {
             if (!browser)
-                return {width:0, height:0};
+                return {width:400, height:300};
             let win = browser.ownerDocument.defaultView.top;
             return {
                 width: win.innerWidth,
@@ -1353,7 +1355,9 @@ function _create(parentWebpageInfo) {
          * when calling render*() methods
          */
         get clipRect () {
-            return privProp.clipRect;
+            if (privProp.clipRect)
+                return privProp.clipRect;
+            return {top:0, left:0, width:0, height:0}
         },
         set clipRect (value) {
             let requirements = {
@@ -1437,6 +1441,7 @@ function _create(parentWebpageInfo) {
             let format = 'png';
             let quality = undefined;
             let ratio = 1;
+            let onlyViewport = false;
             if (typeof(options) == 'object') {
                 if ('format' in options)
                     format = options.format;
@@ -1444,6 +1449,11 @@ function _create(parentWebpageInfo) {
                     ratio = options.ratio;
                 if ('quality' in options)
                     quality = options.quality;
+                if ('onlyViewport' in options)
+                    onlyViewport = options.onlyViewport;
+            }
+            else if (typeof(options) == 'string') {
+                format = options;
             }
             format = (format || "png").toString().toLowerCase();
             if (format == "png") {
@@ -1456,8 +1466,8 @@ function _create(parentWebpageInfo) {
                 throw new Error("Render format \"" + format + "\" is not supported");
             }
 
-            let canvas = getScreenshotCanvas(browser.contentWindow,
-                                             privProp.clipRect, ratio);
+            let canvas = webpageUtils.getScreenshotCanvas(browser.contentWindow,
+                                            ratio, onlyViewport, this);
 
             return canvas.toDataURL(format, quality).split(",", 2)[1];
         },

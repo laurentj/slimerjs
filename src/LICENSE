@@ -31,12 +31,6 @@ their authors under the licenses listed alongside.
     The author is Olivier Meunier and Laurent Jouanneau
     and this file comes from https://github.com/olivier-m/jetpack-net-log/
 
-* modules/slimer-sdk/utils.js
-    is released under the Mozilla Public License, v. 2.0
-    see http://mozilla.org/MPL/2.0/
-    The author is Olivier Meunier and this file comes from
-    https://github.com/olivier-m/jetpack-webpage/
-
 * modules/slimer-sdk/webpage.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/

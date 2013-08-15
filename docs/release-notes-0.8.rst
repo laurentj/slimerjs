@@ -5,6 +5,32 @@
 Release Notes of SlimerJS 0.8
 =============================
 
+version 0.8.2
+=============
+
+SlimerJS 0.8.2 has not been released yet.
+
+Fixed bugs
+----------
+
+- There was no error when trying to execute a file that is not a JS file (issue #67)
+- Errors appearing during the execution of the callback of ``webpage.open()`` are now displayed
+
+Fixed PhantomJS conformance issues
+----------------------------------
+
+- webpage.clipRect should not be null by default.
+- ``webpage.render()`` now generates screenshot of the full webpage, instead of the
+  viewport area and take care about scrolling.
+- scrollbars have been removed from the window.
+
+Improvement
+-----------
+
+- new option for ``webpage.render()``: ``onlyViewport``. You can then take a screenshot
+  only of the viewport.
+
+
 version 0.8.1
 =============
 

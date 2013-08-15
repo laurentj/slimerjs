@@ -245,5 +245,79 @@ var webpageUtils = {
             encoder.setNode(doc);
             return encoder.encodeToString();
         }
+    },
+
+    getScreenshotCanvas : function(window, ratio, onlyViewport, webpage) {
+
+        if (!ratio || (ratio && (ratio <= 0 || ratio > 1))) {
+            ratio = 1;
+        }
+
+        let contentHeight, contentWidth, currentViewport, domWindowUtils;
+        let b = window.document.body;
+        let de = window.document.documentElement;
+        let scrollX = window.scrollX;
+        let scrollY = window.scrollY;
+
+        if (!onlyViewport) {
+            // mimic PhantomJS image rendering: retrieve content size and set it as
+            // viewport
+            currentViewport = webpage.viewportSize;
+            contentWidth = Math.max(b.clientWidth, b.scrollWidth, b.offsetWidth,
+                                    de.clientWidth, de.scrollWidth, de.offsetWidth);
+            contentHeight = Math.max(b.clientHeight, b.scrollHeight, b.offsetHeight,
+                                    de.clientHeight, de.scrollHeight, de.offsetHeight);
+
+            if (contentWidth < currentViewport.width && contentHeight < currentViewport.height) {
+                contentWidth = currentViewport.width;
+                contentHeight = currentViewport.height;
+            }
+
+            domWindowUtils = window.QueryInterface(Ci.nsIInterfaceRequestor)
+                                            .getInterface(Ci.nsIDOMWindowUtils);
+            domWindowUtils.setCSSViewport(contentWidth, contentHeight);
+            domWindowUtils.redraw(1);
+        }
+        else {
+            contentWidth = window.innerWidth;
+            contentHeight = window.innerHeight;
+        }
+
+        // now get the rectangle to retrieve
+        let clip = webpage.clipRect;
+        let top, left, width, height;
+        if ((clip.top == 0 && clip.left == 0 && clip.width == 0 && clip.height == 0) || onlyViewport) {
+            top = scrollY;
+            left = scrollX;
+            width = (onlyViewport ? contentWidth : contentWidth-window.scrollX);
+            height = (onlyViewport ? contentHeight : contentHeight-window.scrollY);
+        }
+        else {
+            top = clip.top || 0;
+            left = clip.left || 0;
+            width = clip.width || contentWidth;
+            height = clip.height || contentHeight;
+        }
+
+        // create the canvas
+        let canvas = window.document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+        //canvas.mozOpaque = false;
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+
+        let ctx = canvas.getContext("2d");
+        ctx.scale(ratio, ratio);
+        ctx.drawWindow(window, left, top, width, height, "rgba(0,0,0,0)");
+        ctx.restore();
+
+        if (!onlyViewport) {
+            // restore previous viewport
+            domWindowUtils.setCSSViewport(currentViewport.width, currentViewport.height);
+            domWindowUtils.redraw(1);
+            window.scrollTo(scrollX, scrollY);
+        }
+
+        return canvas;
     }
+
 }
