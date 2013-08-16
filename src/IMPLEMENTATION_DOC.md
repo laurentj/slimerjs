@@ -1,4 +1,4 @@
-You want to contribute? Here is a little doc, how SlimerJS works.
+You want to contribute? Here is a little doc on how SlimerJS works.
 
 XULRunner and documentation
 ===========================
@@ -11,9 +11,9 @@ on top of XULRunner too. So when we talk about "XULRunner", we mean
 "Mozilla Framework".
 
 All documentation about XULRunner and XUL application development, is
-on [https://developer.mozilla.org/]. You may want to look at
+on https://developer.mozilla.org/. You may want to look at
 [the chapter of XULRunner](https://developer.mozilla.org/en-US/docs/XULRunner).
-For example, ["Getting started with XULRunner](https://developer.mozilla.org/en-US/docs/Getting_started_with_XULRunner).
+For example, ["Getting started with XULRunner"](https://developer.mozilla.org/en-US/docs/Getting_started_with_XULRunner).
 
 You can also take a look at:
 
@@ -39,34 +39,34 @@ When you launch the `slimer` executable, XULRunner (or Firefox) is called with t
 path of the application.ini file.
 
 First, xulrunner tries to call an XPCOM component that handles the commande line.
-Fortunately, SlimerJS provides one, src/components/commandline.js. It is registered in the
-"command-line-handler" XPCOM category in src/chrome.manifest, this is why XulRunner find
+Fortunately, SlimerJS provides one in `src/components/commandline.js`. It is registered in the
+"command-line-handler" XPCOM category in `src/chrome.manifest`, this is why XulRunner find
 it.
 
-The `handle()` method of this component is called. It uses the module src/modules/slConfiguration.jsm
+The `handle()` method of this component is called. It uses the module `src/modules/slConfiguration.jsm`
 to parse and store command line parameters. `slConfiguration` holds all configuration options
 and this is where you declare command line parameters.
 
 If `handle()` has no error, xulrunner open the window which is indicated into the
 `toolkit.defaultChromeURI` preference. Preferences of SlimerJS are stored into
-defaults/preferences/prefs.js.
+`defaults/preferences/prefs.js`.
 
 To open an application window, XULRunner calls same function as `window.open()`, with a
 "chrome://" URL. In a XUL application, every window has a chrome URL (type
-chrome://browser/content/browser.xul in Firefox ;-) ).
+`chrome://browser/content/browser.xul` in Firefox ;-) ).
 
 In SlimerJS, the main window url points to the file
-src/chrome/slimerjs/content/slimerjs.xul. slimerjs.xul is a very simple window. This will
+`src/chrome/slimerjs/content/slimerjs.xul`. `slimerjs.xul` is a very simple window. This will
 be the parent window of all other windows that your script will open. Those child windows
-are defined in src/chrome/slimerjs/content/webpage.xul, which has a simple `<browser>`
+are defined in `src/chrome/slimerjs/content/webpage.xul`, which has a simple `<browser>`
 element (a kind of iframe in XUL). The web page is displayed by this element.
 
-As you can see, slimerjs.xul has a `<script>` element, like in HTML. It loads the
-chrome/slimerjs/content/slimerjs.js file.
+As you can see, `slimerjs.xul` has a `<script>` element, like in HTML. It loads the
+`src/chrome/slimerjs/content/slimerjs.js` file.
 This file is simple too. After the window loading, `startup()` is called,
 which itself call the `slLauncher` component. This component loads and executes the
 javascript file indicated on the command line, by using the
-src/modules/addon-sdk/toolkit/loader.js component.
+`src/modules/addon-sdk/toolkit/loader.js` component.
 
 `loader.js` is able to load CommonJS modules in javascript sandboxes. slLauncher.jsm
 defines options for the Loader (see `prepareLoader()`). Two of these options are high
