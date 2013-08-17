@@ -27,7 +27,7 @@ PhantomJS options
 =============================================  =================== =============================================
 --config=/path/to/config.json        
 --cookies-file=/path/to/cookies.txt             N/A. see profiles
---debug=[yes|no]                     
+--debug=[yes|no]                                supported           Displays debug messages
 --disk-cache=[yes|no]                
 --help or -h                                    Supported           Displays help about options
 --ignore-ssl-errors=[yes|no]         
@@ -65,6 +65,25 @@ Options specific to SlimerJS
 -CreateProfile name                            Supported        Create a new profile
 -profile path                                  Supported        Use the given directory as a profile
 =============================================  ==============  ========================================================================
+
+About debug
+-----------
+
+With the ``--debug`` option, SlimerJS displays many messages about what happened during
+the execution of your script.
+
+For the moment, it displays only messages about network events, page loading, and ``sendEvent`` calls.
+In future version, it will display configuration values, file opening, cookies etc..
+
+SlimerJS accepts a value other than true/false for --debug. You can indicate what to display.
+
+Example: ``--debug=pageloading,netprogress``.
+
+Available keywords are:
+
+- ``page``: show calls of some webpage API
+- ``pageloading``: show calls of webpage listeners about resource loading and page loading
+- ``netprogress``: show internals network events
 
 
 Configuration file

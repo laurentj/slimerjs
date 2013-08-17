@@ -29,7 +29,7 @@ Improvement
 
 - new option for ``webpage.render()``: ``onlyViewport``. You can then take a screenshot
   only of the viewport.
-
+- support of the command ligne arguments ``--debug=true``. It does not display yet everything.
 
 version 0.8.1
 =============

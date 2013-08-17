@@ -11,6 +11,7 @@ const Ci = Components.interfaces;
 
 Cu.import('resource://slimerjs/slErrorLogger.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
+Cu.import('resource://slimerjs/slDebug.jsm');
 
 var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
                       .getService(Ci.nsIHttpProtocolHandler)
@@ -36,7 +37,7 @@ var optionsSpec = {
     webSecurityEnabled : ['web-security', 'bool', true, false],
     offlineStoragePath : ['local-storage-path', 'file', '', false],
     offlineStorageDefaultQuota : ['local-storage-quota', 'int', -1, true],
-    printDebugMessages : ['debug', 'bool', false, false],
+    printDebugMessages : ['debug', 'debug', false, true],
     javascriptCanOpenWindows : ['', '', true, false],
     javascriptCanCloseWindows : ['', '', true, false],
     remoteDebuggerPort : ['remote-debugger-port', 'int', -1, false],
@@ -193,6 +194,18 @@ var slConfiguration = {
         return val;
     },
 
+    parse_debug : function (val, cmdlineOpt) {
+       let parsedVal;
+        try {
+            parsedVal = this.parse_bool(val, cmdlineOpt);
+            slDebugInit(parsedVal);
+        }
+        catch(e) {
+            parsedVal = slDebugInit(val);
+        }
+        return val;
+    },
+
     parse_webdriver : function (val, cmdlineOpt) {
         let pos = val.lastIndexOf(':')
         if ( pos > 0) {
@@ -239,7 +252,7 @@ var slConfiguration = {
     webSecurityEnabled : true,
     offlineStoragePath : null,
     offlineStorageDefaultQuota : null,
-    printDebugMessages : null,
+    printDebugMessages : false,
     javascriptCanOpenWindows : true,
     javascriptCanCloseWindows : true,
     sslProtocol : null,
