@@ -58,8 +58,12 @@ In the API
 - ``webpage.sendEvent()`` for key events is more consistent. In PhantomJS, there are `several issues <http://code.google.com/p/phantomjs/issues/detail?id=1094>`_.
 - ``webpage.open()`` returns `a promise <https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html>`_.
   It's easier to chain things executed asynchronously
-- The call of ``webpage.open()`` (or ``openUrl()``) is synchronous in PhantomJS,
-  but is asynchronous in SlimerJS (because it opens a real window etc..).
+- The call of ``webpage.open()`` (or ``openUrl()``), in PhantomJS, ends when the load is
+  starting. But in SlimerJS it ends almost immediately because it should open a real window
+  before the loading and it is done asynchronously. So probably some properties will not
+  be available immediately after the call of ``open()`` in SlimerJS.
+- It seems that the call of listeners during the page loading is not done at the same step
+  between PhantomJS and SlimerJS. Implementation in PhantomJS is a bit obscure.
 - The webserver object has more methods to configure it easily
 - ``toString()`` on a webpage object returns "qtruntimeobject" in PhantomJS
   and "Object" in SlimerJS. There are no way to change this behavior in SlimerJS
