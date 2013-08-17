@@ -457,7 +457,7 @@ describe("webpage with listeners", function() {
         done();
     });
 
-    async.it("is opening a new page after a redirection",function(done) {
+    async.it("is opening a new page after a redirection to an absolute url",function(done) {
         trace = "";
         receivedRequest = [];
         testWebpageListenerCreateWebPage()
@@ -509,6 +509,60 @@ describe("webpage with listeners", function() {
 
         done();
     });
+
+    async.it("is opening a new page after a redirection2 to a relative URL",function(done) {
+        trace = "";
+        receivedRequest = [];
+        testWebpageListenerCreateWebPage()
+        webpage.open(domain+'redirectToSimpleHello2', function(success){
+            trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("success");
+            done();
+        });
+    });
+
+    async.it("should generate the expected trace for the redirection2", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "  loading url=http://localhost:8083/redirectToSimpleHello2\n";
+        expectedTrace += "URLCHANGED:http://localhost:8083/simplehello.html\n";
+        expectedTrace += "INITIALIZED 7\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/simplehello.html - 8 success\n";
+        expectedTrace += "  loaded url=http://localhost:8083/simplehello.html\n";
+        expectedTrace += "CALLBACK:success\n";
+        expect(trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should have received the simple hello page #2", function(done){
+        var r;
+        expect(receivedRequest.length).toEqual(3);
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == domain+"redirectToSimpleHello2";
+        })[0];
+        expect(r).toNotBe(null);
+
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == domain+"simplehello.html";
+        })[0];
+
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toEqual(200);
+        expect(r.start.statusText).toEqual('OK');
+        expect(r.end.status).toEqual(200);
+        expect(r.end.statusText).toEqual('OK');
+        expect(r.start.contentType).toEqual("text/html");
+        expect(r.end.contentType).toEqual("text/html");
+        done();
+    });
+
 
     async.it("test end", function(done){
         webpage.close();

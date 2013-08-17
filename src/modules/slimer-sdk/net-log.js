@@ -771,20 +771,11 @@ ProgressListener.prototype = {
                 return;
             }
 
-            try {
-
-                if (request.responseStatus == 301
-                    || request.responseStatus == 302
-                    || request.responseStatus == 307) {
-                    this.mainPageURI = request.getResponseHeader('Location');
-                    if (DEBUG_NETWORK_PROGRESS)
-                        slDebugLog("network: main request redirect to "+this.mainPageURI);
-                }
+            if (flags & Ci.nsIWebProgressListener.STATE_REDIRECTING) {
+                this.mainPageURI = request.URI.resolve(request.getResponseHeader('Location'))
+                if (DEBUG_NETWORK_PROGRESS)
+                    slDebugLog("network: main request redirect to "+this.mainPageURI);
             }
-            catch(e) {
-                // in some case, request.responseStatus is not available
-            }
-
         } catch(e) {
             if (DEBUG_NETWORK_PROGRESS)
                 slDebugLog("network: on state change error:"+e);

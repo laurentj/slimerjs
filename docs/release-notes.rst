@@ -15,6 +15,8 @@ Fixed bugs
 
 - There was no error when trying to execute a file that is not a JS file (issue #67)
 - Errors appearing during the execution of the callback of ``webpage.open()`` are now displayed
+- On website with a redirection to a relative URL (without domain), redirection was not taken
+  account and ``onLoadFinished`` was never called (#68).
 
 Fixed PhantomJS conformance issues
 ----------------------------------
@@ -24,8 +26,8 @@ Fixed PhantomJS conformance issues
   viewport area and take care about scrolling.
 - scrollbars have been removed from the window.
 
-Improvement
------------
+Improvements
+------------
 
 - new option for ``webpage.render()``: ``onlyViewport``. You can then take a screenshot
   only of the viewport.

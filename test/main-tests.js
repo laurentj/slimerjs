@@ -69,6 +69,14 @@ webserverTest.listen(8083, function(request, response) {
         return;
     }
 
+    if (request.url == '/redirectToSimpleHello2') {
+        response.statusCode = 302;
+        response.headers['Location'] = '/simplehello.html';
+        response.write('');
+        response.close();
+        return;
+    }
+
     if (request.url == '/getHeaders') {
         response.statusCode = 200;
         response.headers = { "Content-Type": "text/plain;charset=UTF-8"}
