@@ -8,7 +8,7 @@ Release Notes
 version 0.8.2
 =============
 
-SlimerJS 0.8.2 has not been released yet.
+SlimerJS 0.8.2 has been released on August 18th, 2013.
 
 Fixed bugs
 ----------
