@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 "use strict";
 
-const {Cc, Ci, Cr} = require("chrome");
+const {Cc, Ci, Cr, Cu} = require("chrome");
 const {mix} = require("sdk/core/heritage");
 const unload = require("sdk/system/unload");
 
@@ -11,6 +11,8 @@ const observers = require("sdk/deprecated/observer-service");
 
 const imgTools = Cc["@mozilla.org/image/tools;1"].getService(Ci.imgITools);
 const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+
+Cu.import('resource://slimerjs/slDebug.jsm');
 
 let browserMap = new WeakMap();
 
@@ -178,7 +180,6 @@ const onRequestResponse = function(subject, data) {
     requestList = requestList.map(function(val, i) {
         if (subject.name == val) {
             index = i + 1;
-            return val;
         }
         return val;
     });
@@ -684,6 +685,8 @@ ProgressListener.prototype = {
 
         if (!this.isFromMainWindow(loadContext)) {
             // we receive a new status for a page that is loading in a frame
+            if (DEBUG_NETWORK_PROGRESS)
+                slDebugLog("network: frame request "+uri+ " flags:"+debugFlags(flags));
 
             if (this.isLoadRequested(flags)) {
                 if (typeof(this.options.onFrameLoadStarted) === "function") {
@@ -706,6 +709,8 @@ ProgressListener.prototype = {
         try {
             if (this.mainPageURI == '') {
                 if (this.isLoadRequested(flags)) {
+                    if (DEBUG_NETWORK_PROGRESS)
+                        slDebugLog("network: main request starting - "+uri+ " flags:"+debugFlags(flags));
                     this.mainPageURI = uri;
                     if (typeof(this.options.onLoadStarted) === "function") {
                         this.options.onLoadStarted(uri, false);
@@ -716,12 +721,20 @@ ProgressListener.prototype = {
                         onFileRequestStart(request, this.browser);
                     }
                 }
+                else if (DEBUG_NETWORK_PROGRESS)
+                    slDebugLog("network: request ignored. main page uri not started yet - "+uri+ " flags:"+debugFlags(flags));
                 return;
             }
+
             // ignore all request that are not the main request
             if (this.mainPageURI != uri) {
+                //if (DEBUG_NETWORK_PROGRESS)
+                //    slDebugLog("network: request ignored: "+uri+ " flags:"+debugFlags(flags));
                 return;
             }
+
+            if (DEBUG_NETWORK_PROGRESS)
+                slDebugLog("network: main request "+uri+ " flags:"+debugFlags(flags));
 
             if (this.isStart(flags)) {
                 if (request.URI.scheme == 'file') {
@@ -758,26 +771,105 @@ ProgressListener.prototype = {
                 return;
             }
 
-            try {
-                if (request.responseStatus == 301
-                    || request.responseStatus == 302
-                    || request.responseStatus == 307) {
-                    this.mainPageURI = request.getResponseHeader('Location');
-                }
+            if (flags & Ci.nsIWebProgressListener.STATE_REDIRECTING) {
+                this.mainPageURI = request.URI.resolve(request.getResponseHeader('Location'))
+                if (DEBUG_NETWORK_PROGRESS)
+                    slDebugLog("network: main request redirect to "+this.mainPageURI);
             }
-            catch(e) {
-                // in some case, request.responseStatus is not available
-            }
-
         } catch(e) {
+            if (DEBUG_NETWORK_PROGRESS)
+                slDebugLog("network: on state change error:"+e);
             console.exception(e);
         }
     },
-    onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){},
-    onSecurityChange : function(aWebProgress, aRequest, aState) { },
+    onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){
+        if (!DEBUG_NETWORK_PROGRESS)
+            return;
+        if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
+            // ignore requests that are not a channel/http channel
+            return
+        }
+        slDebugLog("network: status change for "+aRequest.URI.spec+ " : "+aMessage);
+    },
+    onSecurityChange : function(aWebProgress, aRequest, aState) {
+        if (!DEBUG_NETWORK_PROGRESS)
+            return;
+        if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
+            // ignore requests that are not a channel/http channel
+            return
+        }
+        slDebugLog("network: security change for "+aRequest.URI.spec+ " : "+debugSecurityFlags(flags));
+
+    },
     debug : function(aWebProgress, aRequest) {},
     onProgressChange : function (aWebProgress, aRequest,
             aCurSelfProgress, aMaxSelfProgress,
-            aCurTotalProgress, aMaxTotalProgress)
-    {}
+            aCurTotalProgress, aMaxTotalProgress) {
+        if (!DEBUG_NETWORK_PROGRESS)
+            return;
+        if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
+            // ignore requests that are not a channel/http channel
+            return
+        }
+        slDebugLog("network: progress total:"+aCurTotalProgress+"/"+aMaxTotalProgress+"; uri: "+aCurSelfProgress+"/"+aCurTotalProgress+" for "+aRequest.URI.spec);
+    }
 };
+
+
+function debugFlags(flags) {
+    let s = '';
+
+    if (flags & Ci.nsIWebProgressListener.STATE_START)
+        s += "START,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_REDIRECTING)
+        s += "REDIRECTING,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_TRANSFERRING)
+        s += "TRANSFERRING,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_NEGOTIATING)
+        s += "NEGOTIATING,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_STOP)
+        s += "STOP,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_REQUEST)
+        s += "IS_REQ,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_DOCUMENT)
+        s += "IS_DOC,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_NETWORK)
+        s += "IS_NET,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_WINDOW)
+        s += "IS_WIN,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_RESTORING)
+        s += "RESTORING,";
+    return s;
+}
+
+function debugSecurityFlags(flags) {
+    let s = '';
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_INSECURE)
+        s += "IS_INSECURE,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_BROKEN)
+        s += "IS_BROKEN,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_SECURE)
+        s += "IS_SECURE,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_SECURE_HIGH)
+        s += "SECURE_HIGH,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_SECURE_MED)
+        s += "SECURE_MED,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_SECURE_LOW)
+        s += "SECURE_LOW,";
+    return s;
+}

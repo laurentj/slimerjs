@@ -12,7 +12,7 @@ of behaviors in the APIs implementation and in the web platform.
 <table>
     <tr><td>--config=/path/to/config.json        </td><td>Implemented</td></tr>
     <tr><td>--cookies-file=/path/to/cookies.txt  </td><td>not applicable. Use profiles instead.</td></tr>
-    <tr><td>--debug=[yes|no]                     </td><td></td></tr>
+    <tr><td>--debug=[yes|no]                     </td><td>Implemented, but not everything is displayed. With SlimerJS, it accepts also name of what to debug</td></tr>
     <tr><td>--disk-cache=[yes|no]                </td><td>Implemented</td></tr>
     <tr><td>--help or -h                         </td><td>Implemented</td></tr>
     <tr><td>--ignore-ssl-errors=[yes|no]         </td><td></td></tr>

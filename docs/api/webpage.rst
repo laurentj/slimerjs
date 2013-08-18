@@ -1008,28 +1008,108 @@ several files, you can return an array of file path.
 onInitialized
 -----------------------------------------
 
+This should be a function that is called when the loading of the page is initialized,
+So before the content is loaded (before onLoadStarted).
+It receives no arguments.
 
+Note: It seems that it is not called at the same opening step as PhantomJS. In PhantomJS, its
+implementation is a bit obscure. In PhantomJS, sometimes it is called twice, sometimes never,
+and sometime only one time. We don't know why. We will try to match the same behavior
+in future versions. For the moment, in SlimerJS, it is called twice: one time when the
+browser is ready to load the page (webpage.url gives nothing), and one time when the content
+of the page is loaded (webpage.url is set but resources are not loaded yet).
 
 .. _webpage-onLoadFinished:
 
 onLoadFinished
 -----------------------------------------
 
- 
+This callback is called when the loading of the page is finished (including its resources
+like images etc). It is called also after each the loading of a frame is finished.
+
+It receives a string as argument. Its value is `"success"` if the loading is a success
+else it receives `"fail"` if a network error occured.
+
+The loading is considered as a success when a correct HTTP response is received, with a
+status code etc. It means that it receives `"success"` even in case of a 404 http error for
+example.
+
+
+.. code-block:: javascript
+
+    page.onLoadFinished = function(status) {
+        console.log('Status: ' + status);
+        // Do other things here...
+    };
+
+In SlimerJS, you can receive additionnal arguments (that you don't have in PhantomJS):
+
+- the URL of the content that is loaded
+- a boolean indicating if it is a frame (true) or the main content (false)
+
+
+.. code-block:: javascript
+
+    page.onLoadFinished = function(status, url, isFrame) {
+        console.log('Loading of '+url+' is a '+ status);
+        if (!isFrame) {
+           // this is the main content
+        }
+    };
+
 
 .. _webpage-onLoadStarted:
 
 onLoadStarted
 -----------------------------------------
 
+This callback is called when the loading of the page is starting or when an frame
+inside the page is loading. In SlimerJS, it receives arguments contrary to PhantomJS:
 
+- the URL of the content that is loaded
+- a boolean indicating if it is a frame (true) or the main content (false)
+
+.. code-block:: javascript
+
+    page.onLoadStarted = function(url, isFrame) {
+        console.log('Loading of '+url+' starts.');
+        if (!isFrame) {
+           // this is the main content
+        }
+    };
+
+Note: It seems that it is not called at the same opening step as PhantomJS. In PhantomJS, its
+implementation is a bit obscure and PhantomJS's documentation does not match the real
+behavior. It seems it is called before the onInitialized call, before the
+network process starts. We will try to match the same behavior in future versions.
 
 .. _webpage-onNavigationRequested:
 
 onNavigationRequested
 -----------------------------------------
 
+This callback is called when a navigation event happens in the page (a click on a link
+or when a form is submitted, for example). It receives these arguments:
 
+- ``url``: The target URL of this navigation event
+- ``type``: indicate where the event comes from. Theorically, possible values are:
+    'Undefined', 'LinkClicked', 'FormSubmitted', 'BackOrForward', 'Reload',
+    'FormResubmitted', 'Other'
+- ``willNavigate``: true if navigation will happen, false if it is locked (by :ref:`navigationLocked <webpage-navigationLocked>`)
+- ``main``: Theorically, true if this event comes from the main frame, false if it comes from an
+   iframe of some other sub-frame.
+
+Because of lack of information in some API of XulRunner, SlimerJS cannot give you
+the ``type`` and the ``main`` value. They are always respectively ``'Undefined'`` and ``true``
+
+Example:
+
+.. code-block:: javascript
+
+    page.onNavigationRequested = function(url, type, willNavigate, main) {
+        console.log('Navigate to: ' + url);
+    }
+ 
 
 .. _webpage-onPageCreated:
 
@@ -1121,6 +1201,18 @@ The ``networkRequest`` object has two methods:
 onUrlChanged
 -----------------------------------------
 
+This callback is invoked when the main URL of the browser changes, so when a new document
+will be loaded. The only argument to the callback is the new URL.
+
+Example:
+
+.. code-block:: javascript
+
+    page.onUrlChanged = function(targetUrl) {
+        console.log('New URL: ' + targetUrl);
+    };
+
+To retrieve the old URL, use the onLoadStarted callback.
 
 .. _webpage-closing:
 

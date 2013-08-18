@@ -15,6 +15,7 @@ Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
 Cu.import('resource://slimerjs/webpageUtils.jsm');
 Cu.import('resource://slimerjs/slCookiesManager.jsm');
+Cu.import('resource://slimerjs/slDebug.jsm');
 
 const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
@@ -676,6 +677,9 @@ function _create(parentWebpageInfo) {
 
             var options = getNetLoggerOptions(this, deferred, this.customHeaders);
 
+            if (DEBUG_WEBPAGE)
+                slDebugLog("webpage: openUrl "+url+" conf:"+slDebugGetObject(httpConf));
+
             if (browser) {
                 if (browserJustCreated){
                     webpage.initialized();
@@ -723,6 +727,8 @@ function _create(parentWebpageInfo) {
             }
             webPageSandbox = null;
             browser=null;
+            if (DEBUG_WEBPAGE)
+                slDebugLog("webpage: close");
         },
 
         /**
@@ -1170,6 +1176,9 @@ function _create(parentWebpageInfo) {
                 if (DOMKeyCode.modifier && modifier == 0)
                     modifier = DOMKeyCode.modifier;
 
+                if (DEBUG_WEBPAGE) {
+                    slDebugLog("webpage: sendEvent DOMEvent:"+eventType+" keycode:"+DOMKeyCode.keyCode+" charCode:"+DOMKeyCode.charCode+" mod:"+modifier)
+                }
                 domWindowUtils.sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 return;
             }
@@ -1177,14 +1186,23 @@ function _create(parentWebpageInfo) {
                 let key = arg1;
                 if (typeof key == "number") {
                     let DOMKeyCode = convertQTKeyCode(key);
+                    if (DEBUG_WEBPAGE) {
+                        slDebugLog("webpage: sendEvent DOMEvent:keypress keycode:"+DOMKeyCode.keyCode+" charCode:"+DOMKeyCode.charCode+" mod:"+modifier)
+                    }
                     domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 }
                 else if (key.length == 1) {
                     let charCode = key.charCodeAt(0);
                     let DOMKeyCode = convertQTKeyCode(charCode);
+                    if (DEBUG_WEBPAGE) {
+                        slDebugLog("webpage: sendEvent DOMEvent:keypress keycode:"+DOMKeyCode.keyCode+" charCode:"+charCode+" mod:"+modifier)
+                    }
                     domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, modifier);
                 }
                 else {
+                    if (DEBUG_WEBPAGE) {
+                        slDebugLog("webpage: sendEvent keydown,keypress,keyup for the string:'"+key+"' mod:"+modifier)
+                    }
                     for(let i=0; i < key.length;i++) {
                         let charCode = key.charCodeAt(i);
                         let DOMKeyCode = convertQTKeyCode(charCode);
@@ -1204,6 +1222,10 @@ function _create(parentWebpageInfo) {
 
             let x = arg1 || 0;
             let y = arg2 || 0;
+
+            if (DEBUG_WEBPAGE) {
+                slDebugLog("webpage: sendEvent "+eventType+" x:"+x+" y:"+y+" btn:"+btn+" mod:"+modifier)
+            }
 
             // mouse events
             if (eventType == "mousedown" ||
@@ -1524,6 +1546,10 @@ function _create(parentWebpageInfo) {
                 ds.allowImages = privProp.settings.loadImages;
                 ds.allowJavascript = privProp.settings.javascriptEnabled;
             }
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onInitialized");
+            }
+
             if (this.onInitialized)
                 this.onInitialized();
         },
@@ -1541,12 +1567,18 @@ function _create(parentWebpageInfo) {
         loadFinished: function(status, url, isFrame) {
             browserJustCreated = false;
             webPageSandbox = null;
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onLoadFinished status:"+status+" url:"+url+" isFrame:"+isFrame);
+            }
             if (this.onLoadFinished)
                 this.onLoadFinished(status, url, isFrame);
         },
 
         loadStarted: function(url, isFrame) {
             webPageSandbox = null;
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onLoadStarted url:"+url+" isFrame:"+isFrame);
+            }
             if (this.onLoadStarted)
                 this.onLoadStarted(url, isFrame);
         },
@@ -1560,6 +1592,9 @@ function _create(parentWebpageInfo) {
          */
 
         navigationRequested: function(url, navigationType, willNavigate, isMainFrame) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onNavigationRequested url:"+url+" navigationType:"+navigationType+" willNavigate:"+willNavigate+" isMainFrame:"+isMainFrame);
+            }
             if (this.onNavigationRequested)
                 this.onNavigationRequested(url, navigationType, willNavigate, isMainFrame)
         },
@@ -1570,16 +1605,25 @@ function _create(parentWebpageInfo) {
         },
 
         resourceReceived: function(request) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onResourceReceived request:"+slDebugGetObject(request, ['body']));
+            }
             if (this.onResourceReceived)
                 this.onResourceReceived(request);
         },
 
         resourceRequested: function(resource, request) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onResourceRequested resource:"+slDebugGetObject(resource));
+            }
             if (this.onResourceRequested)
                 this.onResourceRequested(resource, request);
         },
 
         urlChanged: function(url) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onUrlChanged url:"+url);
+            }
             webPageSandbox = null;
             if (this.onUrlChanged)
                 this.onUrlChanged(url);
