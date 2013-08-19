@@ -82,7 +82,7 @@
                 <p><span class="slmv">Slimer<span>JS</span></span> is similar to <i>PhantomJs</i>,
                 except that it runs <span class="orange">Gecko</span>,
                 the browser engine of <span class="orange">Mozilla Firefox</span>,
-                instead of <span class="orange">Webkit</span> (And it not yet truly headless).
+                instead of <span class="orange">Webkit</span> (And it is not yet truly headless).
 				</p></div>
                 
     		</div>
@@ -92,19 +92,20 @@
 <pre>
 <span class="codetitre">Simple example</span>
 
-<span class="object">webpage</span>.<span class="fonction">open</span>(url) <span class="comment">// load a page</span>
-  .then(function(){
+<span class="object">webpage</span>
+  .<span class="fonction">open</span>(url) <span class="comment">// loads a page</span>
+  .<span class="fonction">then</span>(function(){ <span class="comment">// executed after loading</span>
     <span class="comment">// store a screenshot of the page</span>
     <span class="object">webpage</span>.<span class="fonction">viewportSize</span> =
         { width:650, height:320 };
-    webpage.render(<span class="literal">'page.png'</span>);
+    <span class="object">webpage</span>.<span class="fonction">render</span>(<span class="literal">'page.png'</span>,
+                   {onlyViewport:true});
     <span class="comment">// then open a second page</span>
     return <span class="object">webpage</span>.<span class="fonction">open</span>(url2);
   })
-  .then(function(){
-    <span class="comment">// click somewhere on
-    // the second page</span>
-    <span class="object">webpage</span>.<span class="fonction">sendEvent</span>("click", 5, 5,
+  .<span class="fonction">then</span>(function(){
+    <span class="comment">// click somewhere on the second page</span>
+    <span class="object">webpage</span>.<span class="fonction">sendEvent</span>(<span class="literal">"click"</span>, 5, 5,
                         <span class="literal">'left'</span>, 0);
     <span class="object">slimerjs</span>.<span class="fonction">exit</span>()
   });
