@@ -445,6 +445,26 @@ Request & Response objects
 const traceRequest = function(id, request) {
     request.QueryInterface(Ci.nsIHttpChannel);
     let headers = [];
+    let stream = request.QueryInterface(Ci.nsIUploadChannel).uploadStream;
+    let postData = null;
+    if (stream && (request.requestMethod == 'POST' || request.requestMethod == 'PUT')) {
+        try {
+            // QueryInterface throw an exception if stream is not a seekable stream
+            stream.QueryInterface(Ci.nsISeekableStream);
+
+            let scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
+            scriptableStream.init(stream);
+            postData = scriptableStream.read(stream.available());
+            scriptableStream.close();
+            // let's rewind the stream to start
+            stream.seek(stream.NS_SEEK_SET, 0);
+        }
+        catch(e) {
+           // no seekable stream or other errors
+           // let's consider that there are no post data
+        }
+    }
+
     request.visitRequestHeaders(function(name, value) {
         value.split("\n").forEach(function(v) {
             headers.push({"name": name, "value": v});
@@ -455,6 +475,7 @@ const traceRequest = function(id, request) {
         id: id,
         method: request.requestMethod,
         url: request.URI.spec,
+        postData: postData,
         time: new Date(),
         headers: headers
     };
