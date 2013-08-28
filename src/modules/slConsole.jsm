@@ -5,6 +5,8 @@
 "use strict";
 var EXPORTED_SYMBOLS = ["slConsole", "getTraceException"];
 
+Components.utils.import('resource://slimerjs/slDebug.jsm');
+
 function getTraceException(e, fileURI) {
     let msg;
     let stackRes = [];
@@ -27,8 +29,8 @@ function getTraceException(e, fileURI) {
             if (sourceURL.indexOf('->') != -1) {
                 sourceURL = sourceURL.split('->')[1].trim();
             }
-            else if (sourceURL == 'resource://slimerjs/addon-sdk/toolkit/loader.js'
-                     || sourceURL == 'resource://slimerjs/slLauncher.jsm' ) {
+            else if (!DEBUG && (sourceURL == 'resource://slimerjs/addon-sdk/toolkit/loader.js'
+                             || sourceURL == 'resource://slimerjs/slLauncher.jsm' )) {
                 break;
             }
 
