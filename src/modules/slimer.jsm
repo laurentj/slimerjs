@@ -5,6 +5,7 @@
 
 var EXPORTED_SYMBOLS = ["slimer"];
 Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import('resource://slimerjs/slUtils.jsm');
 
 var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
                            .getService(Components.interfaces.nsIXULAppInfo);
@@ -43,8 +44,12 @@ var slimer =  {
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },
 
+    wait : function(msTime) {
+        slUtils.sleep(msTime);
+    },
     __exposedProps__ : {
         version : 'r',
-        exit : 'r'
+        exit : 'r',
+        wait: 'r'
     }
 }

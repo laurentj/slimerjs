@@ -5,6 +5,17 @@
 Release Notes
 =============
 
+version 0.8.3
+=============
+
+Not released yet.
+
+Improvements
+------------
+
+- new method ``slimer.wait()``
+
+
 version 0.8.2
 =============
 

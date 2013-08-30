@@ -389,6 +389,22 @@ Read only.
 viewportSize
 -----------------------------------------
 
+This property allows to change the size of the viewport, e.g., the size of the window
+where the webpage is displayed.
+
+It is useful to test the display of the web page in different size of windows.
+
+``viewportSize`` is an object with with ``width`` and ``height`` properties, containing
+the size in pixels.
+
+Note that changing this property triggers a reflow of the rendering and this is done
+asynchronously (this is how browser rendering engines work). So for example, if you take
+a screenshot with ``webpage.render()`` just after setting the viewportSize, you may not
+have the final result (you call ``render()`` too early).
+
+.. code-block:: javascript
+
+    page.viewportSize = { width: 480, height: 800 };
 
 
 .. _webpage-windowName:
@@ -396,14 +412,25 @@ viewportSize
 windowName
 -----------------------------------------
 
-
+Contains the name of the window, e.g. the name given to ``window.open()`` if the page
+has been opened with this method.
 
 .. _webpage-zoomFactor:
 
 zoomFactor
 -----------------------------------------
 
+Contains the zoom factor of the webpage display. Setting a value to this property decreases
+or increases the size of the web page rendering. A value between 0 and 1 decreases the
+size of the page, and a value higher than 1 increases its size. ``1`` means no zoom
+(normal size).
 
+Note that changing its value refreshes the display of the page asynchronously.
+So for example, if you call :ref:`render() <webpage-render>` just after setting a value on
+``zoomFactor``, the screenshot may not represent the final result (``render()`` is called
+too early). After the call of ``zoomFactor``, You probably have to put the code into a
+callback given to ``window.setTimeout()``, or you can call ``slimer.wait(500)`` (which is
+not compatible with PhantomJS).
 
 .. _webpage-addCookie:
 

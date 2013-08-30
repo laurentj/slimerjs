@@ -36,3 +36,11 @@ containing three properties, ``major``, ``minor``, ``patch``:
     var v = slimer.version;
     console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch);
 
+.. _slimer-wait:
+
+wait(milliseconds)
+------------------------------------------
+
+SlimerJS do a pause during the given amount of time (in milliseconds).
+It can be useful in some case to wait after a reflow or something like that.
+Note that it does not freeze the browser.
