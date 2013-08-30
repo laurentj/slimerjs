@@ -39,17 +39,17 @@ Some internal module have a specific id. The script given to SlimerJS is the
 module "main".
 
 To define functions and variables to export, the module should store
-these functions and variables into an ``export`` object
+these functions and variables into an ``exports`` object
 
 .. code-block:: javascript
     
-    export.printHello = function(param) {
+    exports.printHello = function(param) {
         console.log('hello '+param)
     }
     
-    export.aValue = 123
+    exports.aValue = 123
     
-    export.otherFunction = function() {  }
+    exports.otherFunction = function() {  }
 
 If the module is stored into a ``hello.js`` file in the same directory of the main script,
 in the main script you can use the module like this:
