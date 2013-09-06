@@ -1420,6 +1420,10 @@ function _create(parentWebpageInfo) {
             if (!browser)
                 throw new Error("WebPage not opened");
             browser.markupDocumentViewer.fullZoom = val;
+            let domWindowUtils = browser.contentWindow
+                                        .QueryInterface(Ci.nsIInterfaceRequestor)
+                                        .getInterface(Ci.nsIDOMWindowUtils);
+            domWindowUtils.redraw(1);
         },
 
         render: function(filename, options) {
