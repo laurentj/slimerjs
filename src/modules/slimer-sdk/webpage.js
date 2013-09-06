@@ -1395,12 +1395,12 @@ function _create(parentWebpageInfo) {
                 },
                 width: {
                     is: ["undefined", "number"],
-                    ok: function(val) val === undefined || val > 0,
+                    ok: function(val) val === undefined || val >= 0,
                     msg: "clipRect.width should be a positive integer"
                 },
                 height: {
                     is: ["undefined", "number"],
-                    ok: function(val) val === undefined || val > 0,
+                    ok: function(val) val === undefined || val >= 0,
                     msg: "clipRect.height should be a positive integer"
                 },
             }
