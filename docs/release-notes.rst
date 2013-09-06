@@ -14,7 +14,8 @@ Improvements
 ------------
 
 - new method ``slimer.wait()``
-
+- Improve performance of ``webpage.render()``
+- ``--debug=true`` now displays arguments of the script and SlimerJS's configuration
 
 version 0.8.2
 =============

@@ -247,6 +247,46 @@ var webpageUtils = {
         }
     },
 
+    getScreenshotOptions : function(webpage, options, alternateFormat) {
+        let finalOptions = {
+            format: 'png',
+            quality: 0.8,
+            ratio: webpage.zoomFactor,
+            onlyViewport: false,
+            contentType : 'image/png'
+        }
+
+        if (typeof(options) == 'object') {
+            if ('format' in options)
+                finalOptions.format = options.format;
+            else if (alternateFormat) {
+                finalOptions.format = alternateFormat
+            }
+
+            if ('ratio' in options)
+                finalOptions.ratio = options.ratio;
+            if ('quality' in options)
+                finalOptions.quality = options.quality;
+            if ('onlyViewport' in options)
+                finalOptions.onlyViewport = options.onlyViewport;
+        }
+        else if (typeof(options) == 'string') {
+            finalOptions.format = options;
+        }
+        else if (alternateFormat) {
+            finalOptions.format = alternateFormat
+        }
+        let format = (finalOptions.format || "png").toString().toLowerCase();
+        if (format == "png") {
+            finalOptions.contentType = "image/png";
+        } else if (format == "jpeg" || format == 'jpg') {
+            finalOptions.contentType = "image/jpeg";
+        } else {
+            throw new Error("Render format \"" + format + "\" is not supported");
+        }
+        return finalOptions;
+    },
+
     getScreenshotCanvas : function(window, ratio, onlyViewport, webpage) {
 
         if (!ratio || (ratio && ratio <= 0)) {

@@ -1425,73 +1425,80 @@ function _create(parentWebpageInfo) {
         render: function(filename, options) {
             if (!browser)
                 throw new Error("WebPage not opened");
+
             let file = fs.absolute(filename);
-            let dir = fs.directory(file);
-            if (!fs.exists(dir)) {
-                fs.makeTree(dir);
-            }
-            let opt = heritage.mix({}, options || {});
-            let format = 'png';
-            if ('format' in opt) {
-                format = opt.format;
-            }
-            else {
-                let ext = fs.extension(file);
-                if (ext)
-                    format = ext;
-            }
-            opt.format = format;
-            if (format == 'jpg' || format == 'jpeg' || format == 'png') {
-                let content = this.renderBytes(options?opt:format);
+
+            try {
+                let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file));
+                let canvas = webpageUtils.getScreenshotCanvas(
+                                            browser.contentWindow,
+                                            finalOptions.ratio,
+                                            finalOptions.onlyViewport, this);
+                let content = null;
+                canvas.toBlob(function(blob) {
+                    let reader = new browser.contentWindow.FileReader();
+                    reader.onloadend = function() {
+                        content = reader.result;
+                    }
+                    reader.readAsBinaryString(blob);
+                }, finalOptions.contentType, finalOptions.quality);
+
+                let thread = Services.tm.currentThread;
+                while (content === null) {
+                    thread.processNextEvent(true);
+                }
+
+                let dir = fs.directory(file);
+                if (!fs.exists(dir)) {
+                    fs.makeTree(dir);
+                }
+
                 fs.write(file, content, "wb");
                 return true;
             }
-            else {
-                //throw new Error("render(): format "+format+" not supported");
+            catch(e) {
                 return false;
             }
         },
 
         renderBytes: function(options) {
-            return base64.decode(this.renderBase64(options));
+            if (!browser)
+                throw new Error("WebPage not opened");
+            try {
+                let finalOptions = webpageUtils.getScreenshotOptions(this, options);
+                let canvas = webpageUtils.getScreenshotCanvas(
+                                            browser.contentWindow,
+                                            finalOptions.ratio,
+                                            finalOptions.onlyViewport, this);
+                let content = null;
+                canvas.toBlob(function(blob) {
+                    let reader = new browser.contentWindow.FileReader();
+                    reader.onloadend = function() {
+                        content = reader.result;
+                    }
+                    reader.readAsBinaryString(blob);
+                }, finalOptions.contentType, finalOptions.quality);
+
+                let thread = Services.tm.currentThread;
+                while (content === null) {
+                    thread.processNextEvent(true);
+                }
+                return content;
+            }
+            catch(e) {
+                return null;
+            }
         },
 
         renderBase64: function(options) {
             if (!browser)
                 throw new Error("WebPage not opened");
-
-            let format = 'png';
-            let quality = undefined;
-            let ratio = 1;
-            let onlyViewport = false;
-            if (typeof(options) == 'object') {
-                if ('format' in options)
-                    format = options.format;
-                if ('ratio' in options)
-                    ratio = options.ratio;
-                if ('quality' in options)
-                    quality = options.quality;
-                if ('onlyViewport' in options)
-                    onlyViewport = options.onlyViewport;
-            }
-            else if (typeof(options) == 'string') {
-                format = options;
-            }
-            format = (format || "png").toString().toLowerCase();
-            if (format == "png") {
-                format = "image/png";
-            } else if (format == "jpeg" || format == 'jpg') {
-                format = "image/jpeg";
-                if (quality == undefined)
-                    quality = 0.8;
-            } else {
-                throw new Error("Render format \"" + format + "\" is not supported");
-            }
+            let finalOptions = webpageUtils.getScreenshotOptions(this, options)
 
             let canvas = webpageUtils.getScreenshotCanvas(browser.contentWindow,
-                                            ratio, onlyViewport, this);
+                                            finalOptions.ratio, finalOptions.onlyViewport, this);
 
-            return canvas.toDataURL(format, quality).split(",", 2)[1];
+            return canvas.toDataURL(finalOptions.contentType, finalOptions.quality).split(",", 2)[1];
         },
 
         //--------------------------------------------------- window popup callback
