@@ -11,7 +11,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SLIMERDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-SYSTEM=`uname -o`
+SYSTEM=`uname -o 2>&1`
 if [ "$SYSTEM" == "Cygwin" ]
 then
    IN_CYGWIN=1
