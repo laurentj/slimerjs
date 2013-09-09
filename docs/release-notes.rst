@@ -18,6 +18,7 @@ New API
 - Support of ``webpage.settings.userName``, ``webpage.settings.password`` and ``webpage.settings.maxAuthAttemps``
 - New callback ``webpage.onAuthPrompt`` (not compatible with PhantomJS)
 - New method ``slimer.clearHttpAuth()`` to clear http authentication from the network cache.
+- Support of ``resource.postData`` in callback ``webpage.onResourceRequested``.
 
 Fixed bugs
 ----------

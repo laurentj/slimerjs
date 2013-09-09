@@ -445,25 +445,6 @@ Request & Response objects
 const traceRequest = function(id, request) {
     request.QueryInterface(Ci.nsIHttpChannel);
     let headers = [];
-    let stream = request.QueryInterface(Ci.nsIUploadChannel).uploadStream;
-    let postData = null;
-    if (stream && (request.requestMethod == 'POST' || request.requestMethod == 'PUT')) {
-        try {
-            // QueryInterface throw an exception if stream is not a seekable stream
-            stream.QueryInterface(Ci.nsISeekableStream);
-
-            let scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
-            scriptableStream.init(stream);
-            postData = scriptableStream.read(stream.available());
-            scriptableStream.close();
-            // let's rewind the stream to start
-            stream.seek(stream.NS_SEEK_SET, 0);
-        }
-        catch(e) {
-           // no seekable stream or other errors
-           // let's consider that there are no post data
-        }
-    }
 
     request.visitRequestHeaders(function(name, value) {
         value.split("\n").forEach(function(v) {
@@ -471,14 +452,42 @@ const traceRequest = function(id, request) {
         });
     });
 
-    return {
+    let res = {
         id: id,
         method: request.requestMethod,
         url: request.URI.spec,
-        postData: postData,
         time: new Date(),
         headers: headers
     };
+
+    let stream = request.QueryInterface(Ci.nsIUploadChannel).uploadStream;
+    if (stream && (request.requestMethod == 'POST' || request.requestMethod == 'PUT')) {
+        try {
+            // QueryInterface throw an exception if stream is not a seekable stream
+            stream.QueryInterface(Ci.nsISeekableStream);
+
+            let scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
+            scriptableStream.init(stream);
+            let postData = scriptableStream.read(scriptableStream.available());
+            // note: we don't close scriptableStream else it closes stream
+
+            // let's rewind the stream to start
+            stream.seek(stream.NS_SEEK_SET, 0);
+
+            // some headers were in the stream, let's remove them
+            if (postData.indexOf("\r\n\r\n")>-1) {
+                postData = postData.split("\r\n\r\n",2)[1];
+            }
+
+            // like in phantomjs, postData should be undefined if not post method
+            res.postData = postData; 
+        }
+        catch(e) {
+           // no seekable stream or other errors
+           // let's consider that there are no post data
+        }
+    }
+    return res;
 };
 
 const traceResponse = function(id, request) {

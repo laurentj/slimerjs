@@ -112,8 +112,8 @@ webserverTest.listen(8083, function(request, response) {
     }
 
     if (request.url == '/needauth') {
-        let headers = { "Content-Type": "text/plain;charset=UTF-8"}
-        let message = '';
+        var headers = { "Content-Type": "text/plain;charset=UTF-8"}
+        var message = '';
         if (! ('Authorization' in request.headers)
             || request.headers['Authorization'] != 'Basic bGF1cmVudDoxMjM0') {
             headers['WWW-Authenticate'] = 'Basic realm="Slimer auth test"';

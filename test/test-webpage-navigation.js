@@ -4,9 +4,6 @@ describe("WebPage.onNavigationRequested", function(){
     var url = "http://127.0.0.1:8083/navigation.html";
 
     beforeEach(function() {
-        if (webpage) {
-            return;
-        }
         webpage = require("webpage").create();
     });
 
@@ -17,9 +14,9 @@ describe("WebPage.onNavigationRequested", function(){
         webpage.onNavigationRequested = function(url, navigationType, willNavigate, isMainFrame) {
             navCall.push([url, navigationType, willNavigate, isMainFrame]);
         }
-        /*webpage.onConsoleMessage = function(msg) {
-            dump("console:"+msg+"\n")
-        }*/
+        //webpage.onConsoleMessage = function(msg) {
+        //    dump("console:"+msg+"\n")
+        //}
         runs(function() {
             webpage.open(url, function(success){
                 // click on a js link
@@ -127,12 +124,21 @@ describe("WebPage.onNavigationRequested", function(){
     });
 
 
-    it("is called when a submitting a form",function() {
+    it("is called when submitting a form",function() {
         var loaded = false;
         var navCall = [];
+        var formData = null;
+        var formMethod = null;
  
         webpage.onNavigationRequested = function(url, navigationType, willNavigate, isMainFrame) {
             navCall.push([url, navigationType, willNavigate, isMainFrame]);
+        }
+
+        webpage.onResourceRequested = function(resource, request){
+            if (resource.url == "http://127.0.0.1:8083/getHeaders") {
+                formData = resource.postData;
+                formMethod = resource.method;
+            }
         }
 
         runs(function() {
@@ -154,10 +160,24 @@ describe("WebPage.onNavigationRequested", function(){
             expect(nav[2]).toBeTruthy()
             expect(nav[3]).toBeTruthy()
             nav = navCall[1] //6
-            expect(nav[0]).toEqual("http://127.0.0.1:8083/simplehello.html");
+            expect(nav[0]).toEqual("http://127.0.0.1:8083/getHeaders");
             //expect(nav[1]).toEqual("FormSubmitted")
             expect(nav[2]).toBeTruthy()
             expect(nav[3]).toBeTruthy()
+            expect(formMethod).toEqual("POST");
+            expect(formData).toEqual("foo=bar&hello=world")
+
+            var received = null;
+            try {
+                received = JSON.parse(webpage.plainText);
+            }
+            catch(e){}
+
+            expect(received).not.toBeNull();
+            expect(received.method).toEqual('POST');
+            expect(received.body).toEqual("foo=bar&hello=world");
+            expect(received.headers["Content-Type"]).toEqual("application/x-www-form-urlencoded");
+            expect(received.headers["Content-Length"]).toEqual("19");
         });
     });
 

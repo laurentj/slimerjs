@@ -216,6 +216,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onPrompt                            </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
     <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>
+    <tr><td>onResourceError                     </td><td></td></tr>
     <tr><td>onUrlChanged                        </td><td>Implemented</td></tr>
 </table>
 
