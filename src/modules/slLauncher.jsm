@@ -177,6 +177,7 @@ const nativeModules = {
     'path':'slimer-sdk/path',
 };
 
+const firstPathPart = /^([a-zA-Z\-]+\/)/;
 
 /**
  * prepare the module loader
@@ -207,14 +208,6 @@ function prepareLoader(fileURI, dirFile) {
                 if (idx.match(/^([0-9])+$/) != null && idx in arr) {
                     var path =arr[idx];
                     pathsNsFile.splice(idx,1);
-                    // loader.mapping is not writable, we cannot use filter()
-                    let idxToDelete = -1;
-                    loader.mapping.forEach(function(elt, idx) {
-                        if (elt[0] == path)
-                            idxToDelete = idx;
-                    });
-                    if (idxToDelete > -1)
-                        loader.mapping.splice(idxToDelete,1);
                     arr.splice(idx,1);
                     return true;
                 }
@@ -227,7 +220,6 @@ function prepareLoader(fileURI, dirFile) {
                 }
                 let file = getFile(path, true);
                 pathsNsFile[idx] = file;
-                loader.mapping.push([file.path, Services.io.newFileURI(file).spec]);
                 arr[idx] = file.path;
             },
             // because of a regression in proxies in Firefox 20, we should implement
@@ -315,15 +307,19 @@ function prepareLoader(fileURI, dirFile) {
 
             // let's resolve other id module as usual
             id = Loader.resolve(id, requirer);
-            if (id.indexOf('sdk/') === 0
-                && requirer.indexOf('slimer-sdk/') === 0) {
+
+            // if this is a slimerjs module, don't try to find them in module path
+            let part = firstPathPart.exec(id);
+            let reqpart = firstPathPart.exec(requirer);
+            if (part && reqpart && reqpart[1] in pathsMapping && part[1] in pathsMapping) {
                 return id;
             }
 
             // if requirer is an absolute path, the id is then an absolute path after Loader.resolve
             let realId = findFileExtension(id);
-            if (realId)
+            if (realId) {
                 return realId;
+            }
 
             // this is not an absolute path, try to resolve the id
             // against all registered path
@@ -332,8 +328,9 @@ function prepareLoader(fileURI, dirFile) {
                 if (!dir)
                     continue;
                 let file = findFileExtension(id, dir);
-                if (file)
+                if (file) {
                     return file;
+                }
             }
             return id;
         },
