@@ -37,6 +37,7 @@ function create() {
     let [webpage, win] = _create(null);
     return webpage;
 }
+exports.create = create;
 
 /**
  * @return [webpage, window]
@@ -342,7 +343,8 @@ function _create(parentWebpageInfo) {
         clipRect : null,
         framePath : [],
         childWindows : [], // list of webpage of child windows
-        settings: {}
+        settings: {},
+        viewportSize : { width: 400, height: 300}
     }
 
     let defaultSettings = slConfiguration.getDefaultWebpageConfig();
@@ -400,7 +402,7 @@ function _create(parentWebpageInfo) {
             if (!noInitializedEvent)
                 webpage.initialized();
             ready = true;
-        }, parentWindow);
+        }, parentWindow, privProp.viewportSize);
 
         win.QueryInterface(Ci.nsIDOMChromeWindow)
            .browserDOMWindow = slBrowserDOMWindow;
@@ -701,7 +703,7 @@ function _create(parentWebpageInfo) {
                 browserJustCreated = false;
                 netLog.registerBrowser(browser, options);
                 webpageUtils.browserLoadURI(browser, url, httpConf);
-            });
+            }, null, privProp.viewportSize);
             // to catch window.open()
             win.QueryInterface(Ci.nsIDOMChromeWindow)
                .browserDOMWindow= slBrowserDOMWindow;
@@ -817,7 +819,10 @@ function _create(parentWebpageInfo) {
 
         get viewportSize() {
             if (!browser)
-                return {width:400, height:300};
+                return {
+                    width: privProp.viewportSize.width,
+                    height: privProp.viewportSize.height
+                };
             let win = browser.ownerDocument.defaultView.top;
             return {
                 width: win.innerWidth,
@@ -826,9 +831,6 @@ function _create(parentWebpageInfo) {
         },
 
         set viewportSize(val) {
-            if (!browser)
-                return;
-            let win = browser.ownerDocument.defaultView.top;
 
             if (typeof val != "object")
                 throw new Error("Bad argument type");
@@ -838,6 +840,14 @@ function _create(parentWebpageInfo) {
 
             if (w <= 0 || h <= 0)
                 return;
+
+            privProp.viewportSize.width = w;
+            privProp.viewportSize.height = h;
+
+            if (!browser)
+                return;
+
+            let win = browser.ownerDocument.defaultView.top;
 
             let domWindowUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
                                     .getInterface(Ci.nsIDOMWindowUtils);
@@ -1641,11 +1651,5 @@ function _create(parentWebpageInfo) {
 
     // initialization
     return openBlankBrowser(false);
-}
-exports.create = create;
+} // end of _create
 
-/*
-function WebPage() {
-    this.prototype = create();
-}
-*/

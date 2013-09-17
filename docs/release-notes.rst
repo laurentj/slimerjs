@@ -21,6 +21,7 @@ Fixed bugs
 ----------
 - ``require.paths`` should accept relative paths (issue #73)
 - zoom and scroll issues in ``webpage.render()`` (issue #75)
+- ``webpage.viewportSize`` should be applied when reopening the webpage (issue #82)
 
 version 0.8.2
 =============
