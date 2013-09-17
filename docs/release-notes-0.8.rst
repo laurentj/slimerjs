@@ -8,7 +8,7 @@ Release Notes of SlimerJS 0.8
 version 0.8.3
 =============
 
-Not released yet.
+SlimerJS 0.8.3 has been released on September 17th, 2013.
 
 Improvements
 ------------
@@ -21,6 +21,8 @@ Fixed bugs
 ----------
 - ``require.paths`` should accept relative paths (issue #73)
 - zoom and scroll issues in ``webpage.render()`` (issue #75)
+- ``webpage.viewportSize`` should be applied when reopening the webpage (issue #82)
+
 
 version 0.8.2
 =============
