@@ -90,8 +90,10 @@ describe("WebPage.render()", function(){
     // for produced files, and we compare content of these two canvas.
     var expectedFixPage = require("webpage").create();
     var expectedFixUrl = urlbase+ "rendering/rendering_fix.html";
+    var prefixResult = 'slimerjs_capture_fix_';
     var imageResultLoaded = false;
     var currentImageFile = '';
+    var setViewport = false;
 
     beforeEach(function() {
         if (webpage) {
@@ -137,6 +139,7 @@ describe("WebPage.render()", function(){
 
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
+            currentImageFile = 'slimerjs_capture.png';
             webpage.render('slimerjs_capture.png');
             expect(fs.exists('slimerjs_capture.png')).toBeTruthy();
         });
@@ -145,13 +148,20 @@ describe("WebPage.render()", function(){
     function doAndTestRendering(resultNumber, doZoom, clip, scroll) {
         var loaded = false;
 
-        var filename = 'slimerjs_capture_'+resultNumber+'.png';
+        var filename = prefixResult+resultNumber+'.png';
         currentImageFile = phantom.libraryPath+'/www/'+filename;
         var expectedData;
+        var onlyViewport = false;
 
         runs(function() {
             webpage.open(url, function(success){
-                if (clip) {
+                if (setViewport) {
+                    webpage.viewportSize = setViewport;
+                }
+                if (clip === true) {
+                    onlyViewport = true;
+                }
+                else if (clip) {
                     webpage.clipRect = clip;
                 }
                 else webpage.clipRect = {top:0, left:0, width:0, height:0}
@@ -160,22 +170,27 @@ describe("WebPage.render()", function(){
                 // wait after zoom is applied
                 window.setTimeout(function() {
                     if (scroll) {
-                        webpage.setScrollPosition(scroll);
+                        webpage.scrollPosition = scroll;
                     }
                     loaded = true;
                 }, 600);
             });
         });
 
-        waitsFor(function(){ return loaded;}, 1000);
+        waitsFor(function(){ return loaded;}, 1200);
         runs(function(){
-            webpage.render(currentImageFile);
+            if (onlyViewport) {
+                webpage.render(currentImageFile, {onlyViewport:true});
+            }
+            else
+                webpage.render(currentImageFile);
+
             expect(fs.exists(currentImageFile)).toBeTruthy();
             expectedData = expectedFixPage.evaluate(function(idx){ return getCanvasData(idx); },  resultNumber);
             imageResultLoaded = false;
             expectedFixPage.evaluate(function(idx, src){ setResultImage(idx, src );},  resultNumber, urlbase+filename);
         });
-        waitsFor(function(){ return imageResultLoaded;}, 1000);
+        waitsFor(function(){ return imageResultLoaded;}, 1300);
         runs(function(){
             resultData = expectedFixPage.evaluate(function(){ return getCanvasData(); });
             expect(resultData[1]).toEqual(expectedData[1]);
@@ -183,7 +198,7 @@ describe("WebPage.render()", function(){
             expect(resultData[0] == expectedData[0]).toBeTruthy();
             //fs.write("resultData"+resultNumber+"txt", resultData[0]);
             //fs.write("expectedData"+resultNumber+"txt", expectedData[0]);
-            //expectedFixPage.render("rendering"+resultNumber+".png")
+            //expectedFixPage.render("rendering_"+prefixResult+resultNumber+".png")
         });
     }
 
@@ -191,24 +206,118 @@ describe("WebPage.render()", function(){
         doAndTestRendering(1);
     });
 
-    it(" capture an entire page with fix design + zoom out (3)",function() {
-        doAndTestRendering(3, 0.5);
-    });
-
     it(" capture an entire page with fix design + zoom in (2)",function() {
         doAndTestRendering(2, 2);
+    });
+
+    it(" capture an entire page with fix design + zoom out (3)",function() {
+        doAndTestRendering(3, 0.5);
     });
 
     it(" capture an entire page with fix design + clip rect (4)",function() {
         doAndTestRendering(4, false, {top:50, left:50, width:100, height:100});
     });
 
-    it(" capture an entire page with fix design + clip rect + zoom out (6)",function() {
-        doAndTestRendering(6, 0.5, {top:50, left:50, width:100, height:100});
-    });
-
     it(" capture an entire page with fix design + clip rect + zoom in (5)",function() {
          doAndTestRendering(5, 2, {top:50, left:50, width:100, height:100});
     });
 
+    it(" capture an entire page with fix design + clip rect + zoom out (6)",function() {
+        doAndTestRendering(6, 0.5, {top:50, left:50, width:100, height:100});
+    });
+
+    it(" capture an entire page with fix design + scroll (7)",function() {
+        doAndTestRendering(7, null, null, {top:25, left:25});
+    });
+
+    it(" capture an entire page with fix design + zoom in + scroll (8)",function() {
+        doAndTestRendering(8, 2, null, {top:25, left:25});
+    });
+
+    it(" capture an entire page with fix design + zoom out + scroll (9)",function() {
+        doAndTestRendering(9, 0.5, null, {top:25, left:25});
+    });
+
+    it(" capture an entire page with fix design + onlyViewport (10)",function() {
+        doAndTestRendering(10, false, true);
+    });
+
+    it(" capture an entire page with fix design + onlyViewport + zoom in (11)",function() {
+         doAndTestRendering(11, 2, true);
+    });
+
+    it(" capture an entire page with fix design + onlyViewport + zoom out (12)",function() {
+        doAndTestRendering(12, 0.5, true);
+    });
+
+    it(" capture an entire page with fix design + onlyViewport + scroll (13)",function() {
+        doAndTestRendering(13, null, true, {top:25, left:25});
+    });
+
+    it(" capture an entire page with fix design + onlyViewport + zoom in + scroll (14)",function() {
+        doAndTestRendering(14, 2, true, {top:25, left:25});
+    });
+
+    it(" capture an entire page with fix design + onlyViewport + zoom out + scroll (15)",function() {
+        doAndTestRendering(15, 0.5, true, {top:25, left:25});
+    });
+
+    it(" has nothing to test, prepare the results for adaptive page",function() {
+        url = urlbase+"render_adaptive.html";
+        expectedFixUrl = urlbase+ "rendering/rendering_adaptive.html";
+        prefixResult = 'slimerjs_capture_adapt_';
+        setViewport = { width:300, height:500 };
+
+        var loaded = false;
+        runs(function() {
+            
+            expectedFixPage.open(expectedFixUrl, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            expectedFixPage.onCallback = function() {
+                imageResultLoaded = true;
+            }
+            expectedFixPage.evaluate(function(){ fillCanvas(); })
+        });
+    });
+
+    it(" capture an entire page with adaptive design (1)",function() {
+        doAndTestRendering(1);
+    });
+
+    it(" capture an entire page with adaptive design + zoom in (2)",function() {
+        doAndTestRendering(2, 2);
+    });
+
+    it(" capture an entire page with adaptive design + zoom out (3)",function() {
+        doAndTestRendering(3, 0.5);
+    });
+
+    it(" capture an entire page with adaptive design + clip rect (4)",function() {
+        doAndTestRendering(4, false, {top:50, left:50, width:100, height:100});
+    });
+
+    it(" capture an entire page with adaptive design + clip rect + zoom in (5)",function() {
+         doAndTestRendering(5, 2, {top:50, left:50, width:100, height:100});
+    });
+
+    it(" capture an entire page with adaptive design + clip rect + zoom out (6)",function() {
+        doAndTestRendering(6, 0.5, {top:50, left:50, width:100, height:100});
+    });
+
+    it(" capture an entire page with adaptive design + scroll (7)",function() {
+        doAndTestRendering(7, null, null, {top:25, left:25});
+    });
+
+    it(" capture an entire page with adaptive design + zoom in + scroll (8)",function() {
+        doAndTestRendering(8, 2, null, {top:25, left:25});
+    });
+
+    it(" capture an entire page with adaptive design + zoom out + scroll (9)",function() {
+        doAndTestRendering(9, 0.5, null, {top:25, left:25});
+    });
 });

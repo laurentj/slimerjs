@@ -20,6 +20,7 @@ Improvements
 Fixed bugs
 ----------
 - ``require.paths`` should accept relative paths (issue #73)
+- zoom and scroll issues in ``webpage.render()`` (issue #75)
 
 version 0.8.2
 =============

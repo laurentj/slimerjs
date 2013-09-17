@@ -301,13 +301,26 @@ var webpageUtils = {
         let currentViewport = webpage.viewportSize;
         // size of the futur image
         let canvasHeight, canvasWidth;
-        // coordinate of the scroll
-        // FIXME: zoom level included or not?
+
+        // coordinate of the scroll (at zoom level)
         let scrollX = window.scrollX;
         let scrollY = window.scrollY;
 
+        //dump("scrollX="+scrollX+" scrollY="+scrollY+"\n")
         // given clip size is at zoom level
-        let givenClip = webpage.clipRect;
+        let givenClip;
+        
+        if (onlyViewport) {
+            givenClip = {
+                        top:scrollY,
+                        left:scrollX,
+                        width:currentViewport.width,
+                        height:currentViewport.height
+                        }
+        }
+        else
+            givenClip = webpage.clipRect;
+
         // this clip size is at zoom = 1
         let clip = {top: 0, left: 0, width: 0, height: 0};
 
@@ -318,37 +331,28 @@ var webpageUtils = {
                                 de.clientHeight, de.scrollHeight, de.offsetHeight);
 
         if ((givenClip.top == 0 && givenClip.left == 0 && givenClip.width == 0 && givenClip.height == 0)) {
-            clip.top = scrollY; //  / ratio ?
-            clip.left = scrollX; //  / ratio ?
+            clip.top = scrollY / ratio;
+            clip.left = scrollX / ratio;
 
             clip.width = currentViewport.width / ratio;
             clip.height = currentViewport.height / ratio;
 
-            if (onlyViewport) {
-                // we want only what we see in the viewport
-                canvasWidth = currentViewport.width;
-                canvasHeight = currentViewport.height;
+            // mimic PhantomJS image rendering: retrieve content size and use it
+            // it as clip size. if result size is lower than viewport, take viewport
+            // size
+            if ((contentWidth-clip.left) > clip.width) {
+                clip.width = contentWidth - clip.left;
+                canvasWidth = (contentWidth * ratio) - scrollX;
             }
-            else {
-                // mimic PhantomJS image rendering: retrieve content size and use it
-                // it as clip size. if result size is lower than viewport, take viewport
-                // size
-                //we should temporarely modify the viewport
-                if ((contentWidth-clip.left) > clip.width) {
-                    clip.width = contentWidth;
-                }
-                if ((contentHeight-clip.top) > clip.height) {
-                    clip.height = contentHeight;
-                }
+            else
                 canvasWidth = clip.width * ratio;
-                canvasHeight = clip.height * ratio;
 
-                // FIXME should we really need that ? probably with responsive design?
-                /*domWindowUtils = window.QueryInterface(Ci.nsIInterfaceRequestor)
-                                .getInterface(Ci.nsIDOMWindowUtils);
-                domWindowUtils.setCSSViewport(contentWidth, contentHeight);
-                domWindowUtils.redraw(1);*/
+            if ((contentHeight-clip.top) > clip.height) {
+                clip.height = contentHeight - clip.top;
+                canvasHeight = (contentHeight * ratio) - scrollY;
             }
+            else
+                canvasHeight = clip.height * ratio;
         }
         else {
             // givenClip is define, we take its values for clip.
@@ -375,9 +379,9 @@ var webpageUtils = {
             }
         }
 
-//dump("size clip: "+ clip.width +" x "+ clip.height+"\n");
-//dump("size canvas: "+ canvasWidth +" x "+ canvasHeight+"\n");
-//dump("Ratio:"+ratio+"\n");
+        //dump("size clip: "+ clip.width +" x "+ clip.height+" @ "+clip.left+","+clip.top+"\n");
+        //dump("size canvas: "+ canvasWidth +" x "+ canvasHeight+"\n");
+        //dump("Ratio:"+ratio+"\n");
 
         // create the canvas
         let canvas = window.document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
@@ -389,12 +393,6 @@ var webpageUtils = {
         ctx.drawWindow(window, clip.left, clip.top, clip.width, clip.height, "rgba(0,0,0,0)");
         ctx.restore();
 
-        /*if (domWindowUtils) {
-            // restore previous viewport
-            domWindowUtils.setCSSViewport(currentViewport.width, currentViewport.height);
-            domWindowUtils.redraw(1);
-            window.scrollTo(scrollX, scrollY);
-        }*/
         return canvas;
     }
 }
