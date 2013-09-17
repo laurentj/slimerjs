@@ -72,7 +72,7 @@
     <div class="row-fluid">
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
-          <li><a href="#linux"><i class="icon-chevron-right"></i>From Arch Linux</a></li>
+          <li><a href="#linux"><i class="icon-chevron-right"></i>From your favorite package system</a></li>
           <li><a href="#standalone"><i class="icon-chevron-right"></i>The Standalone Edition</a></li>
           <li><a href="#lightweight"><i class="icon-chevron-right"></i>The Lightweight Edition</a></li>
         </ul>
@@ -84,21 +84,26 @@
         <section>
             <p><span class="slm">SlimerJS</span> runs on any platform on which Firefox or XulRunner is available.
             XulRunner is the core of Firefox without its user interface.</p>
-            <p>This download page offers you different <span class="slm">SlimerJS</span> packages. Three flavors:</p>
+
+            <p>This download page offers you different way to install <span class="slm">SlimerJS</span>:</p>
             <ul>
-                <li>Install <strong>the linux package</strong> from the package system of your linux distribution.
-                    It will install automatically all needed packages (like XulRunner or Firefox). It
-                    seems that only Arch Linux provides a package of SlimerJS for the moment. Feel free to
-                    contribute for your favorite distro!</li>
-                <li>Or download the <strong>Standalone Edition</strong> of <span class="slm">SlimerJS</span>: this is a zip/gz package containing
+                <li>Install a package <strong><a href="#linux">from your favorite package system</a></strong>.
+                    It will install all needed files. See known repositories below.</li>
+                <li>Or download the <strong><a href="#standalone">Standalone Edition</a></strong> of <span class="slm">SlimerJS</span>: this is a zip/gz package containing
                 SlimerJS and XulRunner. There is a package for each operating system.</li>
-                <li>Or download the <strong>Lightweight Edition</strong> of <span class="slm">SlimerJS</span>: this is a zip package containing
+                <li>Or download the <strong><a href="#lightweight">Lightweight Edition</a></strong> of <span class="slm">SlimerJS</span>: this is a zip package containing
                 only SlimerJS and for all operating system. You have to install Firefox or XulRunner
-                separately and probably you'll need to set an environment variable. <strong>This is the
-                prefered way</strong> if Firefox is already installed, or for
-                <acronym title="Continuous Integrations">CI</acronym> Tools <a href="https://travis-ci.org/">like Travis</a>,
-                or to use different versions of Gecko.
-                It saves our band width, thanks ;)</li>
+                separately and probably you'll need to set an environment variable. <br/>This is the
+                prefered way if:
+                <ul>
+                    <li>Firefox or XulRunner is already installed</li>
+                    <li>or you want to use it from <acronym title="Continuous Integrations">CI</acronym> Tools like <a href="https://travis-ci.org/">Travis</a></li>
+                    <li>or you want to use it with different versions of Gecko.</li>
+                </ul>
+                </li>
+                <li>Or do nothing if you want to use it <strong>in <a href="https://www.codeship.io/">CodeShip</a></strong>.
+                <a href="https://twitter.com/codeship/status/363295664173613057">It's available</a> on this
+                    continuous deployment platform.</li>
             </ul>
             <p>SlimerJS is released under the <a href="http://mozilla.org/MPL/2.0/">Mozilla Public Licence 2.0</a>
             which is compatible with the Gnu Public Licence. This is a free software.</p>
@@ -106,17 +111,34 @@
 
         <section id="linux">
           <div class="page-header">
-            <h1 class="install">From Arch Linux</h1>
+            <h1 class="install">From your favorite package system</h1>
           </div>
-          <p class="lead"><a href="https://aur.archlinux.org/packages/slimerjs/">Arch Linux
-          proposes <span class="slm">SlimerJS</span></a>. Just type in a console:</p>
-          <pre><code>yaourt slimerjs</code></pre>
-          <p>It will install all needed packages. You can then read
-          <a href="http://docs.slimerjs.org/current/installation.html#launch">the
-          documentation to launch it</a>.</p>
-
-          <p>For others distributions, your contribution is welcomed ;-). See the next
-          section to install <span class="slm">SlimerJS</span>.</p>
+          <p class="lead">This is probably the prefered way if you use a package system. Here are known repositories
+          from where <span class="slm">SlimerJS</span> can be installed. Note that the version proposed in these repositories
+          could not be the latest stable one.</p>
+          <p>For others distributions, your contribution is welcomed ;-). Or tell us if you found SlimerJS
+          somewhere else!</p>
+    
+            <div class="row-fluid">
+                <div class="span5">
+                <h2>Arch Linux</h2>
+                    <p>This Linux distribution <a href="https://aur.archlinux.org/packages/slimerjs/">proposes<span class="slm">SlimerJS</span></a>
+                    in its repository. Just type in a console:</p>
+                    <pre><code>yaourt slimerjs</code></pre>
+                    <p>It will install all needed packages. You can then read
+                    <a href="http://docs.slimerjs.org/current/installation.html#launch">the
+                    documentation to launch it</a>.</p>
+                </div>
+                <div class="span5">
+                <h2>Homebrew</h2>
+                <p><a href="http://brew.sh/">This package system for MacOs</a> has a formula
+                to install SlimerJS. Type in a console:</p>
+                <pre><code>brew install slimerjs</code></pre>
+                <p>You have to install XulRunner or Firefox separately and set the SLIMERJSLAUNCHER
+                environment variable. See <a href="http://docs.slimerjs.org/current/installation.html#configuring-slimerjs">the
+                    documentation to set it</a>.</p>                
+                </div>
+            </div>
         </section>
 
         <section id="standalone">

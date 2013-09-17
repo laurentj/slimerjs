@@ -22,59 +22,23 @@ Installation of SlimerJS
 
 .. index::  linux, package
 
-To install SlimerJS, you need to download its package. Three flavors:
-
-- Install **the linux package** from the package system of your linux distribution.
-  It will install automatically all needed packages (like XulRunner or Firefox). It
-  seems that only Arch Linux provides a package of SlimerJS for the moment. Feel free to
-  contribute for your favorite distro!
-- Or download the **Standalone Edition** of SlimerJS: this is a zip/gz package containing
-  SlimerJS and XulRunner. There is a package for each operating system.
-- Or download the **Lightweight Edition** of SlimerJS: this is a zip package containing
-  only SlimerJS and for all operating system. You have to install Firefox or XulRunner
-  separately and probably you'll need to set an environment variable. This is the
-  prefered way to save network band width or to use different versions of Gecko.
-
-From Arch Linux
-~~~~~~~~~~~~~~~
-
-A `package is available for Arch Linux <https://aur.archlinux.org/packages/slimerjs/>`_,
-thanks to a contributor. So if you use Arch Linux just type in a terminal:
-
-.. code-block:: bash
-
-    yaourt slimerjs
-
-It will install all needed packages. You're ready to use SlimerJS. You can jump to the
-:ref:`Lauching SlimerJS <launch>` section.
+To install SlimerJS, you need to download its package. It is available in two editions:
 
 
-The **Standalone Edition**
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+- The **Standalone Edition**: this is a zip/gz package containing
+  SlimerJS **and** XulRunner. There is a package for each operating system.
+  Download it, extract it. *Everything is here*. You're ready to use SlimerJS.
+  Go to the :ref:`Lauching SlimerJS <launch>` section.
+- The **Lightweight Edition**: this is a zip package containing
+  only SlimerJS and it targets all operating system. You have to install Firefox or XulRunner
+  separately (version 22 or more) and probably you'll need to
+  :ref:`set an environment variable <setup>`.
+  This package can be downloaded from slimerjs.org. Or it can be installed from a
+  repository like the Arch Linux's repository or Homebrew.
 
-Download the zip or the gz package of SlimerJS `from the web site <http://slimerjs.org/download.html>`_
-and extract files into a directory somewhere on your disk. You'll have a ``slimerjs/`` directory
-with some files. *Everything is here*. You're ready to use SlimerJS. Go to the :ref:`Lauching SlimerJS <launch>` section.
-
-
-The **Lightweight Edition**
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Download the zip package of SlimerJS `from the web site <http://slimerjs.org/download.html>`_
-and extract files into a directory somewhere on your disk. You'll have a ``slimerjs/`` directory
-with some files.
-
-.. index:: Firefox, XulRunner
-
-Then you need to install Firefox or XulRunner if it is not already done.
-
-- `Download Firefox <http://getfirefox.com>`_ (version 22 or higher)
-- or `Download Xulrunner <http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/runtimes/>`_ (version 22 or higher)
-  XulRunner is lighter than Firefox although it contains *exactely* the same web engine as Firefox.
-
-To finish the installation, you probably should read the following section before
-launching SlimerJS.
-
+See the `download page <http://slimerjs.org/download.html>`_ to know the places from
+where you can retrieve SlimerJS.
+  
 
 .. index:: SLIMERJSLAUNCHER
 
@@ -126,6 +90,8 @@ with the path of a javascript file.
 .. code-block:: bash
 
     /somewhere/slimerjs-1.2.3/slimerjs myscript.js
+    # or if SlimerJS is in your $PATH:
+    slimerjs myscript.js
 
 On Windows:
 
