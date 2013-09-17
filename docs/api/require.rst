@@ -7,11 +7,9 @@ require
 
 You should indicate the name of a module (file name without the extension). The module
 loader tries to load the module from the directory of the main script, and from directories
-indicated into the ``paths`` properties. You can indicate a relative path to the current module.
+indicated into the ``paths`` properties.
 
-
-You can also indicate the full path of the module file.
-
+For the module name, it can be a relative path to the current module or the full path of the module file.
 
 The ``require()`` function has some properties:
 
@@ -25,6 +23,11 @@ This is an array containing path of directories where to find modules.
     
     require.paths.push('/home/laurent/my-modules');
     require.paths.push(fs.workingDirectory+'/modules');
+    require.paths.push('../other-modules/');
+
+Since 0.8.3: you can indicate a relative path as indicated in the CommonJS specification. The real
+path is resolved only during the call of ``require()``, and against the path of the module that
+do that call.
 
 require.globals
 ---------------

@@ -122,23 +122,6 @@ var slLauncher = {
     }
 }
 
-function getFile(path, isDir) {
-    let file;
-    try {
-        file = slUtils.getMozFile(path);
-    }
-    catch(e){
-        throw Error("Modules path "+path+" is not a valid path");
-    }
-    if (!file.exists()) {
-        throw Error("Modules path "+path+" does not exists");
-    }
-    if (isDir && !file.isDirectory()) {
-        throw Error("Modules path "+path+" is not a directory");
-    }
-    return file;
-}
-
 /**
  * @param string filename
  * @param base nsIFile
@@ -177,6 +160,7 @@ const nativeModules = {
     'path':'slimer-sdk/path',
 };
 
+const firstPathPart = /^([a-zA-Z\-]+\/)/;
 
 /**
  * prepare the module loader
@@ -194,49 +178,8 @@ function prepareLoader(fileURI, dirFile) {
         permissions : {}
     };
 
-    // list of all nsIFile corresponding to a modules directory
-    var pathsNsFile = [ dirFile ];
-
-    // create a proxy around the array which will contain all module paths.
-    // we should know when an element is set or delete, in order to update
-    // pathsNsFile and loader.mapping
-    var requirePathsProxy = new Proxy(
-        [dirPath],
-        {
-            deleteProperty : function(arr, idx) {
-                if (idx.match(/^([0-9])+$/) != null && idx in arr) {
-                    var path =arr[idx];
-                    pathsNsFile.splice(idx,1);
-                    // loader.mapping is not writable, we cannot use filter()
-                    let idxToDelete = -1;
-                    loader.mapping.forEach(function(elt, idx) {
-                        if (elt[0] == path)
-                            idxToDelete = idx;
-                    });
-                    if (idxToDelete > -1)
-                        loader.mapping.splice(idxToDelete,1);
-                    arr.splice(idx,1);
-                    return true;
-                }
-                return false;
-            },
-            set: function(arr, idx, path) {
-                if (idx.match(/^([0-9])+$/) == null) {
-                    arr[idx] = path;
-                    return;
-                }
-                let file = getFile(path, true);
-                pathsNsFile[idx] = file;
-                loader.mapping.push([file.path, Services.io.newFileURI(file).spec]);
-                arr[idx] = file.path;
-            },
-            // because of a regression in proxies in Firefox 20, we should implement
-            // the get() function. see https://bugzilla.mozilla.org/show_bug.cgi?id=876114
-            get : function(arr, idx) {
-                return arr[idx];
-            }
-        }
-    )
+    var requirePaths = new Array();
+    requirePaths.push(dirPath);
 
     let pathsMapping = {
         'main': fileURI,
@@ -253,11 +196,11 @@ function prepareLoader(fileURI, dirFile) {
     // list of extensions and their compiler
     var extensions = {
         '.js': function(module, filename) {
-            let content = slUtils.readSyncStringFromFile(getFile(filename));
+            let content = slUtils.readSyncStringFromFile(slUtils.getMozFile(filename));
             return module._compile(content, filename);
         },
         '.json': function(module, filename) {
-            let content = slUtils.readSyncStringFromFile(getFile(filename));
+            let content = slUtils.readSyncStringFromFile(slUtils.getMozFile(filename));
             module.exports = JSON.parse(content);
         }
     }
@@ -301,13 +244,13 @@ function prepareLoader(fileURI, dirFile) {
                 return nativeModules[id];
 
             if (id == 'chrome' || id.indexOf('@loader/') === 0) {
-                if (requirer.indexOf('sdk/') === 0
-                    || requirer.indexOf('slimer-sdk/') === 0) {
+                if (requirer.id.indexOf('sdk/') === 0
+                    || requirer.id.indexOf('slimer-sdk/') === 0) {
                     return id;
                 }
                 // the chrome module is only allowed in embedded modules
                 if (id == 'chrome') {
-                    throw Error("Module "+ requirer+ " is not allowed to require the chrome module");
+                    throw Error("Module "+ requirer.id+ " is not allowed to require the chrome module");
                 }
                 else if (id.indexOf('@loader/') === 0)
                     throw Error("Unknown "+ id +" module");
@@ -315,25 +258,34 @@ function prepareLoader(fileURI, dirFile) {
 
             // let's resolve other id module as usual
             id = Loader.resolve(id, requirer);
-            if (id.indexOf('sdk/') === 0
-                && requirer.indexOf('slimer-sdk/') === 0) {
+
+            // if this is a slimerjs module, don't try to find it in module path
+            let part = firstPathPart.exec(id);
+            let reqpart = firstPathPart.exec(requirer.id);
+            if (part && reqpart && reqpart[1] in pathsMapping && part[1] in pathsMapping) {
                 return id;
             }
 
-            // if requirer is an absolute path, the id is then an absolute path after Loader.resolve
+            // Here the id is an absolute path if requirer.id is an absolute path
             let realId = findFileExtension(id);
-            if (realId)
-                return realId;
+            if (realId) {
+                 return realId;
+            }
+
+            let requirerUri = Services.io.newURI(requirer.uri, null, null);
+            let requirerDir = requirerUri.QueryInterface(Ci.nsIFileURL).file.parent;
 
             // this is not an absolute path, try to resolve the id
             // against all registered path
-            for (let i=0; i < pathsNsFile.length;i++) {
-                let dir = pathsNsFile[i];
-                if (!dir)
-                    continue;
+            for (let i=0; i < requirePaths.length;i++) {
+                // if path is a relative path, it should be
+                // resolve against the current module path;
+                let dir = slUtils.getAbsMozFile(requirePaths[i], requirerDir);
                 let file = findFileExtension(id, dir);
                 if (file)
+                if (file) {
                     return file;
+                }
             }
             return id;
         },
@@ -349,7 +301,7 @@ function prepareLoader(fileURI, dirFile) {
             Object.defineProperty(require, 'paths',
                                   {
                                     enumerable:true,
-                                    value: requirePathsProxy,
+                                    value: requirePaths,
                                     writable:false,
                                   });
             Object.defineProperty(require, 'globals',

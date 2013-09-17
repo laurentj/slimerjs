@@ -5,6 +5,7 @@
 
 var EXPORTED_SYMBOLS = ["slimer"];
 Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import('resource://slimerjs/slUtils.jsm');
 
 var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
                            .getService(Components.interfaces.nsIXULAppInfo);
@@ -56,9 +57,14 @@ var slimer =  {
         Services.obs.notifyObservers(null, "net:clear-active-logins", null);
     },
 
+    wait : function(msTime) {
+        slUtils.sleep(msTime);
+    },
+
     __exposedProps__ : {
         version : 'r',
         exit : 'r',
-        clearHttpAuth : 'r'
+        clearHttpAuth : 'r',
+        wait: 'r'
     }
 }

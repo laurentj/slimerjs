@@ -247,77 +247,152 @@ var webpageUtils = {
         }
     },
 
+    getScreenshotOptions : function(webpage, options, alternateFormat) {
+        let finalOptions = {
+            format: 'png',
+            quality: 0.8,
+            ratio: webpage.zoomFactor,
+            onlyViewport: false,
+            contentType : 'image/png'
+        }
+
+        if (typeof(options) == 'object') {
+            if ('format' in options)
+                finalOptions.format = options.format;
+            else if (alternateFormat) {
+                finalOptions.format = alternateFormat
+            }
+
+            if ('ratio' in options)
+                finalOptions.ratio = options.ratio;
+            if ('quality' in options)
+                finalOptions.quality = options.quality;
+            if ('onlyViewport' in options)
+                finalOptions.onlyViewport = options.onlyViewport;
+        }
+        else if (typeof(options) == 'string') {
+            finalOptions.format = options;
+        }
+        else if (alternateFormat) {
+            finalOptions.format = alternateFormat
+        }
+        let format = (finalOptions.format || "png").toString().toLowerCase();
+        if (format == "png") {
+            finalOptions.contentType = "image/png";
+        } else if (format == "jpeg" || format == 'jpg') {
+            finalOptions.contentType = "image/jpeg";
+        } else {
+            throw new Error("Render format \"" + format + "\" is not supported");
+        }
+        return finalOptions;
+    },
+
     getScreenshotCanvas : function(window, ratio, onlyViewport, webpage) {
 
-        if (!ratio || (ratio && (ratio <= 0 || ratio > 1))) {
+        if (!ratio || (ratio && ratio <= 0)) {
             ratio = 1;
         }
 
-        let contentHeight, contentWidth, currentViewport, domWindowUtils;
+        let domWindowUtils;
         let b = window.document.body;
         let de = window.document.documentElement;
+
+        // size of the image "we see" at current zoom level
+        let currentViewport = webpage.viewportSize;
+        // size of the futur image
+        let canvasHeight, canvasWidth;
+
+        // coordinate of the scroll (at zoom level)
         let scrollX = window.scrollX;
         let scrollY = window.scrollY;
 
-        if (!onlyViewport) {
-            // mimic PhantomJS image rendering: retrieve content size and set it as
-            // viewport
-            currentViewport = webpage.viewportSize;
-            contentWidth = Math.max(b.clientWidth, b.scrollWidth, b.offsetWidth,
-                                    de.clientWidth, de.scrollWidth, de.offsetWidth);
-            contentHeight = Math.max(b.clientHeight, b.scrollHeight, b.offsetHeight,
-                                    de.clientHeight, de.scrollHeight, de.offsetHeight);
+        //dump("scrollX="+scrollX+" scrollY="+scrollY+"\n")
+        // given clip size is at zoom level
+        let givenClip;
+        
+        if (onlyViewport) {
+            givenClip = {
+                        top:scrollY,
+                        left:scrollX,
+                        width:currentViewport.width,
+                        height:currentViewport.height
+                        }
+        }
+        else
+            givenClip = webpage.clipRect;
 
-            if (contentWidth < currentViewport.width && contentHeight < currentViewport.height) {
-                contentWidth = currentViewport.width;
-                contentHeight = currentViewport.height;
+        // this clip size is at zoom = 1
+        let clip = {top: 0, left: 0, width: 0, height: 0};
+
+        // content size is the size at ratio=1
+        let contentWidth = Math.max(b.clientWidth, b.scrollWidth, b.offsetWidth,
+                                de.clientWidth, de.scrollWidth, de.offsetWidth);
+        let contentHeight = Math.max(b.clientHeight, b.scrollHeight, b.offsetHeight,
+                                de.clientHeight, de.scrollHeight, de.offsetHeight);
+
+        if ((givenClip.top == 0 && givenClip.left == 0 && givenClip.width == 0 && givenClip.height == 0)) {
+            clip.top = scrollY / ratio;
+            clip.left = scrollX / ratio;
+
+            clip.width = currentViewport.width / ratio;
+            clip.height = currentViewport.height / ratio;
+
+            // mimic PhantomJS image rendering: retrieve content size and use it
+            // it as clip size. if result size is lower than viewport, take viewport
+            // size
+            if ((contentWidth-clip.left) > clip.width) {
+                clip.width = contentWidth - clip.left;
+                canvasWidth = (contentWidth * ratio) - scrollX;
+            }
+            else
+                canvasWidth = clip.width * ratio;
+
+            if ((contentHeight-clip.top) > clip.height) {
+                clip.height = contentHeight - clip.top;
+                canvasHeight = (contentHeight * ratio) - scrollY;
+            }
+            else
+                canvasHeight = clip.height * ratio;
+        }
+        else {
+            // givenClip is define, we take its values for clip.
+            // givenClip values include zoom level
+            clip.top = givenClip.top / ratio;
+            clip.left = givenClip.left / ratio;
+
+            if (givenClip.width == 0) {
+                clip.width = contentWidth;
+                canvasWidth = contentWidth * ratio;
+            }
+            else {
+                clip.width = givenClip.width / ratio ;
+                canvasWidth = givenClip.width;
             }
 
-            domWindowUtils = window.QueryInterface(Ci.nsIInterfaceRequestor)
-                                            .getInterface(Ci.nsIDOMWindowUtils);
-            domWindowUtils.setCSSViewport(contentWidth, contentHeight);
-            domWindowUtils.redraw(1);
-        }
-        else {
-            contentWidth = window.innerWidth;
-            contentHeight = window.innerHeight;
+            if (givenClip.height == 0) {
+                clip.height = contentHeight;
+                canvasHeight = contentHeight * ratio;
+            }
+            else {
+                clip.height = givenClip.height / ratio ;
+                canvasHeight = givenClip.height;
+            }
         }
 
-        // now get the rectangle to retrieve
-        let clip = webpage.clipRect;
-        let top, left, width, height;
-        if ((clip.top == 0 && clip.left == 0 && clip.width == 0 && clip.height == 0) || onlyViewport) {
-            top = scrollY;
-            left = scrollX;
-            width = (onlyViewport ? contentWidth : contentWidth-window.scrollX);
-            height = (onlyViewport ? contentHeight : contentHeight-window.scrollY);
-        }
-        else {
-            top = clip.top || 0;
-            left = clip.left || 0;
-            width = clip.width || contentWidth;
-            height = clip.height || contentHeight;
-        }
+        //dump("size clip: "+ clip.width +" x "+ clip.height+" @ "+clip.left+","+clip.top+"\n");
+        //dump("size canvas: "+ canvasWidth +" x "+ canvasHeight+"\n");
+        //dump("Ratio:"+ratio+"\n");
 
         // create the canvas
         let canvas = window.document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
-        //canvas.mozOpaque = false;
-        canvas.width = Math.round(width * ratio);
-        canvas.height = Math.round(height * ratio);
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
 
         let ctx = canvas.getContext("2d");
         ctx.scale(ratio, ratio);
-        ctx.drawWindow(window, left, top, width, height, "rgba(0,0,0,0)");
+        ctx.drawWindow(window, clip.left, clip.top, clip.width, clip.height, "rgba(0,0,0,0)");
         ctx.restore();
-
-        if (!onlyViewport) {
-            // restore previous viewport
-            domWindowUtils.setCSSViewport(currentViewport.width, currentViewport.height);
-            domWindowUtils.redraw(1);
-            window.scrollTo(scrollX, scrollY);
-        }
 
         return canvas;
     }
-
 }

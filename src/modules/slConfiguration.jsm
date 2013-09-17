@@ -117,7 +117,8 @@ var slConfiguration = {
         this.offlineStoragePath = profd.path;
 
         if (this.offlineStorageDefaultQuota === null || this.offlineStorageDefaultQuota === -1) {
-            this.offlineStorageDefaultQuota = Services.prefs.getIntPref("dom.storage.default_quota") * 1024;
+            optionsSpec.offlineStorageDefaultQuota[2] = this.offlineStorageDefaultQuota
+                                                      = Services.prefs.getIntPref("dom.storage.default_quota") * 1024;
         }
         else {
             Services.prefs.setIntPref("dom.storage.default_quota", Math.ceil(this.offlineStorageDefaultQuota /1024));
@@ -283,6 +284,27 @@ var slConfiguration = {
             resourceTimeout: undefined,
         })
     },
+
+    printDebugConfig : function() {
+        for (let opt in optionsSpec) {
+            let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
+            if (cmdlineOpt == '' || !supported)
+                continue;
+            if (this[opt] != defaultValue){
+                slDebugLog('Configuration: '+cmdlineOpt+'='+this[opt]);
+            }
+        }
+        if (this.scriptFile)
+            slDebugLog('Configuration: Script='+this.scriptFile.path)
+        else
+            slDebugLog('Configuration: Script=unknown??');
+
+        if (this.workingDirectory)
+            slDebugLog('Configuration: workingDirectory='+this.workingDirectory.path);
+        else
+            slDebugLog('Configuration: workingDirectory=unknown??');
+    },
+
     errorLogFile : '',
     cookiesFile : '',
     diskCacheEnabled : true,

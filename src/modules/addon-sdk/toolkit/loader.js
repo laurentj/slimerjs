@@ -302,8 +302,12 @@ function normalize(uri) { return uri.substr(-3) === '.js' ? uri : uri + '.js'; }
 // `requirer.uri` but in some cases it may be `baseURI`. In order to
 // avoid complexity we require `baseURI` with a trailing `/`.
 // SlimerJS patch: base can be a file path, with \ as separator on windows
-const resolve = iced(function resolve(id, base) {
+const resolve = iced(function resolve(id, aBase) {
   if (!isRelative(id)) return id;
+  let base = aBase;
+  if (typeof aBase != 'string') {
+    base = aBase.id;
+  }
   let paths = id.split('/');
   let result = base.split(/\/|\\/);
   result.pop();
@@ -353,7 +357,7 @@ const Require = iced(function Require(loader, requirer) {
                   + requirer.id, requirer.uri);
 
     // Resolve `id` to its requirer if it's relative.
-    let requirement = requirer ? resolve(id, requirer.id) : id;
+    let requirement = requirer ? resolve(id, requirer) : id;
 
     // Resolves `uri` of module using loaders resolve function.
     let uri = resolveURI(requirement, mapping);

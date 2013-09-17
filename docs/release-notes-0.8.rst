@@ -5,6 +5,23 @@
 Release Notes of SlimerJS 0.8
 =============================
 
+version 0.8.3
+=============
+
+Not released yet.
+
+Improvements
+------------
+
+- new method ``slimer.wait()``
+- Improve performance of ``webpage.render()``
+- ``--debug=true`` now displays arguments of the script and SlimerJS's configuration
+
+Fixed bugs
+----------
+- ``require.paths`` should accept relative paths (issue #73)
+- zoom and scroll issues in ``webpage.render()`` (issue #75)
+
 version 0.8.2
 =============
 

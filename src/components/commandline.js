@@ -112,7 +112,6 @@ slCommandLine.prototype = {
                 }
             }
             else {
-
                 slConfiguration.scriptFile = cmdLine.resolveFile(slConfiguration.args[0]);
             }
             if (!slConfiguration.scriptFile.exists())
@@ -123,6 +122,14 @@ slCommandLine.prototype = {
             dump("script not found\n");
             cmdLine.preventDefault = true
             return;
+        }
+
+        Components.utils.import("resource://slimerjs/slDebug.jsm");
+        if (DEBUG_CLI) {
+            slDebugLog('script args: '+slConfiguration.args.join(' '));
+        }
+        if (DEBUG_CONFIG) {
+            slConfiguration.printDebugConfig();
         }
     },
 

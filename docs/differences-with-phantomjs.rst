@@ -3,7 +3,7 @@
 Differences with PhantomJS
 ==========================
 
-There are some differences between SlimerJS and PhantomJS
+There are some differences between SlimerJS and PhantomJS 1.9.1
 although we tried to implement the same behaviors of
 PhantomJS APIs.
 
@@ -64,6 +64,7 @@ In the API
   be available immediately after the call of ``open()`` in SlimerJS.
 - It seems that the call of listeners during the page loading is not done at the same step
   between PhantomJS and SlimerJS. Implementation in PhantomJS is a bit obscure.
+- ``webpage.open()`` and ``openUrl()`` support only "GET" and "POST" operation in SlimerJS, no "PUT" nor "DELETE" operations. 
 - The webserver object has more methods to configure it easily
 - ``toString()`` on a webpage object returns "qtruntimeobject" in PhantomJS
   and "Object" in SlimerJS. There are no way to change this behavior in SlimerJS
