@@ -3,7 +3,7 @@
 Differences with PhantomJS
 ==========================
 
-There are some differences between SlimerJS and PhantomJS
+There are some differences between SlimerJS and PhantomJS 1.9.1
 although we tried to implement the same behaviors of
 PhantomJS APIs.
 
