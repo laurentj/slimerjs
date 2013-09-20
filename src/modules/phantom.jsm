@@ -12,7 +12,7 @@ Components.utils.import('resource://slimerjs/slCookiesManager.jsm');
 
 
 
-var libPath = slConfiguration.scriptFile.parent.clone();
+var libPath = (slConfiguration.scriptFile ? slConfiguration.scriptFile.parent.clone(): null);
 
 var errorHandler;
 
@@ -117,6 +117,9 @@ var phantom = {
      * @var string
      */
     get libraryPath () {
+        if (!libPath) {
+            return "";
+        }
         return libPath.path;
     },
     set libraryPath (path) {
@@ -133,7 +136,7 @@ var phantom = {
             // filename resolved against the libraryPath property
             f = slUtils.getAbsMozFile(filename, libPath);
             if (!f.exists()) {
-                dump("Can't open '"+filename+"'\n");
+                dump("Error phantom.injectJs: Can't open '"+filename+"'\n");
                 return false;
             }
         }

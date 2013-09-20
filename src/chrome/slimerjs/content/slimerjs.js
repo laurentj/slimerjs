@@ -16,7 +16,7 @@ function startup() {
 
     var runtimeIframe = document.getElementById('runtime');
     try {
-        slLauncher.launchMainScript(runtimeIframe.contentWindow, slConfiguration.scriptFile);
+        slLauncher.launchMainScript(runtimeIframe.contentWindow);
     }
     catch(e) {
         dumpex(e, 'Error during the script execution\n');

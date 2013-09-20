@@ -13,6 +13,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/addon-sdk/toolkit/loader.js'); //Sandbox, Require, main, Module, Loader
 Cu.import('resource://slimerjs/slConsole.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
+Cu.import('resource://slimerjs/slConfiguration.jsm');
 
 const windowMediator = Cc["@mozilla.org/appshell/window-mediator;1"]
                      .getService(Ci.nsIWindowMediator);
@@ -22,13 +23,62 @@ const fileHandler = Cc["@mozilla.org/network/protocol;1?name=file"]
 const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
                         .createInstance(Ci.nsIPrincipal)
 
+/**
+ * this function retrieves various informations
+ * about the main script. These informations will
+ * be used to create the corresponding module
+ * and the module loader
+ * @return object
+ */
+function getMainScriptInfo() {
+    let scriptURI = slConfiguration.mainScriptURI.QueryInterface(Ci.nsIURL);
+
+    let scriptInfo = {
+        isFile: true,
+        id: 'main',
+        uri: scriptURI.spec,
+        dirURI: scriptURI.scheme+'://'+scriptURI.host+scriptURI.directory,
+        requirePath : '',
+        modulePathAlias: '',
+    };
+
+    let scheme = scriptURI.scheme;
+    if (scheme == 'file') {
+        scriptInfo.requirePath = slConfiguration.scriptFile.parent.path;
+    }
+    else if (scheme == 'chrome' || scheme == 'resource') {
+        scriptInfo.modulePathAlias = slConfiguration.scriptModulePath;
+        scriptInfo.id = scriptInfo.modulePathAlias+scriptURI.fileBaseName;
+        scriptInfo.isFile = false;
+    }
+    else {
+        throw new Error('Script URI: unsupported protocol ('+scheme+')');
+    }
+    return scriptInfo;
+}
+
+/**
+ * The module loader
+ */
 var mainLoader = null;
+
+/**
+ * the HTML window that serves as prototype
+ * for the sandbox where the main script
+ * is injected
+ */
 var mainWindow = null;
 
+/**
+ * the sandbox for the CoffeScript compiler
+ */
 var coffeeScriptSandbox = null;
 
+/**
+ * the public interface of slLauncher
+ */
 var slLauncher = {
-    launchMainScript: function (contentWindow, scriptFile) {
+    launchMainScript: function (contentWindow) {
         mainWindow = contentWindow;
 
         // prepare the sandbox to execute coffee script injected with injectJs
@@ -41,9 +91,10 @@ var slLauncher = {
         let src = slUtils.readChromeFile("resource://slimerjs/coffee-script/extras/coffee-script.js");
         Cu.evalInSandbox(src, coffeeScriptSandbox, 'ECMAv5', 'coffee-scripts.js', 1);
 
-        // load and execute the provided script
-        let fileURI = Services.io.newFileURI(scriptFile).spec;
-        mainLoader = prepareLoader(fileURI, scriptFile.parent);
+        // prepare the environment where the main script will be executed in
+        // and prepare the loader which will load all other modules
+        let scriptInfo = getMainScriptInfo();
+        mainLoader = prepareLoader(scriptInfo);
 
         try {
             // first load the bootstrap module
@@ -51,12 +102,15 @@ var slLauncher = {
             mainLoader.load(mainLoader, bsModule);
 
             // load the main module
-            let uri =resolveMainURI(mainLoader.mapping);
-            let module = mainLoader.main = mainLoader.modules[uri] = Loader.Module('main', uri);
+            let uri = scriptInfo.uri;
+            let module = mainLoader.main
+                       = mainLoader.modules[scriptInfo.uri]
+                       = Loader.Module(scriptInfo.id, scriptInfo.uri);
+
             mainLoader.load(mainLoader, module);
         }
         catch(e) {
-            this.showError(e, fileURI);
+            this.showError(e, slConfiguration.mainScriptURI);
         }
     },
 
@@ -164,38 +218,49 @@ const nativeModules = {
     'path':'slimer-sdk/path',
 };
 
+const nativeMapping = {
+    'sdk/': 'resource://slimerjs/addon-sdk/sdk/',
+    'slimer-sdk/': 'resource://slimerjs/slimer-sdk/',
+    '@loader/': 'resource://slimerjs/@loader',
+    'chrome': 'resource://slimerjs/@chrome',
+    'webserver' : 'resource://slimerjs/webserver.jsm',
+    'system' : 'resource://slimerjs/system.jsm',
+    'coffee-script/':'resource://slimerjs/coffee-script/lib/coffee-script/',
+}
+
+
 const firstPathPart = /^([a-zA-Z\-]+\/)/;
 
 /**
  * prepare the module loader
  * Some things here could be done in the loader.js file, but we want to avoid to
  * modify it because this is an external file.
- * @param string fileURI  the URI of the main script to execute
- * @param nsIFile dirFile the file object of the directory where the script is stored
+ * @param object scriptInfo  given by getMainScriptInfo()
  */
-function prepareLoader(fileURI, dirFile) {
-    var dirURI =  Services.io.newFileURI(dirFile).spec;
-    let dirPath = dirFile.path;
+function prepareLoader(scriptInfo) {
+
     var loader;
 
     var metadata ={
         permissions : {}
     };
 
+    // it will contain all paths of require.paths
     var requirePaths = new Array();
-    requirePaths.push(dirPath);
 
-    let pathsMapping = {
-        'main': fileURI,
-        'sdk/': 'resource://slimerjs/addon-sdk/sdk/',
-        'slimer-sdk/': 'resource://slimerjs/slimer-sdk/',
-        '@loader/': 'resource://slimerjs/@loader',
-        'chrome': 'resource://slimerjs/@chrome',
-        'webserver' : 'resource://slimerjs/webserver.jsm',
-        'system' : 'resource://slimerjs/system.jsm',
-        'coffee-script/':'resource://slimerjs/coffee-script/lib/coffee-script/',
+    let pathsMapping = { }
+    pathsMapping[scriptInfo.id] = scriptInfo.uri;
+
+    for(let i in nativeMapping) {
+        pathsMapping[i] = nativeMapping[i];
     }
-    pathsMapping[dirPath] = dirURI;
+
+    if (scriptInfo.isFile) {
+        requirePaths.push(scriptInfo.requirePath);
+    }
+    else {
+        pathsMapping[scriptInfo.modulePathAlias] = scriptInfo.dirURI;
+    }
 
     // list of extensions and their compiler
     var extensions = {
@@ -229,7 +294,7 @@ function prepareLoader(fileURI, dirFile) {
         javascriptVersion : 'ECMAv5',
         id:'slimerjs@innophi.com',
         name: 'SlimerJs',
-        rootURI: dirURI,
+        rootURI: scriptInfo.dirURI,
         // metadata: needed by some modules of the addons sdk
         metadata: Object.freeze(metadata),
         paths:pathsMapping,
@@ -390,15 +455,5 @@ function prepareLoader(fileURI, dirFile) {
     });
 
     return loader;
-}
-
-function resolveMainURI(mapping) {
-    let count = mapping.length, index = 0;
-    while (index < count) {
-        let [ path, uri ] = mapping[index ++];
-        if (path == 'main')
-            return uri;
-    }
-    return null;
 }
 

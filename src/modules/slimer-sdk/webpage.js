@@ -55,7 +55,7 @@ function _create(parentWebpageInfo) {
     /**
      * library path
      */
-    var libPath = slConfiguration.scriptFile.parent.clone();
+    var libPath = (slConfiguration.scriptFile ? slConfiguration.scriptFile.parent.clone(): null);
 
     /**
      * utility function to create a sandbox when executing a
@@ -1086,6 +1086,8 @@ function _create(parentWebpageInfo) {
         },
 
         get libraryPath () {
+            if (!libPath)
+                return "";
             return libPath.path;
         },
 
@@ -1111,7 +1113,7 @@ function _create(parentWebpageInfo) {
                 // filename resolved against the libraryPath property
                 f = slUtils.getAbsMozFile(filename, libPath);
                 if (!f.exists()) {
-                    dump("Can't open '"+filename+"'\n");
+                    dump("Error injectJs: can't open '"+filename+"'\n");
                     return false;
                 }
             }

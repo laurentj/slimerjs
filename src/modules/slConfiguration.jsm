@@ -62,11 +62,26 @@ var slConfiguration = {
     args : [],
 
     /**
+     * The URI of the main script. It can be a file://, chrome:// or resource:// URI
+     * @var nsIURI
+     */
+    mainScriptURI : null,
+
+    /**
+     * If the script URI is a file:// URI, this is the corresponding nsIFile object
      * @var nsIFile
      */
     scriptFile: null,
 
     /**
+     * If the script is a chrome/resource URI, this is the "module path" for the mapping
+     * of the module loader.
+     * @var string
+     */
+    scriptModulePath: null,
+
+    /**
+     * The directory from where SlimerJS has been launched
      * @var nsIFile
      */
     workingDirectory: null,
@@ -82,25 +97,40 @@ var slConfiguration = {
      */
     envs : [],
 
-    handleFlags : function(cmdline) {
-
+    handleFlags : function(cmdline, scriptHandlers) {
+        scriptHandlers.forEach(function(sh){
+            sh.setOptionsSpecInto(optionsSpec);
+        })
 
         for (let opt in optionsSpec) {
             let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
             if (cmdlineOpt == '')
                 continue;
-            let optValue = cmdline.handleFlagWithParam(cmdlineOpt, false);
+            let optValue;
+            try {
+                optValue = cmdline.handleFlagWithParam(cmdlineOpt, false);
+            }
+            catch(e) {
+                throw new Error("Error: missing value for flag --"+cmdlineOpt)
+            }
+
             if (optValue) {
                 if (!supported) {
                     dump("--"+cmdlineOpt+" not supported yet\n");
                     continue;
                 }
                 if (parser) {
-                    this[opt] = this['parse_'+parser](optValue, cmdlineOpt);
+                    if (typeof parser == 'string') {
+                        this[opt] = this['parse_'+parser](optValue, cmdlineOpt);
+                    }
+                    else
+                        this[opt] = parser(optValue, cmdlineOpt);
                 }
                 else
                     this[opt] = optValue;
             }
+            else
+                this[opt] = defaultValue;
         }
 
         let configFile = cmdline.handleFlagWithParam("config", false);
@@ -259,7 +289,11 @@ var slConfiguration = {
                     continue;
                 }
                 if (parser) {
-                    this[opt] = this['parse_'+parser](optValue, cmdlineOpt);
+                    if (typeof parser == 'string') {
+                        this[opt] = this['parse_'+parser](optValue, cmdlineOpt);
+                    }
+                    else
+                        this[opt] = parser(optValue, cmdlineOpt);
                 }
                 else
                     this[opt] = optValue;
@@ -295,7 +329,9 @@ var slConfiguration = {
             }
         }
         if (this.scriptFile)
-            slDebugLog('Configuration: Script='+this.scriptFile.path)
+            slDebugLog('Configuration: Script='+this.scriptFile.path);
+        else if (this.mainScriptURI)
+            slDebugLog('Configuration: Script='+this.mainScriptURI.spec);
         else
             slDebugLog('Configuration: Script=unknown??');
 
@@ -336,3 +372,4 @@ var slConfiguration = {
     webdriverLogLevel : 'INFO',
     webdriverSeleniumGridHub : null,
 }
+
