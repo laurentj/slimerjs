@@ -371,5 +371,6 @@ var slConfiguration = {
     webdriverLogFile : '',
     webdriverLogLevel : 'INFO',
     webdriverSeleniumGridHub : null,
+    enableCoffeeScript: true
 }
 

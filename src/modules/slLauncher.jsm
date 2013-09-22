@@ -81,15 +81,17 @@ var slLauncher = {
     launchMainScript: function (contentWindow) {
         mainWindow = contentWindow;
 
-        // prepare the sandbox to execute coffee script injected with injectJs
-        coffeeScriptSandbox = Cu.Sandbox(contentWindow,
-                            {
-                                'sandboxName': 'coffeescript',
-                                'sandboxPrototype': {},
-                                'wantXrays': true
-                            });
-        let src = slUtils.readChromeFile("resource://slimerjs/coffee-script/extras/coffee-script.js");
-        Cu.evalInSandbox(src, coffeeScriptSandbox, 'ECMAv5', 'coffee-scripts.js', 1);
+        if (slConfiguration.enableCoffeeScript) {
+            // prepare the sandbox to execute coffee script injected with injectJs
+            coffeeScriptSandbox = Cu.Sandbox(contentWindow,
+                                {
+                                    'sandboxName': 'coffeescript',
+                                    'sandboxPrototype': {},
+                                    'wantXrays': true
+                                });
+            let src = slUtils.readChromeFile("resource://slimerjs/coffee-script/extras/coffee-script.js");
+            Cu.evalInSandbox(src, coffeeScriptSandbox, 'ECMAv5', 'coffee-scripts.js', 1);
+        }
 
         // prepare the environment where the main script will be executed in
         // and prepare the loader which will load all other modules
@@ -122,6 +124,9 @@ var slLauncher = {
         }
 
         if (isCoffeeScript) {
+            if (!coffeeScriptSandbox) {
+                throw new Error ("Sorry, CoffeeScript is disabled");
+            }
             coffeeScriptSandbox.source = source
             let src = "this.CoffeeScript.compile(this.source);";
             source = Cu.evalInSandbox(src, coffeeScriptSandbox, 'ECMAv5', 'slLauncher::injectJs', 1);
@@ -224,8 +229,7 @@ const nativeMapping = {
     '@loader/': 'resource://slimerjs/@loader',
     'chrome': 'resource://slimerjs/@chrome',
     'webserver' : 'resource://slimerjs/webserver.jsm',
-    'system' : 'resource://slimerjs/system.jsm',
-    'coffee-script/':'resource://slimerjs/coffee-script/lib/coffee-script/',
+    'system' : 'resource://slimerjs/system.jsm'
 }
 
 
@@ -255,6 +259,10 @@ function prepareLoader(scriptInfo) {
         pathsMapping[i] = nativeMapping[i];
     }
 
+    if (slConfiguration.enableCoffeeScript) {
+        pathsMapping['coffee-script/'] = 'resource://slimerjs/coffee-script/lib/coffee-script/';
+
+    }
     if (scriptInfo.isFile) {
         requirePaths.push(scriptInfo.requirePath);
     }

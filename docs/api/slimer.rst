@@ -35,6 +35,21 @@ because of a limitation in Firefox/XulRunner.
     slimer.exit();
 
 
+.. _slimer-hasfeature:
+
+hasFeature(featureName)
+-----------------------------------------
+
+Returns ``true`` if the given feature is implemented **and** enabled.
+
+It can indicate the state of these features:
+
+- ``"coffeescript"``: indicates if CoffeeScript is available. It may be
+  disabled in some case (during GhostDriver execution for example)
+
+False is returned for all other feature unknown by this method.
+
+
 .. _slimer-version:
 
 version

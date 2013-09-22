@@ -6,6 +6,7 @@
 var EXPORTED_SYMBOLS = ["slimer"];
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import('resource://slimerjs/slUtils.jsm');
+Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 
 var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
                            .getService(Components.interfaces.nsIXULAppInfo);
@@ -57,6 +58,22 @@ var slimer =  {
         Services.obs.notifyObservers(null, "net:clear-active-logins", null);
     },
 
+    /**
+     * indicates if a feature is implemented and enabled
+     * @var string featureName  supported names: 'coffeescript'
+     * @return boolean true if the feature is supported AND enabled
+     */
+    hasFeature : function (featureName) {
+        switch(featureName.toLowerCase()) {
+            case 'coffeescript': return slConfiguration.enableCoffeeScript;
+        }
+        return false;
+    },
+
+    /**
+     * the execution of the script is paused during the given amount of time
+     * @param integer msTime  amount of time to wait, in milliseconds
+     */
     wait : function(msTime) {
         slUtils.sleep(msTime);
     },
@@ -65,6 +82,7 @@ var slimer =  {
         version : 'r',
         exit : 'r',
         clearHttpAuth : 'r',
+        hasFeature : 'r',
         wait: 'r'
     }
 }
