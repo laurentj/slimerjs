@@ -4,8 +4,9 @@ SLIMERDIR=`dirname $0`
 SLIMERDIR=`cd $SLIMERDIR;pwd`
 CURRENTDIR=`pwd`
 
-XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/runtimes/"
-XULRUNNER_PACK_NAME="xulrunner-22.0.en-US"
+XULRUNNER_VERSION="23.0.1"
+XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XULRUNNER_VERSION/runtimes/"
+XULRUNNER_PACK_NAME="xulrunner-$XULRUNNER_VERSION.en-US"
 
 cd $SLIMERDIR
 
