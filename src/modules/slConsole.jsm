@@ -17,6 +17,22 @@ function getTraceException(e, fileURI) {
         else
             msg = e.message;
 
+        let stack = e.stack;
+        if ('fileName' in e) {
+            let lineNumber = ('lineNumber' in e?e.lineNumber:0);
+            if (e.fileName.indexOf('->')) {
+                stack = (e.fileName.indexOf('@')!=-1?'':'@')+e.fileName+":"+lineNumber+"\n"+stack;
+            }
+            else {
+                let line = {
+                    sourceURL: e.fileName,
+                    line:lineNumber,
+                    'function' : null
+                }
+                stackRes.push(line)
+            }
+        }
+
         let r = /^\s*(.*)@(.*):(\d+)\s*$/gm;
         let m, a = [];
         // exemple of stack
@@ -24,7 +40,7 @@ function getTraceException(e, fileURI) {
         // @resource://slimerjs/addon-sdk/loader.jsm -> file:///home/laurent/projets/slimerjs/test/initial-tests.js:134
         // evaluate@resource://slimerjs/addon-sdk/loader.jsm:180
 
-        while ((m = r.exec(e.stack))) {
+        while ((m = r.exec(stack))) {
             let [full, funcName, sourceURL, lineNumber] = m;
             if (sourceURL.indexOf('->') != -1) {
                 sourceURL = sourceURL.split('->')[1].trim();
