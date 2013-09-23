@@ -45,13 +45,7 @@ var optionsSpec = {
     remoteDebuggerPort : ['remote-debugger-port', 'int', -1, false],
     remoteDebuggerAutorun : ['remote-debugger-autorun', 'bool', false, false],
     sslProtocol : ['ssl-protocol', 'ssl', 'sslv3', false],
-    sslCertificatesPath : ['ssl-certificates-path', 'path', '', false],
-    webdriver : [['webdriver', 'wd','w'], 'webdriver', null, false],
-    webdriverIp : ['', '', '127.0.0.1', false],
-    webdriverPort : ['', '', '8910', false],
-    webdriverLogFile : ['webdriver-logfile', 'file', '', false],
-    webdriverLogLevel : ['webdriver-loglevel', 'loglevel', 'INFO', false],
-    webdriverSeleniumGridHub : ['webdriver-selenium-grid-hub', 'url', '', false],
+    sslCertificatesPath : ['ssl-certificates-path', 'path', '', false]
 };
 
 var slConfiguration = {
@@ -103,12 +97,25 @@ var slConfiguration = {
         })
 
         for (let opt in optionsSpec) {
+
             let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
             if (cmdlineOpt == '')
                 continue;
             let optValue;
             try {
-                optValue = cmdline.handleFlagWithParam(cmdlineOpt, false);
+                if (typeof cmdlineOpt == "string") {
+                    optValue = cmdline.handleFlagWithParam(cmdlineOpt, false);
+                }
+                else {
+                    // this is an array
+                    cmdlineOpt.some(function(cmdname) {
+                        optValue = cmdline.handleFlagWithParam(cmdname, false);
+                        if (optValue) {
+                            return true;
+                        }
+                        return false;
+                    });
+                }
             }
             catch(e) {
                 throw new Error("Error: missing value for flag --"+cmdlineOpt)
@@ -226,13 +233,6 @@ var slConfiguration = {
         return val;
     },
 
-    parse_loglevel : function (val, cmdlineOpt) {
-        if (!(val == 'ERROR' || val == 'WARN' || val=='INFO' || val == 'DEBUG')) {
-            throw new Error("Invalid value for '"+cmdlineOpt+"' option. It should be ERROR, WARN, INFO or DEBUG");
-        }
-        return val;
-    },
-
     parse_url : function (val, cmdlineOpt) {
         return val;
     },
@@ -246,16 +246,6 @@ var slConfiguration = {
         catch(e) {
             parsedVal = slDebugInit(val);
         }
-        return val;
-    },
-
-    parse_webdriver : function (val, cmdlineOpt) {
-        let pos = val.lastIndexOf(':')
-        if ( pos > 0) {
-            [this.webdriverHost, this.webdriverPort] = val.split(":");
-        }
-        else
-            this.webdriverHost = val
         return val;
     },
 
@@ -365,12 +355,6 @@ var slConfiguration = {
     javascriptCanCloseWindows : true,
     sslProtocol : null,
     sslCertificatesPath : null,
-    webdriver : '127.0.0.1:8910',
-    webdriverIP: '127.0.0.1',
-    webdriverPort: 8910,
-    webdriverLogFile : '',
-    webdriverLogLevel : 'INFO',
-    webdriverSeleniumGridHub : null,
     enableCoffeeScript: true
 }
 
