@@ -8,13 +8,10 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import('resource://slimerjs/slUtils.jsm');
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 
-var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-                           .getService(Components.interfaces.nsIXULAppInfo);
-
-var [major, minor, patch] = xulAppInfo.version.split('.');
+var [major, minor, patch] = Services.appinfo.version.split('.');
 var _version = { major: checkInt(major), minor: checkInt(minor), patch: checkInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
 
-[major, minor, patch] = xulAppInfo.platformVersion.split('.');
+[major, minor, patch] = Services.appinfo.platformVersion.split('.');
 var _geckoVersion = { major: checkInt(major), minor: checkInt(minor), patch: checkInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
 
 function checkInt(val) {
