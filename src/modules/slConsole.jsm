@@ -18,7 +18,7 @@ function getTraceException(e, fileURI) {
             msg = e.message;
 
         let stack = e.stack;
-        if ('fileName' in e) {
+        if ('fileName' in e && e.fileName != undefined) {
             let lineNumber = ('lineNumber' in e?e.lineNumber:0);
             if (e.fileName.indexOf('->')) {
                 stack = (e.fileName.indexOf('@')!=-1?'':'@')+e.fileName+":"+lineNumber+"\n"+stack;
