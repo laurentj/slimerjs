@@ -29,11 +29,11 @@
       this.ends = [];
       this.tokens = [];
       i = 0;
-      while (this.chunk = code.slice(i)) {
+      while ((this.chunk = code.slice(i))) {
         i += this.identifierToken() || this.commentToken() || this.whitespaceToken() || this.lineToken() || this.heredocToken() || this.stringToken() || this.numberToken() || this.regexToken() || this.jsToken() || this.literalToken();
       }
       this.closeIndentation();
-      if (tag = this.ends.pop()) {
+      if ((tag = this.ends.pop())) {
         this.error("missing " + tag);
       }
       if (opts.rewrite === false) {
@@ -134,10 +134,10 @@
         this.error("octal literal '" + number + "' must be prefixed with '0o'");
       }
       lexedLength = number.length;
-      if (octalLiteral = /^0o([0-7]+)/.exec(number)) {
+      if ((octalLiteral = /^0o([0-7]+)/.exec(number))) {
         number = '0x' + (parseInt(octalLiteral[1], 8)).toString(16);
       }
-      if (binaryLiteral = /^0b([01]+)/.exec(number)) {
+      if ((binaryLiteral = /^0b([01]+)/.exec(number))) {
         number = '0x' + (parseInt(binaryLiteral[1], 2)).toString(16);
       }
       this.token('NUMBER', number);
@@ -166,7 +166,7 @@
         default:
           return 0;
       }
-      if (octalEsc = /^(?:\\.|[^\\])*\\(?:0[0-7]|[1-7])/.test(string)) {
+      if ((octalEsc = /^(?:\\.|[^\\])*\\(?:0[0-7]|[1-7])/.test(string))) {
         this.error("octal escape sequences " + string + " are not allowed");
       }
       this.line += count(string, '\n');
@@ -225,7 +225,7 @@
       if (this.chunk.charAt(0) !== '/') {
         return 0;
       }
-      if (match = HEREGEX.exec(this.chunk)) {
+      if ((match = HEREGEX.exec(this.chunk))) {
         length = this.heregexToken(match);
         this.line += count(match[0], '\n');
         return length;
@@ -395,7 +395,7 @@
 
     Lexer.prototype.literalToken = function() {
       var match, prev, tag, value, _ref2, _ref3, _ref4, _ref5;
-      if (match = OPERATOR.exec(this.chunk)) {
+      if ((match = OPERATOR.exec(this.chunk))) {
         value = match[0];
         if (CODE.test(value)) {
           this.tagParameters();
@@ -470,7 +470,7 @@
           return doc;
         }
       } else {
-        while (match = HEREDOC_INDENT.exec(doc)) {
+        while ((match = HEREDOC_INDENT.exec(doc))) {
           attempt = match[1];
           if (indent === null || (0 < (_ref2 = attempt.length) && _ref2 < indent.length)) {
             indent = attempt;
@@ -495,7 +495,7 @@
       tokens = this.tokens;
       i = tokens.length;
       tokens[--i][0] = 'PARAM_END';
-      while (tok = tokens[--i]) {
+      while ((tok = tokens[--i])) {
         switch (tok[0]) {
           case ')':
             stack.push(tok);
@@ -563,7 +563,7 @@
       tokens = [];
       pi = 0;
       i = -1;
-      while (letter = str.charAt(i += 1)) {
+      while ((letter = str.charAt(i += 1))) {
         if (letter === '\\') {
           i += 1;
           continue;
@@ -584,7 +584,7 @@
           if (((_ref2 = nested[0]) != null ? _ref2[0] : void 0) === 'TERMINATOR') {
             nested.shift();
           }
-          if (len = nested.length) {
+          if ((len = nested.length)) {
             if (len > 1) {
               nested.unshift(['(', '(', this.line]);
               nested.push([')', ')', this.line]);
@@ -607,7 +607,7 @@
       if (tokens[0][0] !== 'NEOSTRING') {
         tokens.unshift(['', '']);
       }
-      if (interpolated = tokens.length > 1) {
+      if ((interpolated = tokens.length) > 1) {
         this.token('(', '(');
       }
       for (i = _i = 0, _len = tokens.length; _i < _len; i = ++_i) {

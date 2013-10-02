@@ -88,7 +88,7 @@
       options = {};
     }
     if (!(code = code.trim())) {
-      return;
+      return null;
     }
     Script = vm.Script;
     if (Script) {

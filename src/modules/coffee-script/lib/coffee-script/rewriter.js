@@ -25,7 +25,7 @@
       var i, token, tokens;
       tokens = this.tokens;
       i = 0;
-      while (token = tokens[i]) {
+      while ((token = tokens[i])) {
         i += block.call(this, token, i, tokens);
       }
       return true;
@@ -35,7 +35,7 @@
       var levels, token, tokens, _ref, _ref1;
       tokens = this.tokens;
       levels = 0;
-      while (token = tokens[i]) {
+      while ((token = tokens[i])) {
         if (levels === 0 && condition.call(this, token, i)) {
           return action.call(this, token, i);
         }
@@ -64,6 +64,7 @@
       if (i) {
         return this.tokens.splice(0, i);
       }
+      return undefined;
     };
 
     Rewriter.prototype.removeMidExpressionNewlines = function() {
@@ -274,6 +275,7 @@
         if (token[0] !== 'INDENT' || (token.generated && !token.fromThen)) {
           return original[0] = 'POST_' + original[0];
         }
+        return undefined;
       };
       return this.scanTokens(function(token, i) {
         if (token[0] !== 'IF') {

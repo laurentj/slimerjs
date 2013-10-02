@@ -55,7 +55,7 @@
 
     Scope.prototype.parameter = function(name) {
       if (this.shared && this.parent.check(name, true)) {
-        return;
+        return null;
       }
       return this.add(name, 'param');
     };

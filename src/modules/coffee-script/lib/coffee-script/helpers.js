@@ -30,7 +30,7 @@
     if (!substr.length) {
       return 1 / 0;
     }
-    while (pos = 1 + string.indexOf(substr, pos)) {
+    while ((pos = 1 + string.indexOf(substr, pos))) {
       num++;
     }
     return num;

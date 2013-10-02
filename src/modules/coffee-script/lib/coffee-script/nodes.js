@@ -100,6 +100,7 @@
           contains = true;
           return false;
         }
+        return true;
       });
       return contains;
     };
@@ -261,6 +262,7 @@
           return exp;
         }
       }
+      return undefined;
     };
 
     Block.prototype.makeReturn = function(res) {
@@ -462,6 +464,7 @@
       if (this.value === 'continue' && !(o != null ? o.loop : void 0)) {
         return this;
       }
+      return null;
     };
 
     Literal.prototype.compileNode = function(o) {
@@ -717,7 +720,7 @@
       }
       result = (function() {
         var fst, i, ifn, prop, ref, snd, _i, _len, _ref2;
-        if (ifn = _this.base.unfoldSoak(o)) {
+        if ((ifn = _this.base.unfoldSoak(o))) {
           Array.prototype.push.apply(ifn.body.properties, _this.properties);
           return ifn;
         }
@@ -830,7 +833,7 @@
       var call, ifn, left, list, rite, _i, _len, _ref2, _ref3;
       if (this.soak) {
         if (this.variable) {
-          if (ifn = unfoldSoak(o, this, 'variable')) {
+          if ((ifn = unfoldSoak(o, this, 'variable'))) {
             return ifn;
           }
           _ref2 = new Value(this.variable).cacheReference(o), left = _ref2[0], rite = _ref2[1];
@@ -908,7 +911,7 @@
       if ((_ref2 = this.variable) != null) {
         _ref2.front = this.front;
       }
-      if (code = Splat.compileSplattedArray(o, this.args, true)) {
+      if ((code = Splat.compileSplattedArray(o, this.args, true))) {
         return this.compileSplat(o, code);
       }
       args = this.filterImplicitObjects(this.args);
@@ -1053,13 +1056,14 @@
       });
       _ref2 = this.from.cache(o, LEVEL_LIST), this.fromC = _ref2[0], this.fromVar = _ref2[1];
       _ref3 = this.to.cache(o, LEVEL_LIST), this.toC = _ref3[0], this.toVar = _ref3[1];
-      if (step = del(o, 'step')) {
+      if ((step = del(o, 'step'))) {
         _ref4 = step.cache(o, LEVEL_LIST), this.step = _ref4[0], this.stepVar = _ref4[1];
       }
       _ref5 = [this.fromVar.match(SIMPLENUM), this.toVar.match(SIMPLENUM)], this.fromNum = _ref5[0], this.toNum = _ref5[1];
       if (this.stepVar) {
         return this.stepNum = this.stepVar.match(SIMPLENUM);
       }
+      return undefined;
     };
 
     Range.prototype.compileNode = function(o) {
@@ -1266,7 +1270,7 @@
       }
       o.indent += TAB;
       objs = this.filterImplicitObjects(this.objects);
-      if (code = Splat.compileSplattedArray(o, objs)) {
+      if ((code = Splat.compileSplattedArray(o, objs))) {
         return code;
       }
       code = ((function() {
@@ -1340,6 +1344,7 @@
             return node.context = name;
           }
         }
+        return true;
       });
     };
 
@@ -1355,6 +1360,7 @@
         }
         return _results;
       }
+      return undefined;
     };
 
     Class.prototype.addProperties = function(node, name, o) {
@@ -1363,7 +1369,7 @@
       exprs = (function() {
         var _results;
         _results = [];
-        while (assign = props.shift()) {
+        while ((assign = props.shift())) {
           if (assign instanceof Assign) {
             base = assign.variable.base;
             delete assign.context;
@@ -1420,6 +1426,7 @@
           }
           return child.expressions = exps = flatten(exps);
         }
+        return true;
       });
     };
 
@@ -1521,7 +1528,7 @@
 
     Assign.prototype.compileNode = function(o) {
       var isValue, match, name, val, varBase, _ref2, _ref3, _ref4, _ref5;
-      if (isValue = this.variable instanceof Value) {
+      if ((isValue = this.variable instanceof Value)) {
         if (this.variable.isArray() || this.variable.isObject()) {
           return this.compilePatternMatch(o);
         }
@@ -1622,7 +1629,7 @@
           name = obj.name.unwrap().value;
           obj = obj.unwrap();
           val = "" + olen + " <= " + vvar + ".length ? " + (utility('slice')) + ".call(" + vvar + ", " + i;
-          if (rest = olen - i - 1) {
+          if ((rest = olen - i - 1)) {
             ivar = o.scope.freeVariable('i');
             val += ", " + ivar + " = " + vvar + ".length - " + rest + ") : (" + ivar + " = " + i + ", [])";
           } else {
@@ -1861,6 +1868,7 @@
       if (crossScope) {
         return Code.__super__.traverseChildren.call(this, crossScope, func);
       }
+      return undefined;
     };
 
     return Code;
@@ -2184,7 +2192,7 @@
           curr = curr.first;
         }
         return this;
-      } else if (op = INVERSIONS[this.operator]) {
+      } else if ((op = INVERSIONS[this.operator])) {
         this.operator = op;
         if (this.first.unwrap() instanceof Op) {
           this.first.invert();
@@ -2430,6 +2438,7 @@
         } else if (!(this.ensure || this.recovery)) {
           return ' catch (_error) {}';
         }
+        return null;
       }).call(this);
       ensurePart = this.ensure ? " finally {\n" + (this.ensure.compile(o, LEVEL_TOP)) + "\n" + this.tab + "}" : '';
       return "" + this.tab + "try {\n" + tryPart + "\n" + this.tab + "}" + (catchPart || '') + ensurePart;
@@ -2750,7 +2759,7 @@
           }
           code += idt1 + ("case " + (cond.compile(o, LEVEL_PAREN)) + ":\n");
         }
-        if (body = block.compile(o, LEVEL_TOP)) {
+        if ((body = block.compile(o, LEVEL_TOP))) {
           code += body + '\n';
         }
         if (i === this.cases.length - 1 && !this.otherwise) {
@@ -2922,7 +2931,7 @@
   unfoldSoak = function(o, parent, name) {
     var ifn;
     if (!(ifn = parent[name].unfoldSoak(o))) {
-      return;
+      return undefined;
     }
     parent[name] = ifn.body;
     ifn.body = new Value(parent);

@@ -48,6 +48,7 @@
           return callback();
         }
       }
+      return null;
     };
     return xhr.send(null);
   };
@@ -79,6 +80,7 @@
           return execute();
         }
       }
+      return null;
     })();
     return null;
   };
