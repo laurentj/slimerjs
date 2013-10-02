@@ -81,6 +81,11 @@ var slLauncher = {
     launchMainScript: function (contentWindow) {
         mainWindow = contentWindow;
 
+        // autorize the main script to use navigator.mozTCPSocket  https://developer.mozilla.org/en-US/docs/WebAPI/TCP_Socket
+        let principal = contentWindow.document.nodePrincipal;
+        Services.perms.addFromPrincipal(principal, "tcp-socket", Ci.nsIPermissionManager.ALLOW_ACTION);
+        // FIXME: do other authorization: video, audio, geoloc...?
+
         if (slConfiguration.enableCoffeeScript) {
             // prepare the sandbox to execute coffee script injected with injectJs
             coffeeScriptSandbox = Cu.Sandbox(contentWindow,

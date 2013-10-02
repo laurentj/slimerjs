@@ -19,6 +19,8 @@ New API
 - New callback ``webpage.onAuthPrompt`` (not compatible with PhantomJS)
 - New method ``slimer.clearHttpAuth()`` to clear http authentication from the network cache.
 - Support of ``resource.postData`` in callback ``webpage.onResourceRequested``.
+- Support of `navigator.mozTCPSocket <https://developer.mozilla.org/en-US/docs/WebAPI/TCP_Socket>`_ is enabled
+  for the main script. It needs at least XulRunner/Firefox 25 to use this API.
 
 Fixed bugs
 ----------

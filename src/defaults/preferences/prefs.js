@@ -28,3 +28,4 @@ pref("browser.link.open_external", 1);
 pref("dom.allow_scripts_to_close_windows", true);
 
 
+pref("dom.mozTCPSocket.enabled", true);
