@@ -22,6 +22,7 @@ New API
 - Support of `navigator.mozTCPSocket <https://developer.mozilla.org/en-US/docs/WebAPI/TCP_Socket>`_ is enabled
   for the main script. It needs at least XulRunner/Firefox 25 to use this API.
 - New property ``slimer.geckoVersion``
+- Compatible with Firefox/XulRunner 25b4
 
 Fixed bugs
 ----------

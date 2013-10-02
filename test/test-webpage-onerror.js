@@ -68,41 +68,54 @@ describe("WebPage.onError", function(){
                 throw new Error("error from evaluate");
             })
             expect(errorMessage).toEqual("Error: error from evaluate");
-            expect(errorStack.length).toEqual(2)
+            expect(errorStack.length).toEqual(3);
             expect(errorStack[0].file).toEqual("phantomjs://webpage.evaluate()")
             expect(errorStack[0].line).toEqual(2)
             expect(errorStack[0]["function"]).toEqual("")
             expect(errorStack[1].file).toEqual("phantomjs://webpage.evaluate()")
-            expect(errorStack[1].line).toEqual(3)
+            expect(errorStack[1].line).toEqual(2)
+            expect(errorStack[1].line).toEqual(2)
             expect(errorStack[1]["function"]).toEqual("")
-            //expect(errorStack[2].file).toEqual("phantomjs://webpage.evaluate()")
-            //expect(errorStack[2].line).toEqual(3)
-            //expect(errorStack[2]["function"]).toEqual("")
+            if (slimer.geckoVersion.major > 24) {
+                expect(errorStack[2].file).toEqual("phantomjs://webpage.evaluate()")
+                expect(errorStack[2].line).toEqual(3)
+                expect(errorStack[2]["function"]).toEqual("")
+            }
 
             errorMessage = null;
             errorStack = null;
             webpage.evaluateJavaScript('(function(){throw new Error("error from evaluateJavascript");})()');
             expect(errorMessage).toEqual("Error: error from evaluateJavascript");
-            expect(errorStack.length).toEqual(2)
+            expect(errorStack.length).toEqual(3);
             expect(errorStack[0].file).toEqual("phantomjs://webpage.evaluateJavaScript()")
             expect(errorStack[0].line).toEqual(1)
             expect(errorStack[0]["function"]).toEqual("")
             expect(errorStack[1].file).toEqual("phantomjs://webpage.evaluateJavaScript()")
             expect(errorStack[1].line).toEqual(1)
             expect(errorStack[1]["function"]).toEqual("")
+            if (slimer.geckoVersion.major > 24) {
+                expect(errorStack[2].file).toEqual("phantomjs://webpage.evaluateJavaScript()")
+                expect(errorStack[2].line).toEqual(1)
+                expect(errorStack[2]["function"]).toEqual("")
+            }
 
             errorMessage = null;
             errorStack = null;
             webpage.libraryPath += '/wwwfile';
             webpage.injectJs('injectdoerror.js');
             expect(errorMessage).toEqual("Error: error from injectdoerror.js");
-            expect(errorStack.length).toEqual(2)
+            expect(errorStack.length).toEqual(3);
             expect(errorStack[0].file).toEqual("injectdoerror.js")
             expect(errorStack[0].line).toEqual(2)
-            expect(errorStack[0]["function"]).toEqual("doInjectError")
+            expect(errorStack[0]["function"]).toEqual("")
             expect(errorStack[1].file).toEqual("injectdoerror.js")
-            expect(errorStack[1].line).toEqual(5)
-            expect(errorStack[1]["function"]).toEqual("")
+            expect(errorStack[1].line).toEqual(2)
+            expect(errorStack[1]["function"]).toEqual("doInjectError")
+            if (slimer.geckoVersion.major > 24) {
+                expect(errorStack[2].file).toEqual("injectdoerror.js")
+                expect(errorStack[2].line).toEqual(5)
+                expect(errorStack[2]["function"]).toEqual("")
+            }
         });
     });
 
