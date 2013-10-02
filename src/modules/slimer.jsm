@@ -14,6 +14,9 @@ var xulAppInfo = Components.classes["@mozilla.org/xre/app-info;1"]
 var [major, minor, patch] = xulAppInfo.version.split('.');
 var _version = { major: checkInt(major), minor: checkInt(minor), patch: checkInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
 
+[major, minor, patch] = xulAppInfo.platformVersion.split('.');
+var _geckoVersion = { major: checkInt(major), minor: checkInt(minor), patch: checkInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+
 function checkInt(val) {
     let v = parseInt(val)
     if (isNaN(v))
@@ -28,6 +31,13 @@ var slimer =  {
      */
     get version() {
         return _version;
+    },
+
+    /**
+     * returns the version of Gecko
+     */
+    get geckoVersion() {
+        return _geckoVersion;
     },
 
     /**

@@ -63,6 +63,24 @@ containing three properties, ``major``, ``minor``, ``patch``:
     var v = slimer.version;
     console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch);
 
+
+.. _slimer-geckoversion:
+
+geckoVersion
+-----------------------------------------
+
+Contain the version of Gecko, the core of Firefox and XulRunner. In fact, this is also
+the version of Firefox or XulRunner.
+
+This is an object containing three properties, ``major``, ``minor``, ``patch``:
+
+.. code-block:: javascript
+
+    var v = slimer.geckoVersion;
+    console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch);
+
+
+
 .. _slimer-wait:
 
 wait(milliseconds)
