@@ -55,9 +55,6 @@ const { loadSubScript } = Cc['@mozilla.org/moz/jssubscript-loader;1'].
 const { notifyObservers } = Cc['@mozilla.org/observer-service;1'].
                         getService(Ci.nsIObserverService);
 
-const ioService = Cc['@mozilla.org/network/io-service;1'].
-                                getService(Ci.nsIIOService2);
-
 // Define some shortcuts.
 const bind = Function.call.bind(Function.bind);
 const getOwnPropertyNames = Object.getOwnPropertyNames;
@@ -303,13 +300,12 @@ function normalize(uri) { return uri.substr(-3) === '.js' ? uri : uri + '.js'; }
 // avoid complexity we require `baseURI` with a trailing `/`.
 // SlimerJS patch: base can be a file path, with \ as separator on windows
 const resolve = iced(function resolve(id, aBase) {
-  if (!isRelative(id)) return id;
   let base = aBase;
   if (typeof aBase != 'string') {
     base = aBase.id;
   }
   let paths = id.split('/');
-  let result = base.split(/\/|\\/);
+  let result = base.split('/');
   result.pop();
   while (paths.length) {
     let path = paths.shift();
@@ -318,29 +314,18 @@ const resolve = iced(function resolve(id, aBase) {
     else if (path !== '.')
       result.push(path);
   }
-  if (base.indexOf('\\') != -1)
-    return result.join('\\');
   return result.join('/');
 });
 exports.resolve = resolve;
 
 const resolveURI = iced(function resolveURI(id, mapping) {
-  try {
-    let file = Cc['@mozilla.org/file/local;1']
-              .createInstance(Ci.nsILocalFile);
-    file.initWithPath(id);
-    if (file.exists()) {
-      return ioService.newFileURI(file).spec;
-    }
-  }
-
-  catch(e){}
   let count = mapping.length, index = 0;
   while (index < count) {
     let [ path, uri ] = mapping[index ++];
     if (id.indexOf(path) === 0)
       return normalize(id.replace(path, uri));
   }
+  return null;
 });
 exports.resolveURI = resolveURI;
 
@@ -349,7 +334,7 @@ exports.resolveURI = resolveURI;
 // of `require` that is allowed to load only a modules that are associated
 // with it during link time.
 const Require = iced(function Require(loader, requirer) {
-  let { modules, mapping, resolve, load } = loader;
+  let { modules, mapping, resolve, resolveURI, load } = loader;
 
   function require(id) {
     if (!id) // Throw if `id` is not passed.
@@ -434,12 +419,13 @@ exports.unload = unload;
 // - `javascriptVersion` to indicate with which javascript version modules
 //   will be executed (default: ECMAv5)
 const Loader = iced(function Loader(options) {
-  let { modules, globals, resolve, paths, javascriptVersion } = override({
+  let { modules, globals, resolve, paths, javascriptVersion, resolveURI } = override({
     paths: {},
     modules: {},
     globals: {},
     resolve: exports.resolve,
-    javascriptVersion : 'ECMAv5'
+    javascriptVersion : 'ECMAv5',
+    resolveURI:exports.resolveURI
   }, options);
 
   // We create an identity object that will be dispatched on an unload
@@ -488,6 +474,7 @@ const Loader = iced(function Loader(options) {
     // Map of module sandboxes indexed by module URIs.
     sandboxes: { enumerable: false, value: {} },
     resolve: { enumerable: false, value: resolve },
+    resolveURI: { enumerable: false, value: resolveURI },
     load: { enumerable: false, value: options.load || load },
     javascriptVersion : { enumerable: false, value: javascriptVersion },
     // Main (entry point) module, it can be set only once, since loader

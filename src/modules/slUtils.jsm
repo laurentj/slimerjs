@@ -63,6 +63,16 @@ function dumpStack(aStack) {
     dump(stackText);
 }
 
+
+slUtils.isAbsolutePath = function (path) {
+    var pathElements = path.split(/[\\\/]/);
+    if ( (isWin && pathElements[0].match(/\:$/))
+        || (!isWin && pathElements[0] == '')) {
+        return true;
+    }
+    return false;
+}
+
 /**
  * create an nsIFile object containing the given path. If the path
  * is a relative path, the nsIFile object will contain the path resolved against

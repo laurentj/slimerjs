@@ -36,15 +36,15 @@ function getMainScriptInfo() {
     let scriptInfo = {
         isFile: true,
         id: 'main',
-        uri: scriptURI.spec,
+        URI: scriptURI.spec,
         dirURI: scriptURI.scheme+'://'+scriptURI.host+scriptURI.directory,
-        requirePath : '',
+        requirePath : null,
         modulePathAlias: '',
     };
 
     let scheme = scriptURI.scheme;
     if (scheme == 'file') {
-        scriptInfo.requirePath = slConfiguration.scriptFile.parent.path;
+        scriptInfo.requirePath = slConfiguration.scriptFile.parent;
     }
     else if (scheme == 'chrome' || scheme == 'resource') {
         scriptInfo.modulePathAlias = slConfiguration.scriptModulePath;
@@ -107,14 +107,14 @@ var slLauncher = {
 
         try {
             // first load the bootstrap module
-            let bsModule = Loader.Module('slimer-sdk/bootstrap', 'resource://slimerjs/slimer-sdk/bootstrap.js');
+            let bsModule = Loader.Module('@slimer-sdk/bootstrap', 'resource://slimerjs/slimer-sdk/bootstrap.js');
             mainLoader.load(mainLoader, bsModule);
 
             // load the main module
-            let uri = scriptInfo.uri;
+            let uri = scriptInfo.sURI;
             let module = mainLoader.main
-                       = mainLoader.modules[scriptInfo.uri]
-                       = Loader.Module(scriptInfo.id, scriptInfo.uri);
+                       = mainLoader.modules[scriptInfo.URI]
+                       = Loader.Module(scriptInfo.id, scriptInfo.URI);
 
             mainLoader.load(mainLoader, module);
         }
@@ -205,8 +205,9 @@ function isFile(filename, base) {
         else {
             file = slUtils.getMozFile(filename);
         }
+
         if (file.exists()) {
-            return file.path;
+            return file;
         }
     }
     catch(e){
@@ -221,18 +222,18 @@ function fillDescriptor(object, host) {
 }
 
 const nativeModules = {
-    'fs' : 'sdk/io/file',
-    'webpage': 'slimer-sdk/webpage',
-    'net-log' : 'slimer-sdk/net-log',
+    'fs' : '@addons-sdk/sdk/io/file',
+    'webpage': '@slimer-sdk/webpage',
+    'net-log' : '@slimer-sdk/net-log',
     'webserver' : 'webserver',
     'system' : 'system',
-    'vm':'slimer-sdk/vm',
-    'path':'slimer-sdk/path',
+    'vm':'@slimer-sdk/vm',
+    'path':'@slimer-sdk/path',
 };
 
 const nativeMapping = {
-    'sdk/': 'resource://slimerjs/addon-sdk/sdk/',
-    'slimer-sdk/': 'resource://slimerjs/slimer-sdk/',
+    '@addons-sdk/': 'resource://slimerjs/addon-sdk/',
+    '@slimer-sdk/': 'resource://slimerjs/slimer-sdk/',
     '@loader/': 'resource://slimerjs/@loader',
     'chrome': 'resource://slimerjs/@chrome',
     'webserver' : 'resource://slimerjs/webserver.jsm',
@@ -260,7 +261,7 @@ function prepareLoader(scriptInfo) {
     var requirePaths = new Array();
 
     let pathsMapping = { }
-    pathsMapping[scriptInfo.id] = scriptInfo.uri;
+    pathsMapping[scriptInfo.id] = scriptInfo.URI;
 
     for(let i in nativeMapping) {
         pathsMapping[i] = nativeMapping[i];
@@ -268,14 +269,15 @@ function prepareLoader(scriptInfo) {
 
     if (slConfiguration.enableCoffeeScript) {
         pathsMapping['coffee-script/'] = 'resource://slimerjs/coffee-script/lib/coffee-script/';
+    }
 
-    }
-    if (scriptInfo.isFile) {
-        requirePaths.push(scriptInfo.requirePath);
-    }
-    else {
+    if (!scriptInfo.isFile) {
+        // the main script is an internal script
         pathsMapping[scriptInfo.modulePathAlias] = scriptInfo.dirURI;
     }
+
+    // path where to search each time require() is called. Filled during resolution of the module name
+    var additionnalPaths = [];
 
     // list of extensions and their compiler
     var extensions = {
@@ -323,57 +325,98 @@ function prepareLoader(scriptInfo) {
         // this function should return the true id of the module.
         // The returned id should be an id or an absolute path of a file
         resolve: function(id, requirer) {
+            additionnalPaths = [];
+            let relativeId = false;
+            if (id[0] == '.') {
+                relativeId = id;
+                id = Loader.resolve(id, requirer);
+            }
 
             if (id in nativeModules)
                 return nativeModules[id];
 
             if (id == 'chrome' || id.indexOf('@loader/') === 0) {
-                if (requirer.id.indexOf('sdk/') === 0
-                    || requirer.id.indexOf('slimer-sdk/') === 0) {
+                if (requirer.id[0] == '@') {
                     return id;
                 }
                 // the chrome module is only allowed in embedded modules
                 if (id == 'chrome') {
-                    throw Error("Module "+ requirer.id+ " is not allowed to require the chrome module");
+                    throw new Error("Module "+ requirer.id+ " is not allowed to require the chrome module");
                 }
                 else if (id.indexOf('@loader/') === 0)
-                    throw Error("Unknown "+ id +" module");
+                    throw new Error("Unknown "+ id +" module");
             }
 
-            // let's resolve other id module as usual
-            id = Loader.resolve(id, requirer);
+            if (id.startsWith('sdk/')) {
+                return '@addons-sdk/'+id;
+            }
 
-            // if this is a slimerjs module, don't try to find it in module path
-            let part = firstPathPart.exec(id);
-            let reqpart = firstPathPart.exec(requirer.id);
-            if (part && reqpart && reqpart[1] in pathsMapping && part[1] in pathsMapping) {
+            // if this is a slimerjs module, don't try to find it in module paths
+            if (id[0] == '@') {
                 return id;
             }
 
-            // Here the id is an absolute path if requirer.id is an absolute path
-            let realId = findFileExtension(id);
-            if (realId) {
-                 return realId;
+            if (!relativeId && slUtils.isAbsolutePath(id)) {
+                // id is an absolute path
+                additionalPaths.push(id);
+                return id;
             }
 
             let requirerUri = Services.io.newURI(requirer.uri, null, null);
             let requirerDir = requirerUri.QueryInterface(Ci.nsIFileURL).file.parent;
 
-            // this is not an absolute path, try to resolve the id
-            // against all registered path
+            if (relativeId) {
+                // id is a relative path
+                additionnalPaths.push(requirerDir);
+                return relativeId;
+            }
+
+            additionnalPaths.push(scriptInfo.requirePath);
+
+            // id is not an absolute path or relative path (ex: foo or foo/bar)
+            // let's add all path of requirePaths to search inside them
             for (let i=0; i < requirePaths.length;i++) {
                 // if path is a relative path, it should be
                 // resolve against the current module path;
-                let dir = slUtils.getAbsMozFile(requirePaths[i], requirerDir);
-                let file = findFileExtension(id, dir);
-                if (file)
-                if (file) {
-                    return file;
-                }
+                let path = requirePaths[i];
+                let dir;
+                if (path[0] == '.')
+                    additionnalPaths.push(slUtils.getAbsMozFile(path, requirerDir));
+                else
+                    additionnalPaths.push(slUtils.getMozFile(path));
             }
             return id;
         },
 
+        resolveURI : function(id, mapping) {
+            let uri = Loader.resolveURI(id, mapping);
+            if (uri) {
+                return uri;
+            }
+
+            for(let i=0; i < additionnalPaths.length; i++) {
+                let path = additionnalPaths[i];
+                if (typeof path == 'string') {
+                    if (id === path) {
+                        // id is an absolute path
+                        let f = findFileExtension(id);
+                        if (f) {
+                            return Services.io.newFileURI(f).spec;
+                        }
+                        // since id is an absolute path, we should not try other path
+                        return null;
+                    }
+                    path = slUtils.getMozFile(path);
+                }
+
+                let file = findFileExtension(id, path);
+                if (file) {
+                    return Services.io.newFileURI(file).spec;
+                }
+            }
+
+            return null;
+        },
         // It loads the given module into a sandbox.
         // It replaces the default loader, Loader.load
         load : function(loader, module) {

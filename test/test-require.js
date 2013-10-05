@@ -8,6 +8,8 @@ describe("CommonJS module", function() {
     });
 
     it("should have a module object", function(){
+        // FIXME: this test should be false, as in phantomjs, there is no module
+        // object, since in PhantomJS, an injected script is injected in the window context, not in the module context....
         expect('module' in slimerEnv).toBeTruthy();
         expect(module.uri).toNotEqual("");
         expect(module.id).toEqual("main");
@@ -19,11 +21,20 @@ var m = require('./a/b');
 
 describe("require function", function() {
 
-    it("should be able to load modules from the main script directory without relative path", function(){
-        var a = require('module_a');
+    it("should be able to load modules from the main script directory", function(){
+        var ok = false;
+        try {
+            var a = require('module_a');
+            ok = true;
+        } catch(e) {
+            ok = false;
+        }
+
+        expect(ok).toBeTruthy();
+
+        var a = require('./module_a');
         expect(a.result).toEqual("okay loaded world");
     });
-
 
     it("should import exported variable of requiredexample module", function(){
         expect('ex' in slimerEnv).toBeTruthy();
@@ -80,8 +91,8 @@ describe("require function", function() {
     });
 
     it("provides a globals property", function() {
-        require("a/defineglobal");
-        var access = require("a/accessglobal");
+        require("./a/defineglobal");
+        var access = require("./a/accessglobal");
         expect(access.accessToGlobalFunction).toEqual("result from a global function")
     })
 });
@@ -102,14 +113,13 @@ describe("the loaded module requiredexample", function() {
 describe("The module loader", function() {
 
     it("can load Coffee-Script modules", function(){
-        var sample = require('cs/sample')
+        var sample = require('./cs/sample')
         expect(sample.label).toEqual('sample module 1');
-        var sample2 = require('cs/sample2.coffee')
+        var sample2 = require('./cs/sample2.coffee')
         expect(sample2.label).toEqual('sample module 2');
     });
     it("can load Json modules", function(){
-        var sample = require('a/something.json')
-        //var sample = require('a/ddd.js')
+        var sample = require('./a/something.json')
         expect(sample.foo).toEqual('bar');
         expect(sample.hello).toEqual('world');
     });
