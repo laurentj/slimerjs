@@ -29,4 +29,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         </hbox>
         <iframe id="runtime" src="about:blank" type="content" collapsed="true"/>
     </stack>
+    <keyset>
+        <key id="key_quit" key="w" oncommand="quit()" modifiers="control"/>
+        <key id="key_quit2" key="c" oncommand="quit()" modifiers="control"/>
+    </keyset>
 </window>

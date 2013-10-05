@@ -24,3 +24,7 @@ function startup() {
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     }
 }
+
+function quit() {
+    Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+}
