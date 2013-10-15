@@ -268,7 +268,7 @@ function prepareLoader(scriptInfo) {
     }
 
     if (slConfiguration.enableCoffeeScript) {
-        pathsMapping['coffee-script/'] = 'resource://slimerjs/coffee-script/lib/coffee-script/';
+        pathsMapping['@coffee-script/'] = 'resource://slimerjs/coffee-script/lib/coffee-script/';
     }
 
     if (!scriptInfo.isFile) {
