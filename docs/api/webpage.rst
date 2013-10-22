@@ -150,6 +150,26 @@ Example:
 
 To define user agent, prefer to use ``webpage.settings.userAgent``
 
+.. container:: warning
+
+   **Warning**: Do not set headers that contain sensitive information, like authentication
+   username/password, cookies etc! It can be a security issue!
+   Remember that all custom headers are sent with **every requests** made during
+   the load of the web page.
+   And as you may know, a web page can load ressources from everywhere. If you set
+   http authentication username/password into headers, and if the web page loaded
+   from the web site A, contains an iframe that loads a page from another web site B,
+   this website will receive all custom headers, and then **the username and password**,
+   although it should not!
+
+- To set cookies, prefer to use the :ref:`cookies property <webpage-cookies>`.
+- To set http authentication username and password, prefer to use :ref:`settings <webpage-settings>`
+  or better, define an ``onAuthPrompt`` callback (version 0.9+) with which you can precisely indicate
+  credentials for specific hosts.
+- If you want to set headers only for the main request of the web page, use the ``httpConf``
+  parameter to the :ref:`open() method <webpage-open>` or the :ref:`openUrl() method <webpage-openurl>`.
+
+
 .. _webpage-event:
 
 event
@@ -1242,7 +1262,7 @@ Call the callback :ref:`onInitialized <webpage-onInitialized>` if it has been se
 
 .. _webpage-javaScriptAlertSent:
 
-javaScriptAlertSent(message)
+javaScriptAlertSent( message)
 -----------------------------------------
 
 Call the callback  :ref:`onAlert <webpage-onAlert>` with given
@@ -1252,7 +1272,7 @@ parameters, if the callback has been set.
 
 .. _webpage-javaScriptConsoleMessageSent:
 
-javaScriptConsoleMessageSent(message, lineNumber, fileName)
+javaScriptConsoleMessageSent( message, lineNumber, fileName)
 ------------------------------------------------------------
 
 Call the callback  :ref:`onConsoleMessage <webpage-onConsoleMessage>` with given
