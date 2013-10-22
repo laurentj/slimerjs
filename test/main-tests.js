@@ -73,6 +73,13 @@ webserverTest.listen(8083, function(request, response) {
         response.close();
         return;
     }
+    if (request.url == '/redirectToRoot') {
+        response.statusCode = 301;
+        response.headers['Location'] = 'http://localhost:8083';
+        response.write('');
+        response.close();
+        return;
+    }
 
     if (request.url == '/redirectToSimpleHello2') {
         response.statusCode = 302;

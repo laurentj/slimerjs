@@ -350,7 +350,6 @@ TracingListener.prototype = {
             }
         }
         this.data = [];
-
         this.options.onResponse(mix({}, this.response));
     },
 
@@ -727,9 +726,10 @@ ProgressListener.prototype = {
             }
 
             // ignore all request that are not the main request
-            if (this.mainPageURI != uri) {
-                //if (DEBUG_NETWORK_PROGRESS)
-                //    slDebugLog("network: request ignored: "+uri+ " flags:"+debugFlags(flags));
+            // we should check the ending '/' since webserver could add it in the response url
+            if (this.mainPageURI != uri && this.mainPageURI+'/' != uri) {
+                if (DEBUG_NETWORK_PROGRESS)
+                    slDebugLog("network: request ignored: "+uri+ " flags:"+debugFlags(flags));
                 return;
             }
 
