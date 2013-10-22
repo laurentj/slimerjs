@@ -589,7 +589,7 @@ exports.getBrowserForRequest = getBrowserForRequest;
 const ProgressListener = function(browser, options) {
     this.browser = browser;
     this.options = options;
-    this.mainPageURI = '';
+    this.mainPageURI = null;
 };
 ProgressListener.prototype = {
     QueryInterface: function(aIID){
@@ -689,7 +689,7 @@ ProgressListener.prototype = {
 
             if (this.isLoadRequested(flags)) {
                 if (typeof(this.options.onFrameLoadStarted) === "function") {
-                    this.options.onFrameLoadStarted(uri, (this.mainPageURI != ''));
+                    this.options.onFrameLoadStarted(uri, (this.mainPageURI != null));
                 }
             }
             else if (this.isLoaded(flags)) {
@@ -699,18 +699,18 @@ ProgressListener.prototype = {
                     if (uri != 'about:blank' && request.status) {
                         success = 'fail';
                     }
-                    this.options.onFrameLoadFinished(uri, success, win, (this.mainPageURI != ''));
+                    this.options.onFrameLoadFinished(uri, success, win, (this.mainPageURI != null));
                 }
             }
             return;
         }
 
         try {
-            if (this.mainPageURI == '') {
+            if (this.mainPageURI == null) {
                 if (this.isLoadRequested(flags)) {
                     if (DEBUG_NETWORK_PROGRESS)
                         slDebugLog("network: main request starting - "+uri+ " flags:"+debugFlags(flags));
-                    this.mainPageURI = uri;
+                    this.mainPageURI = request.URI;
                     if (typeof(this.options.onLoadStarted) === "function") {
                         this.options.onLoadStarted(uri, false);
                     }
@@ -726,8 +726,7 @@ ProgressListener.prototype = {
             }
 
             // ignore all request that are not the main request
-            // we should check the ending '/' since webserver could add it in the response url
-            if (this.mainPageURI != uri && this.mainPageURI+'/' != uri) {
+            if (!this.mainPageURI.equalsExceptRef(request.URI)) {
                 if (DEBUG_NETWORK_PROGRESS)
                     slDebugLog("network: request ignored: "+uri+ " flags:"+debugFlags(flags));
                 return;
@@ -760,7 +759,7 @@ ProgressListener.prototype = {
                 return;
             }
             if (this.isLoaded(flags)) {
-                this.mainPageURI = '';
+                this.mainPageURI = null;
                 if (typeof(this.options.onLoadFinished) === "function") {
                     let success = "success";
                     if (uri != 'about:blank' && request.status) {
@@ -772,9 +771,9 @@ ProgressListener.prototype = {
             }
 
             if (flags & Ci.nsIWebProgressListener.STATE_REDIRECTING) {
-                this.mainPageURI = request.URI.resolve(request.getResponseHeader('Location'))
+                this.mainPageURI = ioService.newURI(request.URI.resolve(request.getResponseHeader('Location')), request.URI.originCharset, null)
                 if (DEBUG_NETWORK_PROGRESS)
-                    slDebugLog("network: main request redirect to "+this.mainPageURI);
+                    slDebugLog("network: main request redirect to "+this.mainPageURI.spec);
             }
         } catch(e) {
             if (DEBUG_NETWORK_PROGRESS)
