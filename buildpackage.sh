@@ -1,21 +1,51 @@
 #!/bin/bash
 
+CURRENTDIR=`pwd`
 SLIMERDIR=`dirname $0`
 SLIMERDIR=`cd $SLIMERDIR;pwd`
-CURRENTDIR=`pwd`
 
+XULRUNNER_VERSION="22.0"
 XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/runtimes/"
-XULRUNNER_PACK_NAME="xulrunner-22.0.en-US"
+XULRUNNER_PACK_NAME="xulrunner-$XULRUNNER_VERSION.en-US"
 
 cd $SLIMERDIR
 
-if [ "$1" == "nightly" ]
-then
-    VERSION="nightly"
-else
-    VERSION=`grep "^Version=" src/application.ini`
-    VERSION=${VERSION:8}
-fi
+BUILD_BIN_PACKAGE="y"
+
+usage()
+{
+    echo "buildpackage.sh [options]"
+    echo ""
+    echo "options:"
+    echo "  --no-bin: don't build binary packages"
+    echo "  -h: displays this help"
+    echo ""
+}
+
+for i in $*
+do
+case $i in
+    --no-bin)
+    BUILD_BIN_PACKAGE="n"
+    ;;
+    -h|--help)
+        usage
+        exit 0
+    ;;
+    -*)
+      echo "ERROR: Unknown option: $i"
+      echo ""
+      usage
+      exit 1
+    ;;
+    *)
+      echo "Warning: no supported parameter. $i ignored"
+    ;;
+esac
+done
+
+VERSION=`grep "^Version=" src/application.ini`
+VERSION=${VERSION:8}
 
 TARGETDIR="$SLIMERDIR/_dist/slimerjs-$VERSION"
 XRDIR="$SLIMERDIR/_dist/xrbin"
@@ -54,6 +84,14 @@ sed -i -e "s/BuildID=.*/BuildID=$BUILDDATE/g" application.ini
 echo "Build the platform independant package..."
 cd $SLIMERDIR/_dist
 zip -r "slimerjs-$VERSION.zip" "slimerjs-$VERSION"
+
+if [ "$BUILD_BIN_PACKAGE" != "y" ]; then
+    # the end
+    cd $CURRENTDIR
+    echo ""
+    echo "slimerjs-$VERSION.zip is in $SLIMERDIR/_dist/"
+    exit 0
+fi
 
 cd $XRDIR
 
