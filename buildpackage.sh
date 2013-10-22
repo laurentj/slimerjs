@@ -4,14 +4,12 @@ CURRENTDIR=`pwd`
 SLIMERDIR=`dirname $0`
 SLIMERDIR=`cd $SLIMERDIR;pwd`
 
-
 XULRUNNER_VERSION="25.0b4"
 XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XULRUNNER_VERSION/runtimes/"
 XULRUNNER_PACK_NAME="xulrunner-$XULRUNNER_VERSION.en-US"
 
 cd $SLIMERDIR
 
-VERSION=""
 BUILD_BIN_PACKAGE="y"
 
 usage()
@@ -40,19 +38,14 @@ case $i in
       usage
       exit 1
     ;;
-    nightly)
-        VERSION="nightly"
-    ;;
     *)
+      echo "Warning: no supported parameter. $i ignored"
     ;;
 esac
 done
 
-if [ "$VERSION" == "" ]
-then
-    VERSION=`grep "^Version=" src/application.ini`
-    VERSION=${VERSION:8}
-fi
+VERSION=`grep "^Version=" src/application.ini`
+VERSION=${VERSION:8}
 
 TARGETDIR="$SLIMERDIR/_dist/slimerjs-$VERSION"
 XRDIR="$SLIMERDIR/_dist/xrbin"
