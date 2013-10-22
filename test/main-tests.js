@@ -185,5 +185,6 @@ else {
                                     true);
     jEnv.addReporter(reporter);
     jEnv.updateInterval = 1000;
+    jEnv.defaultTimeoutInterval = 15000; // for DNS check: it can be long on some systems
     jEnv.execute();
 }

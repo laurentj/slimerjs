@@ -62,13 +62,6 @@
             }
         }
 
-        function getCanvasData(idx) {
-            var c = document.getElementById((idx?'c'+idx:'ec'));
-            var w = parseInt(c.getAttribute('width'));
-            var h = parseInt(c.getAttribute('height'));
-            return [c.toDataURL('image/png'), w, h];
-        }
-
         var ec =  document.getElementById('ec');
         var ei =  document.getElementById('ei');
         var currentIdx = 0;
@@ -90,7 +83,39 @@
             ei.src = src;
         }
 
+        function compareImages(expectedIdx){
+            var expectedCanvas = document.getElementById('c'+expectedIdx);
+            var resultCanvas = ec;
 
+            var expectedCtx = expectedCanvas.getContext('2d');
+            var expectedImageData = expectedCtx.getImageData(0, 0, expectedCanvas.width, expectedCanvas.height);
+
+            var resultCtx = resultCanvas.getContext('2d');
+            var resultImageData = resultCtx.getImageData(0, 0, resultCanvas.width, resultCanvas.height);
+
+            var results = [];
+            results[0] = [expectedImageData.width, resultImageData.width]
+            results[1] = [expectedImageData.height, resultImageData.height]
+            results[2] = [expectedImageData.data.length, resultImageData.data.length]
+            results[3] = compareImagesData(expectedImageData, resultImageData);
+            return results;
+        }
+        // during zoom in or zoom out, the rendering engine could add some blur around
+        // each edge of squares. So we should not match equality of color, but we should
+        // see if colors are almost equals.
+        function compareImagesData(img1,img2){
+            if(img1.data.length != img2.data.length)
+                return 0;
+            for(var i = 0; i < img1.data.length; i+=4){
+                var d1=Math.abs(img1.data[i]-img1.data[i]);
+                var d2=Math.abs(img1.data[i+1]-img1.data[i+1]);
+                var d3=Math.abs(img1.data[i+2]-img1.data[i+2]);
+                var similarity = Math.round( 100 - (d1+d2+d3)/(3*255) * 100);
+                if(similarity < 98)
+                    return i;
+            }
+            return true;
+        }
         </script>
 
     </body>
