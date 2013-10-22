@@ -14,6 +14,7 @@ Not released yet.
 Fixed bugs
 ----------
 
+- Fix slimerjs.bat that did not work anymore (issue #84)
 - redirection were not well supported when the requested URL is changed by the server
   by adding a trailing slash (issue #90)
 
