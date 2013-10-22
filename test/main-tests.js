@@ -31,9 +31,14 @@ var slimerEnv = this;
 var webServerFactory = require("webserver");
 var fs = require("fs");
 var system = require("system");
+var onlywebserver = false;
 
 if (system.args.length == 2) {
-    phantom.injectJs("./test-"+system.args[1]+".js");
+    if (system.args[1] == '--only-web-servers' || system.args[1] == '--only-web-server') {
+        onlywebserver = true;
+    }
+    else
+        phantom.injectJs("./test-"+system.args[1]+".js");
 }
 else {
     phantom.injectJs("./test-environment.js");
@@ -157,16 +162,21 @@ webserverTestWebPage.listen(8082, function(request, response) {
     response.close();
 });
 
-// Launch tests
-var jEnv = jasmine.getEnv();
-var reporter = new jasmine.ConsoleReporter(
-                                function(msg){
-                                    console.log(msg.replace('\n', ''));
-                                },
-                                function(rep){
-                                    phantom.exit();
-                                },
-                                true);
-jEnv.addReporter(reporter);
-jEnv.updateInterval = 1000;
-jEnv.execute();
+if (onlywebserver) {
+    console.log("Web servers are started. listen on http://localhost:8083 and http://localhost:8082")
+}
+else {
+    // Launch tests
+    var jEnv = jasmine.getEnv();
+    var reporter = new jasmine.ConsoleReporter(
+                                    function(msg){
+                                        console.log(msg.replace('\n', ''));
+                                    },
+                                    function(rep){
+                                        phantom.exit();
+                                    },
+                                    true);
+    jEnv.addReporter(reporter);
+    jEnv.updateInterval = 1000;
+    jEnv.execute();
+}
