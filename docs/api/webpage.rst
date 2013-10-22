@@ -368,6 +368,18 @@ Changing them after the load has no effect.
 
     page.settings.userAgent = "My Super Agent / 1.0"
 
+.. container:: warning
+
+    user name and password indicated into settings are given to the server of the main loaded
+    webpage (if it asks them), but also to all servers that are called for some resources
+    and that ask an http authentication! Without knowing it, you can give these
+    sensitive information to a web resource loading from an other
+    domain than the main page and which asks http authentication (like
+    an iframe, a css stylesheets etc..).
+    If you want a better control of the authentication, use the ``httpConf`` parameter
+    on the :ref:`open() <webpage-open>` or :ref:`openUrl() <webpage-openUrl>` method,
+    or use the callback :ref:`onAuthPrompt <webpage-onAuthPrompt>`.
+
 .. _webpage-title:
 
 title

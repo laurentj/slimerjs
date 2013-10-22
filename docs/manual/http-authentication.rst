@@ -38,6 +38,19 @@ the ``phantom`` object. They will be used for every web page object.
     phantom.settings.userName = "mylogin";
     phantom.settings.password = "mypassword";
 
+
+.. container:: warning
+
+    These userName and password are given to all servers that ask an
+    http authentication! Without knowing it, you can give these
+    sensitive information to a web resource loading from an other
+    domain than the main page and which asks http authentication (like
+    an iframe, a css stylesheets etc..).
+    If you want a better control of the authentication, use the ``httpConf`` parameter
+    on the ``open()`` or ``openUrl()`` method, or use a callback
+    (see below).
+
+
 By a callback
 -------------
 
@@ -50,10 +63,16 @@ You set this callback to the ``webpage.onAuthPrompt`` property.
 .. code-block:: javascript
     
     webpage.onAuthPrompt = function (type, url, realm, credentials) {
-        credentials.username = "laurent";
-        credentials.password = "1234";
-        return true;
+        if (url.startsWith('http://foo.com')) {
+            credentials.username = "laurent";
+            credentials.password = "1234";
+            return true;
+        }
+        return false;
     }
+
+As you see, using a callback allows to check who asks credentials, before
+giving them.
 
 The callback accepts four arguments:
 
