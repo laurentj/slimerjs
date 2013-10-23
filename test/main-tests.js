@@ -44,6 +44,7 @@ else {
     phantom.injectJs("./test-environment.js");
     phantom.injectJs("./test-require.js");
     phantom.injectJs("./test-system.js");
+    phantom.injectJs("./test-webserver.js");
     phantom.injectJs("./test-webpage.js");
     phantom.injectJs("./test-webpage-listeners.js");
     phantom.injectJs("./test-webpage-keyevent.js");
@@ -119,6 +120,14 @@ webserverTest.listen(8083, function(request, response) {
             response.write("Error:"+e)
         }
         response.close();
+        return;
+    }
+
+    if (request.url == '/asynchronousResponse') {
+        window.setTimeout(function () {
+            response.write('done'); // response is generated asynchronously
+            response.close();
+        }, 200);
         return;
     }
 

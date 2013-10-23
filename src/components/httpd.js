@@ -2305,6 +2305,11 @@ ServerHandler.prototype =
     var path = request.path;
     dumpn("*** path == " + path);
 
+    // indicate if the response is built asynchronously
+    // or not. For some handlers, it will be true.
+    // it allows to not close the response
+    // after the call of the handler.
+    var asyncResp = false;
     try
     {
       try
@@ -2314,7 +2319,11 @@ ServerHandler.prototype =
           // explicit paths first, then files based on existing directory mappings,
           // then (if the file doesn't exist) built-in server default paths
           dumpn("calling override for " + path);
-          this._overridePaths[path](request, response);
+          let handler = this._overridePaths[path]
+          handler(request, response);
+          if ('isAsync' in handler && handler.isAsync) {
+            asyncResp = true;
+          }
         }
         else
         {
@@ -2329,7 +2338,11 @@ ServerHandler.prototype =
           if (longestPrefix.length > 0)
           {
             dumpn("calling prefix override for " + longestPrefix);
-            this._overridePrefixes[longestPrefix](request, response);
+            let handler = this._overridePrefixes[longestPrefix]
+            handler(request, response);
+            if ('isAsync' in handler && handler.isAsync) {
+                asyncResp = true;
+            }
           }
           else
           {
@@ -2396,8 +2409,9 @@ ServerHandler.prototype =
         return;
       }
     }
-
-    response.complete();
+    if (!asyncResp) {
+        response.complete();
+    }
   },
 
   //
@@ -2436,7 +2450,7 @@ ServerHandler.prototype =
     if (path.charAt(0) != "/")
       throw Cr.NS_ERROR_INVALID_ARG;
 
-    this._handlerToField(handler, this._overridePaths, path);
+    this._handlerToField(handler, this._overridePaths, path, true);
   },
 
   //
@@ -2448,7 +2462,7 @@ ServerHandler.prototype =
     if (path.charAt(0) != "/" || path.charAt(path.length - 1) != "/")
       throw Cr.NS_ERROR_INVALID_ARG;
 
-    this._handlerToField(handler, this._overridePrefixes, path);
+    this._handlerToField(handler, this._overridePrefixes, path, true);
   },
 
   //
@@ -2529,15 +2543,18 @@ ServerHandler.prototype =
    * @param key
    *   The field name of the handler.
    */
-  _handlerToField: function(handler, dict, key)
+  _handlerToField: function(handler, dict, key, asynchronousHandler)
   {
     // for convenience, handler can be a function if this is run from xpcshell
     if (typeof(handler) == "function")
       dict[key] = handler;
     else if (handler)
       dict[key] = createHandlerFunc(handler);
-    else
+    else {
       delete dict[key];
+      return;
+    }
+    dict[key].isAsync = asynchronousHandler;
   },
 
   /**
