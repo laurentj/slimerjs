@@ -144,6 +144,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>settings.password                   </td><td>Implemented</td></tr>
     <tr><td>settings.maxAuthAttempts            </td><td>Implemented</td></tr>
     <tr><td>settings.resourceTimeout            </td><td></td></tr>
+    <tr><td>settings.plainTextAllContent        </td><td>Implemented (SlimerJS only)</td></tr>
     <tr><td>title                               </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>viewportSize                        </td><td>Implemented</td></tr>

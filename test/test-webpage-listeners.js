@@ -510,6 +510,64 @@ describe("webpage with listeners", function() {
         done();
     });
 
+
+
+    async.it("is opening a new page after a redirection to an absolute url without path",function(done) {
+        // we test the case where a slash is added by the webserver on the response url
+        trace = "";
+        receivedRequest = [];
+        testWebpageListenerCreateWebPage()
+        webpage.open(domain+'redirectToRoot', function(success){
+            trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("success");
+            done();
+        });
+    });
+    async.it("should generate the expected trace for the redirection", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "  loading url=http://localhost:8083/redirectToRoot\n";
+        expectedTrace += "URLCHANGED:http://localhost:8083/\n";
+        expectedTrace += "INITIALIZED 7\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/ - 8 success\n";
+        expectedTrace += "  loaded url=http://localhost:8083/\n";
+        expectedTrace += "CALLBACK:success\n";
+        expect(trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should have received the index directory", function(done){
+        var r;
+        expect(receivedRequest.length).toEqual(3);
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == domain+"redirectToRoot";
+        })[0];
+        expect(r).toNotBe(null);
+
+        r = receivedRequest.filter(function(result) {
+            return result.req.url == domain;
+        })[0];
+
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toNotBe(null);
+        /*
+        FIXME sometimes, in this case, r.end is null ?-(
+        expect(r.end).toNotBe(null);
+        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+        */
+        expect(r.req.method).toEqual("GET");
+        expect(r.start.status).toEqual(200);
+        expect(r.start.statusText).toEqual('OK');
+        //expect(r.end.status).toEqual(200);
+        //expect(r.end.statusText).toEqual('OK');
+        expect(r.start.contentType).toEqual("text/html");
+        //expect(r.end.contentType).toEqual("text/html");
+        done();
+    });
+
     async.it("is opening a new page after a redirection2 to a relative URL",function(done) {
         trace = "";
         receivedRequest = [];
@@ -527,8 +585,8 @@ describe("webpage with listeners", function() {
         expectedTrace += "LOADSTARTED:about:blank\n";
         expectedTrace += "  loading url=http://localhost:8083/redirectToSimpleHello2\n";
         expectedTrace += "URLCHANGED:http://localhost:8083/simplehello.html\n";
-        expectedTrace += "INITIALIZED 7\n";
-        expectedTrace += "LOADFINISHED:http://localhost:8083/simplehello.html - 8 success\n";
+        expectedTrace += "INITIALIZED 9\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/simplehello.html - 10 success\n";
         expectedTrace += "  loaded url=http://localhost:8083/simplehello.html\n";
         expectedTrace += "CALLBACK:success\n";
         expect(trace).toEqual(expectedTrace);

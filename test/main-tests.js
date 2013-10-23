@@ -31,14 +31,20 @@ var slimerEnv = this;
 var webServerFactory = require("webserver");
 var fs = require("fs");
 var system = require("system");
+var onlywebserver = false;
 
 if (system.args.length == 2) {
-    phantom.injectJs("./test-"+system.args[1]+".js");
+    if (system.args[1] == '--only-web-servers' || system.args[1] == '--only-web-server') {
+        onlywebserver = true;
+    }
+    else
+        phantom.injectJs("./test-"+system.args[1]+".js");
 }
 else {
     phantom.injectJs("./test-environment.js");
     phantom.injectJs("./test-require.js");
     phantom.injectJs("./test-system.js");
+    phantom.injectJs("./test-webserver.js");
     phantom.injectJs("./test-webpage.js");
     phantom.injectJs("./test-webpage-listeners.js");
     phantom.injectJs("./test-webpage-keyevent.js");
@@ -65,6 +71,13 @@ webserverTest.listen(8083, function(request, response) {
     if (request.url == '/redirectToSimpleHello') {
         response.statusCode = 301;
         response.headers['Location'] = 'http://localhost:8083/simplehello.html';
+        response.write('');
+        response.close();
+        return;
+    }
+    if (request.url == '/redirectToRoot') {
+        response.statusCode = 301;
+        response.headers['Location'] = 'http://localhost:8083';
         response.write('');
         response.close();
         return;
@@ -131,6 +144,14 @@ webserverTest.listen(8083, function(request, response) {
         return;
     }
 
+    if (request.url == '/asynchronousResponse') {
+        window.setTimeout(function () {
+            response.write('done'); // response is generated asynchronously
+            response.close();
+        }, 200);
+        return;
+    }
+
     var filepath = phantom.libraryPath+'/www'+request.url;
     if (fs.exists(filepath)){
         if (fs.isFile(filepath)) {
@@ -178,16 +199,22 @@ webserverTestWebPage.listen(8082, function(request, response) {
     response.close();
 });
 
-// Launch tests
-var jEnv = jasmine.getEnv();
-var reporter = new jasmine.ConsoleReporter(
-                                function(msg){
-                                    console.log(msg.replace('\n', ''));
-                                },
-                                function(rep){
-                                    phantom.exit();
-                                },
-                                true);
-jEnv.addReporter(reporter);
-jEnv.updateInterval = 1000;
-jEnv.execute();
+if (onlywebserver) {
+    console.log("Web servers are started. listen on http://localhost:8083 and http://localhost:8082")
+}
+else {
+    // Launch tests
+    var jEnv = jasmine.getEnv();
+    var reporter = new jasmine.ConsoleReporter(
+                                    function(msg){
+                                        console.log(msg.replace('\n', ''));
+                                    },
+                                    function(rep){
+                                        phantom.exit();
+                                    },
+                                    true);
+    jEnv.addReporter(reporter);
+    jEnv.updateInterval = 1000;
+    jEnv.defaultTimeoutInterval = 15000; // for DNS check: it can be long on some systems
+    jEnv.execute();
+}

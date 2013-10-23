@@ -328,7 +328,7 @@ describe("WebPage.content", function(){
         webpage = require("webpage").create();
     });
 
-    it("contain the source code of the HTML page",function() {
+    it("contains the source code of the HTML page",function() {
         var loaded = false;
         runs(function() {
             webpage.open(url, function(success){
@@ -342,10 +342,12 @@ describe("WebPage.content", function(){
                 +"        <meta charset=\"utf-8\">\n"
                 +"        <title>simple hello world</title>\n"
                 +"    </head>\n"
-                +"    <body>Hello World!\n"
+                +"    <body>Hello World! <script type=\"text/javascript\"> var simpleJSToTestPlainText='foo';</script>\n"
+                +"    <div style=\"display:none\">invisible text</div>\n"
                 +"    \n"
-                +"</body>"; // after </body>, there is the script injected by slimerjs
-            expect(webpage.content.indexOf(content)).toEqual(0);
+                +"</body></html>";
+            //expect(webpage.content.indexOf(content)).toEqual(0);
+            expect(webpage.content).toEqual(content);
             webpage.close();
         });
     });
@@ -360,7 +362,7 @@ describe("WebPage.content", function(){
         expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("new content");
     });
 
-    it("contain the content of a text page",function() {
+    it("contains the content of a text page",function() {
         webpage.close();
         var loaded = false;
         runs(function() {
@@ -427,6 +429,53 @@ describe("WebPage.setContent", function(){
         expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("it works");
     });
 });
+
+
+describe("WebPage.plainText", function(){
+    var webpage;
+    var url = "http://127.0.0.1:8083/simplehello.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
+
+    it("contains only text of HTML elements",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open(url, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var content = " Hello World! ";
+            expect(webpage.plainText).toEqual(content);
+            webpage.close();
+        });
+    });
+
+    it("contains the content of a text page",function() {
+        webpage.close();
+        var loaded = false;
+        runs(function() {
+            webpage.open("http://127.0.0.1:8083/hello.txt", function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            expect(webpage.plainText).toEqual("hello I am a file requested by XHR");
+            webpage.close();
+        });
+    });
+});
+
+
 
 describe("WebPage.zoomFactor", function(){
     var webpage;

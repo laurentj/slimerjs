@@ -5,6 +5,23 @@
 Release Notes of SlimerJS 0.8
 =============================
 
+version 0.8.4
+=============
+
+SlimerJS 0.8.4 has been released on October 23th, 2013.
+
+Fixed bugs
+----------
+
+- Fix slimerjs.bat that did not work anymore (issue #84)
+- redirection were not well supported when the requested URL is changed by the server
+  by adding a trailing slash (issue #90)
+- fixed ``webpage.plainText``: content of invisible and script elements should not be return (issue #97)
+  A flag ``plainTextAllContent`` in settings allow to have the previous behavior.
+- The webserver supports now asynchronous responses. **warning**: be sure to call the ``close()`` method
+  on the response when you finished to write data, **in any case** (synchronous or asynchronous
+  response processing) (issue #91)
+
 version 0.8.3
 =============
 

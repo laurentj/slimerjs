@@ -383,6 +383,8 @@ Changing them after the load has no effect.
 - ``userName``: username to give to HTTP authentication
 - ``XSSAuditingEnabled``  (not supported yet)
 - ``webSecurityEnabled``  (not supported yet)
+- ``plainTextAllContent``: ``true`` to indicate that webpage.plainText returns everything, even
+   content of ``script`` elements, invisible elements etc.. Default: ``false``. (SlimerJS only)
 
 .. code-block:: javascript
 

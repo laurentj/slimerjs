@@ -186,18 +186,16 @@ describe("WebPage.render()", function(){
                 webpage.render(currentImageFile);
 
             expect(fs.exists(currentImageFile)).toBeTruthy();
-            expectedData = expectedFixPage.evaluate(function(idx){ return getCanvasData(idx); },  resultNumber);
             imageResultLoaded = false;
             expectedFixPage.evaluate(function(idx, src){ setResultImage(idx, src );},  resultNumber, urlbase+filename);
         });
         waitsFor(function(){ return imageResultLoaded;}, 1300);
         runs(function(){
-            resultData = expectedFixPage.evaluate(function(){ return getCanvasData(); });
-            expect(resultData[1]).toEqual(expectedData[1]);
-            expect(resultData[2]).toEqual(expectedData[2]);
-            expect(resultData[0] == expectedData[0]).toBeTruthy();
-            //fs.write("resultData"+resultNumber+"txt", resultData[0]);
-            //fs.write("expectedData"+resultNumber+"txt", expectedData[0]);
+            resultData = expectedFixPage.evaluate(function(idx){ return compareImages(idx); }, resultNumber);
+            expect(resultData[0][1]).toEqual(resultData[0][0]); // width
+            expect(resultData[1][1]).toEqual(resultData[1][0]); // height
+            expect(resultData[2][1]).toEqual(resultData[2][0]); // length of data
+            expect(resultData[3]).toEqual(true); // data
             //expectedFixPage.render("rendering_"+prefixResult+resultNumber+".png")
         });
     }

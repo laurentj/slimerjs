@@ -212,7 +212,7 @@ var webpageUtils = {
      * @param nsIDocShell docShell
      * @param boolean onlyPlainText only the text content
      */
-    getWindowContent: function (window, docShell, onlyPlainText) {
+    getWindowContent: function (window, docShell, onlyPlainText, allTextContent) {
         if (!docShell) {
             docShell = window.QueryInterface(Ci.nsIInterfaceRequestor)
                          .getInterface(Ci.nsIWebNavigation)
@@ -226,7 +226,7 @@ var webpageUtils = {
             if (channel.contentType.indexOf("text/") === 0)
                 return doc.body.getElementsByTagName('pre')[0].textContent;
             // FIXME retrieve content for other resource type
-            return null
+            return null;
         }
         else {
             // this is an HTML document, use the document encoder
@@ -235,7 +235,11 @@ var webpageUtils = {
             if (onlyPlainText) {
                 encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
                             .createInstance(Ci.nsIDocumentEncoder);
-                encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly | de.OutputRaw);
+                let flags =de.OutputLFLineBreak | de.OutputPersistNBSP | de.OutputBodyOnly;
+                if (!allTextContent) {
+                    flags |= de.SkipInvisibleContent | de.OutputNoScriptContent;
+                }
+                encoder.init(doc, "text/plain", flags);
             }
             else {
                 encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]

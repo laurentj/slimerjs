@@ -45,6 +45,8 @@ DOM
   The equivalent standard properties are ``clientX`` and ``clientY``.
 - Changing the viewport is done asynchronously in Gecko, so ``webpage.viewportSize``
   is done asynchronously in SlimerJS
+- A ``content`` variable exists in SlimerJS, in scripts, because of `window.content <https://developer.mozilla.org/en-US/docs/Web/API/Window.content>`.
+  Remember that a script is executed in the context of a ``about:blank`` page.
 
 Network
 --------

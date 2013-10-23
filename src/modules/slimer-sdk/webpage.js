@@ -1005,7 +1005,7 @@ function _create(parentWebpageInfo) {
                 return false;
             }
 
-            return webpageUtils.getWindowContent(win, null, true);
+            return webpageUtils.getWindowContent(win, null, true, privProp.settings.plainTextAllContent);
         },
 
         get frameTitle() {
@@ -1151,7 +1151,7 @@ function _create(parentWebpageInfo) {
                 throw new Error("WebPage not opened");
 
             return webpageUtils.getWindowContent(browser.contentWindow,
-                                    browser.docShell, true);
+                                    browser.docShell, true, privProp.settings.plainTextAllContent);
         },
 
         sendEvent: function(eventType, arg1, arg2, button, modifier) {
