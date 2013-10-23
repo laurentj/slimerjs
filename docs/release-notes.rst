@@ -17,7 +17,8 @@ Fixed bugs
 - Fix slimerjs.bat that did not work anymore (issue #84)
 - redirection were not well supported when the requested URL is changed by the server
   by adding a trailing slash (issue #90)
-
+- fixed ``webpage.plainText``: content of invisible and script elements should not be return (issue #97)
+  A flag ``plainTextAllContent`` in settings allow to have the previous behavior.
 
 version 0.8.3
 =============

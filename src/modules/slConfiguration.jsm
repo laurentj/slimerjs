@@ -232,6 +232,7 @@ var slConfiguration = {
             password: undefined,
             maxAuthAttempts: undefined,
             resourceTimeout: undefined,
+            plainTextAllContent: false
         })
     },
 
