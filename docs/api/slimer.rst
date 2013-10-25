@@ -18,6 +18,7 @@ a webpage needs an HTTP auth, username and password will be asked again.
 
 See :doc:`doc about http authentication with SlimerJS <../manual/http-authentication>`.
 
+Introduced: SlimerJS 0.9
 
 .. _slimer-exit:
 
@@ -79,7 +80,7 @@ This is an object containing three properties, ``major``, ``minor``, ``patch``:
     var v = slimer.geckoVersion;
     console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch);
 
-
+Introduced: SlimerJS 0.9
 
 .. _slimer-wait:
 

@@ -40,8 +40,8 @@ Missing APIS in SlimerJS 0.9
 
 Here are the PhantomJS APIs that are missing in SlimerJS 0.9 but planed in future releases.
 
-- most of options for the command line are not supported
-- some settings on the webpage object are not supported yet
+- many options for the command line are not supported
+- few settings on the webpage object are not supported yet
 - no support of Ghost Driver (Selenium web driver)
 
 You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_ to know details.

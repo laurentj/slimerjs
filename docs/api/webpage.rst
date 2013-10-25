@@ -375,12 +375,12 @@ Changing them after the load has no effect.
 - ``javascriptCanOpenWindows``  (not supported yet)
 - ``loadImages``: ``false`` to deactivate the loading of images (default is ``true``)
 - ``localToRemoteUrlAccessEnabled``  (not supported yet)
-- ``maxAuthAttempts``: indicate the maximum of attempts of HTTP authentication.
-- ``password``: password to give to HTTP authentication
+- ``maxAuthAttempts``: indicate the maximum of attempts of HTTP authentication. (SlimerJS 0.9)
+- ``password``: password to give to HTTP authentication (SlimerJS 0.9)
 - ``userAgent``: string to define the user Agent in HTTP requests. By default, it is
   something like ``"Mozilla/5.0 (X11; Linux x86_64; rv:21.0) Gecko/20100101 SlimerJS/0.7"``
   (depending of the version of Firefox/XulRunner you use)
-- ``userName``: username to give to HTTP authentication
+- ``userName``: username to give to HTTP authentication (SlimerJS 0.9)
 - ``XSSAuditingEnabled``  (not supported yet)
 - ``webSecurityEnabled``  (not supported yet)
 - ``plainTextAllContent``: ``true`` to indicate that webpage.plainText returns everything, even
@@ -1253,7 +1253,7 @@ Properties of ``requestData`` are:
 - ``url``: the url of the resource
 - ``time``: a Date object
 - ``headers``: the list of headers (list of objects ``{name:'', value:''}``)
-- ``postData``: a string containing the body of the request, when method is "post" or "put"
+- ``postData``: a string containing the body of the request, when method is "post" or "put" (SlimerJS 0.9)
 
 The ``networkRequest`` object has two methods:
 
@@ -1265,6 +1265,7 @@ The ``networkRequest`` object has two methods:
   value is ``null`` or an empty string, the header will be removed. The ``merge`` parameter
   (only available on SlimerJS), is a boolean: ``true`` to merge the given value with an
   existing value for this header. If ``false``, the old value is replaced by the new one.
+  (Introduced: SlimerJS 0.9)
 
 .. _webpage-onUrlChanged:
 
