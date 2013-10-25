@@ -434,6 +434,15 @@ const requestController = function(request, index, options) {
             let uri = ioService.newURI(url, null, null);
             request.redirectTo(uri);
             options.onLoadFinished(url, "success")
+        },
+
+        setHeader : function (key, value, merge) {
+            merge = (merge?true:false);
+            if (value == null) { // null value means to delete the header
+                value = '';
+                merge = false;
+            }
+            request.setRequestHeader(key, value, merge);
         }
     }
 }

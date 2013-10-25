@@ -1261,7 +1261,10 @@ The ``networkRequest`` object has two methods:
    will be called.
 - ``changeUrl(url)``: abort the current request and do an immediate redirection to
    the given url.
-
+- ``setHeader(key, value, merge)``: allows you to set an header on the HTTP request. If
+  value is ``null`` or an empty string, the header will be removed. The ``merge`` parameter
+  (only available on SlimerJS), is a boolean: ``true`` to merge the given value with an
+  existing value for this header. If ``false``, the old value is replaced by the new one.
 
 .. _webpage-onUrlChanged:
 

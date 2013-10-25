@@ -25,6 +25,7 @@ New API
 - Compatible with Firefox/XulRunner 25b4
 - Key shortcut ctrl+w on windows to quit SlimerJS (main window) or just close the window.
   (useful when the scripts ends without exit)
+- Support of ``setHeader()`` on the  second parameter of the ``webpage.onResourceRequested`` callback
 
 Fixed bugs
 ----------
