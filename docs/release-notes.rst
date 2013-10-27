@@ -18,21 +18,23 @@ New API
 - Support of ``webpage.settings.userName``, ``webpage.settings.password`` and ``webpage.settings.maxAuthAttemps``
 - New callback ``webpage.onAuthPrompt`` (not compatible with PhantomJS)
 - New method ``slimer.clearHttpAuth()`` to clear http authentication from the network cache.
-- Support of ``resource.postData`` in callback ``webpage.onResourceRequested``.
 - Support of `navigator.mozTCPSocket <https://developer.mozilla.org/en-US/docs/WebAPI/TCP_Socket>`_ is enabled
   for the main script. It needs at least XulRunner/Firefox 25 to use this API.
 - New property ``slimer.geckoVersion``
 - Compatible with Firefox/XulRunner 25b4
 - Key shortcut ctrl+w on windows to quit SlimerJS (main window) or just close the window.
   (useful when the scripts ends without exit)
-- Support of ``setHeader()`` on the  second parameter of the ``webpage.onResourceRequested`` callback
 
 Fixed bugs
 ----------
 
+- Fixed output on Windows: console messages are now output in real time, not any more at the
+  end of the execution of the script. (issue #105 and issue #7)
 
 Fixed PhantomJS conformance issues
 ----------------------------------
+- Support of ``setHeader()`` on the  second parameter of the ``webpage.onResourceRequested`` callback
+- Support of ``resource.postData`` in callback ``webpage.onResourceRequested``.
 
 
 Missing APIS in SlimerJS 0.9

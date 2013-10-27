@@ -185,6 +185,10 @@ slCommandLine.prototype = {
         // set working directory
         slConfiguration.workingDirectory = cmdLine.workingDirectory;
 
+        // bug in mozilla: the -attach-console used during the call of xulrunner
+        // on windows is not "eat"
+        cmdLine.handleFlag('attach-console', false)
+
         // read all options and parameters (except script name and script arguments)
         try {
             slConfiguration.handleFlags(cmdLine, this._scriptHandlers);

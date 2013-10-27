@@ -68,7 +68,7 @@ if SLIMERJSLAUNCHER == "":
         sys.exit(1)
 else:
     if not os.path.exists(SLIMERJSLAUNCHER):
-        print("SLIMERJSLAUNCHER environment variable does not contain an executable path. Set it with the path to Firefox")
+        print("SLIMERJSLAUNCHER environment variable does not contain an executable path: %s. Set it with the path to Firefox" % SLIMERJSLAUNCHER)
         sys.exit(1)
 
 def showHelp():
@@ -165,22 +165,14 @@ os.environ.data['__SLIMER_ARGS'] = string.join(SYS_ARGS,' ')
 # launch slimerjs with firefox/xulrunner
 SLCMD = [ SLIMERJSLAUNCHER ]
 SLCMD.extend(["-app", os.path.join(SLIMERJS_PATH, "application.ini"), "-no-remote"])
+if sys.platform == "win32":
+    SLCMD.extend(["-attach-console"])
 SLCMD.extend(PROFILE)
 SLCMD.extend(SYS_ARGS)
 
 exitCode = 0
 try:
-    if sys.platform == "win32":
-        # on windows, output from xulrunner is not displayed directly in the console...
-        proc = subprocess.Popen(SLCMD, 
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE
-                        )
-        stdout_value = proc.communicate()[0]
-        print (stdout_value)
-        exitCode = proc.returncode
-    else:
-        exitCode = subprocess.call(SLCMD)
+    exitCode = subprocess.call(SLCMD)
 except OSError as err:
     print('Fatal: %s. Are you sure %s exists?' % (err, SLIMERJSLAUNCHER))
     sys.exit(1)
