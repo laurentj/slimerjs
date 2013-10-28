@@ -342,10 +342,10 @@ describe("WebPage.content", function(){
                 +"        <meta charset=\"utf-8\">\n"
                 +"        <title>simple hello world</title>\n"
                 +"    </head>\n"
-                +"    <body>Hello World! <script type=\"text/javascript\"> var simpleJSToTestPlainText='foo';</script>\n"
+                +"    <body>Hello World! 你好 ! çàéèç\n"
+                +"    <script type=\"text/javascript\"> var simpleJSToTestPlainText='foo';</script>\n"
                 +"    <div style=\"display:none\">invisible text</div>\n"
-                +"    \n"
-                +"</body></html>";
+                +"    </body></html>";
             //expect(webpage.content.indexOf(content)).toEqual(0);
             expect(webpage.content).toEqual(content);
             webpage.close();
@@ -452,7 +452,7 @@ describe("WebPage.plainText", function(){
 
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
-            var content = " Hello World! ";
+            var content = " Hello World! 你好 ! çàéèç ";
             expect(webpage.plainText).toEqual(content);
             webpage.close();
         });

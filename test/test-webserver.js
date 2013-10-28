@@ -2,7 +2,7 @@
 
 describe("Webserver", function(){
     var webpage;
-    var url = "http://127.0.0.1:8083/asynchronousResponse";
+    var url = "http://127.0.0.1:8083/";
 
     beforeEach(function() {
         if (webpage) {
@@ -14,7 +14,7 @@ describe("Webserver", function(){
     it("handle asynchronous response",function() {
         var loaded = false;
         runs(function() {
-            webpage.open(url, function(success){
+            webpage.open(url+"asynchronousResponse", function(success){
                 loaded = true;
             });
         });
@@ -22,6 +22,21 @@ describe("Webserver", function(){
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
             expect(webpage.plainText).toEqual("done");
+            webpage.close();
+        });
+    });
+
+    it("is able to return UTF-8 content correctly",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open(url+"misc_chars", function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            expect(webpage.plainText).toEqual("Hello World! 你好 ! çàéè");
             webpage.close();
         });
     });

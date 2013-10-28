@@ -5,6 +5,18 @@
 Release Notes
 =============
 
+version 0.8.5
+=============
+
+Not released yet.
+
+Fixed bugs
+----------
+
+- Http response object of the embedded webserver did not take care correctly of unicode
+  characters (issue #106)
+
+
 version 0.8.4
 =============
 

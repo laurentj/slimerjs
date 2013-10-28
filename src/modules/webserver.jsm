@@ -242,15 +242,10 @@ HttpResponse.prototype = {
             this._response.bodyOutputStream.writeFrom(pipe.inputStream, data.length)
         }
         else {
-            let pipe = Components.classes["@mozilla.org/pipe;1"].createInstance(Components.interfaces.nsIPipe);
-            pipe.init(true, false, 8192, PR_UINT32_MAX, null);
-
             var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
                         .createInstance(Components.interfaces.nsIConverterOutputStream);
-
-            os.init(pipe.outputStream, encoding || 'UTF-8', 0, 0x0000);
+            os.init(this._response.bodyOutputStream, encoding || 'UTF-8', 0, 0x0000);
             os.writeString(data);
-            this._response.bodyOutputStream.writeFrom(pipe.inputStream, data.length);
         }
     },
 

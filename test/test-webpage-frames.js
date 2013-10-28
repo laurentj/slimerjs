@@ -88,7 +88,7 @@ describe("WebPage with frames", function(){
         expect(webpage.currentFrameName()).toEqual('subframebottom');
         expect(webpage.frameUrl).toEqual(domain+"simplehello.html");
         expect(webpage.frameContent).toNotEqual('');
-        expect(webpage.framePlainText).toEqual(' Hello World! ');
+        expect(webpage.framePlainText).toEqual(' Hello World! 你好 ! çàéèç ');
 
         // test switchToParentFrame
         webpage.switchToParentFrame();
