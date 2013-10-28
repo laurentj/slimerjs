@@ -101,19 +101,11 @@ mkdir %PROFILEDIR%
 SET PROFILE=-profile %PROFILEDIR%
 
 :callexec
-REM Firefox console output is done to NUL or something like that.
-REM So we have to redirect output to a file and then output this file
-REM FIXME: This solution is not optimal, since we cannot see messages at realtime
-REM FIXME: an other solution to redirect directly to the console ?
-set TMPFILE=%TMP%\slimer-output-%RANDOM%.tmp
-
-%SLIMERJSLAUNCHER% -app "%SLIMERDIR%application.ini" %PROFILE% -no-remote %__SLIMER_ARGS% >%TMPFILE% 2>&1
+%SLIMERJSLAUNCHER% -app "%SLIMERDIR%application.ini" %PROFILE% -attach-console -no-remote %__SLIMER_ARGS%
 
 if ["%CREATETEMP%"]==["Y"] (
      rmdir /S /Q %PROFILEDIR%
 )
-TYPE %TMPFILE%
-DEL %TMPFILE%
 ENDLOCAL
 
 goto :eof

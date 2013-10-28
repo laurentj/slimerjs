@@ -46,6 +46,10 @@ slCommandLine.prototype = {
 
         slConfiguration.workingDirectory = cmdLine.workingDirectory;
 
+        // bug in mozilla: the -attach-console used during the call of xulrunner
+        // on windows is not "eat"
+        cmdLine.handleFlag('attach-console', false)
+
         let configFile = cmdLine.handleFlagWithParam("config", false);
         if (configFile) {
             dump("--config not supported yet\n");
