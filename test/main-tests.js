@@ -152,16 +152,34 @@ webserverTest.listen(8083, function(request, response) {
         return;
     }
 
+    if (request.url == '/misc_chars') {
+        response.statusCode = 200;
+        response.headers = {
+            "Content-Type": "text/plain;charset=UTF-8",
+        }
+        try {
+            //response.setEncoding('UTF-8');
+            response.write("Hello World! 你好 ! çàéè");
+        }
+        catch(e) {
+            response.write("Error:"+e)
+        }
+        response.close();
+        return;
+    }
+
     var filepath = phantom.libraryPath+'/www'+request.url;
     if (fs.exists(filepath)){
         if (fs.isFile(filepath)) {
             response.statusCode = 200;
-            var str = fs.read(filepath, "b")
+            var str = ''
             var h = {};
             var enc = '';
+            var binfile = false;
             if (filepath.match(/\.png$/)) {
                 //response.setEncoding("binary");
                 //h['Content-Type'] = 'image/png';
+                binfile = true;
             }
             else if (filepath.match(/\.css$/))
                 h['Content-Type'] = 'text/css';
@@ -172,6 +190,12 @@ webserverTest.listen(8083, function(request, response) {
             else {
                 h['Content-Type'] = 'text/html;charset=UTF-8';
             }
+
+            if (binfile)
+                str = fs.read(filepath, "b")
+            else
+                str = fs.read(filepath)
+
             h['Content-Length'] = str.length;
             response.headers = h;
             response.write(str);

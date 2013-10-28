@@ -79,6 +79,22 @@ variable from a command line:
 You can of course set this variable in your .bashrc, .profile or in the computer
 properties on Windows.
 
+Using unstable version or very old versions of Firefox/XulRunner
+----------------------------------------------------------------
+
+By default, SlimerJS is configured to be compatible only with specific stable versions of
+Firefox and XulRunner. It's because internal API of Firefox/XulRunner can be changed
+between versions, and so SlimerJS may not work as expected. Stranges behaviors or even
+fatal errors may appears with unsupported versions. SlimerJS has only been tested with
+specific versions of Firefox/XulRunner.
+
+However, you can change this limitation, by modifying the ``maxVersion`` parameter (and/or
+the ``minVersion``) in the ``application.ini`` of SlimerJS. But remember you do it
+**at your own risk**.
+
+If you found issues with unsupported versions of Firefox/XulRunner, please discuss about
+it in the mailing-list, especially if it is about unstable version fo Firefox/XulRunner.
+
 .. _launch:
 
 Launching SlimerJS

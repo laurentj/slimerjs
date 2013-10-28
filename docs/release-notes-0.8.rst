@@ -5,6 +5,19 @@
 Release Notes of SlimerJS 0.8
 =============================
 
+version 0.8.5
+=============
+
+Not released yet.
+
+Fixed bugs
+----------
+
+- Http response object of the embedded webserver did not take care correctly of unicode
+  characters (issue #106)
+- Fixed output on Windows: console messages are now output in real time, not any more at the
+  end of the execution of the script. (issue #105 and issue #7)
+
 version 0.8.4
 =============
 
