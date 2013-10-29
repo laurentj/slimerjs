@@ -96,7 +96,7 @@ SlimerJS supports also some specific values for ``--proxy-type``:
 
 - ``auto``: SlimerJS tries to detect automatically proxies
 - ``system``: SlimerJS uses the proxy configuration set into the operating system
-- ``config-url``: SlimerJS uses the proxy configuration set into a file. The HTTP url
+- ``config-url``: SlimerJS uses the proxy configuration set into a file. The HTTP or file:// URL
    of this file should be indicated with the ``--proxy=`` option.
 
 

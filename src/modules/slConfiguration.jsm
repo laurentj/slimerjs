@@ -17,7 +17,7 @@ Cu.import('resource://slimerjs/slDebug.jsm');
 var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
                       .getService(Ci.nsIHttpProtocolHandler)
                       .userAgent;
-var availableProxyType = { 'auto':true, 'system':true, 'http':true, 'socksv5':true,
+var availableProxyType = { 'auto':true, 'system':true, 'http':true, 'socks5':true,
                             'socks':true, 'none':true, 'config-url':true
                         }
 
@@ -175,18 +175,28 @@ var slConfiguration = {
                 Services.prefs.setIntPref('network.proxy.type',5);
                 break;
             case 'http':
-                Services.prefs.setCharPref('network.proxy.http', this.proxyHost)
-                Services.prefs.setIntPref('network.proxy.http_port', this.proxyPort);
-                Services.prefs.setIntPref('network.proxy.type',1);
+                if (this.proxyHost) {
+                    Services.prefs.setCharPref('network.proxy.http', this.proxyHost)
+                    Services.prefs.setIntPref('network.proxy.http_port', this.proxyPort);
+                    Services.prefs.setIntPref('network.proxy.type',1);
+                }
+                else {
+                    Services.prefs.setIntPref('network.proxy.type',0);
+                }
                 break;
             case 'socks5':
             case 'socks':
-                Services.prefs.setCharPref('network.proxy.socks', this.proxyHost)
-                Services.prefs.setIntPref('network.proxy.socks_port', this.proxyPort);
-                Services.prefs.setIntPref('network.proxy.type',1);
+                if (this.proxyHost) {
+                    Services.prefs.setCharPref('network.proxy.socks', this.proxyHost)
+                    Services.prefs.setIntPref('network.proxy.socks_port', this.proxyPort);
+                    Services.prefs.setIntPref('network.proxy.type',1);
+                }
+                else {
+                    Services.prefs.setIntPref('network.proxy.type',0);
+                }
                 break;
             case 'config-url':
-                if (this.proxy.startsWith('http://')) {
+                if (this.proxy.startsWith('http://') || this.proxy.startsWith('file://')) {
                     Services.prefs.setIntPref('network.proxy.type',2);
                     Services.prefs.setCharPref('network.proxy.autoconfig_url', this.proxy)
                 }
