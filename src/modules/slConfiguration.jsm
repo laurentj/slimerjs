@@ -47,7 +47,6 @@ var optionsSpec = {
     javascriptCanCloseWindows : ['', '', true, false],
     remoteDebuggerPort : ['remote-debugger-port', 'int', -1, false],
     remoteDebuggerAutorun : ['remote-debugger-autorun', 'bool', false, false],
-    sslProtocol : ['ssl-protocol', 'ssl', 'sslv3', false],
     sslCertificatesPath : ['ssl-certificates-path', 'path', '', false]
 };
 
@@ -258,15 +257,6 @@ var slConfiguration = {
         return val;
     },
 
-    parse_ssl : function (val, cmdlineOpt) {
-        if (!(val == 'SSLv3' || val == 'SSLv2' || val=='TLSv1' || val == 'any')) {
-            throw new Error("Invalid value for '"+cmdlineOpt+"' option. It should be SSLv3, SSMv2, TLSv1, any");
-        }
-        if (val == 'any')
-            return '';
-        return val;
-    },
-
     parse_path : function (val, cmdlineOpt) {
         return val;
     },
@@ -392,7 +382,6 @@ var slConfiguration = {
     printDebugMessages : false,
     javascriptCanOpenWindows : true,
     javascriptCanCloseWindows : true,
-    sslProtocol : null,
     sslCertificatesPath : null,
     enableCoffeeScript: true
 }
