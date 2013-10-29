@@ -80,7 +80,6 @@ function showHelp() {
     #echo "  --script-encoding=<enc>            Sets the encoding used for the starting"
     #echo "                                     script (default is utf8)"
     #echo "  --web-security=[yes|no]            Enables web security (default is yes)"
-    #echo "  --ssl-protocol=[SSLv3|SSLv2|TLSv1|any]  Sets the SSL protocol"
     echo "  --version or v                     Prints out SlimerJS version"
     #echo "  --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded"
     #echo "                                     GhostDriver) '127.0.0.1:8910'"

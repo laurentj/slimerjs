@@ -28,7 +28,7 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>--remote-debugger-port=number        </td><td></td></tr>
     <tr><td>--remote-debugger-autorun=[yes|no]   </td><td></td></tr>
     <tr><td>--script-encoding=encoding           </td><td></td></tr>
-    <tr><td>--ssl-protocol=[SSLv3|SSLv2|TLSv1|any] </td><td></td></tr>
+    <tr><td>--ssl-protocol=[SSLv3|SSLv2|TLSv1|any] </td><td>Unsupported. Firefox supports only the SSLv3 protocol</td></tr>
     <tr><td>--ssl-certificates-path=/path/to/dir </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--version or -v                      </td><td>Implemented</td></tr>
     <tr><td>--webdriver or --wd or -w            </td><td></td></tr>

@@ -99,7 +99,6 @@ def showHelp():
     #print("  --script-encoding=<enc>            Sets the encoding used for the starting")
     #print("                                     script (default is utf8)")
     #print("  --web-security=[yes|no]            Enables web security (default is yes)")
-    #print("  --ssl-protocol=[SSLv3|SSLv2|TLSv1|any]  Sets the SSL protocol")
     print("  --version or v                     Prints out SlimerJS version")
     #print("  --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded")
     #print("                                     GhostDriver) '127.0.0.1:8910'")

@@ -43,7 +43,7 @@ PhantomJS options
 --remote-debugger-port=number        
 --remote-debugger-autorun=[yes|no]   
 --script-encoding=encoding           
---ssl-protocol=[SSLv3|SSLv2|TLSv1|any] 
+--ssl-protocol=[SSLv3|SSLv2|TLSv1|any]          Unsupported         Firefox supports only the SSL 3 protocol
 --ssl-certificates-path=/path/to/dir            N/A. see profiles
 --version or -v                                 Supported           Displays the version of SlimerJS
 --webdriver or --wd or -w            

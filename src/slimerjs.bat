@@ -144,7 +144,6 @@ REM    echo   --proxy-type=[http^|socks5^|none]    Specifies the proxy type (def
 REM    echo   --script-encoding=^<enc^>            Sets the encoding used for the starting
 REM    echo                                      script (default is utf8)
 REM    echo   --web-security=[yes^|no]            Enables web security (default is yes)
-REM    echo   --ssl-protocol=[SSLv3^|SSLv2^|TLSv1^|any]  Sets the SSL protocol
     echo   --version or v                     Prints out SlimerJS version
 REM    echo   --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded
 REM    echo                                      GhostDriver) '127.0.0.1:8910'
