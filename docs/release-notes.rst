@@ -21,7 +21,7 @@ New API
 - Support of `navigator.mozTCPSocket <https://developer.mozilla.org/en-US/docs/WebAPI/TCP_Socket>`_ is enabled
   for the main script. It needs at least XulRunner/Firefox 25 to use this API.
 - New property ``slimer.geckoVersion``
-- Compatible with Firefox/XulRunner 25b4
+- Compatible with Firefox/XulRunner 25.0
 - Key shortcut ctrl+w on windows to quit SlimerJS (main window) or just close the window.
   (useful when the scripts ends without exit)
 

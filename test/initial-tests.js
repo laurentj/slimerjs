@@ -170,11 +170,16 @@ console.log('\n------ tests on onerror support');
 
 phantom.onError = function(msg, stack) {
     assertEquals("Test onerror listener", msg, "message of the exception")
-    assertEquals(2, stack.length, "length of the stack");
+    assertEquals(3, stack.length, "length of the stack");
     assertNotEquals(-1, stack[0].sourceURL.indexOf('requiredexample.js'), "filename is requiredexample.js")
     assertEquals(9, stack[0].line, "line in requiredexample.js")
-    assertNotEquals(-1, stack[1].sourceURL.indexOf('initial-tests.js'), "filename is initial-tests.js")
-    assertEquals(180, stack[1].line, "line in initial-tests.js")
+    assertEquals("", stack[0].function, "function in stack")
+    assertNotEquals(-1, stack[1].sourceURL.indexOf('requiredexample.js'), "filename is requiredexample.js")
+    assertEquals(9, stack[1].line, "line in requiredexample.js")
+    assertEquals("exports.throwExcept", stack[1].function, "function in stack")
+    assertNotEquals(-1, stack[2].sourceURL.indexOf('initial-tests.js'), "filename is initial-tests.js")
+    assertEquals(185, stack[2].line, "line in initial-tests.js")
+    assertEquals("", stack[2].function, "function in stack")
 }
 
 ex.throwExcept();
