@@ -17,6 +17,9 @@ Cu.import('resource://slimerjs/slDebug.jsm');
 var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
                       .getService(Ci.nsIHttpProtocolHandler)
                       .userAgent;
+var availableProxyType = { 'auto':true, 'system':true, 'http':true, 'socksv5':true,
+                            'socks':true, 'none':true, 'config-url':true
+                        }
 
 var optionsSpec = {
     // name: [ 'cmdline option name', 'parser function name', 'default value',  supported],
@@ -28,8 +31,8 @@ var optionsSpec = {
     loadImages: ['load-images', 'bool', true, true],
     localToRemoteUrlAccessEnabled : ['local-to-remote-url-access', 'bool', false, false],
     outputEncoding : ['output-encoding', 'encoding', 'UTF-8', false],
-    proxyType : ['proxy-type', 'proxytype', 'http', false],
-    proxy : ['proxy', 'proxy', null, false],
+    proxyType : ['proxy-type', 'proxytype', 'http', true],
+    proxy : ['proxy', 'proxy', null, true],
     proxyHost : ['', '', '', false],
     proxyPort : ['', '', 1080, false],
     proxyAuth : ['proxy-auth', 'proxyauth', null, false],
@@ -164,6 +167,41 @@ var slConfiguration = {
         Services.prefs.setBoolPref('browser.cache.disk.enable', this.diskCacheEnabled);
         if (this.maxDiskCacheSize > -1)
             Services.prefs.setIntPref('browser.cache.disk.capacity', this.maxDiskCacheSize);
+
+        switch (this.proxyType) {
+            case 'auto':
+                Services.prefs.setIntPref('network.proxy.type',4);
+                break;
+            case 'system':
+                Services.prefs.setIntPref('network.proxy.type',5);
+                break;
+            case 'http':
+                Services.prefs.setCharPref('network.proxy.http', this.proxyHost)
+                Services.prefs.setIntPref('network.proxy.http_port', this.proxyPort);
+                Services.prefs.setIntPref('network.proxy.type',1);
+                break;
+            case 'socks5':
+            case 'socks':
+                Services.prefs.setCharPref('network.proxy.socks', this.proxyHost)
+                Services.prefs.setIntPref('network.proxy.socks_port', this.proxyPort);
+                Services.prefs.setIntPref('network.proxy.type',1);
+                break;
+            case 'config-url':
+                if (this.proxy.startsWith('http://')) {
+                    Services.prefs.setIntPref('network.proxy.type',2);
+                    Services.prefs.setCharPref('network.proxy.autoconfig_url', this.proxy)
+                }
+                break;
+            case '':
+                if (this.proxy != '') {
+                    Services.prefs.setCharPref('network.proxy.http', this.proxyHost)
+                    Services.prefs.setIntPref('network.proxy.http_port', this.proxyPort);
+                    Services.prefs.setIntPref('network.proxy.type',1);
+                    break;
+                }
+            default:
+                Services.prefs.setIntPref('network.proxy.type',0);
+        }
     },
 
     parse_int : function (val, cmdlineOpt) {
@@ -190,8 +228,8 @@ var slConfiguration = {
     },
 
     parse_proxytype : function (val, cmdlineOpt) {
-        if (val != 'http' && val != 'socks5' && val != 'none' && val != '') {
-            throw new Error("Invalid value for '"+cmdlineOpt+"' option. It should be http or socks5");
+        if (val != "" && !(val in availableProxyType)) {
+            throw new Error("Invalid value for '"+cmdlineOpt+"' option. It should be auto, system, http, socksv5, none or config-url");
         }
         if (val == 'none')
             return '';

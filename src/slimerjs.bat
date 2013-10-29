@@ -119,9 +119,9 @@ REM if delayed variable expansion is turned on then the character ! needs to be 
 	echo   Available options are:
 	echo.
     echo   --config=^<filename^>                Load the given configuration file
-REM    echo                                      (JSON formated)
-REM    echo   --debug=[yes^|no]                   Prints additional warning and debug message
-REM    echo                                      (default is no)
+    echo                                      (JSON formated)
+    echo   --debug=[yes^|no]                   Prints additional warning and debug message
+    echo                                      (default is no)
     echo   --disk-cache=[yes^|no]              Enables disk cache (default is no).
     echo   --help or -h                       Show this help
 REM    echo   --ignore-ssl-errors=[yes^|no]       Ignores SSL errors (default is no).
@@ -137,10 +137,10 @@ REM    echo   --remote-debugger-port=^<number^>    Starts the script in a debug 
 REM    echo                                      listens on the specified port
 REM    echo   --remote-debugger-autorun=[yes^|no] Runs the script in the debugger immediately
 REM    echo                                      (default is no)
-REM    echo   --proxy=^<proxy url^>                Sets the proxy server
+    echo   --proxy=^<proxy url^>                Sets the proxy server
 REM    echo   --proxy-auth=^<username:password^>   Provides authentication information for the
 REM    echo                                      proxy
-REM    echo   --proxy-type=[http^|socks5^|none]    Specifies the proxy type (default is http)
+    echo   --proxy-type=[http^|socks5^|none^|auto^|system^|config-url]    Specifies the proxy type (default is http)
 REM    echo   --script-encoding=^<enc^>            Sets the encoding used for the starting
 REM    echo                                      script (default is utf8)
 REM    echo   --web-security=[yes^|no]            Enables web security (default is yes)

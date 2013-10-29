@@ -37,9 +37,9 @@ PhantomJS options
 --local-to-remote-url-access=[yes|no]
 --max-disk-cache-size=size                      Supported (0.9)     Limits the size of the disk cache (in KB)
 --output-encoding=encoding           
---proxy=address:port                 
+--proxy=[address:port|url]                      Supported (0.9)     See below for possible values
 --proxy-auth=username:password       
---proxy-type=[http|socks5|none]      
+--proxy-type=[http|socks5|none]                 Supported (0.9)     See below other possible values
 --remote-debugger-port=number        
 --remote-debugger-autorun=[yes|no]   
 --script-encoding=encoding           
@@ -84,6 +84,20 @@ Available keywords are:
 - ``page``: show calls of some webpage API
 - ``pageloading``: show calls of webpage listeners about resource loading and page loading
 - ``netprogress``: show internals network events
+
+About proxy configuration
+-------------------------
+
+You can indicate an HTTP proxy configuration or a SOCKS proxy configuration:
+``--proxy-type=socks5`` or ``--proxy-type=http``. For this both type, the host name and the
+port should be indicated with the ``--proxy=`` option: ``--proxy=host:port``
+
+SlimerJS supports also some specific values for ``--proxy-type``:
+
+- ``auto``: SlimerJS tries to detect automatically proxies
+- ``system``: SlimerJS uses the proxy configuration set into the operating system
+- ``config-url``: SlimerJS uses the proxy configuration set into a file. The HTTP url
+   of this file should be indicated with the ``--proxy=`` option.
 
 
 Configuration file
