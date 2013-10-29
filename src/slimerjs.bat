@@ -138,8 +138,8 @@ REM    echo                                      listens on the specified port
 REM    echo   --remote-debugger-autorun=[yes^|no] Runs the script in the debugger immediately
 REM    echo                                      (default is no)
     echo   --proxy=^<proxy url^>                Sets the proxy server
-REM    echo   --proxy-auth=^<username:password^>   Provides authentication information for the
-REM    echo                                      proxy
+    echo   --proxy-auth=^<username:password^>   Provides authentication information for the
+    echo                                      proxy
     echo   --proxy-type=[http^|socks5^|none^|auto^|system^|config-url]    Specifies the proxy type (default is http)
 REM    echo   --script-encoding=^<enc^>            Sets the encoding used for the starting
 REM    echo                                      script (default is utf8)

@@ -35,7 +35,7 @@ var optionsSpec = {
     proxy : ['proxy', 'proxy', null, true],
     proxyHost : ['', '', '', false],
     proxyPort : ['', '', 1080, false],
-    proxyAuth : ['proxy-auth', 'proxyauth', null, false],
+    proxyAuth : ['proxy-auth', 'proxyauth', null, true],
     proxyAuthUser : ['', '', '', false],
     proxyAuthPassword : ['', '', '', false],
     scriptEncoding : ['script-encoding', 'encoding', 'UTF-8', false],

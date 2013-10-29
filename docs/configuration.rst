@@ -38,7 +38,7 @@ PhantomJS options
 --max-disk-cache-size=size                      Supported (0.9)     Limits the size of the disk cache (in KB)
 --output-encoding=encoding           
 --proxy=[address:port|url]                      Supported (0.9)     See below for possible values
---proxy-auth=username:password       
+--proxy-auth=username:password                  Supported (0.9)     
 --proxy-type=[http|socks5|none]                 Supported (0.9)     See below other possible values
 --remote-debugger-port=number        
 --remote-debugger-autorun=[yes|no]   

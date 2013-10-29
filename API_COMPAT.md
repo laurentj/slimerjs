@@ -22,9 +22,9 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>--local-to-remote-url-access=[yes|no]</td><td></td></tr>
     <tr><td>--max-disk-cache-size=size           </td><td>Implemented</td></tr>
     <tr><td>--output-encoding=encoding           </td><td></td></tr>
-    <tr><td>--proxy=address:port                 </td><td>Supported</td></tr>
-    <tr><td>--proxy-auth=username:password       </td><td></td></tr>
-    <tr><td>--proxy-type=[http|socks5|none|auto|system|config-url]</td><td>Supported</td></tr>
+    <tr><td>--proxy=address:port                 </td><td>Implemented</td></tr>
+    <tr><td>--proxy-auth=username:password       </td><td>Implemented</td></tr>
+    <tr><td>--proxy-type=[http|socks5|none|auto|system|config-url]</td><td>Implemented</td></tr>
     <tr><td>--remote-debugger-port=number        </td><td></td></tr>
     <tr><td>--remote-debugger-autorun=[yes|no]   </td><td></td></tr>
     <tr><td>--script-encoding=encoding           </td><td></td></tr>

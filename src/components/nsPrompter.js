@@ -11,6 +11,7 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://slimerjs/slUtils.jsm");
+Cu.import("resource://slimerjs/slConfiguration.jsm");
 
 function Prompter() {
     // Note that EmbedPrompter clones this implementation.
@@ -21,7 +22,7 @@ Prompter.prototype = {
     QueryInterface   : XPCOMUtils.generateQI([Ci.nsIPromptFactory, Ci.nsIPromptService, Ci.nsIPromptService2]),
 
 
-    /* ----------  private memebers  ---------- */
+    /* ----------  private members  ---------- */
 
     pickPrompter : function (domWin) {
         return new ModalPrompter(domWin);
@@ -318,31 +319,7 @@ let PromptUtils = {
         // values, lest the prompt forget to set them.
         for (let propName in obj)
             obj[propName] = propBag.getProperty(propName);
-    },
-
-    getTabModalPrompt : function (domWin) {
-        var promptBox = null;
-
-        try {
-            // Get the topmost window, in case we're in a frame.
-            var promptWin = domWin.top;
-
-            // Get the chrome window for the content window we're using.
-            // (Unwrap because we need a non-IDL property below.)
-            var chromeWin = promptWin.QueryInterface(Ci.nsIInterfaceRequestor)
-                                     .getInterface(Ci.nsIWebNavigation)
-                                     .QueryInterface(Ci.nsIDocShell)
-                                     .chromeEventHandler.ownerDocument
-                                     .defaultView.wrappedJSObject;
-
-            if (chromeWin.getTabModalPromptBox)
-                promptBox = chromeWin.getTabModalPromptBox(promptWin);
-        } catch (e) {
-            // If any errors happen, just assume no tabmodal prompter.
-        }
-
-        return promptBox;
-    },
+    }
 };
 
 XPCOMUtils.defineLazyGetter(PromptUtils, "strBundle", function () {
@@ -450,22 +427,6 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
 
 
     openPrompt : function (args) {
-        // Check pref, if false/missing do not ever allow tab-modal prompts.
-        const prefName = "prompts.tab_modal.enabled";
-        let prefValue = false;
-        if (Services.prefs.getPrefType(prefName) == Services.prefs.PREF_BOOL)
-            prefValue = Services.prefs.getBoolPref(prefName);
-
-        let allowTabModal = this.allowTabModal && prefValue;
-
-        if (allowTabModal && this.domWin) {
-            let tabPrompt = PromptUtils.getTabModalPrompt(this.domWin);
-            if (tabPrompt) {
-                openTabPrompt(this.domWin, tabPrompt, args);
-                return;
-            }
-        }
-
         // If we can't do a tab modal prompt, fallback to using a window-modal dialog.
         const COMMON_DIALOG = "chrome://global/content/commonDialog.xul";
         const SELECT_DIALOG = "chrome://global/content/selectDialog.xul";
@@ -814,6 +775,15 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
     },
 
     _slimerPromptUsernameAndPassword : function (url, authInfo, credentials, realm) {
+        if (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY) {
+            if (slConfiguration.proxyType == 'http' || slConfiguration.proxyType == 'socks5'
+                || slConfiguration.proxyType == 'socks5') {
+                credentials.username = slConfiguration.proxyAuthUser;
+                credentials.password = slConfiguration.proxyAuthPassword;
+                return true;
+            }
+            return false;
+        }
         let webpage;
         let browser = slUtils.getBrowserFromContentWindow(this.domWin);
         if (browser)

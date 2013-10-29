@@ -15,7 +15,7 @@ New API
 
 - Support of ``--config`` on the command line, to indicate a configuration file
 - Support of ``--disk-cache`` and ``--max-disk-cache-size`` on the command line
-- Support of ``--proxy`` and ``--proxy-type`` options on the command line
+- Support of ``--proxy``, ``--proxy-auth`` and ``--proxy-type`` options on the command line
 - Support of ``webpage.settings.userName``, ``webpage.settings.password`` and ``webpage.settings.maxAuthAttemps``
 - New callback ``webpage.onAuthPrompt`` (not compatible with PhantomJS)
 - New method ``slimer.clearHttpAuth()`` to clear http authentication from the network cache.
