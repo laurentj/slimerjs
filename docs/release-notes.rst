@@ -13,10 +13,6 @@ This version is in development.
 New API
 -------
 
-- Support of ``--config`` on the command line, to indicate a configuration file
-- Support of ``--disk-cache`` and ``--max-disk-cache-size`` on the command line
-- Support of ``--proxy``, ``--proxy-auth`` and ``--proxy-type`` options on the command line
-- Support of ``webpage.settings.userName``, ``webpage.settings.password`` and ``webpage.settings.maxAuthAttemps``
 - New callback ``webpage.onAuthPrompt`` (not compatible with PhantomJS)
 - New method ``slimer.clearHttpAuth()`` to clear http authentication from the network cache.
 - Support of `navigator.mozTCPSocket <https://developer.mozilla.org/en-US/docs/WebAPI/TCP_Socket>`_ is enabled
@@ -34,9 +30,13 @@ Fixed bugs
 
 Fixed PhantomJS conformance issues
 ----------------------------------
+- Support of ``--config`` on the command line, to indicate a configuration file
+- Support of ``--disk-cache`` and ``--max-disk-cache-size`` on the command line
+- Support of ``--proxy``, ``--proxy-auth`` and ``--proxy-type`` options on the command line
 - Support of ``setHeader()`` on the  second parameter of the ``webpage.onResourceRequested`` callback
 - Support of ``resource.postData`` in callback ``webpage.onResourceRequested``.
-
+- Support of the callback ``webpage.onResourceError``
+- Support of ``webpage.settings.userName``, ``webpage.settings.password`` and ``webpage.settings.maxAuthAttemps``
 
 Missing APIS in SlimerJS 0.9
 ----------------------------

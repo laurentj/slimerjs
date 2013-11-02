@@ -777,7 +777,8 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
     _slimerPromptUsernameAndPassword : function (url, authInfo, credentials, realm) {
         if (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY) {
             if (slConfiguration.proxyType == 'http' || slConfiguration.proxyType == 'socks5'
-                || slConfiguration.proxyType == 'socks5') {
+                || slConfiguration.proxyType == 'socks') {
+//FIXME : check number of attempts
                 credentials.username = slConfiguration.proxyAuthUser;
                 credentials.password = slConfiguration.proxyAuthPassword;
                 return true;

@@ -23,9 +23,8 @@ exports.registerBrowser = function(browser, options) {
             onRequest: null,
             onResponse: null,
 
-            // These two if you need to tamper data
+            // if you need to tamper data
             _onRequest: null,
-            _onResponse: null,
 
             // Mime types to capture (regexp array)
             captureTypes: [],
@@ -105,9 +104,6 @@ exports.unregisterBrowser = function(browser) {
 
 const startTracer = function() {
     observers.add("http-on-modify-request", onRequestStart);
-    observers.add("http-on-examine-response", onRequestResponse);
-    observers.add("http-on-examine-cached-response", onRequestResponse);
-
     unload.when(exports.stopTracer);
 };
 exports.startTracer = startTracer;
@@ -115,8 +111,6 @@ exports.startTracer = startTracer;
 const stopTracer = function() {
     try {
         observers.remove("http-on-modify-request", onRequestStart);
-        observers.remove("http-on-examine-response", onRequestResponse);
-        observers.remove("http-on-examine-cached-response", onRequestResponse);
     } catch(e) {
         console.exception(e);
     }
@@ -128,6 +122,7 @@ const stopTracer = function() {
 exports.stopTracer = stopTracer;
 
 const onRequestStart = function(subject, data) {
+
     let browser = getBrowserForRequest(subject);
     if (!browser || !browserMap.has(browser)) {
         return;
@@ -140,10 +135,30 @@ const onRequestStart = function(subject, data) {
         options._onRequest(subject);
     }
 
+    let req = traceRequest(index, subject);
+
+    if (DEBUG_NETWORK_PROGRESS) {
+        slDebugLog("network: resource request #"+req.id+" started: "+req.method+" - "+req.url);
+    }
+
     if (typeof(options.onRequest) === "function") {
-        options.onRequest(traceRequest(index, subject),
+        options.onRequest(req,
                           requestController(subject, index, options));
     }
+    if (subject.status) {
+        let [code, msg] = getErrorCode(subject.status);
+        if (DEBUG_NETWORK_PROGRESS) {
+            slDebugLog("network: resource request #"+req.id+" in error: #"+code+" - "+msg);
+        }
+
+        if (typeof(options.onError) === "function") {
+            options.onError({id: req.id, url: req.url, errorCode:code, errorString:msg});
+        }
+    }
+
+    let listener = new TracingListener(index, options);
+    subject.QueryInterface(Ci.nsITraceableChannel);
+    listener.originalListener = subject.setNewListener(listener);
 };
 
 const onFileRequestStart = function(subject, browser) {
@@ -168,31 +183,6 @@ const onFileRequestStart = function(subject, browser) {
     }
 };
 
-const onRequestResponse = function(subject, data) {
-    let browser = getBrowserForRequest(subject);
-    if (!browser || !browserMap.has(browser)) {
-        return;
-    }
-
-    // Get request ID
-    let index;
-    let {options, requestList} = browserMap.get(browser);
-    requestList = requestList.map(function(val, i) {
-        if (subject.name == val) {
-            index = i + 1;
-        }
-        return val;
-    });
-    if (typeof(options._onResponse) === "function") {
-        options._onResponse(subject);
-    }
-
-    let listener = new TracingListener(subject, index, options);
-    subject.QueryInterface(Ci.nsITraceableChannel);
-    listener.originalListener = subject.setNewListener(listener);
-};
-
-
 const onFileRequestResponse = function(subject, browser) {
 
     // Get request ID
@@ -205,9 +195,6 @@ const onFileRequestResponse = function(subject, browser) {
         }
         return val;
     });
-    /*if (typeof(options._onResponse) === "function") {
-        options._onResponse(subject);
-    }*/
 
     let response = {
         id: index,
@@ -243,9 +230,6 @@ const onFileRequestResponseDone = function(subject, browser) {
         }
         return val;
     });
-    /*if (typeof(options._onResponse) === "function") {
-        options._onResponse(subject);
-    }*/
 
     let response = {
         id: index,
@@ -269,24 +253,68 @@ const onFileRequestResponseDone = function(subject, browser) {
     }
 };
 
-const TracingListener = function(subject, index, options, response) {
+const TracingListener = function(index, options) {
+    this.index = index;
     this.options = options;
-    this.response = response || traceResponse(index, subject);
+    this.response = null;
+    this.errorAlreadyNotified = false;
     this.data = [];
     this.dataLength = 0;
 };
 TracingListener.prototype = {
     onStartRequest: function(request, context) {
         this.originalListener.onStartRequest(request, context);
-        if (typeof(request.URI) === "undefined" || !this._inWindow(request)) {
+        request.QueryInterface(Ci.nsIHttpChannel);
+        if (typeof(request.URI) === "undefined" ||!this._inWindow(request)) {
             return;
         }
 
-        this.response.stage = "start";
-        this.response.time = new Date();
+        this.response = traceResponse(this.index, request);
 
-        if (typeof(this.options.onResponse) == "function") {
-            this.options.onResponse(mix({}, this.response));
+        if (DEBUG_NETWORK_PROGRESS) {
+            slDebugLog("network: resource #"+this.response.id+" response 'start': "+this.response.url);
+        }
+
+        if (request.status) {
+
+            let [code, msg] = getErrorCode(request.status);
+            if (DEBUG_NETWORK_PROGRESS) {
+                slDebugLog("network: resource #"+this.response.id+" response in error: #"+code+" - "+msg);
+            }
+            if (typeof(this.options.onError) === "function")
+                this.options.onError({id: this.response.id, url: this.response.url, errorCode:code, errorString:msg});
+            this.errorAlreadyNotified = true;
+        }
+        else {
+            if (typeof(this.options.onResponse) == "function") {
+                this.options.onResponse(mix({}, this.response));
+            }
+            request = request.QueryInterface(Ci.nsIHttpChannel);
+            let errorCode = 0, errorStr;
+            if (request.responseStatus == 403) {
+                errorCode = 201;
+                errorStr ='the access to the remote content was denied';
+            }
+            else if (request.responseStatus == 404) {
+                errorCode = 203;
+                errorStr ='the remote content was not found at the server';
+            }
+            else if (request.responseStatus == 401) {
+                errorCode = 204;
+                errorStr ='Unauthorized content';
+            }
+            if (errorCode) {
+                if (DEBUG_NETWORK_PROGRESS) {
+                    slDebugLog("network: resource #"+this.response.id+" response in error: #"+errorCode+" - "+errorStr);
+                }
+
+                if (typeof(this.options.onError) === "function")
+                    this.options.onError({id: this.response.id,
+                                         url: this.response.url,
+                                         errorCode:errorCode,
+                                         errorString:errorStr});
+                this.errorAlreadyNotified = true;
+            }
         }
     },
     onDataAvailable: function(request, context, inputStream, offset, count) {
@@ -322,6 +350,20 @@ TracingListener.prototype = {
         let browser = getBrowserForRequest(request);
         if (!browserMap.has(browser)) {
             return;
+        }
+
+        if (DEBUG_NETWORK_PROGRESS) {
+            slDebugLog("network: resource #"+this.response.id+" response end status: "+this.response.url);
+        }
+        if (request.status) {
+            let [code, msg] = getErrorCode(request.status);
+            if (DEBUG_NETWORK_PROGRESS) {
+                slDebugLog("network: resource #"+this.response.id+" response in error: "+code+" - "+msg);
+            }
+            if (!this.errorAlreadyNotified && typeof(this.options.onError) === "function") {
+                this.options.onError({id: this.response.id, url: this.response.url, errorCode:code, errorString:msg});
+            }
+            this.errorAlreadyNotified = false;
         }
 
         if (typeof(this.options.onResponse) != "function") {
@@ -426,6 +468,16 @@ const requestController = function(request, index, options) {
                         body: ""
                     });
             }
+            if (typeof(options.onError) == "function") {
+                options.onError(
+                    {
+                        id: index,
+                        url: request.URI.spec,
+                        errorCode: 95,
+                        errorString: "Resource loading aborted"
+                    });
+            }
+
             if (typeof(options.onLoadFinished) == "function") {
                 options.onLoadFinished(request.URI.spec, "fail")
             }
@@ -500,6 +552,25 @@ const traceRequest = function(id, request) {
 
 const traceResponse = function(id, request) {
     request.QueryInterface(Ci.nsIHttpChannel);
+    if (request.status) { // network error
+        return {
+            id: id,
+            url: request.URI.spec,
+            time: new Date(),
+            headers: [],
+            bodySize: 0,
+            contentType: null,
+            contentCharset: null,
+            redirectURL: null,
+            stage: "start",
+            status: null,
+            statusText: null,
+            // Extensions
+            referrer: "",
+            body: ""
+        };
+    }
+    
     let headers = [];
     request.visitResponseHeaders(function(name, value) {
         value.split("\n").forEach(function(v) {
@@ -520,13 +591,13 @@ const traceResponse = function(id, request) {
     return {
         id: id,
         url: request.URI.spec,
-        time: null,
+        time: new Date(),
         headers: headers,
         bodySize: 0,
         contentType: request.contentType,
         contentCharset: request.contentCharset,
         redirectURL: redirect,
-        stage: null,
+        stage: "start",
         status: request.responseStatus,
         statusText: unescape(encodeURIComponent(request.responseStatusText)),
 
@@ -810,6 +881,7 @@ ProgressListener.prototype = {
             }
 
             if (flags & Ci.nsIWebProgressListener.STATE_REDIRECTING) {
+                request.QueryInterface(Ci.nsIHttpChannel);
                 this.mainPageURI = ioService.newURI(request.URI.resolve(request.getResponseHeader('Location')), request.URI.originCharset, null)
                 if (DEBUG_NETWORK_PROGRESS)
                     slDebugLog("network: main request redirect to "+this.mainPageURI.spec);
@@ -837,7 +909,6 @@ ProgressListener.prototype = {
             return
         }
         slDebugLog("network: security change for "+aRequest.URI.spec+ " : "+debugSecurityFlags(flags));
-
     },
     debug : function(aWebProgress, aRequest) {},
     onProgressChange : function (aWebProgress, aRequest,
@@ -852,6 +923,56 @@ ProgressListener.prototype = {
         slDebugLog("network: progress total:"+aCurTotalProgress+"/"+aMaxTotalProgress+"; uri: "+aCurSelfProgress+"/"+aCurTotalProgress+" for "+aRequest.URI.spec);
     }
 };
+
+
+function getErrorCode(status) {
+    let errorCode = 99;
+    let errorString = 'an unknown network-related error was detected ('+status+')';
+    switch (status) {
+        case Cr.NS_ERROR_MALFORMED_URI:        errorCode= 399 ;  errorString="The URI is malformed"; break;
+        case Cr.NS_ERROR_CONNECTION_REFUSED:   errorCode= 1;   errorString="the remote server refused the connection"; break;
+        case Cr.NS_ERROR_NET_TIMEOUT:          errorCode= 4;   errorString="the connection to the remote server timed out"; break;
+        case Cr.NS_ERROR_OFFLINE:              errorCode= 97;  errorString="The requested action could not be completed in the offline state"; break;
+        case Cr.NS_ERROR_NO_CONTENT:           errorCode= 298; errorString="Channel opened successfully but no data will be returned"; break;
+        case Cr.NS_ERROR_ALREADY_CONNECTED:
+        case Cr.NS_ERROR_NOT_CONNECTED:
+        case Cr.NS_ERROR_ALREADY_OPENED:
+        case Cr.NS_ERROR_DNS_LOOKUP_QUEUE_FULL:
+        case Cr.NS_ERROR_UNKNOWN_SOCKET_TYPE:
+        case Cr.NS_ERROR_INSUFFICIENT_DOMAIN_LEVELS:
+        case Cr.NS_ERROR_SOCKET_CREATE_FAILED: errorCode=8 ;   errorString="The connection was broken due to disconnection from the network or failure to start the network"; break;
+        case Cr.NS_ERROR_UNKNOWN_PROTOCOL:     errorCode= 301; errorString="The URI scheme corresponds to an unknown protocol handler"; break;
+        case Cr.NS_ERROR_PORT_ACCESS_NOT_ALLOWED: errorCode= 96; errorString="Establishing a connection to an unsafe or otherwise banned port was prohibited"; break;
+        case Cr.NS_ERROR_NOT_RESUMABLE:
+        case Cr.NS_ERROR_NET_INTERRUPT:
+        case Cr.NS_ERROR_NET_RESET:            errorCode= 2;   errorString="the remote server closed the connection prematurely"; break;
+        case Cr.NS_ERROR_INVALID_CONTENT_ENCODING: errorCode= 399; errorString="The content encoding of the source document is incorrect"; break;
+        case Cr.NS_ERROR_UNKNOWN_HOST:         errorCode= 3;   errorString="The lookup of the hostname failed"; break;
+        case Cr.NS_ERROR_REDIRECT_LOOP:        errorCode= 297; errorString="The request failed as a result of a detected redirection loop"; break;
+        case Cr.NS_ERROR_CORRUPTED_CONTENT:    errorCode= 296; errorString="Corrupted content was received from server"; break;
+        case Cr.NS_ERROR_PROXY_CONNECTION_REFUSED: errorCode=101; errorString="The connection to the proxy server was refused"; break;
+        case Cr.NS_ERROR_UNKNOWN_PROXY_HOST:   errorCode= 103; errorString="The lookup of the proxy hostname failed"; break;
+        case Cr.NS_ERROR_REMOTE_XUL:
+        case Cr.NS_ERROR_UNSAFE_CONTENT_TYPE: errorCode= 9; errorString="the background request is not currently allowed due to platform policy"; break;
+        case Cr.NS_ERROR_HOST_IS_IP_ADDRESS: errorCode= 399; errorString="The host string is an IP address"; break;
+        case Cr.NS_ERROR_FIRST_HEADER_FIELD_COMPONENT_EMPTY: errorCode= 399; errorString="Syntax error in headers"; break;
+        case Cr.NS_ERROR_IN_PROGRESS:
+        case Cr.NS_ERROR_ENTITY_CHANGED:
+            errorCode= 99; break;
+        case Cr.NS_ERROR_CACHE_KEY_NOT_FOUND:
+        case Cr.NS_ERROR_CACHE_DATA_IS_STREAM:
+        case Cr.NS_ERROR_CACHE_DATA_IS_NOT_STREAM:
+        case Cr.NS_ERROR_CACHE_WAIT_FOR_VALIDATION:
+        case Cr.NS_ERROR_CACHE_ENTRY_DOOMED:
+        case Cr.NS_ERROR_CACHE_READ_ACCESS_DENIED:
+        case Cr.NS_ERROR_CACHE_WRITE_ACCESS_DENIED:
+        case Cr.NS_ERROR_CACHE_IN_USE:
+        case Cr.NS_ERROR_DOCUMENT_NOT_CACHED:
+            errorCode= 295; errorString="Error with the cache"; break;
+    }
+    return [errorCode, errorString];
+}
+
 
 
 function debugFlags(flags) {

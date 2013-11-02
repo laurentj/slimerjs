@@ -57,16 +57,20 @@ Callbacks list:
 :ref:`onConfirm <webpage-onConfirm>` :ref:`onConsoleMessage <webpage-onConsoleMessage>` :ref:`onError <webpage-onError>` 
 :ref:`onFilePicker <webpage-onFilePicker>` :ref:`onInitialized <webpage-onInitialized>` :ref:`onLoadFinished <webpage-onLoadFinished>` 
 :ref:`onLoadStarted <webpage-onLoadStarted>` :ref:`onNavigationRequested <webpage-onNavigationRequested>` :ref:`onPageCreated <webpage-onPageCreated>` 
-:ref:`onPrompt <webpage-onPrompt>` :ref:`onResourceRequested <webpage-onResourceRequested>` :ref:`onResourceReceived <webpage-onResourceReceived>` 
+:ref:`onPrompt <webpage-onPrompt>` :ref:`onResourceError <webpage-onResourceError>`
+:ref:`onResourceRequested <webpage-onResourceRequested>` :ref:`onResourceReceived <webpage-onResourceReceived>` 
 :ref:`onUrlChanged <webpage-onUrlChanged>`
 
 Internal methods to trigger callbacks:
 
 :ref:`closing() <webpage-closing>` :ref:`initialized() <webpage-initialized>` 
-:ref:`javaScriptAlertSent() <webpage-javaScriptAlertSent>` :ref:`javaScriptConsoleMessageSent() <webpage-javaScriptConsoleMessageSent>`
-:ref:`loadFinished() <webpage-loadFinished>` 
-:ref:`loadStarted() <webpage-loadStarted>` :ref:`navigationRequested() <webpage-navigationRequested>` :ref:`rawPageCreated() <webpage-rawPageCreated>` 
-:ref:`resourceReceived() <webpage-resourceReceived>` :ref:`resourceRequested() <webpage-resourceRequested>` :ref:`urlChanged() <webpage-urlChanged>` 
+:ref:`javaScriptAlertSent() <webpage-javaScriptAlertSent>`
+:ref:`javaScriptConsoleMessageSent() <webpage-javaScriptConsoleMessageSent>`
+:ref:`loadFinished() <webpage-loadFinished>` :ref:`loadStarted() <webpage-loadStarted>`
+:ref:`navigationRequested() <webpage-navigationRequested>` :ref:`rawPageCreated() <webpage-rawPageCreated>`
+:ref:`resourceError() <webpage-resourceError>`
+:ref:`resourceReceived() <webpage-resourceReceived>` :ref:`resourceRequested() <webpage-resourceRequested>`
+:ref:`urlChanged() <webpage-urlChanged>` 
 
 
 
@@ -1190,6 +1194,42 @@ onPrompt
 -----------------------------------------
 
 
+.. _webpage-onResourceError:
+
+onResourceError
+-----------------------------------------
+This callback is invoked when the browser received a netword error about a resource.
+
+The unique parameter received by the callback is an object containing these
+informations:
+ 
+- ``id``: the number of the requested resource
+- ``url``:  the url of the resource
+- ``errorCode``: an error code (see possible values below)
+- ``errorString`` the error message.
+
+List of supported error codes: (see `QNetworkReply codes in QT <http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkreply.html#NetworkError-enum>`_)
+
+- ``1``: the remote server refused the connection (the server is not accepting requests)
+- ``2``: the remote server closed the connection prematurely, before the entire reply
+        was received and processed
+- ``3``: the remote host name was not found (invalid hostname)
+- ``4``: the connection to the remote server timed out
+- ``5``: the operation was canceled via calls to abort() or close() before it was finished.
+- ``6``: the SSL/TLS handshake failed and the encrypted channel could not be established. The sslErrors() signal should have been emitted.
+- ``8``: the connection was broken due to disconnection from the network
+           or failure to start the network.
+- ``9``: the background request is not currently allowed due to platform policy.
+- ``99``: an unknown network-related error was detected
+- ``101``: the connection to the proxy server was refused (the proxy server is not accepting requests)
+- ``103``: the proxy host name was not found (invalid proxy hostname)
+- ``201``: the access to the remote content was denied (similar to HTTP error 401)
+- ``203``: the remote content was not found at the server (similar to HTTP error 404)
+- ``204``: the remote server requires authentication to serve the content but the
+            credentials provided were not accepted (if any)
+- ``301``: the Network Access API cannot honor the request because the protocol is not known
+- ``399``: a breakdown in protocol was detected (parsing error, invalid or unexpected responses, etc.)
+
 .. _webpage-onResourceReceived:
 
 onResourceReceived
@@ -1353,6 +1393,14 @@ rawPageCreated(page)
 Call the callback :ref:`onPageCreated <webpage-onPageCreated>` with given
 parameters, if the callback has been set.
 
+
+.. _webpage-resourceError:
+
+resourceError(response)
+-----------------------------------------
+
+Call the callback :ref:`onResourceError <webpage-onResourceError>`  with given
+parameters, if the callback has been set.
 
 .. _webpage-resourceReceived:
 

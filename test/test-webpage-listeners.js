@@ -6,7 +6,8 @@ describe("webpage with listeners", function() {
     var trace = '';
     var receivedRequest = [];
     var initializedCounter = 0;
-    
+    var cancelNextRequest = false;
+
     function testWebpageListenerCreateWebPage() {
         if (webpage)
             webpage.close();
@@ -48,20 +49,32 @@ describe("webpage with listeners", function() {
             //console.log("INITIALIZED "+wi)
         };
 
-        webpage.onResourceRequested = function(request) {
+        webpage.onResourceRequested = function(request, ctrl) {
             //console.log("--- webpage.onResourceRequested "+ request.id + " " + request.url);
             if (receivedRequest[request.id] == undefined ) {
-                receivedRequest[request.id] = { req:null, start:null, end:null}
+                receivedRequest[request.id] = { req:null, start:null, end:null, err:null}
             }
             receivedRequest[request.id].req = request;
+            if (cancelNextRequest) {
+                cancelNextRequest = false;
+                ctrl.abort();
+            }
         };
 
         webpage.onResourceReceived = function(response) {
             //console.log("--- webpage.onResourceReceived "+ response.id + " " + response.url + " "+response.stage);
             if (receivedRequest[response.id] == undefined ) {
-                receivedRequest[response.id] = { req:null, start:null, end:null}
+                receivedRequest[response.id] = { req:null, start:null, end:null, err:null}
             }
             receivedRequest[response.id][response.stage] = response;
+        };
+
+        webpage.onResourceError = function(response) {
+            //console.log("--- webpage.onResourceReceived "+ response.id + " " + response.url + " "+response.stage);
+            if (receivedRequest[response.id] == undefined ) {
+                receivedRequest[response.id] = { req:null, start:null, end:null, err:null}
+            }
+            receivedRequest[response.id].err = response;
         };
 
         webpage.onLoadFinished = function(status, url) {
@@ -78,6 +91,7 @@ describe("webpage with listeners", function() {
 
     var domain = "http://localhost:8083/";
     var file = URLUtils.fromFilename(phantom.libraryPath) + '/www/simplehello.html';
+    //var file = 'file://'+phantom.libraryPath + '/www/simplehello.html'; // for test with phantomjs
 
     var async = new AsyncSpec(this);
 
@@ -116,6 +130,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -170,6 +185,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -193,6 +209,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -216,6 +233,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -239,6 +257,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -260,6 +279,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -302,6 +322,7 @@ describe("webpage with listeners", function() {
             expect(r.req).toNotBe(null);
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
+            expect(r.err).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -356,6 +377,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -402,6 +424,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toNotBe(null);
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -411,6 +434,9 @@ describe("webpage with listeners", function() {
         expect(r.end.statusText).toEqual('Not Found');
         expect(r.start.contentType).toEqual("text/html");
         expect(r.end.contentType).toEqual("text/html");
+        expect(r.err.url).toEqual(r.req.url);
+        expect(r.err.errorCode).toEqual(203);
+        expect(r.err.errorString).toNotEqual('');
         done();
     });
 
@@ -447,13 +473,16 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toBeNull();
         expect(r.end).toNotBe(null);
+        expect(r.err).toNotBe(null);
         expect(r.end.contentType).toBeNull()
         expect(r.end.redirectURL).toBeNull()
         expect(r.end.status).toBeNull()
         expect(r.end.statusText).toBeNull()
         expect(r.end.url).toEqual('http://qsdqsdqs.qsfdsfi/plop.html');
         expect(r.req.method).toEqual("GET");
-
+        expect(r.err.url).toEqual(r.req.url);
+        expect(r.err.errorCode).toEqual(3);
+        expect(r.err.errorString).toNotEqual('');
         done();
     });
 
@@ -497,6 +526,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -552,12 +582,11 @@ describe("webpage with listeners", function() {
         expect(r).toNotBe(null);
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
-        /*
-        FIXME sometimes, in this case, r.end is null ?-(
-        expect(r.end).toNotBe(null);
-        expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
-        expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
-        */
+        expect(r.err).toBeNull();
+        // FIXME sometimes, in this case, r.end is null ?-(
+        //expect(r.end).toNotBe(null);
+        //expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+        //expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
         expect(r.start.status).toEqual(200);
         expect(r.start.statusText).toEqual('OK');
@@ -609,6 +638,7 @@ describe("webpage with listeners", function() {
         expect(r.req).toNotBe(null);
         expect(r.start).toNotBe(null);
         expect(r.end).toNotBe(null);
+        expect(r.err).toBeNull();
         expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
         expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
         expect(r.req.method).toEqual("GET");
@@ -621,6 +651,54 @@ describe("webpage with listeners", function() {
         done();
     });
 
+
+    async.it("will open a page and abort the request",function(done) {
+        trace = '';
+        receivedRequest = [];
+        initializedCounter = 0;
+        cancelNextRequest = true;
+
+        testWebpageListenerCreateWebPage()
+        webpage.open(domain + 'simplehello.html', function(success){
+            trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("fail");
+            done();
+        });
+    });
+
+    async.it("should generate the expected trace", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "  loading url=http://localhost:8083/simplehello.html\n";
+        expectedTrace += "LOADFINISHED:about:blank - 1 fail\n";
+        expectedTrace += "  loaded url=http://localhost:8083/simplehello.html\n";
+        expectedTrace += "CALLBACK:fail\n";
+        expect(trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should have received correct data", function(done){
+        var r;
+        r = receivedRequest.filter(function(result, i) {
+            if (i == 0)
+                return false;
+            return result.req.url == (domain + 'simplehello.html');
+        })[0];
+        expect(r).toNotBe(null);
+        expect(r.req).toNotBe(null);
+        expect(r.start).toBeNull();
+        expect(r.end).toNotBe(null);
+        expect(r.err).toNotBe(null);
+        expect(r.req.id == r.end.id).toBeTruthy();
+        expect(r.end.url).toEqual("");
+        expect(r.req.method).toEqual("GET");
+        expect(r.end.status).toBeNull();
+        expect(r.end.statusText).toBeNull();
+        expect(r.end.contentType).toBeNull();
+        expect(r.err.errorCode).toEqual(95);
+        done();
+    });
 
     async.it("test end", function(done){
         webpage.close();

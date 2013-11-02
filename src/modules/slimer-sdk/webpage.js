@@ -200,6 +200,9 @@ function _create(parentWebpageInfo) {
             onResponse:  function(res) {
                 webpage.resourceReceived(res);
             },
+            onError:  function(err) {
+                webpage.resourceError(err);
+            },
             captureTypes: webpage.captureContent,
             onLoadStarted: function(url){
                 if (wycywigReg.test(url)) {
@@ -223,25 +226,6 @@ function _create(parentWebpageInfo) {
                 // let's imitate it. Only after a success
                 if (success)
                     webpage.initialized();
-                else {
-                    // in case of a network fail, phantomjs send
-                    // a resourceReceived event.
-                    webpage.resourceReceived({
-                        id: 1,
-                        url: url,
-                        time: new Date(),
-                        headers: {},
-                        bodySize: 0,
-                        contentType: null,
-                        contentCharset: null,
-                        redirectURL: null,
-                        stage: "end",
-                        status: null,
-                        statusText: null,
-                        referrer: "",
-                        body: ""
-                    });
-                }
             },
             onLoadFinished: function(url, success){
                 let channel = browser.docShell.currentDocumentChannel;
@@ -1549,6 +1533,8 @@ function _create(parentWebpageInfo) {
         // This callback is invoked when a new child window (but not deeper descendant windows) is created by the page, e.g. using window.open
         onPageCreated: null,
 
+        onResourceError : null,
+
         onResourceRequested : null,
 
         onResourceReceived : null,
@@ -1625,6 +1611,14 @@ function _create(parentWebpageInfo) {
         rawPageCreated: function(page) {
             if (this.onPageCreated)
                 this.onPageCreated(page);
+        },
+
+        resourceError: function(error) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onResourceError error:"+slDebugGetObject(error));
+            }
+            if (this.onResourceError)
+                this.onResourceError(error);
         },
 
         resourceReceived: function(request) {

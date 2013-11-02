@@ -215,9 +215,9 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onNavigationRequested               </td><td>Implemented.<br>SlimerJS issue: navigationType is always "Undefined" and isMainFrame is irrelevant</td></tr>
     <tr><td>onPageCreated                       </td><td>Implemented</td></tr>
     <tr><td>onPrompt                            </td><td>Implemented</td></tr>
+    <tr><td>onResourceError                     </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
     <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>
-    <tr><td>onResourceError                     </td><td></td></tr>
     <tr><td>onUrlChanged                        </td><td>Implemented</td></tr>
 </table>
 
@@ -232,12 +232,24 @@ Methods that send signals (private methods):
     <tr><td>loadStarted()                       </td><td>Implemented</td></tr>
     <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td>Implemented</td></tr>
     <tr><td>rawPageCreated(page)                </td><td>Implemented</td></tr>
+    <tr><td>resourceError(resourceError)        </td><td>Implemented</td></tr>
     <tr><td>resourceReceived(request)           </td><td>Implemented</td></tr>
     <tr><td>resourceRequested(resource)         </td><td>Implemented</td></tr>
     <tr><td>urlChanged(url)                     </td><td>Implemented</td></tr>
 </table>
 
-## request object received onResourceRequested
+
+## resourceError object received by onResourceError
+
+<table>
+    <tr><td>id                                  </td><td>Implemented</td></tr>
+    <tr><td>url                                 </td><td>Implemented</td></tr>
+    <tr><td>errorCode                           </td><td>Implemented</td></tr>
+    <tr><td>errorString                         </td><td>Implemented</td></tr>
+</table>
+
+
+## request object received by onResourceRequested
 
 <table>
     <tr><td>id                                  </td><td>Implemented</td></tr>
@@ -247,7 +259,7 @@ Methods that send signals (private methods):
     <tr><td>headers                             </td><td>Implemented</td></tr>
 </table>
 
-## response object received onResourceReceived
+## response object received by onResourceReceived
 
 <table>
     <tr><td>id                                  </td><td>Implemented</td></tr>
