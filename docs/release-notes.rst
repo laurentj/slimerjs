@@ -5,10 +5,11 @@
 Release Notes
 =============
 
-version 0.9
-===========
+version 0.9.0
+=============
 
-This version is in development.
+This final version is not released yet.
+SlimerJS 0.9.0RC1 has been released on Nov 3, 2013, for tests.
 
 New API
 -------
