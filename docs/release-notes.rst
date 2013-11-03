@@ -28,6 +28,7 @@ Fixed bugs
 
 - Fixed output on Windows: console messages are now output in real time, not any more at the
   end of the execution of the script. (issue #105 and issue #7)
+- Fixed an internal error appearing during the call of ``webpage.close()``
 
 Fixed PhantomJS conformance issues
 ----------------------------------
@@ -39,16 +40,32 @@ Fixed PhantomJS conformance issues
 - Support of the callback ``webpage.onResourceError``
 - Support of ``webpage.settings.userName``, ``webpage.settings.password`` and ``webpage.settings.maxAuthAttemps``
 
+Other informations about this release
+-------------------------------------
+
+- SlimerJS will not support the ``--ssl-protocol`` option because Gecko only supports SSL3
+- New experimental startup script, ``slimerjs.py`` in python, which is a plateform independant script
+- Reworked the code of the module resolver to be more efficient
+- Some internal changes have been done to embed GhostDriver in the future. Some issues
+  are still preventing to use GhostDriver.
+
+*Contributors*:
+
+- Niek van der Maas (Support of ``resource.postData``)
+
 Missing APIS in SlimerJS 0.9
 ----------------------------
 
-Here are the PhantomJS APIs that are missing in SlimerJS 0.9 but planed in future releases.
+Here are the PhantomJS 1.9 APIs that are missing in SlimerJS 0.9 but planed in future releases.
 
-- many options for the command line are not supported
-- few settings on the webpage object are not supported yet
+- some few options for the command line  and settings on the webpage object
+  are not supported yet. Some of them are the possibility to deactivate
+  SSL verification and Web security (CORS etc)
 - no support of Ghost Driver (Selenium web driver)
+- page rendering into PDF
 
-You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_ to know details.
+You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_
+to know details.
 
 See also :doc:`the differences in APIs and behaviors <differences-with-phantomjs>` between
 SlimerJS and PhantomJS.

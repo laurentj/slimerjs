@@ -2,7 +2,7 @@ SlimerJS will implement all [the API of Phantomjs](https://github.com/ariya/phan
 
 Here are compatibility tables and other specific API to SlimerJS.
 
-# Main differences with PhantomJS 1.9.1
+# Main differences with PhantomJS 1.9.x
 
 You'll found in the documentation [a list of differences](https://github.com/laurentj/slimerjs/blob/master/docs/differences-with-phantomjs.rst).
 of behaviors in the APIs implementation and in the web platform.

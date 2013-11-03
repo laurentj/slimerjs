@@ -31,7 +31,7 @@ To install SlimerJS, you need to download its package. It is available in two ed
   Go to the :ref:`Lauching SlimerJS <launch>` section.
 - The **Lightweight Edition**: this is a zip package containing
   only SlimerJS and it targets all operating system. You have to install Firefox or XulRunner
-  separately (version 22 or more) and probably you'll need to
+  separately (version 25 is recommanded) and probably you'll need to
   :ref:`set an environment variable <setup>`.
   This package can be downloaded from slimerjs.org. Or it can be installed from a
   repository like the Arch Linux's repository or Homebrew.
