@@ -21,8 +21,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
     <stack id="hauntedwall" flex="1">
         <html:div>
-            <!--<html:h1>&slimerjs.title;</html:h1>-->
-            <html:h2>&slimerjs.slogan;</html:h2>
+            <html:h2><html:span>Slimer</html:span>JS</html:h2>
+            <html:div id="version">&slimerjs.version; <html:span id="versionnumber"></html:span></html:div>
+            <!--<html:h2>&slimerjs.slogan;</html:h2>-->
         </html:div>
         <hbox flex="1" pack="center" align="center">
             <image src="slimerjs.png" />

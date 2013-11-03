@@ -13,7 +13,7 @@ Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import('resource://slimerjs/slUtils.jsm');
 
 function startup() {
-
+   document.getElementById("versionnumber").textContent =  Services.appinfo.version
     var runtimeIframe = document.getElementById('runtime');
     try {
         slLauncher.launchMainScript(runtimeIframe.contentWindow);
