@@ -116,6 +116,7 @@ done
 
 # check arguments.
 CREATE_TEMP='Y'
+HIDE_ERRORS='Y'
 shopt -s nocasematch
 for i in $*; do
     case "$i" in
@@ -129,7 +130,12 @@ for i in $*; do
         --reset-profile|--profile|--p|--createprofile|--profilemanager)
             CREATE_TEMP=''
             ;;
+        "--debug=true")
+            HIDE_ERRORS='N'
     esac
+    if [[ $i == --debug* ]] && [[ "$i" == *errors* ]]; then
+        HIDE_ERRORS='N'
+    fi
 done
 shopt -u nocasematch
 
@@ -157,7 +163,11 @@ export __SLIMER_ARGS="$@"
 export __SLIMER_ENV="$LISTVAR"
 
 # launch slimerjs with firefox/xulrunner
-"$SLIMERJSLAUNCHER" -app $SLIMERDIR/application.ini $PROFILE -no-remote "$@"
+if [ "$HIDE_ERRORS" == "Y" ]; then
+    "$SLIMERJSLAUNCHER" -app $SLIMERDIR/application.ini $PROFILE -no-remote "$@" 2> /dev/null
+else
+    "$SLIMERJSLAUNCHER" -app $SLIMERDIR/application.ini $PROFILE -no-remote "$@"
+fi
 
 EXITCODE=$?
 

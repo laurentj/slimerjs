@@ -21,6 +21,7 @@ New API
 - Compatible with Firefox/XulRunner 25.0
 - Key shortcut ctrl+w on windows to quit SlimerJS (main window) or just close the window.
   (useful when the scripts ends without exit)
+- support of ``--debug=errors`` to output errors with Firefox/XulRunner 25+
 
 Fixed bugs
 ----------

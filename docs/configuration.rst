@@ -27,7 +27,7 @@ PhantomJS options
 =============================================  =================== ===================================================
 --config=/path/to/config.json                   Supported (0.9)     indicate a config file
 --cookies-file=/path/to/cookies.txt             N/A. see profiles
---debug=[yes|no]                                supported           Displays debug messages
+--debug=[yes|no]                                supported           Displays debug messages. Supports also other values
 --disk-cache=[yes|no]                           Supported (0.9)     Enable the disk cache or not. By default: disabled
 --help or -h                                    Supported           Displays help about options
 --ignore-ssl-errors=[yes|no]         
@@ -70,10 +70,10 @@ About debug
 -----------
 
 With the ``--debug`` option, SlimerJS displays many messages about what happened during
-the execution of your script.
+the execution of your script: network events, page loading, ``sendEvent`` calls, configuration
+values, command line parameters..
 
-For the moment, it displays only messages about network events, page loading, and ``sendEvent`` calls.
-In future version, it will display configuration values, file opening, cookies etc..
+In future version, it will display file opening, cookies...
 
 SlimerJS accepts a value other than true/false for --debug. You can indicate what to display.
 
@@ -84,6 +84,9 @@ Available keywords are:
 - ``page``: show calls of some webpage API
 - ``pageloading``: show calls of webpage listeners about resource loading and page loading
 - ``netprogress``: show internals network events
+- ``config``: show configuration values
+- ``cli``: show command line parameters for the script
+- ``errors``: show gecko errors (javascript errors ...). only for Firefox/XulRunner 25+
 
 About proxy configuration
 -------------------------

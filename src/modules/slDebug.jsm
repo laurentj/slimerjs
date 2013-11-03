@@ -20,6 +20,7 @@ var DEBUG_COOKIES = false;
 var DEBUG_WEBPAGE = false;
 var DEBUG_WEBPAGE_LOADING = false; // network listeners in webpage
 var DEBUG_NETWORK_PROGRESS = false; // low level network listeners (in net-log.js)
+var DEBUG_ERRORS = false; 
 var DEBUG = false;
 
 const debugKeywords = {
@@ -30,6 +31,7 @@ const debugKeywords = {
     'page':'DEBUG_WEBPAGE',
     'pageload':'DEBUG_WEBPAGE_LOADING',
     'netprogress': 'DEBUG_NETWORK_PROGRESS',
+    'errors': 'DEBUG_ERRORS' // this value is checked only in the calling script to output gecko errors
 }
 
 var defaultDebug="config,cli,files,cookies,page,net,netprogress";

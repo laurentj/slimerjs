@@ -132,6 +132,7 @@ for env in os.environ.data:
     LISTVAR = "%s,%s" % (LISTVAR, env)
 
 # check arguments.
+HIDE_ERRORS=True
 CREATE_TEMP=True
 NO_TEMP_PROFILE_OPTIONS = [
     "-reset-profile","-profile","-p","-createprofile","-profilemanager",
@@ -145,6 +146,9 @@ for arg in SYS_ARGS:
     # If profile parameters, don't create a temporary profile
     if arg.lower() in NO_TEMP_PROFILE_OPTIONS:
         CREATE_TEMP=False
+
+    if arg == '--debug=true' or (arg.startswith('--debug=') and arg.find("errors") != -1):
+        HIDE_ERRORS=False
 
 PROFILE=[]
 PROFILE_DIR=""
@@ -170,7 +174,16 @@ SLCMD.extend(SYS_ARGS)
 
 exitCode = 0
 try:
-    exitCode = subprocess.call(SLCMD)
+    if HIDE_ERRORS:
+        try:
+            from subprocess import DEVNULL # py3k
+        except ImportError:
+            DEVNULL = open(os.devnull, 'wb')
+
+        exitCode = subprocess.call(SLCMD, stderr=DEVNULL)
+    else:
+        exitCode = subprocess.call(SLCMD)
+
 except OSError as err:
     print('Fatal: %s. Are you sure %s exists?' % (err, SLIMERJSLAUNCHER))
     sys.exit(1)
