@@ -157,8 +157,8 @@ slCommandLine.prototype = {
      * known script handlers
      */
     _scriptHandlers : [
-        webDriverScriptHandler,
-        helloScriptHandler,
+        //webDriverScriptHandler,
+        //helloScriptHandler,
         externalScriptHandler // should be always the last one
     ],
 
