@@ -174,8 +174,9 @@ filePicker.prototype = {
      */
     get domfiles () {
         let list = []
+        let me = this;
         this._nsfiles.forEach(function(file){
-            list.push(this.domWindowUtils.wrapDOMFile(file))
+            list.push(me.domWindowUtils.wrapDOMFile(file))
         })
         return slUtils.createSimpleEnumerator(list);
     },
