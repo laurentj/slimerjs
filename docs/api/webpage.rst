@@ -25,6 +25,7 @@ Webpage object
 Properties list:
 
 :ref:`clipRect <webpage-clipRect>` :ref:`canGoBack <webpage-canGoBack>` :ref:`canGoForward <webpage-canGoForward>`
+:ref:`captureContent <webpage-captureContent>`
 :ref:`content <webpage-content>` :ref:`cookies <webpage-cookies>` :ref:`customHeaders <webpage-customHeaders>`
 :ref:`event <webpage-event>` :ref:`focusedFrameName <webpage-focusedFrameName>` :ref:`frameContent <webpage-frameContent>`
 :ref:`frameName <webpage-frameName>` :ref:`framePlainText <webpage-framePlainText>` :ref:`frameTitle <webpage-frameTitle>`
@@ -99,6 +100,24 @@ canGoForward
 
 Indicates if there is a next page in the navigation history. This is a boolean.
 Read-only.
+
+.. _webpage-captureContent:
+
+captureContent
+-----------------------------------------
+
+This is an array of regexp matching content types of resources for which you want to
+retrieve the content. The content is then set on the body property of the response
+object received by your :ref:`onResourceReceived callback <webpage-onResourceReceived>`.
+
+.. code-block:: javascript
+
+    webpage.captureContent = [ /css/, /image\/.*/ ]
+
+This limitation exists to avoid to take memory uselessly (in the case where you don't need
+the ``body`` property), since resources like images or videos could take many memory.
+
+(SlimerJS only)
 
 .. _webpage-content:
 
@@ -198,7 +217,7 @@ for key codes.
 focusedFrameName
 -----------------------------------------
 
-
+Implemented. Documentation needed.
 
 .. _webpage-frameContent:
 
@@ -215,6 +234,7 @@ to replace the content of the current frame.
 frameName
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-framePlainText:
@@ -222,6 +242,7 @@ frameName
 framePlainText
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-frameTitle:
@@ -229,6 +250,7 @@ framePlainText
 frameTitle
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-frameUrl:
@@ -236,6 +258,7 @@ frameTitle
 frameUrl
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-framesCount:
@@ -243,6 +266,7 @@ frameUrl
 framesCount
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-framesName:
@@ -250,6 +274,7 @@ framesCount
 framesName
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-libraryPath:
@@ -257,6 +282,7 @@ framesName
 libraryPath
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-navigationLocked:
@@ -333,7 +359,7 @@ ownsPages was true.
 paperSize
 -----------------------------------------
 
-
+Not implemented.
 
 .. _webpage-plainText:
 
@@ -475,6 +501,7 @@ Be careful about `the inconsistent behavior of the expiry property <cookies.html
 childFramesCount()
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-childFramesName:
@@ -482,7 +509,8 @@ childFramesCount()
 childFramesName()
 -----------------------------------------
 
- 
+ Implemented. Documentation needed.
+
 
 .. _webpage-clearCookies:
 
@@ -507,7 +535,8 @@ to be able to reuse the webpage object.
 currentFrameName()
 -----------------------------------------
 
- 
+ Implemented. Documentation needed.
+
 
 .. _webpage-deleteCookie:
 
@@ -934,19 +963,22 @@ It stops the loading of the page.
 switchToFocusedFrame()
 -----------------------------------------
 
- 
+Implemented. Documentation needed.
+
 
 .. _webpage-switchToFrame:
 
 switchToFrame()
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-switchToChildFrame:
 
 switchToChildFrame()
 -----------------------------------------
+Implemented. Documentation needed.
 
 
 .. _webpage-switchToMainFrame:
@@ -954,6 +986,7 @@ switchToChildFrame()
 switchToMainFrame()
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-switchToParentFrame:
@@ -961,6 +994,7 @@ switchToMainFrame()
 switchToParentFrame()
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-uploadFile:
@@ -986,6 +1020,7 @@ returns a filename, the filename given to ``uploadFile()`` is ignored.
 onAlert
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-onCallback:
@@ -993,6 +1028,7 @@ onAlert
 onCallback
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-onClosing:
@@ -1000,13 +1036,15 @@ onCallback
 onClosing
 -----------------------------------------
 
- 
+Implemented. Documentation needed.
+
 
 .. _webpage-onConfirm:
 
 onConfirm
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-onConsoleMessage:
@@ -1014,6 +1052,7 @@ onConfirm
 onConsoleMessage
 -----------------------------------------
 
+Implemented. Documentation needed.
 
 
 .. _webpage-onError:
@@ -1021,7 +1060,8 @@ onConsoleMessage
 onError
 -----------------------------------------
 
- 
+Implemented. Documentation needed.
+
 
 .. _webpage-onFilePicker:
 
@@ -1148,12 +1188,15 @@ Example:
 onPageCreated
 -----------------------------------------
 
- 
+Implemented. Documentation needed.
+
 
 .. _webpage-onPrompt:
 
 onPrompt
 -----------------------------------------
+
+Implemented. Documentation needed.
 
 
 .. _webpage-onResourceReceived:
@@ -1189,8 +1232,13 @@ informations:
         console.log('Response (#' + response.id + ', stage "' + response.stage + '"): ' + JSON.stringify(response));
     };
 
+*Note about the ``body`` property*: by default, the ``body`` property is filled only for
+the resource that corresponds to the main html page. For other resources, it will be empty.
 
-
+If you want to have it filled for resources used in the page, you have to indicate their
+content type into :ref:`captureContent property <webpage-captureContent>`. This limitation
+exists to avoid to take memory uselessly (in the case where you don't need the ``body``
+property), since resources like images or videos could take many memory.
 
 .. _webpage-onResourceRequested:
 
