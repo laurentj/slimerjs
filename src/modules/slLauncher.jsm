@@ -358,7 +358,7 @@ function prepareLoader(scriptInfo) {
 
             if (!relativeId && slUtils.isAbsolutePath(id)) {
                 // id is an absolute path
-                additionalPaths.push(id);
+                additionnalPaths.push(id);
                 return id;
             }
 
