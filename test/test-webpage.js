@@ -31,7 +31,6 @@ describe("WebPage object on hello world", function(){
     })
 });
 
-
 describe("WebPage object", function(){
     var webpage;
     var url = "http://127.0.0.1:8083/";
@@ -96,7 +95,6 @@ describe("WebPage object", function(){
         });
     });
 });
-
 
 
 describe("WebPage.evaluate()", function(){
@@ -321,15 +319,9 @@ describe("WebPage.content", function(){
     var webpage;
     var url = "http://127.0.0.1:8083/simplehello.html";
 
-    beforeEach(function() {
-        if (webpage) {
-            return;
-        }
-        webpage = require("webpage").create();
-    });
-
     it("contains the source code of the HTML page",function() {
         var loaded = false;
+        webpage = require("webpage").create();
         runs(function() {
             webpage.open(url, function(success){
                 loaded = true;
@@ -360,11 +352,12 @@ describe("WebPage.content", function(){
         webpage.content = content;
         expect(webpage.title).toEqual('An other content');
         expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("new content");
+        webpage.close();
     });
 
     it("contains the content of a text page",function() {
-        webpage.close();
         var loaded = false;
+        webpage = require("webpage").create();
         runs(function() {
             webpage.open("http://127.0.0.1:8083/hello.txt", function(success){
                 loaded = true;
@@ -377,6 +370,23 @@ describe("WebPage.content", function(){
             webpage.close();
         });
     });
+
+    it("contains the content of a js file",function() {
+        var loaded = false;
+        webpage = require("webpage").create();
+        runs(function() {
+            webpage.open("http://127.0.0.1:8083/dummy.js", function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            expect(webpage.content).toMatch(/<pre( [^>].+)?>document.write\('foo'\);\s*<\/pre>/g);
+            webpage.close();
+        });
+    });
+
 });
 
 describe("WebPage.setContent", function(){
@@ -506,7 +516,6 @@ describe("WebPage.zoomFactor", function(){
         });
     });
 });
-
 
 
 
@@ -695,5 +704,4 @@ describe("WebPage.offline*", function(){
         webpage.close();
     });
 });
-
 
