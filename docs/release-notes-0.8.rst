@@ -17,6 +17,8 @@ Fixed bugs
   characters (issue #106)
 - Fixed output on Windows: console messages are now output in real time, not any more at the
   end of the execution of the script. (issue #105 and issue #7)
+- Fixed an error when the virtual file picker is called by the web page
+
 
 version 0.8.4
 =============

@@ -76,6 +76,14 @@ Known issues
 
 - See `the github page <https://github.com/laurentj/slimerjs/issues>`_ ...
 
+Contributors
+------------
+- Jaime Iniesta (typo in documentation)
+- Boris Staal (typo in documentation)
+- fumitoito (bug fix in slimerjs.bat)
+- Bartvds (bug fix in slimerjs.bat)
+
+
 
 Previous release notes
 ======================

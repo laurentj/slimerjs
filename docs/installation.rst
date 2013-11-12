@@ -17,6 +17,14 @@ You can also install `Cygwin <http://www.cygwin.com/>`_ and use its terminal.
 You cannot use the MingW32 environment on Windows because there are some issues with
 (no output in the console, and it lacks on some commands like mktemp).
 
+On Linux, standalone editions need these libraries: libpthread.so, libdl.so, libstdc++.so,
+libm.so, libgcc_s.so, libc.so, ld-linux-x86-64.so. On Ubuntu/Debian, you can install/verify
+it by doing:
+
+.. code-block:: bash
+
+    sudo apt-get install libc6 libstdc++6 libgcc1 
+
 Installation of SlimerJS
 ------------------------
 
