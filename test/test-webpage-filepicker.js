@@ -29,6 +29,7 @@ describe("WebPage.uploadFile", function(){
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
             expect(filePickerCalled).toBeTruthy();
+            webpage.close();
         });
     });
 });

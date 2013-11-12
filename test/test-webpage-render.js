@@ -88,7 +88,7 @@ describe("WebPage.render()", function(){
     // png content can be different between version (and between phantomjs/slimerjs)
     // so we render expected files into canvas (in rendering_fix.html). Same thing
     // for produced files, and we compare content of these two canvas.
-    var expectedFixPage = require("webpage").create();
+    var expectedFixPage = null;
     var expectedFixUrl = urlbase+ "rendering/rendering_fix.html";
     var prefixResult = 'slimerjs_capture_fix_';
     var imageResultLoaded = false;
@@ -96,6 +96,9 @@ describe("WebPage.render()", function(){
     var setViewport = false;
 
     beforeEach(function() {
+        if (!expectedFixPage) {
+            expectedFixPage = require("webpage").create();
+        }
         if (webpage) {
             return;
         }

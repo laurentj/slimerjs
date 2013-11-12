@@ -4,6 +4,9 @@ describe("WebPage.onNavigationRequested", function(){
     var url = "http://127.0.0.1:8083/navigation.html";
 
     beforeEach(function() {
+        if (webpage) {
+            webpage.close();
+        }
         webpage = require("webpage").create();
     });
 
@@ -215,6 +218,7 @@ describe("WebPage.onNavigationRequested", function(){
             expect(nav[3]).toBeTruthy()
             expect(webpage.url).toEqual("http://127.0.0.1:8083/navigation.html");
             expect(webpage.title).toEqual("navigation")
+            webpage.close();
         });
     });
 

@@ -427,6 +427,7 @@ describe("WebPage.setContent", function(){
         webpage.setContent(html, 'http://127.0.0.1:8083/foo.html');
         expect(webpage.title).toEqual('');
         expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("it works");
+        webpage.close();
     });
 });
 
@@ -691,6 +692,7 @@ describe("WebPage.offline*", function(){
 
     it("offlineStorageQuota is ok",function() {
         expect(webpage.offlineStorageQuota).toEqual(5120*1024);
+        webpage.close();
     });
 });
 

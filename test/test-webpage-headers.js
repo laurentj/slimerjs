@@ -31,6 +31,7 @@ describe("WebPage", function(){
             expect(content.headers['User-Agent']).toEqual("Super Browser / 1.0");
             expect(content.headers['X-foo']).toEqual("bar");
             expect(content.body).toEqual('');
+            webpage.close();
         });
     });
 });

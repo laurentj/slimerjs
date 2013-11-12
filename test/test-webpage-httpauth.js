@@ -87,6 +87,7 @@ describe("WebPage.onAuthPrompt", function(){
             expect(succeedAttempt[1]).toEqual(url);
             expect(succeedAttempt[2]).toEqual('Slimer auth test');
             expect(openResult).toEqual('success');
+            webpage.close();
         });
     });
 });
@@ -147,6 +148,7 @@ describe("WebPage auth settings", function(){
         runs(function(){
             expect(webpage.plainText).toEqual('authentication is ok');
             expect(openResult).toEqual('success');
+            webpage.close();
         });
     });
 });
