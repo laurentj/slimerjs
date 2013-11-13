@@ -45,7 +45,7 @@ describe("phantom object", function() {
     it("should have a right version", function(){
         expect(phantom.version.major).toEqual(1);
         expect(phantom.version.minor).toEqual(9);
-        expect(phantom.version.patch).toEqual(0);
+        expect(phantom.version.patch).toEqual(2);
     });
 
     it("should contain the script name", function(){

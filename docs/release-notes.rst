@@ -40,6 +40,7 @@ Fixed PhantomJS conformance issues
 - Support of ``resource.postData`` in callback ``webpage.onResourceRequested``.
 - Support of the callback ``webpage.onResourceError``
 - Support of ``webpage.settings.userName``, ``webpage.settings.password`` and ``webpage.settings.maxAuthAttemps``
+- Compatible version of Phantomjs is now 1.9.2
 
 Other informations about this release
 -------------------------------------

@@ -90,7 +90,7 @@ var phantom = {
      * return the version of PhantomJS on which this implementation is compatible
      */
     get version() {
-        return { major: 1, minor: 9, patch: 0, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+        return { major: 1, minor: 9, patch: 2, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
     },
 
     get defaultPageSettings () {
