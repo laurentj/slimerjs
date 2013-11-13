@@ -52,7 +52,8 @@ Network
 --------
 
 - It seems that Gecko has a different behavior than Phantomjs's webkit
-  on some HTTP response with code 102, 118 and 408.
+  on some HTTP response with code 102, 118 and 408. It response.status is null, it is probably
+  because of one of this response code.
 
 In the API
 -----------

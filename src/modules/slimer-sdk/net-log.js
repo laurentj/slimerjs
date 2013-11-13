@@ -263,8 +263,14 @@ const TracingListener = function(index, options) {
 };
 TracingListener.prototype = {
     onStartRequest: function(request, context) {
-        this.originalListener.onStartRequest(request, context);
-        request.QueryInterface(Ci.nsIHttpChannel);
+
+        try {
+            request.QueryInterface(Ci.nsIHttpChannel);
+            this.originalListener.onStartRequest(request, context);
+        } catch(e) {
+            //dump("netlog onStartRequest error: "+e+"\n")
+        }
+
         if (typeof(request.URI) === "undefined" ||!this._inWindow(request)) {
             return;
         }
@@ -276,7 +282,6 @@ TracingListener.prototype = {
         }
 
         if (request.status) {
-
             let [code, msg] = getErrorCode(request.status);
             if (DEBUG_NETWORK_PROGRESS) {
                 slDebugLog("network: resource #"+this.response.id+" response in error: #"+code+" - "+msg);
@@ -289,20 +294,34 @@ TracingListener.prototype = {
             if (typeof(this.options.onResponse) == "function") {
                 this.options.onResponse(mix({}, this.response));
             }
-            request = request.QueryInterface(Ci.nsIHttpChannel);
+
             let errorCode = 0, errorStr;
-            if (request.responseStatus == 403) {
-                errorCode = 201;
-                errorStr ='the access to the remote content was denied';
+            if (this.response.status >= 500 ) {
+                errorCode = 301;
+                errorStr ='Error downloading '+this.response.url+' - server replied: '+this.response.statusText;
             }
-            else if (request.responseStatus == 404) {
-                errorCode = 203;
-                errorStr ='the remote content was not found at the server';
+            else if (this.response.status >= 400 ) {
+                errorStr ='Error downloading '+this.response.url+' - server replied: '+this.response.statusText;
+                switch(this.response.status) {
+                    case 401:
+                        errorCode = 204;
+                        errorStr ='Unauthorized content';
+                        break;
+                    case 403:
+                        errorCode = 201;
+                        errorStr ='the access to the remote content was denied';
+                        break;
+                    case 404:
+                        errorCode = 203;
+                        errorStr ='the remote content was not found at the server';
+                        break;
+                    case 418: errorCode = 302; break;
+                    default:
+                        errorCode = 299;
+                        break;
+                }
             }
-            else if (request.responseStatus == 401) {
-                errorCode = 204;
-                errorStr ='Unauthorized content';
-            }
+
             if (errorCode) {
                 if (DEBUG_NETWORK_PROGRESS) {
                     slDebugLog("network: resource #"+this.response.id+" response in error: #"+errorCode+" - "+errorStr);
@@ -339,12 +358,15 @@ TracingListener.prototype = {
         }
     },
     onStopRequest: function(request, context, statusCode) {
+
         this.originalListener.onStopRequest(request, context, statusCode);
 
         if (typeof(request.URI) === "undefined" || !this._inWindow(request)) {
             this.data = [];
             return;
         }
+
+        request = request.QueryInterface(Ci.nsIHttpChannel);
 
         // browser could have been removed during request
         let browser = getBrowserForRequest(request);
@@ -552,8 +574,7 @@ const traceRequest = function(id, request) {
 
 const traceResponse = function(id, request) {
     request.QueryInterface(Ci.nsIHttpChannel);
-    if (request.status) { // network error
-        return {
+    let response = {
             id: id,
             url: request.URI.spec,
             time: new Date(),
@@ -568,43 +589,43 @@ const traceResponse = function(id, request) {
             // Extensions
             referrer: "",
             body: ""
-        };
+    };
+
+    try {
+        response.status = request.responseStatus;
+        response.statusText = unescape(encodeURIComponent(request.responseStatusText));
+        response.contentType = request.contentType;
+        response.contentCharset = request.contentCharset;
+    } catch(e) {
+        // status code is not available.
+        // probably an 101, 102,118, 408 http response
+        return response;
     }
-    
-    let headers = [];
-    request.visitResponseHeaders(function(name, value) {
-        value.split("\n").forEach(function(v) {
-            headers.push({"name": name, "value": v});
+
+    if (request.status) { // network error
+        return response;
+    }
+
+    if (response.status) {
+        request.visitResponseHeaders(function(name, value) {
+            value.split("\n").forEach(function(v) {
+                response.headers.push({"name": name, "value": v});
+            });
         });
-    });
+    }
 
     // Getting redirect if any
-    let redirect = null
-    if (parseInt(request.responseStatus / 100) == 3) {
-        headers.forEach(function(value) {
+    if (parseInt(response.status / 100) == 3) {
+        response.headers.forEach(function(value) {
             if (value.name.toLowerCase() == "location") {
-                redirect = ioService.newURI(value.value, null, request.URI).spec;
+                response.redirectURL = ioService.newURI(value.value, null, request.URI).spec;
             }
         });
     }
 
-    return {
-        id: id,
-        url: request.URI.spec,
-        time: new Date(),
-        headers: headers,
-        bodySize: 0,
-        contentType: request.contentType,
-        contentCharset: request.contentCharset,
-        redirectURL: redirect,
-        stage: "start",
-        status: request.responseStatus,
-        statusText: unescape(encodeURIComponent(request.responseStatusText)),
-
-        // Extensions
-        referrer: request.referrer != null && request.referrer.spec || "",
-        body: ""
-    };
+    // Extensions
+    response.referrer = request.referrer != null && request.referrer.spec || "";
+    return response;
 };
 
 
@@ -872,6 +893,11 @@ ProgressListener.prototype = {
                 this.mainPageURI = null;
                 if (typeof(this.options.onLoadFinished) === "function") {
                     let success = "success";
+                    try {
+                        if (request.responseStatus == 204 || request.responseStatus == 205) {
+                            success = 'fail';
+                        }
+                    }catch(e) {}
                     if (uri != 'about:blank' && request.status) {
                         success = 'fail';
                     }
@@ -927,7 +953,8 @@ ProgressListener.prototype = {
 
 function getErrorCode(status) {
     let errorCode = 99;
-    let errorString = 'an unknown network-related error was detected ('+status+')';
+    let errorString = 'an unknown network-related error was detected ('+status+')'; //for network error, base is: 0x804b0000
+    // see http://mxr.mozilla.org/mozilla-release/source/xpcom/base/ErrorList.h#118  for Gecko codes
     switch (status) {
         case Cr.NS_ERROR_MALFORMED_URI:        errorCode= 399 ;  errorString="The URI is malformed"; break;
         case Cr.NS_ERROR_CONNECTION_REFUSED:   errorCode= 1;   errorString="the remote server refused the connection"; break;

@@ -168,6 +168,21 @@ webserverTest.listen(8083, function(request, response) {
         return;
     }
 
+    if (/^\/statuscode\//.test(request.url)) {
+        response.statusCode = parseInt(/\/(\d+)$/.exec(request.url)[1], 10);
+        if (response.statusCode != 204 && response.statusCode != 304) {
+            response.headers = {
+                "Content-Type": "text/plain;charset=UTF-8",
+            }
+            response.write("A response");
+        }
+        else
+            response.write("");
+
+        response.close();
+        return;
+    }
+
     var filepath = phantom.libraryPath+'/www'+request.url;
     if (fs.exists(filepath)){
         if (fs.isFile(filepath)) {
