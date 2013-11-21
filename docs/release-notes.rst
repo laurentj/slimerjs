@@ -18,6 +18,7 @@ Fixed bugs
 - Fixed output on Windows: console messages are now output in real time, not any more at the
   end of the execution of the script. (issue #105 and issue #7)
 - Fixed an error when the virtual file picker is called by the web page
+- Fixed an issue in network listeners: onResourceResponse may not called with Gecko 24
 
 version 0.8.4
 =============
