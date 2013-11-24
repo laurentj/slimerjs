@@ -346,6 +346,9 @@ function prepareLoader(fileURI, dirFile) {
             // this method is called by extension handlers
             // @see require.extensions, and the extensions var
             module._compile = function (content, filename) {
+                if (content.startsWith('#')) {
+                    content = '//'+content;
+                }
                 Loader.load(loader, module, sandbox, content);
             }
 

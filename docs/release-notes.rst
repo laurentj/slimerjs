@@ -20,6 +20,7 @@ Fixed bugs
 - Fixed an error when the virtual file picker is called by the web page
 - Fixed an issue in network listeners: onResourceResponse may not called with Gecko 24
 - Fixed an exception when opening a page whereas navigation is locked (issue #114)
+- Should supports scripts starting with a shebang (issue #121)
 
 version 0.8.4
 =============
