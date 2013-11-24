@@ -85,7 +85,7 @@ describe("WebPage.onNavigationRequested", function(){
 
         runs(function(){
             //expect(navCall.length).toEqual(7);
-            //FIXME don't know why, Navigation.shouldLoad is called twice for consolemessage.html
+            //FIXME don't know why, (nsIContentPolicy) Navigation.shouldLoad is called twice for consolemessage.html
             expect(navCall.length).toEqual(8);
             var nav = navCall[0] // 1
             expect(nav[0]).toEqual("http://127.0.0.1:8083/frame_main.html");
@@ -127,7 +127,7 @@ describe("WebPage.onNavigationRequested", function(){
     });
 
 
-    it("is called when a submitting a form",function() {
+    it("is called when submitting a form",function() {
         var loaded = false;
         var navCall = [];
  
@@ -198,4 +198,40 @@ describe("WebPage.onNavigationRequested", function(){
         });
     });
 
+    it("is called during page.open even if navigation is locked",function() {
+        var loaded = false;
+        var openCallbackCalled = false;
+        var navCall = [];
+        webpage.navigationLocked = true;
+        webpage.onNavigationRequested = function(url, navigationType, willNavigate, isMainFrame) {
+            navCall.push([url, navigationType, willNavigate, isMainFrame]);
+        }
+        runs(function() {
+            webpage.open(url, function(success){
+                openCallbackCalled = true;
+                loaded = true
+            });
+            setTimeout(function(){ 
+                loaded = true;
+            }, 1500);
+        });
+
+        waitsFor(function(){ return loaded;}, 3000);
+
+        runs(function(){
+            expect(navCall.length).toEqual(1);
+            expect(openCallbackCalled).toBeFalsy();
+            var nav = navCall[0]
+            expect(nav[0]).toEqual("http://127.0.0.1:8083/navigation.html");
+            //expect(nav[1]).toEqual("Other")
+            expect(nav[2]).toBeFalsy()
+            expect(nav[3]).toBeTruthy()
+        });
+    });
+
+    it("has no more tests",function() {
+        if (webpage) {
+            webpage.close();
+        }
+    });
 });

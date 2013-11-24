@@ -19,6 +19,7 @@ Fixed bugs
   end of the execution of the script. (issue #105 and issue #7)
 - Fixed an error when the virtual file picker is called by the web page
 - Fixed an issue in network listeners: onResourceResponse may not called with Gecko 24
+- Fixed an exception when opening a page whereas navigation is locked (issue #114)
 
 version 0.8.4
 =============

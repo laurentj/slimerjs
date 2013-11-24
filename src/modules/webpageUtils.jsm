@@ -198,9 +198,10 @@ var webpageUtils = {
                                      null,
                                      postStream,
                                      headersStream);
-        } finally {
+        }catch(e) {
             // if content is not loaded because of navigation locked,
             // we have an exception;
+        } finally {
             if (browser.userTypedClear)
                 browser.userTypedClear--;
         }
