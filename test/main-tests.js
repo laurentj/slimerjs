@@ -1,3 +1,4 @@
+#!/usr/bin/env slimerjs
 /*
 * This file is part of the SlimerJS project from Innophi.
 * https://github.com/laurentj/slimerjs

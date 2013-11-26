@@ -8,7 +8,7 @@ Release Notes of SlimerJS 0.8
 version 0.8.5
 =============
 
-Not released yet.
+SlimerJS 0.8.5 has been released on November 24th, 2013.
 
 Fixed bugs
 ----------
@@ -18,6 +18,9 @@ Fixed bugs
 - Fixed output on Windows: console messages are now output in real time, not any more at the
   end of the execution of the script. (issue #105 and issue #7)
 - Fixed an error when the virtual file picker is called by the web page
+- Fixed an issue in network listeners: onResourceResponse may not called with Gecko 24
+- Fixed an exception when opening a page whereas navigation is locked (issue #114)
+- Should supports scripts starting with a shebang (issue #121)
 
 
 version 0.8.4

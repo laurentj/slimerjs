@@ -360,13 +360,11 @@ TracingListener.prototype = {
     onStopRequest: function(request, context, statusCode) {
 
         this.originalListener.onStopRequest(request, context, statusCode);
-
+        request = request.QueryInterface(Ci.nsIHttpChannel);
         if (typeof(request.URI) === "undefined" || !this._inWindow(request)) {
             this.data = [];
             return;
         }
-
-        request = request.QueryInterface(Ci.nsIHttpChannel);
 
         // browser could have been removed during request
         let browser = getBrowserForRequest(request);
