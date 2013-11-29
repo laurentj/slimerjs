@@ -240,6 +240,7 @@ slCommandLine.prototype = {
         // display debug information if needed
         Components.utils.import("resource://slimerjs/slDebug.jsm");
         if (DEBUG_CLI) {
+            slDebugLog('Gecko version: '+Services.appinfo.platformVersion);
             slDebugLog('script args: '+slConfiguration.args.join(' '));
         }
         if (DEBUG_CONFIG) {
