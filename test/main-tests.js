@@ -76,6 +76,7 @@ webserverTest.listen(8083, function(request, response) {
         response.close();
         return;
     }
+
     if (request.url == '/redirectToRoot') {
         response.statusCode = 301;
         response.headers['Location'] = 'http://localhost:8083';
@@ -109,6 +110,7 @@ webserverTest.listen(8083, function(request, response) {
         response.close();
         return;
     }
+
     if (request.url == '/getCookies') {
         response.statusCode = 200;
         response.headers = {

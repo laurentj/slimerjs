@@ -54,6 +54,13 @@ Network
 - It seems that Gecko has a different behavior than Phantomjs's webkit
   on some HTTP response with code 102, 118 and 408. It response.status is null, it is probably
   because of one of this response code.
+- PhantomJS doesn't do redirections, whereas SlimerJS does.
+- When PhantomJS receives a redirection as HTTP response, it doesn't call the
+  ``onResponseReceive`` with the ``start`` status. SlimerJS calls it.
+- When doing manual redirections (by calling ``changeUrl()`` on the request object),
+  SlimerJS (Gecko) create a request, then cancels it and create a second request, so
+  your ``onResponseReceive`` is called for the two requests.. PhantomJS just reuse the
+  same request.
 
 In the API
 -----------

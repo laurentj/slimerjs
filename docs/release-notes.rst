@@ -30,6 +30,7 @@ Fixed bugs
 - Fixed output on Windows: console messages are now output in real time, not any more at the
   end of the execution of the script. (issue #105 and issue #7)
 - Fixed an internal error appearing during the call of ``webpage.close()``
+- Fixed the HTTP redirection handling.
 
 Fixed PhantomJS conformance issues
 ----------------------------------

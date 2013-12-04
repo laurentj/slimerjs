@@ -138,7 +138,7 @@ const onRequestStart = function(subject, data) {
     let req = traceRequest(index, subject);
 
     if (DEBUG_NETWORK_PROGRESS) {
-        slDebugLog("network: resource request #"+req.id+" started: "+req.method+" - "+req.url);
+        slDebugLog("network: resource request #"+req.id+" started: "+req.method+" - "+req.url+" flags="+loadFlags(subject));
     }
 
     if (typeof(options.onRequest) === "function") {
@@ -156,7 +156,7 @@ const onRequestStart = function(subject, data) {
         }
     }
 
-    let listener = new TracingListener(index, options);
+    let listener = new TracingListener(index, options, subject);
     subject.QueryInterface(Ci.nsITraceableChannel);
     listener.originalListener = subject.setNewListener(listener);
 };
@@ -253,17 +253,17 @@ const onFileRequestResponseDone = function(subject, browser) {
     }
 };
 
-const TracingListener = function(index, options) {
+const TracingListener = function(index, options, request) {
     this.index = index;
     this.options = options;
     this.response = null;
     this.errorAlreadyNotified = false;
     this.data = [];
     this.dataLength = 0;
+    this.originalRequest = request;
 };
 TracingListener.prototype = {
     onStartRequest: function(request, context) {
-
         try {
             request.QueryInterface(Ci.nsIHttpChannel);
             this.originalListener.onStartRequest(request, context);
@@ -275,10 +275,23 @@ TracingListener.prototype = {
             return;
         }
 
+        if (this.originalRequest.status == Cr.NS_BINDING_REDIRECTED) {
+            // when there is a redirection, the original chanel has this status
+            // but we receive as "request" argument the new channel. We should ignore
+            // this new channel because it has its own TracingListener
+            this.response = traceResponse(this.index, this.originalRequest);
+            this.response.contentType = null;
+            if (typeof(this.options.onResponse) == "function") {
+                this.options.onResponse(mix({}, this.response));
+                this._triggerEndResponse(null, null);
+            }
+            this.originalRequest = null;
+            return;
+        }
         this.response = traceResponse(this.index, request);
 
         if (DEBUG_NETWORK_PROGRESS) {
-            slDebugLog("network: resource #"+this.response.id+" response 'start': "+this.response.url);
+            slDebugLog("network: resource #"+this.response.id+" response 'start': "+this.response.url+" flags="+loadFlags(request));
         }
 
         if (request.status) {
@@ -324,7 +337,7 @@ TracingListener.prototype = {
 
             if (errorCode) {
                 if (DEBUG_NETWORK_PROGRESS) {
-                    slDebugLog("network: resource #"+this.response.id+" response in error: #"+errorCode+" - "+errorStr);
+                    slDebugLog("network: resource #"+this.response.id+" response in error (2): #"+errorCode+" - "+errorStr);
                 }
 
                 if (typeof(this.options.onError) === "function")
@@ -337,9 +350,13 @@ TracingListener.prototype = {
         }
     },
     onDataAvailable: function(request, context, inputStream, offset, count) {
+
         try {
-            request = request.QueryInterface(Ci.nsIChannel);
-            if (typeof(request.URI) !== "undefined" && this._inWindow(request)) {
+            //request = request.QueryInterface(Ci.nsIChannel);
+            if (this.originalRequest &&
+                typeof(request.URI) !== "undefined" &&
+                this._inWindow(request)) {
+
                 this.dataLength += count;
                 let win = getWindowForRequest(request);
                 if (this._defragURL(win.location) == request.URI.spec ||
@@ -361,7 +378,7 @@ TracingListener.prototype = {
 
         this.originalListener.onStopRequest(request, context, statusCode);
         request = request.QueryInterface(Ci.nsIHttpChannel);
-        if (typeof(request.URI) === "undefined" || !this._inWindow(request)) {
+        if (typeof(request.URI) === "undefined" || !this._inWindow(request) || !this.originalRequest) {
             this.data = [];
             return;
         }
@@ -386,33 +403,8 @@ TracingListener.prototype = {
             this.errorAlreadyNotified = false;
         }
 
-        if (typeof(this.options.onResponse) != "function") {
-            return;
-        }
-
-        // Finish response
-        this.response.stage = "end";
-        this.response.time = new Date();
-        this.response.body = this.data.join("");
-        this.response.bodySize = this.dataLength;
-
-        if (this.response.redirectURL) {
-            this.response.body = "";
-            this.response.bodySize = 0;
-        }
-
-        if (this.response.body) {
-            if (/^image\//.test(this.response.contentType)) {
-                this.response.imageInfo = imageInfo(this.response, this.response.body);
-            }
-            if (!this._shouldCapture(request) &&
-                this._defragURL(browser.contentWindow.location) != request.URI.spec)
-            {
-                this.response.body = "";
-            }
-        }
-        this.data = [];
-        this.options.onResponse(mix({}, this.response));
+        this._triggerEndResponse(browser, request);
+        this.originalRequest = null;
     },
 
     _inWindow: function(request) {
@@ -453,6 +445,36 @@ TracingListener.prototype = {
 
     _defragURL: function(location) {
         return location.href.substr(0, location.href.length - location.hash.length);
+    },
+
+    _triggerEndResponse : function(browser, request) {
+        if (typeof(this.options.onResponse) != "function") {
+            return;
+        }
+
+        // Finish response
+        this.response.stage = "end";
+        this.response.time = new Date();
+        this.response.body = this.data.join("");
+        this.response.bodySize = this.dataLength;
+
+        if (this.response.redirectURL) {
+            this.response.body = "";
+            this.response.bodySize = 0;
+        }
+
+        if (this.response.body && this.originalRequest) {
+            if (/^image\//.test(this.response.contentType)) {
+                this.response.imageInfo = imageInfo(this.response, this.response.body);
+            }
+            if (!this._shouldCapture(request) &&
+                this._defragURL(browser.contentWindow.location) != request.URI.spec)
+            {
+                this.response.body = "";
+            }
+        }
+        this.data = [];
+        this.options.onResponse(mix({}, this.response));
     },
 
     QueryInterface: function (aIID) {
@@ -505,7 +527,6 @@ const requestController = function(request, index, options) {
         changeUrl : function(url) {
             let uri = ioService.newURI(url, null, null);
             request.redirectTo(uri);
-            options.onLoadFinished(url, "success")
         },
 
         setHeader : function (key, value, merge) {
@@ -719,6 +740,7 @@ const ProgressListener = function(browser, options) {
     this.browser = browser;
     this.options = options;
     this.mainPageURI = null;
+    this.redirecting = false;
 };
 ProgressListener.prototype = {
     QueryInterface: function(aIID){
@@ -773,6 +795,14 @@ ProgressListener.prototype = {
             flags & Ci.nsIWebProgressListener.STATE_TRANSFERRING &&
             flags & Ci.nsIWebProgressListener.STATE_IS_REQUEST &&
             flags & Ci.nsIWebProgressListener.STATE_IS_DOCUMENT
+        );
+    },
+
+    isRedirectionStart: function(flags) {
+        return (
+            flags & Ci.nsIWebProgressListener.STATE_START &&
+            flags & Ci.nsIWebProgressListener.STATE_IS_REQUEST &&
+            this.redirecting
         );
     },
 
@@ -849,6 +879,12 @@ ProgressListener.prototype = {
                         onFileRequestStart(request, this.browser);
                     }
                 }
+                else if (this.isRedirectionStart(flags)) {
+                    this.redirecting = false;
+                    this.mainPageURI = request.URI;
+                    if (DEBUG_NETWORK_PROGRESS)
+                        slDebugLog("network: redirection starting - "+uri+ " flags:"+debugFlags(flags));
+                }
                 else if (DEBUG_NETWORK_PROGRESS)
                     slDebugLog("network: request ignored. main page uri not started yet - "+uri+ " flags:"+debugFlags(flags));
                 return;
@@ -905,10 +941,11 @@ ProgressListener.prototype = {
             }
 
             if (flags & Ci.nsIWebProgressListener.STATE_REDIRECTING) {
+                this.redirecting = true;
+                this.mainPageURI = null;
                 request.QueryInterface(Ci.nsIHttpChannel);
-                this.mainPageURI = ioService.newURI(request.URI.resolve(request.getResponseHeader('Location')), request.URI.originCharset, null)
                 if (DEBUG_NETWORK_PROGRESS)
-                    slDebugLog("network: main request redirect to "+this.mainPageURI.spec);
+                    slDebugLog("network: main request redirect from "+request.name);
             }
         } catch(e) {
             if (DEBUG_NETWORK_PROGRESS)
@@ -982,8 +1019,11 @@ function getErrorCode(status) {
         case Cr.NS_ERROR_HOST_IS_IP_ADDRESS: errorCode= 399; errorString="The host string is an IP address"; break;
         case Cr.NS_ERROR_FIRST_HEADER_FIELD_COMPONENT_EMPTY: errorCode= 399; errorString="Syntax error in headers"; break;
         case Cr.NS_ERROR_IN_PROGRESS:
+            errorString += " - in progress";
+            break;
         case Cr.NS_ERROR_ENTITY_CHANGED:
-            errorCode= 99; break;
+            errorString += " - entity changed";
+            break;
         case Cr.NS_ERROR_CACHE_KEY_NOT_FOUND:
         case Cr.NS_ERROR_CACHE_DATA_IS_STREAM:
         case Cr.NS_ERROR_CACHE_DATA_IS_NOT_STREAM:
@@ -994,6 +1034,12 @@ function getErrorCode(status) {
         case Cr.NS_ERROR_CACHE_IN_USE:
         case Cr.NS_ERROR_DOCUMENT_NOT_CACHED:
             errorCode= 295; errorString="Error with the cache"; break;
+        case Cr.NS_BINDING_FAILED:
+            errorString="The request failed for some unknown reason"; break
+        case Cr.NS_BINDING_ABORTED:
+            errorString="The request has been aborted"; break
+        case Cr.NS_BINDING_REDIRECTED:
+            errorString="The request has been aborted by a redirection"; break
     }
     return [errorCode, errorString];
 }
@@ -1055,5 +1101,29 @@ function debugSecurityFlags(flags) {
 
     if (flags & Ci.nsIWebProgressListener.STATE_SECURE_LOW)
         s += "SECURE_LOW,";
+    return s;
+}
+
+
+function loadFlags(request) {
+
+    let s = '';
+    let f = request.loadFlags;
+
+    if ((f & Ci.nsIChannel.LOAD_DOCUMENT_URI) == Ci.nsIChannel.LOAD_DOCUMENT_URI)
+        s += "DOCUMENT_URI, ";
+
+    if ((f & Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI) == Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI)
+        s += "RETARGETED_DOCUMENT_URI, ";
+
+    if ((f & Ci.nsIChannel.LOAD_REPLACE) == Ci.nsIChannel.LOAD_REPLACE)
+        s += "REPLACE, ";
+
+    if ((f & Ci.nsIChannel.LOAD_INITIAL_DOCUMENT_URI) == Ci.nsIChannel.LOAD_INITIAL_DOCUMENT_URI)
+        s += "INITIAL_DOCUMENT_URI, ";
+
+    if ((f & Ci.nsIChannel.LOAD_TARGETED) == Ci.nsIChannel.LOAD_TARGETED)
+        s += "TARGETED, ";
+
     return s;
 }
