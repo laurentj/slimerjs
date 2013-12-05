@@ -60,7 +60,7 @@ Callbacks list:
 :ref:`onLoadStarted <webpage-onLoadStarted>` :ref:`onNavigationRequested <webpage-onNavigationRequested>` :ref:`onPageCreated <webpage-onPageCreated>` 
 :ref:`onPrompt <webpage-onPrompt>` :ref:`onResourceError <webpage-onResourceError>`
 :ref:`onResourceRequested <webpage-onResourceRequested>` :ref:`onResourceReceived <webpage-onResourceReceived>` 
-:ref:`onUrlChanged <webpage-onUrlChanged>`
+:ref:`onResourceTimeout <webpage-onResourceTimeout>`  :ref:`onUrlChanged <webpage-onUrlChanged>`
 
 Internal methods to trigger callbacks:
 
@@ -1354,6 +1354,15 @@ The ``networkRequest`` object has two methods:
   (only available on SlimerJS), is a boolean: ``true`` to merge the given value with an
   existing value for this header. If ``false``, the old value is replaced by the new one.
   (Introduced: SlimerJS 0.9)
+
+
+.. _webpage-onResourceTimeout:
+
+onResourceTimeout
+-----------------------------------------
+
+Not implemented yet.
+
 
 .. _webpage-onUrlChanged:
 
