@@ -6,7 +6,7 @@ Release Notes of SlimerJS 0.10
 ==============================
 
 version 0.10.0
-=============
+==============
 
 Still in development
 
@@ -26,7 +26,7 @@ Other informations about this release
 
 
 Missing APIS in SlimerJS 0.10
-----------------------------
+-----------------------------
 
 Here are the PhantomJS 1.9 APIs that are missing in SlimerJS 0.10 but planed in future releases.
 
