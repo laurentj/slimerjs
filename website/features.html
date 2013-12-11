@@ -95,8 +95,7 @@
             even those written with the <a href="http://coffeescript.org/">Coffee-Script</a> language!
             Your main script can be written with Coffee-script as well. SlimerJS recognize <code>*.coffee</code> files.</p>
 
-            <p>All of these features are executed on top of the core of Firefox.
-            and are already implemented in <span class="slm">SlimerJS</span>.</p>
+            <p>All of these features are executed on top of the core of Firefox.</p>
 
             <h2>Disadvantages over PhantomJS</h2>
 
@@ -105,6 +104,7 @@
             differences in their behaviors</a>.
             Some options and few features are still missing. This is a work
             in progress and a full compatibility is the main goal for the release of SlimerJS 1.0.</p>
+            <p>However, most of scripts for PhantomJS could run perfectly right now with SlimerJS!</p>
 
             <p>Contrary to PhantomJS, SlimerJS is not headless: you see windows and it needs
             a graphical environment. You can use a tool
@@ -120,13 +120,14 @@
 
             <ul>
                 <li>Benefit of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference">the power of Javascript 1.8.6</a>,
-                that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">has already features of the future standard Ecmascript "Harmony" 6</a>:
+                that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">has already features
+                of the future standard Ecmascript "Harmony" 6</a>:
                     iterators, generators, destructured assignement, Map and WeakMap, "let" keyword...</li>
                 <li>The web page rendering in SlimerJS is <strong>strictely identical</strong> to the rendering in Firefox</li>
                 <li>Many modules of the <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/">Mozilla Addons Sdk</a>
                     are available and you can import it into your code as any <strong>CommonJS</strong> modules.</li>
                 <li>Supports all last HTML5 standards implemented in Firefox, including things that
-                are not available into PhantomJS: Audio, Video, WebGL etc..</li>
+                    are not available into PhantomJS: Audio, Video, WebGL etc..</li>
                 <li><span class="slm">SlimerJS</span> is able to load flash content if the Flash plugin is installed
                     (but the plugins renderering cannot be seen when taking screenshots)</li>
                 <li>You can use <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html">promises</a>

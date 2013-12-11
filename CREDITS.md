@@ -8,11 +8,15 @@ by others project or contributors, is Laurent Jouanneau.
 $ git shortlog -s -n | cut -c8-
 Laurent Jouanneau
 Vincent Meurisse
+laurentj
 Matthew Kastor
+Niek van der Maas
 Bartvds
 Boris Staal
+Darren Cook
 Jaime Iniesta
 fumitoito
+Krzysztof Jurewicz
 ```
 
 See also [contribution graphs on github](https://github.com/laurentj/slimerjs/graphs/contributors).
