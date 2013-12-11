@@ -8,7 +8,7 @@ Manual
 .. toctree::
    :maxdepth: 1
    
-   release-notes
+   release-notes-0.10
    installation
    quick-start
    script-execution

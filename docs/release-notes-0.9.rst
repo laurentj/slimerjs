@@ -1,9 +1,9 @@
 .. index:: Release notes
 
 
-=============
-Release Notes
-=============
+=============================
+Release Notes of SlimerJS 0.9
+=============================
 
 version 0.9.0
 =============
