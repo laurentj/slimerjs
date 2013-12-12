@@ -52,10 +52,6 @@ Other informations about this release
 - Some internal changes have been done to embed GhostDriver in the future. Some issues
   are still preventing to use GhostDriver.
 
-*Contributors*:
-
-- Niek van der Maas (Support of ``resource.postData``)
-
 Missing APIS in SlimerJS 0.9
 ----------------------------
 
@@ -80,6 +76,8 @@ Known issues
 
 Contributors
 ------------
+
+- Niek van der Maas (Support of ``resource.postData``)
 - Jaime Iniesta (typo in documentation)
 - Boris Staal (typo in documentation)
 - fumitoito (bug fix in slimerjs.bat)
