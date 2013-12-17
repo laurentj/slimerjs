@@ -145,7 +145,7 @@ To execute such function, use the ``evaluate()`` method of the web page object:
     });
 
 You may notice that you don't see the message "message from the web page". Any console
-messages sended from the web page are not displayed by default. You need to give a
+messages sent from the web page are not displayed by default. You need to give a
 callback on the property ``onConsoleMessage``, that will do it:
 
 .. code-block:: javascript
