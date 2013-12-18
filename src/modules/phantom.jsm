@@ -130,6 +130,13 @@ var phantom = {
      * injects an external script into the SlimerJS sandbox runtime
      */
     injectJs: function(filename) {
+        if (slConfiguration.mainScriptURI.scheme != 'file') {
+            let uri = slConfiguration.mainScriptURI;
+            let fileUrl = uri.scheme+'://'+uri.host+'/'+slConfiguration.scriptModulePath+filename;
+            let source = slUtils.readChromeFile(fileUrl);
+            return slLauncher.injectJs(source, fileUrl);
+        }
+
         // resolve the filename against the current working directory
         let f = slUtils.getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Components.interfaces.nsIFile));
         if (!f.exists()) {
@@ -140,7 +147,6 @@ var phantom = {
                 return false;
             }
         }
-
         let source = slUtils.readSyncStringFromFile(f);
         return slLauncher.injectJs(source, Services.io.newFileURI(f).spec);
     },
