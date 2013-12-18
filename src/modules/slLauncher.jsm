@@ -472,6 +472,9 @@ function prepareLoader(scriptInfo) {
                 if (content.startsWith('#')) {
                     content = '//'+content;
                 }
+                if (this != mainLoader.main) {
+                    content = '(function(){'+content+'\n}).apply(this);'
+                }
                 Loader.load(loader, module, sandbox, content);
             }
 

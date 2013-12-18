@@ -20,6 +20,8 @@ Fixed bugs
 Fixed PhantomJS conformance issues
 ----------------------------------
 
+- a module should be able to call the ``return`` keyword
+
 Other informations about this release
 -------------------------------------
 
