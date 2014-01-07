@@ -95,10 +95,10 @@ var webDriverScriptHandler = {
         function parse_webdriver(val, cmdlineOpt) {
             let pos = val.lastIndexOf(':')
             if ( pos > 0) {
-                [slConfiguration.webdriverHost, slConfiguration.webdriverPort] = val.split(":");
+                [slConfiguration.webdriverIp, slConfiguration.webdriverPort] = val.split(":");
             }
             else
-                slConfiguration.webdriverHost = val
+                slConfiguration.webdriverPort = val
             return val;
         }
         //currentOptionSpec.webdriverEngine = ['webdriver-engine', '', null, true];
@@ -123,7 +123,7 @@ var webDriverScriptHandler = {
         slConfiguration.scriptModulePath = 'ghostdriver/';
         slConfiguration.args.unshift(slConfiguration.mainScriptURI.spec);
 
-        slConfiguration.args.push("--ip="+slConfiguration.webdriverIP);
+        slConfiguration.args.push("--ip="+slConfiguration.webdriverIp);
         slConfiguration.args.push("--port="+slConfiguration.webdriverPort);
 
         if (slConfiguration.webdriverSeleniumGridHub) {
@@ -157,7 +157,7 @@ slCommandLine.prototype = {
      * known script handlers
      */
     _scriptHandlers : [
-        //webDriverScriptHandler,
+        webDriverScriptHandler,
         //helloScriptHandler,
         externalScriptHandler // should be always the last one
     ],
