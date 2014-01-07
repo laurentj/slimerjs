@@ -25,7 +25,7 @@ var optionsSpec = {
     // name: [ 'cmdline option name', 'parser function name', 'default value',  supported],
     errorLogFile: ['error-log-file', 'file', '', true],
     cookiesFile : ['cookies-file', 'file', '', false],
-    diskCacheEnabled : ['disk-cache', 'bool', false, true],
+    diskCacheEnabled : ['disk-cache', 'bool', true, true],
     maxDiskCacheSize : ['max-disk-cache-size', 'int', -1, true],
     ignoreSslErrors : ['ignore-ssl-errors', 'bool', false, false],
     loadImages: ['load-images', 'bool', true, true],
@@ -33,8 +33,8 @@ var optionsSpec = {
     outputEncoding : ['output-encoding', 'encoding', 'UTF-8', false],
     proxyType : ['proxy-type', 'proxytype', 'http', true],
     proxy : ['proxy', 'proxy', null, true],
-    proxyHost : ['', '', '', false],
-    proxyPort : ['', '', 1080, false],
+    proxyHost : ['', '', null, false],
+    proxyPort : ['', '', null, false],
     proxyAuth : ['proxy-auth', 'proxyauth', null, true],
     proxyAuthUser : ['', '', '', false],
     proxyAuthPassword : ['', '', '', false],
@@ -99,10 +99,13 @@ var slConfiguration = {
         })
 
         for (let opt in optionsSpec) {
-
             let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
-            if (cmdlineOpt == '')
+            if (cmdlineOpt == '') {
+                if (!(opt in this)) {
+                    this[opt] = optValue;
+                }
                 continue;
+            }
             let optValue;
             try {
                 if (typeof cmdlineOpt == "string") {
@@ -123,7 +126,7 @@ var slConfiguration = {
                 throw new Error("Error: missing value for flag --"+cmdlineOpt)
             }
 
-            if (optValue) {
+            if (optValue != '' && optValue !== null) {
                 if (!supported) {
                     dump("--"+cmdlineOpt+" not supported yet\n");
                     continue;
@@ -373,26 +376,26 @@ var slConfiguration = {
     errorLogFile : '',
     cookiesFile : '',
     diskCacheEnabled : true,
-    maxDiskCacheSize : null,
+    maxDiskCacheSize : -1,
     ignoreSslErrors : false,
     loadImages: true,
     localToRemoteUrlAccessEnabled : false,
     outputEncoding : 'UTF-8',
-    proxyType : null,
+    proxyType : 'http',
     proxy : null,
     proxyHost:null,
     proxyPort:null,
     proxyAuth : null,
-    proxyAuthUser : null,
-    proxyAuthPassword : null,
+    proxyAuthUser : '',
+    proxyAuthPassword : '',
     scriptEncoding : 'UTF-8',
     webSecurityEnabled : true,
-    offlineStoragePath : null,
-    offlineStorageDefaultQuota : null,
+    offlineStoragePath : '',
+    offlineStorageDefaultQuota : -1,
     printDebugMessages : false,
     javascriptCanOpenWindows : true,
     javascriptCanCloseWindows : true,
-    sslCertificatesPath : null,
+    sslCertificatesPath : '',
     enableCoffeeScript: true
 }
 

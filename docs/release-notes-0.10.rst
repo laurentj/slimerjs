@@ -17,6 +17,8 @@ New API
 Fixed bugs
 ----------
 
+- Fixed configuration reading for script handlers (internal stuff)
+
 Fixed PhantomJS conformance issues
 ----------------------------------
 
