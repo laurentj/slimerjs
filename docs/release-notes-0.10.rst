@@ -18,6 +18,8 @@ Fixed bugs
 ----------
 
 - Fixed configuration reading for script handlers (internal stuff)
+- Callback given to ``webpage.open()`` is now really called after the page loading:
+  it allows to call ``render()`` without a delay (``setTimeout``...)
 
 Fixed PhantomJS conformance issues
 ----------------------------------
