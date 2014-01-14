@@ -13,6 +13,7 @@ const imgTools = Cc["@mozilla.org/image/tools;1"].getService(Ci.imgITools);
 const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
 Cu.import('resource://slimerjs/slDebug.jsm');
+Cu.import("resource://gre/modules/Services.jsm");
 
 let browserMap = new WeakMap();
 
@@ -944,7 +945,12 @@ ProgressListener.prototype = {
                     if (uri != 'about:blank' && request.status) {
                         success = 'fail';
                     }
-                    this.options.onLoadFinished(uri, success, false);
+                    // call onLoadFinished asynchronously, so there are chances that
+                    // it is called when the docshell is ready and the page is displayed
+                    let opt = this.options;
+                    Services.tm.currentThread.dispatch({ run: function(){
+                        opt.onLoadFinished(uri, success, false);
+                    }}, Ci.nsIEventTarget.DISPATCH_NORMAL);
                 }
                 return;
             }
