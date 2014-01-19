@@ -1430,6 +1430,10 @@ function _create(parentWebpageInfo) {
 
             try {
                 let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file));
+                if (finalOptions.format == 'pdf') {
+                    return webpageUtils.renderPageAsPDF(browser.contentWindow, file, finalOptions.ratio);
+                }
+
                 let canvas = webpageUtils.getScreenshotCanvas(
                                             browser.contentWindow,
                                             finalOptions.ratio,

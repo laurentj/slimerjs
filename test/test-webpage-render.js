@@ -142,6 +142,22 @@ describe("WebPage.render()", function(){
 
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
+            currentImageFile = 'slimerjs_capture.pdf';
+            webpage.render(currentImageFile);
+            expect(fs.exists(currentImageFile)).toBeTruthy();
+        });
+    });
+
+    it("can capture and save it as PDF into a file",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open(url, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
             currentImageFile = 'slimerjs_capture.png';
             webpage.render('slimerjs_capture.png');
             expect(fs.exists('slimerjs_capture.png')).toBeTruthy();

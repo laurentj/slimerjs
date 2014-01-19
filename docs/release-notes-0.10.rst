@@ -13,6 +13,7 @@ Still in development
 New API
 -------
 
+- ``webpage.render()`` can now generates PDF
 
 Fixed bugs
 ----------
@@ -40,7 +41,6 @@ Here are the PhantomJS 1.9 APIs that are missing in SlimerJS 0.10 but planed in 
   are not supported yet. Some of them are the possibility to deactivate
   SSL verification and Web security (CORS etc)
 - no support of Ghost Driver (Selenium web driver)
-- page rendering into PDF
 
 You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_
 to know details.

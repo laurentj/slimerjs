@@ -286,7 +286,7 @@ var webpageUtils = {
             finalOptions.contentType = "image/png";
         } else if (format == "jpeg" || format == 'jpg') {
             finalOptions.contentType = "image/jpeg";
-        } else {
+        } else if (format != 'pdf') {
             throw new Error("Render format \"" + format + "\" is not supported");
         }
         return finalOptions;
@@ -399,5 +399,67 @@ var webpageUtils = {
         ctx.restore();
 
         return canvas;
+    },
+
+    /**
+     * print the given content window into a PDF.
+     * The code has been inspired by http://mxr.mozilla.org/mozilla-central/source/mobile/android/chrome/content/browser.js#932
+     */
+    renderPageAsPDF : function(contentWindow, file, ratio) {
+        let printSettings = Cc["@mozilla.org/gfx/printsettings-service;1"]
+                                .getService(Ci.nsIPrintSettingsService)
+                                .newPrintSettings;
+        printSettings.printSilent = true;
+        printSettings.showPrintProgress = false;
+        printSettings.printBGImages = true;
+        printSettings.printBGColors = true;
+        printSettings.printToFile = true;
+        printSettings.toFileName = file;
+        printSettings.printFrameType = Ci.nsIPrintSettings.kFramesAsIs;
+        printSettings.outputFormat = Ci.nsIPrintSettings.kOutputFormatPDF;
+        printSettings.footerStrCenter = "";
+        printSettings.footerStrLeft   = "";
+        printSettings.footerStrRight  = "";
+        printSettings.headerStrCenter = "";
+        printSettings.headerStrLeft   = "";
+        printSettings.headerStrRight  = "";
+        printSettings.scaling = ratio;
+
+        let ms = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
+        let mimeInfo = ms.getFromTypeAndExtension("application/pdf", "pdf");
+
+        let webBrowserPrint = contentWindow.QueryInterface(Ci.nsIInterfaceRequestor)
+                                           .getInterface(Ci.nsIWebBrowserPrint);
+        let printEnding = false;
+        let wpListener = {
+            QueryInterface: function(aIID){
+                if (aIID.equals(Ci.nsIWebProgressListener) ||
+                    aIID.equals(Ci.nsISupportsWeakReference) ||
+                    aIID.equals(Ci.nsISupports))
+                    return this;
+               throw(Cr.NS_NOINTERFACE);
+            },
+            onLocationChange : function(progress, request, location, flags) {
+            },
+            onStateChange: function(progress, request, flags, status) {
+                if ((flags & Ci.nsIWebProgressListener.STATE_STOP)
+                    && (flags & Ci.nsIWebProgressListener.STATE_IS_NETWORK)) {
+                    printEnding = true;
+                }
+            },
+            onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){},
+            onSecurityChange : function(aWebProgress, aRequest, aState) { },
+            onProgressChange : function (aWebProgress, aRequest,
+                    aCurSelfProgress, aMaxSelfProgress,
+                    aCurTotalProgress, aMaxTotalProgress)
+            {}
+        }
+        webBrowserPrint.print(printSettings, wpListener);
+
+        let thread = Services.tm.currentThread;
+        while (!printEnding)
+            thread.processNextEvent(true);
+
+        return true;
     }
 }

@@ -838,15 +838,15 @@ This method takes a screenshot of the web page and stores it into the given file
 You can limit the area to capture by setting the ``clipRect`` property.
 
 By default, it determines the format of the file by inspecting its extension.
-It supports only jpg and png format (PDF and gif probably in future version).
+It supports only JPG, PNG and PDF format (and gif probably in future version).
 
 The second parameter is an object containing options. Here are its possible properties:
 
 - ``format``: indicate the file format (then the file extension is ignored). possible
-  values: ``jpg``, ``png``, ``jpeg``.
+  values: ``jpg``, ``png``, ``jpeg``, ``pdf``.
 - ``quality``: the compression quality. A number between 0 and 1.
 - ``ratio``: (SlimerJS only), a number between 0 and 1, indicating the "zoom level" of the capture.
-   (``zoomFactor`` is then ignored)
+   (``zoomFactor`` is then ignored).
 - ``onlyViewport``: (SlimerJS only), set to true if you only want to take a screenshot of
   the current viewport. By default, it is false, and screenshot has the size of the content,
   except when webpage.clipRect is set.
@@ -854,6 +854,8 @@ The second parameter is an object containing options. Here are its possible prop
 Note: because of a limitation of Gecko (see `Mozilla bug 650418 <https://bugzilla.mozilla.org/show_bug.cgi?id=650418>`_),
 plugins content like flash cannot be rendered in the screenshot (even if you can see it in the window).
 
+Note: for PDF rendering, the ``clipRect`` property and options ``quality`` and ``onlyViewport`` are
+ignored.
 
 .. _webpage-renderBase64:
 
