@@ -178,6 +178,8 @@ var slConfiguration = {
                 if (this.proxyHost) {
                     Services.prefs.setCharPref('network.proxy.http', this.proxyHost)
                     Services.prefs.setIntPref('network.proxy.http_port', this.proxyPort);
+                    Services.prefs.setCharPref('network.proxy.ssl', this.proxyHost)
+                    Services.prefs.setIntPref('network.proxy.ssl_port', this.proxyPort);
                     Services.prefs.setIntPref('network.proxy.type',1);
                 }
                 else {
@@ -205,6 +207,8 @@ var slConfiguration = {
                 if (this.proxy != '') {
                     Services.prefs.setCharPref('network.proxy.http', this.proxyHost)
                     Services.prefs.setIntPref('network.proxy.http_port', this.proxyPort);
+                    Services.prefs.setCharPref('network.proxy.ssl', this.proxyHost)
+                    Services.prefs.setIntPref('network.proxy.ssl_port', this.proxyPort);
                     Services.prefs.setIntPref('network.proxy.type',1);
                     break;
                 }
