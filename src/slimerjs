@@ -109,10 +109,13 @@ function showHelp() {
 # list
 LISTVAR=""
 ENVVAR=`env`;
+OLDIFS=$IFS;
+IFS=$'\n';
 for v in $ENVVAR; do
     IFS='=' read -a var <<< "$v"
     LISTVAR="$LISTVAR,${var[0]}"
 done
+IFS=$OLDIFS;
 
 # check arguments.
 CREATE_TEMP='Y'
