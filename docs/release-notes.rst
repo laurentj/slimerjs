@@ -5,6 +5,30 @@
 Release Notes
 =============
 
+
+version 0.9.1
+=============
+
+Not released yet
+
+Fixed bugs
+----------
+
+  * Fix SSL proxies: Proxy should be used for HTTPS and HTTP connections
+  * Fixes #158: correctly deal with env vars containing spaces
+
+New API
+-------
+
+  * ``system.stdout``
+
+
+Contributors to 0.9.1
+---------------------
+
+- Jens Nockert
+- Arpad Borsos
+
 version 0.9.0
 =============
 
