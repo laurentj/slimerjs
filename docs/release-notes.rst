@@ -9,7 +9,12 @@ Release Notes
 version 0.9.1
 =============
 
-Not released yet
+Not released yet.
+
+Improvements
+------------
+
+  * Compatibility with XulRunner/Firefox 28 and 29
 
 Fixed bugs
 ----------
