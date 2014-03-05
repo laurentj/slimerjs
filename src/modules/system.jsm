@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-var EXPORTED_SYMBOLS = ["os", "pid", "platform", "env"];
+var EXPORTED_SYMBOLS = ["os", "pid", "platform", "env", "stdout"];
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
 
@@ -134,4 +134,11 @@ this.__defineGetter__('env', function(){
 this.__defineGetter__('args', function(){
     return slConfiguration.args;
 });
+
+var stdout = {
+    write: dump,
+    writeLine: function (data) {
+        dump(data + '\n');
+    }
+};
 
