@@ -15,6 +15,7 @@ Improvements
 ------------
 
   * Compatibility with XulRunner/Firefox 28 and 29
+  * Support of JSON responses in webpage.plainText
 
 Fixed bugs
 ----------

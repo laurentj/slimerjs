@@ -199,12 +199,18 @@ webserverTest.listen(8083, function(request, response) {
                 //h['Content-Type'] = 'image/png';
                 binfile = true;
             }
-            else if (filepath.match(/\.css$/))
+            else if (filepath.match(/\.css$/)) {
                 h['Content-Type'] = 'text/css';
-            else if (filepath.match(/\.js$/))
+            }
+            else if (filepath.match(/\.js$/)) {
                 h['Content-Type'] = 'text/javascript';
-            else if (filepath.match(/\.txt$/))
+            }
+            else if (filepath.match(/\.txt$/)) {
                h['Content-Type'] = 'text/plain;charset=UTF-8';
+            }
+            else if (filepath.match(/\.json$/)) {
+               h['Content-Type'] = 'application/json';
+            }
             else {
                 h['Content-Type'] = 'text/html;charset=UTF-8';
             }

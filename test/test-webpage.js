@@ -484,6 +484,24 @@ describe("WebPage.plainText", function(){
             webpage.close();
         });
     });
+
+    it("contains the content of a JSON response",function() {
+        webpage.close();
+        var loaded = false;
+        runs(function() {
+            webpage.open("http://127.0.0.1:8083/hello.json", function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var expected = '{\n    "title": "<hello & JSON"\n}';
+            expect(webpage.plainText).toEqual(expected);
+            webpage.close();
+        });
+    });
+
 });
 
 

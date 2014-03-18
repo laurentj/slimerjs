@@ -224,7 +224,8 @@ var webpageUtils = {
         if (channel.contentType != "text/html" && onlyPlainText) {
             // for text document, the DOMDocument content
             // a <pre> element with the text in it
-            if (channel.contentType.indexOf("text/") === 0)
+            if (channel.contentType.indexOf("text/") === 0 ||
+                channel.contentType.indexOf("application/json") === 0)
                 return doc.body.getElementsByTagName('pre')[0].textContent;
             // FIXME retrieve content for other resource type
             return null;
