@@ -145,6 +145,7 @@ echo "Build MacOS package..."
 cd $XRDIR
 tar xjf "$XULRUNNER_PACK_NAME.mac.tar.bz2"
 mv XUL.framework/Versions/Current $TARGETDIR/xulrunner
+cp $SLIMERDIR/src/macos/Info.plist $TARGETDIR/xulrunner/
 cd ..
 tar cjf "slimerjs-$VERSION-mac.tar.bz2" "slimerjs-$VERSION"
 rm -rf $TARGETDIR/xulrunner
