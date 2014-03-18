@@ -11,15 +11,18 @@ XULRUNNER_PACK_NAME="xulrunner-$XULRUNNER_VERSION.en-US"
 cd $SLIMERDIR
 
 BUILD_BIN_PACKAGE="y"
+XRDIR=""
 
 usage()
 {
-    echo "buildpackage.sh [options]"
+    echo "buildpackage.sh [options] [xulrunner-bin-path]"
     echo ""
     echo "options:"
     echo "  --no-bin: don't build binary packages"
     echo "  -h: displays this help"
     echo ""
+    echo "xulrunner-bin-path: the path where xulrunner packages can be found"
+    echo " or can be stored after downloading them from mozilla site"
 }
 
 for i in $*
@@ -39,7 +42,11 @@ case $i in
       exit 1
     ;;
     *)
-      echo "Warning: no supported parameter. $i ignored"
+      if [ "$XRDIR" == "" ]; then
+          XRDIR=$i
+      else
+          echo "Warning: no supported parameter. $i ignored"
+      fi
     ;;
 esac
 done
@@ -48,7 +55,10 @@ VERSION=`grep "^Version=" src/application.ini`
 VERSION=${VERSION:8}
 
 TARGETDIR="$SLIMERDIR/_dist/slimerjs-$VERSION"
-XRDIR="$SLIMERDIR/_dist/xrbin"
+
+if [ "$XRDIR" == "" ]; then
+    XRDIR="$SLIMERDIR/_dist/xrbin"
+fi
 
 if [ -d "$TARGETDIR" ]
 then
