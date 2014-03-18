@@ -21,6 +21,8 @@ Fixed bugs
 
   * Fix SSL proxies: Proxy should be used for HTTPS and HTTP connections
   * Fixes #158: correctly deal with env vars containing spaces
+  * Fixed #163: High CPU utilization while script is idle. The CSS animation
+    on the SlimerJS window has just been removed.
 
 New API
 -------
