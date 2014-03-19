@@ -110,41 +110,58 @@ if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.linux-i686.tar.bz2" ]
 then
     wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.linux-i686.tar.bz2"
 fi
+if [ ! -d $XULRUNNER_PACK_NAME.linux-i686 ]; then
+    tar xjf "$XULRUNNER_PACK_NAME.linux-i686.tar.bz2"
+    mv xulrunner $XULRUNNER_PACK_NAME.linux-i686
+fi
+
 
 if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.linux-x86_64.tar.bz2" ]
 then
     wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.linux-x86_64.tar.bz2"
+fi
+if [ ! -d $XULRUNNER_PACK_NAME.linux-x86_64 ]; then
+    tar xjf "$XULRUNNER_PACK_NAME.linux-x86_64.tar.bz2"
+    mv xulrunner $XULRUNNER_PACK_NAME.linux-x86_64
 fi
 
 if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.mac.tar.bz2" ]
 then
     wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.mac.tar.bz2"
 fi
+if [ ! -d $XULRUNNER_PACK_NAME.mac ]; then
+    tar xjf "$XULRUNNER_PACK_NAME.mac.tar.bz2"
+    mv XUL.framework/Versions/Current $XULRUNNER_PACK_NAME.mac
+    rm -rf XUL.framework
+fi
+
 
 if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.win32.zip" ]
 then
     wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.win32.zip"
 fi
+if [ ! -d $XULRUNNER_PACK_NAME.win32 ]; then
+    unzip "$XULRUNNER_PACK_NAME.win32.zip"
+    mv xulrunner $XULRUNNER_PACK_NAME.win32
+fi
 
 echo "Build linux-i686 package.."
-tar xjf "$XULRUNNER_PACK_NAME.linux-i686.tar.bz2"
-mv xulrunner $TARGETDIR
+cd $XRDIR
+cp -a $XULRUNNER_PACK_NAME.linux-i686 $TARGETDIR/xulrunner
 cd $TARGETDIR/..
 tar cjf "slimerjs-$VERSION-linux-i686.tar.bz2" "slimerjs-$VERSION"
 rm -rf $TARGETDIR/xulrunner
 
 echo "Build linux-x86_64 package..."
 cd $XRDIR
-tar xjf "$XULRUNNER_PACK_NAME.linux-x86_64.tar.bz2"
-mv xulrunner $TARGETDIR
+cp -a $XULRUNNER_PACK_NAME.linux-x86_64 $TARGETDIR/xulrunner
 cd $TARGETDIR/..
 tar cjf "slimerjs-$VERSION-linux-x86_64.tar.bz2" "slimerjs-$VERSION"
 rm -rf $TARGETDIR/xulrunner
 
 echo "Build MacOS package..."
 cd $XRDIR
-tar xjf "$XULRUNNER_PACK_NAME.mac.tar.bz2"
-mv XUL.framework/Versions/Current $TARGETDIR/xulrunner
+cp -a $XULRUNNER_PACK_NAME.mac $TARGETDIR/xulrunner
 cp $SLIMERDIR/src/macos/Info.plist $TARGETDIR/xulrunner/
 cd $TARGETDIR/..
 tar cjf "slimerjs-$VERSION-mac.tar.bz2" "slimerjs-$VERSION"
@@ -161,8 +178,7 @@ else
 fi
 
 cd $XRDIR
-unzip "$XULRUNNER_PACK_NAME.win32.zip"
-mv xulrunner $TARGETDIR
+cp -a $XULRUNNER_PACK_NAME.win32 $TARGETDIR/xulrunner
 cd $TARGETDIR/..
 zip -r "slimerjs-$VERSION-win32.zip" "slimerjs-$VERSION"
 rm -rf $TARGETDIR/xulrunner
