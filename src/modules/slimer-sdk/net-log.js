@@ -617,7 +617,7 @@ const traceResponse = function(id, request) {
         response.contentCharset = request.contentCharset;
     } catch(e) {
         // status code is not available.
-        // probably an 101, 102,118, 408 http response
+        // probably an 101, 102, 118, 408 http response
         return response;
     }
 
