@@ -129,7 +129,7 @@ fi
 echo "Build linux-i686 package.."
 tar xjf "$XULRUNNER_PACK_NAME.linux-i686.tar.bz2"
 mv xulrunner $TARGETDIR
-cd ..
+cd $TARGETDIR/..
 tar cjf "slimerjs-$VERSION-linux-i686.tar.bz2" "slimerjs-$VERSION"
 rm -rf $TARGETDIR/xulrunner
 
@@ -137,7 +137,7 @@ echo "Build linux-x86_64 package..."
 cd $XRDIR
 tar xjf "$XULRUNNER_PACK_NAME.linux-x86_64.tar.bz2"
 mv xulrunner $TARGETDIR
-cd ..
+cd $TARGETDIR/..
 tar cjf "slimerjs-$VERSION-linux-x86_64.tar.bz2" "slimerjs-$VERSION"
 rm -rf $TARGETDIR/xulrunner
 
@@ -146,7 +146,7 @@ cd $XRDIR
 tar xjf "$XULRUNNER_PACK_NAME.mac.tar.bz2"
 mv XUL.framework/Versions/Current $TARGETDIR/xulrunner
 cp $SLIMERDIR/src/macos/Info.plist $TARGETDIR/xulrunner/
-cd ..
+cd $TARGETDIR/..
 tar cjf "slimerjs-$VERSION-mac.tar.bz2" "slimerjs-$VERSION"
 rm -rf $TARGETDIR/xulrunner
 
@@ -163,7 +163,7 @@ fi
 cd $XRDIR
 unzip "$XULRUNNER_PACK_NAME.win32.zip"
 mv xulrunner $TARGETDIR
-cd ..
+cd $TARGETDIR/..
 zip -r "slimerjs-$VERSION-win32.zip" "slimerjs-$VERSION"
 rm -rf $TARGETDIR/xulrunner
 
