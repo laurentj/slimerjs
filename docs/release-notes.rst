@@ -25,6 +25,7 @@ Fixed bugs
   * Fixed #163: High CPU utilization while script is idle. The CSS animation
     on the SlimerJS window has just been removed.
   * Fixed #135: fixed crash on MacOS
+  * Fixed #143: some listeners calls were missing when setting content on a webpage
 
 New API
 -------
