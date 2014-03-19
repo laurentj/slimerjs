@@ -929,7 +929,7 @@ describe("webpage with listeners", function() {
             receivedRequest = [];
             testWebpageListenerCreateWebPage()
             webpage.open(domain+'statuscode/'+statusCode, function(success){
-                if (statusCode == 204 || statusCode == 205||  (URLUtils && statusCode == 408)) {
+                if (statusCode == 204 || statusCode == 205 || (URLUtils && slimer.geckoVersion.major <= 25 && statusCode == 408)) {
                     expect(success).toEqual("fail");
                 }
                 else
@@ -942,8 +942,14 @@ describe("webpage with listeners", function() {
                 })[0];
                 expect(r).toNotBe(null);
                 expect(r.req).toNotBe(null);
-                if ( (URLUtils && statusCode != 408)
-                    || (!URLUtils && statusCode > 199 && statusCode != 204 && statusCode != 304)) {
+                var startHasToBeNull = false;
+                if (URLUtils && slimer.geckoVersion.major <= 25 && statusCode == 408) {
+                    startHasToBeNull = true;
+                }
+                else if (!URLUtils && (statusCode <= 199 || statusCode == 204 || statusCode == 304)) {
+                    startHasToBeNull = true;
+                }
+                if (!startHasToBeNull) {
                     expect(r.start).toNotBe(null);
                     if (statusCode != 102 && statusCode != 118) { // gecko doesn't return response code for this http response
                         expect(r.start.status).toEqual(statusCode);

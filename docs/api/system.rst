@@ -34,3 +34,12 @@ env
 -----------------------------------------
 
 Implemented. Documentation needed.
+
+
+.. _system-stdout:
+
+stdout
+-----------------------------------------
+
+- ``system.stdout.write('something')``
+- ``system.stdout.writeLine('something')``

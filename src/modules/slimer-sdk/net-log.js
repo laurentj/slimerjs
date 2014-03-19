@@ -122,6 +122,10 @@ const stopTracer = function() {
 };
 exports.stopTracer = stopTracer;
 
+/**
+ * @param nsIRequest/nsIChannel subject
+ * @param string data
+ */
 const onRequestStart = function(subject, data) {
 
     let browser = getBrowserForRequest(subject);
@@ -488,7 +492,11 @@ TracingListener.prototype = {
 };
 
 
-
+/**
+ * @param nsIRequest/nsIChannel request
+ * @param integer index  the number of the request
+ * @param object options
+ */
 const requestController = function(request, index, options) {
     return {
         abort: function() {
@@ -618,7 +626,7 @@ const traceResponse = function(id, request) {
         response.contentCharset = request.contentCharset;
     } catch(e) {
         // status code is not available.
-        // probably an 101, 102,118, 408 http response
+        // probably an 101, 102, 118, 408 http response
         return response;
     }
 
@@ -924,6 +932,7 @@ ProgressListener.prototype = {
                 }
                 return;
             }
+
             if (this.isLoaded(flags)) {
                 this.mainPageURI = null;
                 if (typeof(this.options.onLoadFinished) === "function") {

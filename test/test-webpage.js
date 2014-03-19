@@ -391,12 +391,39 @@ describe("WebPage.content", function(){
 
 describe("WebPage.setContent", function(){
     var webpage;
+    var loadStartUrl = '', loadFinishedUrl = '', navReqUrl = '', navType = '', willNav = null, loadingStatus = null;
+    var loadStartedCalled =false, navRequestedCalled = false, loadFinishedCalled = false;
     
     beforeEach(function() {
+        loadStartedCalled =true;
+        navRequestedCalled = true;
+        loadFinishedCalled = false;
+        loadStartUrl = '';
+        loadFinishedUrl = '';
+        navReqUrl = '';
+        navType = '';
+        willNav = null;
+        loadingStatus = null;
+
         if (webpage) {
             return;
         }
         webpage = require("webpage").create();
+        webpage.onLoadStarted = function (url, isFrame) {
+            loadStartedCalled = true;
+            loadStartUrl = url;
+        };
+        webpage.onNavigationRequested = function (url, navigationType, willNavigate, isMainFrame) {
+            navRequestedCalled = true;
+            navReqUrl = url;
+            navType = navigationType;
+            willNav = willNavigate;
+        };
+        webpage.onLoadFinished = function(status, url, isFrame) {
+            loadFinishedCalled = true;
+            loadFinishedUrl = url;
+            loadingStatus = status;
+        };
     });
 
     it("can set the content on a new browser",function() {
@@ -404,9 +431,18 @@ describe("WebPage.setContent", function(){
         var content = "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">\n"
             +"        <title>An other content #2</title></head>\n"
             +"    <body><div>content set with setContent</div></body>";
-        webpage.setContent(content, 'http://127.0.0.1:8083/foo.html');
+        var url = 'http://127.0.0.1:8083/foo.html';
+        webpage.setContent(content, url);
         expect(webpage.title).toEqual('An other content #2');
         expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("content set with setContent");
+        expect(loadStartedCalled).toBeTruthy();
+        expect(navRequestedCalled).toBeTruthy();
+        expect(willNav).toBeTruthy();
+        expect(loadStartUrl).toEqual(url);
+        expect(loadFinishedUrl).toEqual(url);
+        expect(navReqUrl).toEqual(url);
+        expect(navType).toEqual('Other');
+        expect(loadingStatus).toEqual('success');
     });
 
     it("can set the content on an existing browser",function() {
@@ -423,10 +459,19 @@ describe("WebPage.setContent", function(){
             var content = "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">\n"
                 +"        <title>An other content #3</title></head>\n"
                 +"    <body><b>setContent is working</b></body>";
-            webpage.setContent(content, 'http://127.0.0.1:8083/foo.html');
+            var url = 'http://127.0.0.1:8083/foo.html';
+            webpage.setContent(content, url);
             expect(webpage.title).toEqual('An other content #3');
             expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("setContent is working");
             webpage.close();
+            expect(loadStartedCalled).toBeTruthy();
+            expect(navRequestedCalled).toBeTruthy();
+            expect(willNav).toBeTruthy();
+            expect(loadStartUrl).toEqual(url);
+            expect(loadFinishedUrl).toEqual(url);
+            expect(navReqUrl).toEqual(url);
+            expect(navType).toEqual('Other');
+            expect(loadingStatus).toEqual('success');
         });
     });
     it("can set a DOM Element",function() {
@@ -484,6 +529,24 @@ describe("WebPage.plainText", function(){
             webpage.close();
         });
     });
+
+    it("contains the content of a JSON response",function() {
+        webpage.close();
+        var loaded = false;
+        runs(function() {
+            webpage.open("http://127.0.0.1:8083/hello.json", function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var expected = '{\n    "title": "<hello & JSON"\n}';
+            expect(webpage.plainText).toEqual(expected);
+            webpage.close();
+        });
+    });
+
 });
 
 

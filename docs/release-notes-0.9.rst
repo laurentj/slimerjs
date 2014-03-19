@@ -5,6 +5,40 @@
 Release Notes of SlimerJS 0.9
 =============================
 
+
+version 0.9.1
+=============
+
+Not released yet.
+
+Improvements
+------------
+
+  * Compatibility with XulRunner/Firefox 28 and 29
+  * Support of JSON responses in webpage.plainText
+
+Fixed bugs
+----------
+
+  * Fix SSL proxies: Proxy should be used for HTTPS and HTTP connections
+  * Fixes #158: correctly deal with env vars containing spaces
+  * Fixed #163: High CPU utilization while script is idle. The CSS animation
+    on the SlimerJS window has just been removed.
+  * Fixed #135: fixed crash on MacOS
+  * Fixed #143: some listeners calls were missing when setting content on a webpage
+
+New API
+-------
+
+  * ``system.stdout``
+
+
+Contributors to 0.9.1
+---------------------
+
+- Jens Nockert
+- Arpad Borsos
+
 version 0.9.0
 =============
 
@@ -52,10 +86,6 @@ Other informations about this release
 - Some internal changes have been done to embed GhostDriver in the future. Some issues
   are still preventing to use GhostDriver.
 
-*Contributors*:
-
-- Niek van der Maas (Support of ``resource.postData``)
-
 Missing APIS in SlimerJS 0.9
 ----------------------------
 
@@ -80,6 +110,8 @@ Known issues
 
 Contributors
 ------------
+
+- Niek van der Maas (Support of ``resource.postData``)
 - Jaime Iniesta (typo in documentation)
 - Boris Staal (typo in documentation)
 - fumitoito (bug fix in slimerjs.bat)

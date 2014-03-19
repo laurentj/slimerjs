@@ -1291,6 +1291,7 @@ function _create(parentWebpageInfo) {
             if (url) {
                 let uri = Services.io.newURI(url, null, null);
                 browser.docShell.setCurrentURI(uri);
+                this.navigationRequested(url, 'Other', true, true);
             }
             if ((typeof content) != "string") {
                 let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
@@ -1302,8 +1303,10 @@ function _create(parentWebpageInfo) {
 
             let f = '(function(){document.open();';
             f += 'document.write(decodeURIComponent("'+ encodeURIComponent (content)+'"));';
-            f += 'document.close();})()'
+            f += 'document.close();})()';
+            this.loadStarted(url, false);
             webpageUtils.evalInWindow (browser.contentWindow, f);
+            this.loadFinished('success', url, false);
         },
 
         /**
