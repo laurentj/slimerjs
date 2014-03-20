@@ -9,7 +9,7 @@ Release Notes
 version 0.9.1
 =============
 
-SlimerJS 0.9.0 has been released on March 20, 2014
+SlimerJS 0.9.1 has been released on March 20, 2014
 
 Improvements
 ------------
