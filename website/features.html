@@ -75,64 +75,64 @@
 
             <h2>A scriptable browser</h2>
 
-            <p><span class="slm">SlimerJS</span> allows you to execute a javascript script
+            <p><span class="slm">SlimerJS</span> allows you to execute JavaScript
             outside a classical web browser.</p>
-            
-            <p>In your javascript script, you can use some modules providing many APIs:</p>
+
+            <p>In your JavaScript you can use modules, providing access to many APIs:</p>
 
             <ul>
-                <li>Read and write files</li>
-                <li>Loading a web page and inspect its content</li>
+                <li>Read and write files.</li>
+                <li>Load a web page and inspect its content.</li>
                 <li>Act on a web page like a user: click on links,
-                    fill some form fields etc. You can then inspect
-                    the result, to test them or to retrieve them.</li>
-                <li>Listen network events, to do network monitoring
-                    during the load of a webpage</li>
-                <li>Taking screenshots of a web page</li>
+                    fill in form fields etc. You can then inspect
+                    the results, to test them or to retrieve them.</li>
+                <li>Listen for network events, to do network monitoring
+                    during the load of a webpage.</li>
+                <li>Taking screenshots of a web page.</li>
             </ul>
 
-            <p>Your script is also being able to execute <a href="http://www.commonjs.org/">CommonJS</a> modules,
-            even those written with the <a href="http://coffeescript.org/">Coffee-Script</a> language!
-            Your main script can be written with Coffee-script as well. SlimerJS recognize <code>*.coffee</code> files.</p>
+            <p>Your script is also able to execute <a href="http://www.commonjs.org/">CommonJS</a> modules,
+            even those written with the <a href="http://coffeescript.org/">CoffeeScript</a> language!
+            Your main script can be written with CoffeeScript as well. SlimerJS recognizes <code>*.coffee</code> files.</p>
 
             <p>All of these features are executed on top of the core of Firefox.</p>
 
             <h2>Disadvantages over PhantomJS</h2>
 
-            <p>These APIs are similar to the APIs of <a href="http://phantomjs.org/">Phantomjs</a>
-            but there are some <a href="http://docs.slimerjs.org/current/differences-with-phantomjs.html">few
-            differences in their behaviors</a>.
-            Some options and few features are still missing. This is a work
-            in progress and a full compatibility is the main goal for the release of SlimerJS 1.0.</p>
-            <p>However, most of scripts for PhantomJS could run perfectly right now with SlimerJS!</p>
+            <p>These APIs are similar to the APIs of <a href="http://phantomjs.org/">PhantomJS</a>
+            but there are <a href="http://docs.slimerjs.org/current/differences-with-phantomjs.html">a few
+            differences in their behavior</a>.
+            Some options and a few features are still missing. This is a work
+            in progress and full compatibility is the main goal for the release of SlimerJS 1.0.</p>
+            <p>However, most of scripts for PhantomJS run perfectly well right now with SlimerJS!</p>
 
             <p>Contrary to PhantomJS, SlimerJS is not headless: you see windows and it needs
             a graphical environment. You can use a tool
                like <code>xvfb</code> on a Linux/MacOS system to have this headless feature
-               and to execute SlimerJS on Linux boxes that have not Xorg installed.</p>
+               and to execute SlimerJS on Linux boxes that do not have xorg installed.</p>
 
             <p>But...</p>
 
             <h2>Advantages over PhantomJS</h2>
 
-            <p><span class="slm">SlimerJS</span> is not only a PhantomJS clone, it contains also additional features
+            <p><span class="slm">SlimerJS</span> is not just a PhantomJS clone; it has additional features
             right now:</p>
 
             <ul>
-                <li>Benefit of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference">the power of Javascript 1.8.6</a>,
-                that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">has already features
-                of the future standard Ecmascript "Harmony" 6</a>:
+                <li>Benefit from <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference">the power of JavaScript 1.8.6</a>,
+                that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">already includes features
+                of the future standard ECMAScript Harmony 6</a>:
                     iterators, generators, destructured assignement, Map and WeakMap, "let" keyword...</li>
-                <li>The web page rendering in SlimerJS is <strong>strictely identical</strong> to the rendering in Firefox</li>
-                <li>Many modules of the <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/">Mozilla Addons Sdk</a>
-                    are available and you can import it into your code as any <strong>CommonJS</strong> modules.</li>
-                <li>Supports all last HTML5 standards implemented in Firefox, including things that
-                    are not available into PhantomJS: Audio, Video, WebGL etc..</li>
-                <li><span class="slm">SlimerJS</span> is able to load flash content if the Flash plugin is installed
-                    (but the plugins renderering cannot be seen when taking screenshots)</li>
-                <li>You can use <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html">promises</a>
+                <li>The web page rendering in SlimerJS is <strong>strictly identical</strong> to the rendering in Firefox</li>
+                <li>Many modules of the <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/">Mozilla Add-on SDK</a>
+                    are available and you can import them into your code in the same way as <strong>CommonJS</strong> modules.</li>
+                <li>Supports all the HTML5 standards recently implemented in Firefox, including things that
+                    are not available in PhantomJS: Audio, Video, WebGL etc.</li>
+                <li><span class="slm">SlimerJS</span> is able to load Flash content if the Flash plugin is installed
+                    (though the plugin's rendering cannot be seen when taking screenshots).</li>
+                <li>You can use <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html">Promises</a>
                     when opening a web page with <code>webpage.open()</code>!</li>
-                <li>SlimerJS is not really stuck to a specific version of Gecko: it can use any recent version of Firefox/XulRunner 20+</li>
+                <li>SlimerJS is not really stuck to a specific version of Gecko: it can use any recent version of Firefox/XULRunner 20+</li>
             </ul>
 
             <p><strong><a href="download.html">Try SlimerJS</a></strong> for your web projects!</p>
@@ -167,10 +167,10 @@
       </div>
     </footer>
 
-    <!--script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script-->
+    <!--script type="text/JavaScript" src="http://platform.twitter.com/widgets.js"></script-->
     <script src="assets/js/jquery.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
-    
+
     <!--script src="assets/js/holder/holder.js"></script-->
     <!--script src="assets/js/google-code-prettify/prettify.js"></script-->
     <script src="assets/js/application.js"></script>
