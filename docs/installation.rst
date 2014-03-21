@@ -18,12 +18,12 @@ You cannot use the MingW32 environment on Windows because there are some issues 
 (no output in the console, and it lacks on some commands like mktemp).
 
 On Linux, standalone editions need these libraries: libpthread.so, libdl.so, libstdc++.so,
-libm.so, libgcc_s.so, libc.so, ld-linux-x86-64.so. On Ubuntu/Debian, you can install/verify
+libm.so, libgcc_s.so, libc.so, ld-linux-x86-64.so, libXrender1.so, libasound.so.2, libgtk-x11-2.0.so.0. On Ubuntu/Debian, you can install/verify
 it by doing:
 
 .. code-block:: bash
 
-    sudo apt-get install libc6 libstdc++6 libgcc1 
+    sudo apt-get install libc6 libstdc++6 libgcc1 libgtk2.0-0 libasound2 libxrender1
 
 Installation of SlimerJS
 ------------------------
