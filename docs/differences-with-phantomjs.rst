@@ -89,8 +89,8 @@ In the API
      modules loaded with ``require``
    - Modules are completely impervious. They are executed in a truly javascript
      sandbox
-   - SlimerJS provides an API to indicate paths where modules can be found:
-     ``require.paths`` (CommonJS specification).
+   - Modules must be files, not folders.  ``node_modules`` folders are not
+     searched specially (SlimerJS provides ``require.paths``).
 - Exit code doesn't work with SlimerJS (There is no API for that in Gecko)
 - The callback ``webpage.onNavigationRequest`` receives bad parameters.
   Don't rely on the ``navigationType`` and the ``isMainFrame`` values (because of
