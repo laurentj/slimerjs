@@ -31,17 +31,17 @@ then
         then
             SLIMERJSLAUNCHER="$SLIMERDIR/xulrunner/xulrunner.exe"
         else
-            # Try the Mac OSX global default application path
-            if [ -f "/Applications/Firefox.app/Contents/MacOS/firefox" ]
+            SLIMERJSLAUNCHER=`command -v firefox`
+            if [ "$SLIMERJSLAUNCHER" == "" ]
             then
-                SLIMERJSLAUNCHER="/Applications/Firefox.app/Contents/MacOS/firefox"
-            else
-                SLIMERJSLAUNCHER=`command -v firefox`
+                SLIMERJSLAUNCHER=`command -v xulrunner`
                 if [ "$SLIMERJSLAUNCHER" == "" ]
                 then
-                    SLIMERJSLAUNCHER=`command -v xulrunner`
-                    if [ "$SLIMERJSLAUNCHER" == "" ]
+                    # Try the Mac OSX global default application path
+                    if [ -f "/Applications/Firefox.app/Contents/MacOS/firefox" ]
                     then
+                        SLIMERJSLAUNCHER="/Applications/Firefox.app/Contents/MacOS/firefox"
+                    else
                         echo "SLIMERJSLAUNCHER environment variable is missing. Set it with the path to Firefox or XulRunner"
                         exit 1
                     fi
