@@ -14,7 +14,7 @@ Improvements
 ------------
 
   * Compatibility with XulRunner/Firefox 30 and 31b1
-
+  * packages: default Xulrunner version is now 30
 
 version 0.9.1
 =============
