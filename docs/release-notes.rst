@@ -5,6 +5,16 @@
 Release Notes
 =============
 
+version 0.9.2
+=============
+
+Not released yet.
+
+Improvements
+------------
+
+  * Compatibility with XulRunner/Firefox 30 and 31b1
+
 
 version 0.9.1
 =============
