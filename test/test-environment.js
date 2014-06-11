@@ -90,7 +90,7 @@ if ("slimer" in this) {
         it("should have a right version", function(){
             expect(slimer.version.major).toEqual(0);
             expect(slimer.version.minor).toEqual(9);
-            expect(slimer.version.patch).toEqual(1);
+            expect(slimer.version.patch).toEqual(2);
         });
 
     });
