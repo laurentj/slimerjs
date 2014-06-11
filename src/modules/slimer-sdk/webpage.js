@@ -155,7 +155,11 @@ function _create(parentWebpageInfo) {
                     && webpageUtils.isOurWindow(browser, msg.outerWindowID)
                     && msg.category == "content javascript"
                     ) {
-                    webpage.onError(aMessage.errorMessage, [{file:aMessage.sourceName, line:aMessage.lineNumber, 'function':null}]);
+                    let col = 0;
+                    if ('columnNumber' in msg) {
+                        col = msg.columnNumber;
+                    }
+                    webpage.onError(aMessage.errorMessage, [{file:aMessage.sourceName, line:aMessage.lineNumber, column:col,  'function':null}]);
                 }
             }
             catch(e) {
