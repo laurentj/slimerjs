@@ -463,8 +463,8 @@ var webpageUtils = {
         printSettings.resolution              = options.resolution;
         printSettings.paperName               = 'Custom'
         printSettings.paperSizeType           = 1;
-        printSettings.paperWidth              = currentViewport.width;
-        printSettings.paperHeight             = currentViewport.height;
+        printSettings.paperWidth              = options.width;
+        printSettings.paperHeight             = options.height;
         printSettings.paperSizeUnit           = Ci.nsIPrintSettings.kPaperSizeMillimeters;
         printSettings.scaling                 = options.ratio;
 
