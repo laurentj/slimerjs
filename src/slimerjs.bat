@@ -63,6 +63,15 @@ FOR %%A IN (%*) DO (
     if /I ["%%A"]==["/debug"] (
         SET HIDE_ERRORS=
     )
+    if /I ["%%A"]==["--debug=yes"] (
+        SET HIDE_ERRORS=
+    )
+    if /I ["%%A"]==["--debug"] (
+        SET HIDE_ERRORS=
+    )
+    if /I ["%%A"]==["--debug=true"] (
+        SET HIDE_ERRORS=
+    )
 )
 
 if not exist %SLIMERJSLAUNCHER% (
@@ -125,16 +134,18 @@ REM in echo statements the escape character is ^
 REM escape < > | and &
 REM the character % is escaped by doubling it to %%
 REM if delayed variable expansion is turned on then the character ! needs to be escaped as ^^!
+    echo   In following values, ^<bool^> can be yes, no, true or false"
+    echo.
 	echo   Available options are:
 	echo.
     echo   --config=^<filename^>                Load the given configuration file
     echo                                      (JSON formated)
-    echo   --debug=[yes^|no]                   Prints additional warning and debug message
+    echo   --debug=^<bool^>                   Prints additional warning and debug message
     echo                                      (default is no)
-    echo   --disk-cache=[yes^|no]              Enables disk cache (default is no).
+    echo   --disk-cache=^<bool^>              Enables disk cache (default is no).
     echo   --help or -h                       Show this help
-REM    echo   --ignore-ssl-errors=[yes^|no]       Ignores SSL errors (default is no).
-    echo   --load-images=[yes^|no]            Loads all inlined images (default is yes)
+REM    echo   --ignore-ssl-errors=^<bool^>       Ignores SSL errors (default is no).
+    echo   --load-images=^<bool^>             Loads all inlined images (default is yes)
     echo   --local-storage-quota=^<number^>   Sets the maximum size of the offline
     echo                                      local storage (in KB)
 REM    echo   --local-to-remote-url-access=[yes^|no] Allows local content to access remote
@@ -144,7 +155,7 @@ REM    echo   --output-encoding=^<enc^>            Sets the encoding for the ter
 REM    echo                                      (default is 'utf8')
 REM    echo   --remote-debugger-port=^<number^>    Starts the script in a debug harness and
 REM    echo                                      listens on the specified port
-REM    echo   --remote-debugger-autorun=[yes^|no] Runs the script in the debugger immediately
+REM    echo   --remote-debugger-autorun=^<bool^> Runs the script in the debugger immediately
 REM    echo                                      (default is no)
     echo   --proxy=^<proxy url^>                Sets the proxy server
     echo   --proxy-auth=^<username:password^>   Provides authentication information for the
@@ -152,7 +163,7 @@ REM    echo                                      (default is no)
     echo   --proxy-type=[http^|socks5^|none^|auto^|system^|config-url]    Specifies the proxy type (default is http)
 REM    echo   --script-encoding=^<enc^>            Sets the encoding used for the starting
 REM    echo                                      script (default is utf8)
-REM    echo   --web-security=[yes^|no]            Enables web security (default is yes)
+REM    echo   --web-security=^<bool^>            Enables web security (default is yes)
     echo   --version or v                     Prints out SlimerJS version
 REM    echo   --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded
 REM    echo                                      GhostDriver) '127.0.0.1:8910'
