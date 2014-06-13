@@ -61,8 +61,7 @@ function showHelp() {
 
     echo "  --config=<file>                    Load the given configuration file"
     echo "                                     (JSON formated)"
-    echo "  --debug=[yes|no]                   Prints additional warning and debug message"
-    echo "                                     (default is no)"
+    echo "  --debug=true                       Prints additional warning and debug message"
     echo "  --disk-cache=[yes|no]              Enables disk cache (default is no)."
     echo "  --help or -h                       Show this help"
     #echo "  --ignore-ssl-errors=[yes|no]       Ignores SSL errors (default is no)."
