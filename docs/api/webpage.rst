@@ -861,7 +861,10 @@ ignored. And it supports additionnal properties:
 - ``marginTop``, ``marginRight``, ``marginBottom``, ``marginLeft``: margin as millimeters
 - ``unwriteableMarginTop``, ``unwriteableMarginRight``,
    ``unwriteableMarginBottom``, ``unwriteableMarginLeft``: unwriteable margin as millimeters
-- ``height``, ``width``: by default, the viewport size. 
+- ``height``, ``width``: by default, the viewport size.
+
+Note: On MacOSx, you probably have to install a "PDF driver" as a printer on your system.
+See for example `PDFWriter for mac <http://sourceforge.net/projects/pdfwriterformac/>`_.
 
 .. _webpage-renderBase64:
 
