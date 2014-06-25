@@ -259,8 +259,8 @@ var webpageUtils = {
         let printOptions = {
             ratio: webpage.zoomFactor,
             format: 'pdf',
-            height: webpage.viewportSize.height,
-            width: webpage.viewportSize.width,
+            height: currentViewport.height,
+            width: currentViewport.width,
             onlyViewport: false,
             resolution: 300, // dpi
             marginTop: 0,

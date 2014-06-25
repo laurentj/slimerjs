@@ -854,8 +854,14 @@ The second parameter is an object containing options. Here are its possible prop
 Note: because of a limitation of Gecko (see `Mozilla bug 650418 <https://bugzilla.mozilla.org/show_bug.cgi?id=650418>`_),
 plugins content like flash cannot be rendered in the screenshot (even if you can see it in the window).
 
-Note: for PDF rendering, the ``clipRect`` property and options ``quality`` and ``onlyViewport`` are
-ignored.
+For PDF rendering, the ``clipRect`` property, ``quality`` and ``onlyViewport`` options are
+ignored. And it supports additionnal properties:
+
+- ``resolution``: in dpi. By default: 300.
+- ``marginTop``, ``marginRight``, ``marginBottom``, ``marginLeft``: margin as millimeters
+- ``unwriteableMarginTop``, ``unwriteableMarginRight``,
+   ``unwriteableMarginBottom``, ``unwriteableMarginLeft``: unwriteable margin as millimeters
+- ``height``, ``width``: by default, the viewport size. 
 
 .. _webpage-renderBase64:
 
