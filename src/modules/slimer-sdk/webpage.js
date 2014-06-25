@@ -1086,7 +1086,7 @@ function _create(parentWebpageInfo) {
          * this context. We have same
          * issue that https://bugzilla.mozilla.org/show_bug.cgi?id=783499
          * the only solution is to do window.myvariable = something in the
-         * given function, instead of myvariable = something 
+         * given function, instead of myvariable = something
          */
         injectJs: function(filename) {
             if (!browser) {
@@ -1434,7 +1434,8 @@ function _create(parentWebpageInfo) {
             try {
                 let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file));
                 if (finalOptions.format == 'pdf') {
-                    return webpageUtils.renderPageAsPDF(browser.contentWindow, file, finalOptions.ratio);
+                    let printOptions = webpageUtils.getPrintOptions(this, finalOptions);
+                    return webpageUtils.renderPageAsPDF(browser.contentWindow, file, printOptions);
                 }
 
                 let canvas = webpageUtils.getScreenshotCanvas(
