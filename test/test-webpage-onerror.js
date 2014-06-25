@@ -37,6 +37,9 @@ describe("WebPage.onError", function(){
             expect(errorStack.length).toEqual(1)
             expect(errorStack[0].file).toEqual("http://127.0.0.1:8083/onerror.html")
             expect(errorStack[0].line).toEqual(8)
+            if (slimer.geckoVersion.major > 30) {
+                expect(errorStack[0].column).toEqual(16)
+            }
             //expect(errorStack[0]["function"]).toEqual("doError")
             expect(errorStack[0]["function"]).toEqual(null)
             //expect(errorStack[1].file).toEqual("http://127.0.0.1:8083/onerror.html")
@@ -74,12 +77,17 @@ describe("WebPage.onError", function(){
             expect(errorStack[0]["function"]).toEqual("")
             expect(errorStack[1].file).toEqual("phantomjs://webpage.evaluate()")
             expect(errorStack[1].line).toEqual(2)
-            expect(errorStack[1].line).toEqual(2)
             expect(errorStack[1]["function"]).toEqual("")
             if (slimer.geckoVersion.major > 24) {
                 expect(errorStack[2].file).toEqual("phantomjs://webpage.evaluate()")
                 expect(errorStack[2].line).toEqual(3)
                 expect(errorStack[2]["function"]).toEqual("")
+            }
+
+            if (slimer.geckoVersion.major > 29) {
+                expect(errorStack[0].column).toEqual(16)
+                expect(errorStack[1].column).toEqual(17)
+                expect(errorStack[2].column).toEqual(1)
             }
 
             errorMessage = null;
@@ -98,7 +106,11 @@ describe("WebPage.onError", function(){
                 expect(errorStack[2].line).toEqual(1)
                 expect(errorStack[2]["function"]).toEqual("")
             }
-
+            if (slimer.geckoVersion.major > 29) {
+                expect(errorStack[0].column).toEqual(12)
+                expect(errorStack[1].column).toEqual(13)
+                expect(errorStack[2].column).toEqual(2)
+            }
             errorMessage = null;
             errorStack = null;
             webpage.libraryPath += '/wwwfile';
@@ -115,6 +127,11 @@ describe("WebPage.onError", function(){
                 expect(errorStack[2].file).toEqual("injectdoerror.js")
                 expect(errorStack[2].line).toEqual(5)
                 expect(errorStack[2]["function"]).toEqual("")
+            }
+            if (slimer.geckoVersion.major > 29) {
+                expect(errorStack[0].column).toEqual(4)
+                expect(errorStack[1].column).toEqual(5)
+                expect(errorStack[2].column).toEqual(1)
             }
         });
     });
