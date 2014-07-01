@@ -94,7 +94,14 @@ describe("require function", function() {
         require("./a/defineglobal");
         var access = require("./a/accessglobal");
         expect(access.accessToGlobalFunction).toEqual("result from a global function")
-    })
+    });
+
+    it("should able to load a module from a relative path in paths without a dot", function() {
+        require.paths.push("injectrequire/"); // not "./injectrequire"
+        phantom.injectJs("injectrequire/script.js");
+        require.paths.pop();
+        expect(requireIntoInjectedScript.myinclude).toEqual('ok');
+    });
 });
 
 describe("the loaded module requiredexample", function() {
