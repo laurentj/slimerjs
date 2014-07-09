@@ -5,11 +5,21 @@
 Release Notes of SlimerJS 0.9
 =============================
 
+version 0.9.2
+=============
+
+Not released yet.
+
+Improvements
+------------
+
+  * Compatibility with XulRunner/Firefox 30 and 31b1
+  * packages: default Xulrunner version is now 30
 
 version 0.9.1
 =============
 
-Not released yet.
+SlimerJS 0.9.1 has been released on March 20, 2014
 
 Improvements
 ------------

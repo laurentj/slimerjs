@@ -30,7 +30,7 @@ Fixed PhantomJS conformance issues
 Other informations about this release
 -------------------------------------
 
-- XulRunner 28 is bundled into packages
+- XulRunner 30 is bundled into packages
 
 
 Missing APIS in SlimerJS 0.10

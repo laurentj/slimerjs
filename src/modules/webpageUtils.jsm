@@ -253,6 +253,33 @@ var webpageUtils = {
         }
     },
 
+    getPrintOptions : function(webpage, options) {
+        let currentViewport = webpage.viewportSize;
+
+        let printOptions = {
+            ratio: webpage.zoomFactor,
+            format: 'pdf',
+            height: currentViewport.height,
+            width: currentViewport.width,
+            onlyViewport: false,
+            resolution: 300, // dpi
+            marginTop: 0,
+            marginRight: 0,
+            marginBottom: 0,
+            marginLeft: 0,
+            unwriteableMarginTop: 0,
+            unwriteableMarginRight: 0,
+            unwriteableMarginBottom: 0,
+            unwriteableMarginLeft: 0
+        };
+
+        if (typeof(options) == 'object') {
+          for (var attr in options) { printOptions[attr] = options[attr]; }
+        }
+
+        return printOptions;
+    },
+
     getScreenshotOptions : function(webpage, options, alternateFormat) {
         let finalOptions = {
             format: 'png',
@@ -260,7 +287,7 @@ var webpageUtils = {
             ratio: webpage.zoomFactor,
             onlyViewport: false,
             contentType : 'image/png'
-        }
+        };
 
         if (typeof(options) == 'object') {
             if ('format' in options)
@@ -315,7 +342,7 @@ var webpageUtils = {
         //dump("scrollX="+scrollX+" scrollY="+scrollY+"\n")
         // given clip size is at zoom level
         let givenClip;
-        
+
         if (onlyViewport) {
             givenClip = {
                         top:scrollY,
@@ -406,25 +433,40 @@ var webpageUtils = {
      * print the given content window into a PDF.
      * The code has been inspired by http://mxr.mozilla.org/mozilla-central/source/mobile/android/chrome/content/browser.js#932
      */
-    renderPageAsPDF : function(contentWindow, file, ratio) {
+    renderPageAsPDF : function(contentWindow, file, options) {
         let printSettings = Cc["@mozilla.org/gfx/printsettings-service;1"]
                                 .getService(Ci.nsIPrintSettingsService)
                                 .newPrintSettings;
-        printSettings.printSilent = true;
-        printSettings.showPrintProgress = false;
-        printSettings.printBGImages = true;
-        printSettings.printBGColors = true;
-        printSettings.printToFile = true;
-        printSettings.toFileName = file;
-        printSettings.printFrameType = Ci.nsIPrintSettings.kFramesAsIs;
-        printSettings.outputFormat = Ci.nsIPrintSettings.kOutputFormatPDF;
-        printSettings.footerStrCenter = "";
-        printSettings.footerStrLeft   = "";
-        printSettings.footerStrRight  = "";
-        printSettings.headerStrCenter = "";
-        printSettings.headerStrLeft   = "";
-        printSettings.headerStrRight  = "";
-        printSettings.scaling = ratio;
+
+        printSettings.printSilent             = true;
+        printSettings.showPrintProgress       = false;
+        printSettings.printBGImages           = true;
+        printSettings.printBGColors           = true;
+        printSettings.printToFile             = true;
+        printSettings.toFileName              = file;
+        printSettings.printFrameType          = Ci.nsIPrintSettings.kFramesAsIs;
+        printSettings.outputFormat            = Ci.nsIPrintSettings.kOutputFormatPDF;
+        printSettings.footerStrCenter         = "";
+        printSettings.footerStrLeft           = "";
+        printSettings.footerStrRight          = "";
+        printSettings.headerStrCenter         = "";
+        printSettings.headerStrLeft           = "";
+        printSettings.headerStrRight          = "";
+        printSettings.marginTop               = options.marginTop;
+        printSettings.marginRight             = options.marginRight;
+        printSettings.marginBottom            = options.marginBottom;
+        printSettings.marginLeft              = options.marginLeft;
+        printSettings.unwriteableMarginTop    = options.unwriteableMarginTop;
+        printSettings.unwriteableMarginRight  = options.unwriteableMarginRight;
+        printSettings.unwriteableMarginBottom = options.unwriteableMarginBottom;
+        printSettings.unwriteableMarginLeft   = options.unwriteableMarginLeft;
+        printSettings.resolution              = options.resolution;
+        printSettings.paperName               = 'Custom'
+        printSettings.paperSizeType           = 1;
+        printSettings.paperWidth              = options.width;
+        printSettings.paperHeight             = options.height;
+        printSettings.paperSizeUnit           = Ci.nsIPrintSettings.kPaperSizeMillimeters;
+        printSettings.scaling                 = options.ratio;
 
         let ms = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
         let mimeInfo = ms.getFromTypeAndExtension("application/pdf", "pdf");

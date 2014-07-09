@@ -6,9 +6,9 @@ component {00995ba2-223f-4efb-b656-ce98aff7019b} components/commandline.js
 contract @mozilla.org/commandlinehandler/general-startup;1?type=slimerjs {00995ba2-223f-4efb-b656-ce98aff7019b}
 category command-line-handler m-slimerjscli @mozilla.org/commandlinehandler/general-startup;1?type=slimerjs
 
-component {fe06cc0a-53d5-4004-a5af-c23b4d2e327d} components/ConsoleAPI.js
-contract @mozilla.org/console-api;1 {fe06cc0a-53d5-4004-a5af-c23b4d2e327d}
-category JavaScript-global-property console @mozilla.org/console-api;1
+component {fe06cc0a-53d5-4004-a5af-c23b4d2e327d} components/ConsoleAPI.js platformversion<30
+contract @mozilla.org/console-api;1 {fe06cc0a-53d5-4004-a5af-c23b4d2e327d} platformversion<30
+category JavaScript-global-property console @mozilla.org/console-api;1 platformversion<30
 
 component {47c45611-1cfe-4f5e-9749-dc5c78ce8b40} components/nsPrompter.js
 contract @mozilla.org/prompter;1 {47c45611-1cfe-4f5e-9749-dc5c78ce8b40}
