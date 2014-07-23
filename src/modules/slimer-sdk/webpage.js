@@ -130,7 +130,7 @@ function _create(parentWebpageInfo) {
                 // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js#254
                 var consoleEvent = aSubject.wrappedJSObject;
                 if (webpageUtils.isOurWindow(browser, aData)) {
-                    webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
+                    webpage.onConsoleMessage(consoleEvent.arguments.join(' '), consoleEvent.lineNumber, consoleEvent.filename);
                     return
                 }
                 return;
