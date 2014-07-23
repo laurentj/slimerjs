@@ -4,6 +4,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+// SlimerJS: this file is a modified version of
+// http://mxr.mozilla.org/mozilla-central/source/netwerk/test/httpserver/httpd.js
+
 /*
  * An implementation of an HTTP server both as a loadable script and as an XPCOM
  * component.  See the accompanying README file for user documentation on
@@ -391,6 +394,8 @@ function nsHttpServer()
    * creation.
    */
   this._connections = {};
+
+  this.wrappedJSObject = this;
 }
 nsHttpServer.prototype =
 {

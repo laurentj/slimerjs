@@ -22,37 +22,37 @@ as PhantomJS, plus some others. Indicate them before the script filename.
 However, all options are not supported yet. And some of them won't be supported because
 they don't make sens with the existing profile system.
 
-================================================  =================== ===================================================
+================================================  ===================  ====================================================
 PhantomJS options
-================================================  =================== ===================================================
---config=/path/to/config.json                     Supported (0.9)     indicate a config file
+================================================  ===================  ====================================================
+--config=/path/to/config.json                     Supported (0.9)      indicate a config file
 --cookies-file=/path/to/cookies.txt               N/A. see profiles
---debug=[yes|no|true|false]                       supported           Displays debug messages. Supports also other values
---disk-cache=[yes|no|true|false]                  Supported (0.9)     Enable the disk cache or not. By default: disabled
---help or -h                                      Supported           Displays help about options
---ignore-ssl-errors=[yes|no|true|false]         
+--debug=[yes|no|true|false]                       supported            Displays debug messages. Supports also other values
+--disk-cache=[yes|no|true|false]                  Supported (0.9)      Enable the disk cache or not. By default: disabled
+--help or -h                                      Supported            Displays help about options
+--ignore-ssl-errors=[yes|no|true|false]
 --load-images=[yes|no|true|false]                 Supported           
 --local-storage-path=/path/to/file                N/A. see profiles
---local-storage-quota=number                      Supported           number in Bytes
+--local-storage-quota=number                      Supported            number in Bytes
 --local-to-remote-url-access=[yes|no|true|false]
---max-disk-cache-size=size                        Supported (0.9)     Limits the size of the disk cache (in KB)
---output-encoding=encoding           
---proxy=[address:port|url]                        Supported (0.9)     See below for possible values
+--max-disk-cache-size=size                        Supported (0.9)      Limits the size of the disk cache (in KB)
+--output-encoding=encoding
+--proxy=[address:port|url]                        Supported (0.9)      See below for possible values
 --proxy-auth=username:password                    Supported (0.9)     
---proxy-type=[http|socks5|none]                   Supported (0.9)     See below other possible values
---remote-debugger-port=number        
---remote-debugger-autorun=[yes|no|true|false]   
---script-encoding=encoding           
---ssl-protocol=[SSLv3|SSLv2|TLSv1|any]            Unsupported         Firefox supports only the SSL 3 protocol
+--proxy-type=[http|socks5|none]                   Supported (0.9)      See below other possible values
+--remote-debugger-port=number
+--remote-debugger-autorun=[yes|no|true|false]
+--script-encoding=encoding
+--ssl-protocol=[SSLv3|SSLv2|TLSv1|any]            Unsupported          Firefox supports only the SSL 3 protocol
 --ssl-certificates-path=/path/to/dir              N/A. see profiles
---version or -v                                   Supported           Displays the version of SlimerJS
---webdriver or --wd or -w            
---webdriver=ip:port                  
---webdriver-logfile=/path/to/logfile 
+--version or -v                                   Supported            Displays the version of SlimerJS
+--webdriver or --wd or -w
+--webdriver=ip:port
+--webdriver-logfile=/path/to/logfile
 --webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]
 --webdriver-selenium-grid-hub=url    
 --web-security=[yes|no|true|false]              
-===============================================  =================== ===================================================
+================================================  ===================  ====================================================
 
 SlimerJS has some specific options. Some of them are `options of Firefox/Xulrunner <https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options>`_
 

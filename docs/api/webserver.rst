@@ -130,6 +130,22 @@ and an optional callback (it is required if you didn't call a ``register*`` meth
 The callback is a function that receives :ref:`Request <request>` object and
 a :ref:`Response <response>` object.
 
+.. code-block:: javascript
+
+   server.listen(8080, function(request, response) {
+       //...
+   })
+
+
+Note: by default, the web server binds to 127.0.0.1. If you want to bind with an other
+IP (the public ip of the machine for example), give the hostname or the ip (plus the port)
+to the method as a string:
+
+.. code-block:: javascript
+
+   server.listen("192.168.0.1:8080", function(request, response) {
+       //...
+   })
 
 .. _webserver-close:
 
