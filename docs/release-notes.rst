@@ -13,8 +13,15 @@ Not released yet.
 Improvements
 ------------
 
-  * Compatibility with XulRunner/Firefox 30 and 31b1
+  * Compatibility with XulRunner/Firefox 30 and 31
   * packages: default Xulrunner version is now 30
+
+Fixed bugs
+----------
+
+  * Fixed #194: ``webpage.onConsoleMessage()`` receives now all arguments given to
+   ``console.log()`` as a single string.
+  * Fixed the support of the ip argument for ``webserver.listen()``
 
 version 0.9.1
 =============

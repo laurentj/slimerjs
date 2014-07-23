@@ -1090,7 +1090,9 @@ Implemented. Documentation needed.
 onConsoleMessage
 -----------------------------------------
 
-This callback is called when page scripts call the various console methods (console.log(), console.info() etc.). This callback is ``not`` called when the Gecko engine itself outputs information to the console - see :ref:`onError <webpage-onError>` for those messages.
+This callback is called when page scripts call the various console methods (console.log(),
+console.info() etc.). This callback is ``not`` called when the Gecko engine itself outputs
+information to the console - see :ref:`onError <webpage-onError>` for those messages.
 
 The callback accepts three arguments:
 
@@ -1104,7 +1106,8 @@ The callback accepts three arguments:
         // Process message here
     };
 
-
+If multiple arguments are given to ``console.log()``, the ``message`` argument contained
+all arguments concatenated as a string.
 
 
 .. _webpage-onError:
