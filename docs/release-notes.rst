@@ -22,6 +22,7 @@ Fixed PhantomJS conformance issues
 Fixed bugs
 ----------
 
+   * when a resource request is aborted, it doesn't abort anymore other requests (#130)
    * Callback given to ``webpage.open()`` is now really called after the page loading:
      it allows to call ``render()`` without a delay (``setTimeout``...).
      It avoids "pending is null" exception in some case...

@@ -10,7 +10,9 @@ describe("webpage with listeners", function() {
     var receivedRequest = [];
     var initializedCounter = 0;
     var cancelNextRequest = false;
+    var cancelResourceRequest = false;
     var changeUrlNextRequest = null;
+    var traceResources = false;
 
     function testWebpageListenerCreateWebPage() {
         if (webpage)
@@ -59,14 +61,31 @@ describe("webpage with listeners", function() {
                 receivedRequest[request.id] = { req:null, start:null, end:null, err:null}
             }
             receivedRequest[request.id].req = request;
-            if (cancelNextRequest) {
+            if (traceResources) {
+                trace +="RES REQUESTED "+request.url+"\n";
+            }
+            if (cancelResourceRequest && request.url.match(/\.(png|css)$/)) {
+                ctrl.abort();
+                //cancelResourceRequest = false;
+                if (traceResources) {
+                    trace +="    ABORTED "+request.url+"\n";
+                }
+            }
+            else if (cancelNextRequest) {
                 cancelNextRequest = false;
                 ctrl.abort();
+                if (traceResources) {
+                    trace +="    ABORTED\n";
+                }
             }
             else if (changeUrlNextRequest) {
                 var newUrl = changeUrlNextRequest
                 changeUrlNextRequest = null;
                 ctrl.changeUrl(newUrl);
+                if (traceResources) {
+                    trace +="    URL CHANGED to "+newUrl+"\n";
+                }
+
             }
         };
 
@@ -76,6 +95,9 @@ describe("webpage with listeners", function() {
                 receivedRequest[response.id] = { req:null, start:null, end:null, err:null}
             }
             receivedRequest[response.id][response.stage] = response;
+            if (traceResources) {
+                trace +="RES RECEIVED "+response.stage+" - "+response.url+"\n";
+            }
         };
 
         webpage.onResourceError = function(response) {
@@ -783,7 +805,7 @@ describe("webpage with listeners", function() {
         done();
     });
 
-    async.it("will open a page and abort the request",function(done) {
+    async.it("will open a page and abort the main request",function(done) {
         trace = '';
         receivedRequest = [];
         initializedCounter = 0;
@@ -822,6 +844,81 @@ describe("webpage with listeners", function() {
             expect(r.end.statusText).toBeNull();
             expect(r.end.contentType).toBeNull();
             expect(r.err.errorCode).toEqual(99);
+        });
+        done();
+    });
+
+    async.it("will open a page and cancel a resource request",function(done) {
+        trace = '';
+        receivedRequest = [];
+        initializedCounter = 0;
+        cancelResourceRequest = true;
+        traceResources = true;
+        testWebpageListenerCreateWebPage()
+        webpage.open(domain + 'hello.html', function(success){
+            trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("success");
+            traceResources = false;
+            cancelResourceRequest = false;
+            done();
+        });
+    });
+
+    async.it("should generate the expected trace", function(done){
+        traceResources = false;
+        cancelResourceRequest = false;
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        if (URLUtils) {
+            expectedTrace += "  loading url=http://localhost:8083/hello.html\n";
+        }
+        expectedTrace += "RES REQUESTED http://localhost:8083/hello.html\n";
+        expectedTrace += "URLCHANGED:http://localhost:8083/hello.html\n";
+        expectedTrace += "RES RECEIVED start - http://localhost:8083/hello.html\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/hello.html\n";
+        expectedTrace += "INITIALIZED 1\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/hello.js\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/slimerjs.png\n";
+        expectedTrace += "    ABORTED http://localhost:8083/slimerjs.png\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/helloframe.html\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/slimerjs.png\n";
+        expectedTrace += "RES RECEIVED start - http://localhost:8083/hello.js\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/hello.txt\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/hello.js\n";
+        expectedTrace += "RES RECEIVED start - http://localhost:8083/helloframe.html\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/helloframe.html\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/helloframe.css\n";
+        expectedTrace += "    ABORTED http://localhost:8083/helloframe.css\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/helloframe.css\n";
+        //expectedTrace += "RES RECEIVED start - http://localhost:8083/hello.txt\n";
+        //expectedTrace += "RES RECEIVED end - http://localhost:8083/hello.txt\n";
+
+        expectedTrace += "LOADFINISHED:http://localhost:8083/hello.html - 2 success\n";
+        if (URLUtils) {
+            expectedTrace += "  loaded url=http://localhost:8083/hello.html\n";
+        }
+        expectedTrace += "CALLBACK:success\n";
+        expect(trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should have received correct data", function(done){
+        searchRequest(domain+"hello.html", function(r){
+            expect(r.req).toNotBe(null, "req is null");
+            expect(r.req.url ).toEqual(domain+"hello.html");
+            expect(r.req.method).toEqual("GET");
+            expect(r.start).toNotBe(null, "start is null");
+            expect(r.start.id).toEqual( r.req.id);
+            expect(r.start.url).toEqual(r.end.url);
+            expect(r.end).toNotBe(null, "end is null");
+            expect(r.end.id).toEqual(r.req.id);
+            expect(r.end.url).toEqual(domain+"hello.html");
+            expect(r.err).toBeNull();
+            expect(r.req.method).toEqual("GET");
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual("OK");
+            expect(r.end.contentType).toEqual('text/html');
         });
         done();
     });
