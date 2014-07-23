@@ -18,14 +18,13 @@ function create() {
             if (callback) {
                 this.registerPrefixHandler("/", callback);
             }
-
+            let host = "localhost";
             if (typeof port === "string" && port.indexOf(':') != -1){
-                let host;
                 [host, port] = port.split(':');
                 port = parseInt(port);
                 server.identity.add('http', host, port);
             }
-            server.start(port);
+            server.wrappedJSObject._start(port, host);
             return true;
         },
 
