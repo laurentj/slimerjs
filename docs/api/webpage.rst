@@ -1101,7 +1101,21 @@ Implemented. Documentation needed.
 onConsoleMessage
 -----------------------------------------
 
-Implemented. Documentation needed.
+This callback is called when page scripts call the various console methods (console.log(), console.info() etc.). This callback is ``not`` called when the Gecko engine itself outputs information to the console - see :ref:`onError <_webpage-onError>` for those messages.
+
+The callback accepts three arguments:
+
+- ``message``: a string containing the text of the message
+- ``line``: the line number of the statement that calls the console method
+- ``file``: the file name of the statement that calls the console method
+
+.. code-block:: javascript
+
+    page.onConsoleMessage = function(message, line, file) {
+        // Process message here
+    };
+
+
 
 
 .. _webpage-onError:
