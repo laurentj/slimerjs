@@ -831,10 +831,10 @@ function _create(parentWebpageInfo) {
             if (typeof val != "object")
                 throw new Error("Bad argument type");
 
-            let w = val.width || 0;
-            let h = val.height || 0;
+            let w = val.width || privProp.viewportSize.width;
+            let h = val.height || privProp.viewportSize.height;
 
-            if (w <= 0 || h <= 0)
+            if (w < 0 || h < 0)
                 return;
 
             privProp.viewportSize.width = w;
