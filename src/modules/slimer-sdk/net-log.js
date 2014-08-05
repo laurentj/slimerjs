@@ -375,7 +375,11 @@ TracingListener.prototype = {
         } catch(e) {
             console.exception(e);
         } finally {
-            this.originalListener.onDataAvailable(request, context, inputStream, offset, count);
+            try {
+                // loading may be aborted. let's catch the error...
+                this.originalListener.onDataAvailable(request, context, inputStream, offset, count);
+            } catch(e) {
+            }
         }
     },
     onStopRequest: function(request, context, statusCode) {

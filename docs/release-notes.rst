@@ -24,6 +24,8 @@ Fixed bugs
   * Fixed the support of the ip argument for ``webserver.listen()``
   * Fixed the support relative path given to require (bug appearing with CasperJS or in injected scripts ) #147
   * Headers and redirectURL were missing in resources about redirection (#153, #144)
+  * Fixed issues with ``webpage.setContent()`` : location url was not set correctly
+    and resources were not loaded with the right url (#201)
 
 version 0.9.1
 =============
