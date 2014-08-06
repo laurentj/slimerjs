@@ -731,7 +731,7 @@ function _create(parentWebpageInfo) {
 
         /**
          * function called when the browser is being closed, during a call of WebPage.close()
-         * or during a call of window.close() inside the web page (not implemented yet)
+         * or during a call of window.close() inside the web page
          */
         onClosing: null,
 

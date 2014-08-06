@@ -16,7 +16,7 @@ In the ``page`` variable, you have then an object with many properties and
 methods. See below.
 
 Note: almost properties and methods are implemented, but some are not documented yet.
-Please help us to document them ;-).
+Please help us to document them ;-). You can also read the PhantomJS documentation.
 
 
 Webpage object
@@ -1036,7 +1036,15 @@ returns a filename, the filename given to ``uploadFile()`` is ignored.
 onAlert
 -----------------------------------------
 
-Implemented. Documentation needed.
+This should be a callback function, called when the webpage do a ``window.alert('...')``.
+The callback receives the message. It allows you to do something during this process.
+
+
+.. code-block:: javascript
+
+    page.onAlert = function(text) {
+        console.log("Alert done! "+text);
+    }
 
 
 .. _webpage-onAuthPrompt:
@@ -1066,16 +1074,39 @@ To know more, see  :doc:`doc about http authentication with SlimerJS <../manual/
 onCallback
 -----------------------------------------
 
-Implemented. Documentation needed.
+Sometimes, you may need to pass values from the web page to the webpage object, at any time,
+not only when you have to evaluate javascript code inside the web page.
 
+From a script of the web page, you should then call the ``window.callPhantom()``
+function, exposed by SlimerJs to the document. You can pass one argument to this function.
+This argument is then passed to the function you set on ``webpage.onCallback``. This
+callback can return a value which is then the returned value of ``window.callPhantom()``.
+
+In your SlimerJS script:
+
+.. code-block:: javascript
+
+    page.onCallback = function(arg) {
+        return arg + " world";
+    }
+
+In your web page:
+
+.. code-block:: html
+
+    <script>
+      var returnedValue = window.callPhantom("hello");
+      // returnedValue == "hello world"
+    </script>
 
 .. _webpage-onClosing:
 
 onClosing
 -----------------------------------------
 
-Implemented. Documentation needed.
-
+function called when the browser is being closed, during a call of ``WebPage.close()``
+or during a call of ``window.close()`` inside the web page. It receives the webpage object
+as argument.
 
 .. _webpage-onConfirm:
 
@@ -1167,8 +1198,14 @@ all arguments concatenated as a string.
 onError
 -----------------------------------------
 
-Implemented. Documentation needed.
+This function is called when a javascript error appears in the web page. It receives
+the error message and the stack trace (an array of objects indicating the file, the line...)
 
+.. code-block:: javascript
+
+    page.onError = function(message, stack) {
+        
+    };
 
 .. _webpage-onFilePicker:
 
@@ -1295,7 +1332,15 @@ Example:
 onPageCreated
 -----------------------------------------
 
-Implemented. Documentation needed.
+This callback is invoked when a new child window (but not deeper descendant windows) is
+created by the page, e.g. using ``window.open()``. The function receives the webpage
+object corresponding to the new window.
+
+.. code-block:: javascript
+
+    page.onPageCreated = function(childPage) {
+        console.log('a new window is opened');
+    }
 
 
 .. _webpage-onPrompt:
@@ -1303,7 +1348,27 @@ Implemented. Documentation needed.
 onPrompt
 -----------------------------------------
 
-Implemented. Documentation needed.
+This callback allows you to respond to a prompt dialog, opened by the webpage
+with ``window.prompt()`` (in classical browsers, a dialog box with a field that the user
+can fill). The function receives the message and the default value for the
+response. It should return the response.
+
+In your SlimerJS script:
+
+.. code-block:: javascript
+
+    page.onPrompt = function(question, defaultResponse) {
+        return "Roger";
+    }
+
+In the web page:
+
+.. code-block:: html
+
+    <script>    
+        var firstname = window.prompt("Type your firstname", "Bob");
+        // firstname will be "Roger"
+    </script>
 
 
 .. _webpage-onResourceError:

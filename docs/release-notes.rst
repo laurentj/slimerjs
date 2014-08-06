@@ -23,7 +23,7 @@ Fixed bugs
 ----------
 
   * Fixed #194: ``webpage.onConsoleMessage()`` receives now all arguments given to
-   ``console.log()`` as a single string.
+    ``console.log()`` as a single string.
   * Fixed the support of the ip argument for ``webserver.listen()``
   * Fixed the support relative path given to require (bug appearing with CasperJS or in injected scripts ) #147
   * Headers and redirectURL were missing in resources about redirection (#153, #144)
