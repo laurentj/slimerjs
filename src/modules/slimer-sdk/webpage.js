@@ -717,8 +717,8 @@ function _create(parentWebpageInfo) {
                 Services.obs.removeObserver(webpageObserver, "console-api-log-event");
                 netLog.unregisterBrowser(browser);
                 this.closing(this);
-                browser.webpage = null;
                 slLauncher.closeBrowser(browser);
+                browser.webpage = null;
                 if (parentWebpageInfo) {
                     parentWebpageInfo.detachChild(this);
                 }

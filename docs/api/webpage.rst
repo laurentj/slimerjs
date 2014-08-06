@@ -1082,7 +1082,59 @@ Implemented. Documentation needed.
 onConfirm
 -----------------------------------------
 
-Implemented. Documentation needed.
+This should be a function called when a dialog box asking a confirmation is opened by the
+browser, typically when the web page call ``window.confirm('text')``. It may be called
+also during some specific behavior, like during an ``beforeunload`` event.
+
+The argument given to the callback is the text of the confirmation
+
+Contrary to PhantomJS, SlimerJS can give also other arguments:
+
+- the title of the dialog box
+- the list of button labels (it may have until three labels) (optional)
+- an object for the checkbox. Sometimes the browser may want to display a confirm dialog box
+  with a checkbox. The object has a ``label`` property and a ``checked`` property that you
+  should set to true or false.
+
+If you have more than two buttons, your callback should return the button number (0, 1, 2,
+0 being often the approval button),
+else you can return true or false.
+
+.. code-block:: javascript
+
+    // simple callback
+    page.onConfirm = function(text) {
+        if (text == 'foo') {
+            if (something) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    // extended callback (SlimerJS only)
+    page.onConfirm = function(text, title, buttons, checkbox) {
+        if (buttons) {
+            // this is an extended confirm dialog box
+            // with a checkbox and/or with more than 2 buttons
+            if (text == 'bar') {
+                checkbox.checked = false
+            }
+            else if (buttons[0] === 'Leave Page') {
+                // support of dialog box appearing during an "beforeunload" event
+                return 0;
+            }
+            return 1;
+        }
+        else {
+            if (text == 'foo') {
+                return false;
+            }
+            return false;
+        }
+    }
+
 
 
 .. _webpage-onConsoleMessage:

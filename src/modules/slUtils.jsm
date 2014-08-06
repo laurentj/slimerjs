@@ -176,8 +176,9 @@ slUtils.readChromeFile = function readChromeFile(url) {
 
 slUtils.getWebpageFromContentWindow = function getWebpageFromContentWindow(contentWin) {
     let browser = slUtils.getBrowserFromContentWindow(contentWin);
-    if (browser)
+    if (browser) {
         return browser.webpage;
+    }
     return null;
 }
 

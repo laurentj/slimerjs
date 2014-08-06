@@ -126,6 +126,7 @@ let PromptUtils = {
     },
 
     confirmExHelper : function (flags, button0, button1, button2) {
+
         const BUTTON_DEFAULT_MASK = 0x03000000;
         let defaultButtonNum = (flags & BUTTON_DEFAULT_MASK) >> 24;
         let isDelayEnabled = (flags & Ci.nsIPrompt.BUTTON_DELAY_ENABLE);
@@ -427,6 +428,8 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
 
 
     openPrompt : function (args) {
+//FIXME HERE: call webpage callback
+
         // If we can't do a tab modal prompt, fallback to using a window-modal dialog.
         const COMMON_DIALOG = "chrome://global/content/commonDialog.xul";
         const SELECT_DIALOG = "chrome://global/content/selectDialog.xul";
@@ -523,7 +526,8 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         let webpage = this._findWebPage();
         if (webpage) {
             if (webpage.onConfirm) {
-                return webpage.onConfirm(text);
+                let ok = webpage.onConfirm(text, title);
+                return !!ok;
             }
             return false;
         }
@@ -535,7 +539,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
             ok:         false,
         };
 
-        this.openPrompt(args);
+        //this.openPrompt(args);
 
         // Did user click Ok or Cancel?
         return args.ok;
@@ -544,6 +548,24 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
     confirmCheck : function (title, text, checkLabel, checkValue) {
         if (!title)
             title = PromptUtils.getLocalizedString("ConfirmCheck");
+
+        let webpage = this._findWebPage();
+        if (webpage) {
+            if (webpage.onConfirm) {
+                let chk = { label: checkLabel, checked: checkValue.value };
+                let buttons = ["Ok", "Cancel"];
+                let ok = webpage.onConfirm(text, title, buttons, chk);
+                checkValue.value = !!chk.checked;
+                if (ok === 0) {
+                    ok = true;
+                }
+                else if (ok === 1) {
+                    ok = false;
+                }
+                return (!!ok);
+            }
+            return false;
+        }
 
         let args = {
             promptType: "confirmCheck",
@@ -554,10 +576,10 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
             ok:         false,
         };
 
-        this.openPrompt(args);
+        //this.openPrompt(args);
 
         // Checkbox state always returned, even if cancel clicked.
-        checkValue.value = args.checked;
+        //checkValue.value = args.checked;
 
         // Did user click Ok or Cancel?
         return args.ok;
@@ -585,20 +607,46 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         args.defaultButtonNum = defaultButtonNum;
         args.enableDelay = isDelayEnabled;
 
+        let buttons = [];
         if (label0) {
             args.button0Label = label0;
+            buttons.push(label0);
             if (label1) {
                 args.button1Label = label1;
+                buttons.push(label1);
                 if (label2) {
                     args.button2Label = label2;
+                    buttons.push(label2);
                 }
             }
         }
+        let webpage = this._findWebPage();
+        if (webpage) {
+            if (webpage.onConfirm) {
+                let chk = { label: checkLabel, checked: checkValue.value };
+                let ok = webpage.onConfirm(text, title, buttons, chk);
+                checkValue.value = !!chk.checked;
+                if (ok === true) {
+                    ok = 0;
+                }
+                else if (ok === false) {
+                    ok = 1;
+                }
+                else {
+                    ok = parseInt(ok, 10);
+                    if (isNaN(ok)) {
+                        ok = 0;
+                    }
+                }
+                return ok;
+            }
+            return 0;
+        }
 
-        this.openPrompt(args);
+        //this.openPrompt(args);
 
         // Checkbox state always returned, even if cancel clicked.
-        checkValue.value = args.checked;
+        //checkValue.value = args.checked;
 
         // Get the number of the button the user clicked.
         return args.buttonNumClicked;
@@ -632,7 +680,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
             ok:         false,
         };
 
-        this.openPrompt(args);
+        //this.openPrompt(args);
 
         // Did user click Ok or Cancel?
         let ok  = args.ok;
