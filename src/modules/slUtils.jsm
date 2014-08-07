@@ -230,6 +230,20 @@ slUtils.getBrowserFromDocShell = function getBrowserFromDocShell(docShell) {
     }
 }
 
+slUtils.getWebpageFromURI = function getBrowserFromURI(URI) {
+    var winEnum = Services.wm.getEnumerator("slimerpage");
+    while(winEnum.hasMoreElements()) {
+        var win = winEnum.getNext().QueryInterface(Ci.nsIDOMWindow);
+        var browser = win.document.getElementById('webpage');
+        if (!browser) {
+            continue;
+        }
+        if (browser.currentURI.spec == URI.spec) {
+            return browser.webpage;
+        }
+    }
+    return null;
+}
 
 
 function nsSimpleEnumerator(items) {
