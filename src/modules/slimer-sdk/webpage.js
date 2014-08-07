@@ -152,7 +152,7 @@ function _create(parentWebpageInfo) {
                 return;
             try {
                 let msg = aMessage.QueryInterface(Ci.nsIScriptError);
-                //dump(" ************** jsErrorListener on error:"+aMessage.message+ "("+aMessage.category+")\n")
+                //dump(" ************** jsErrorListener  on error:"+msg.message+ "("+msg.category+") f:"+msg.flags+" ow:"+msg.outerWindowID+" is:"+webpageUtils.isOurWindow(browser, msg.outerWindowID)+"\n")
                 if (msg instanceof Ci.nsIScriptError
                     && !(msg.flags & Ci.nsIScriptError.warningFlag)
                     && msg.outerWindowID
@@ -229,6 +229,11 @@ function _create(parentWebpageInfo) {
                 if (wycywigReg.test(url)) {
                     return;
                 }
+                try {
+                    Services.console.unregisterListener(jsErrorListener);
+                }catch(e){}
+
+                Services.console.registerListener(jsErrorListener);
                 // phantomjs call onInitialized not only at the page creation
                 // but also after the content loading.. don't know why.
                 // let's imitate it. Only after a success
@@ -239,13 +244,6 @@ function _create(parentWebpageInfo) {
                 let channel = browser.docShell.currentDocumentChannel;
                 if (wycywigReg.test(url)) {
                     return;
-                }
-                if (channel.contentType == "text/html") {
-                    try {
-                        Services.console.unregisterListener(jsErrorListener);
-                    }catch(e){}
-
-                    Services.console.registerListener(jsErrorListener);
                 }
                 webpage.loadFinished(success, url, false);
                 if (privProp.staticContentLoading) {

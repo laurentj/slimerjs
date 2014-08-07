@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html><head>
+<!-- we want to have a type error during the download of the page, to verify it appears
+in the console -->
+<script>
+"test".match(/(rest)/)[1];
+</script>
+</head>
+<body>
+<p>This page should cause a TypeError</p>
+</body></html>

@@ -29,6 +29,8 @@ Fixed bugs
   * Headers and redirectURL were missing in resources about redirection (#153, #144)
   * Fixed issues with ``webpage.setContent()`` : location url was not set correctly
     and resources were not loaded with the right url (#201)
+  * Fixed navigator.userAgent: it did not reflect the value of webpage.settings.userAgent (#166)
+  * webpage.onError had not been triggered for errors appearing during the load of the page (#190)
 
 version 0.9.1
 =============
