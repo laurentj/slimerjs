@@ -170,4 +170,31 @@ describe("WebPage.onError", function(){
             webpage.close();
         });
     });
+
+    it("is called during the load of a page",function() {
+        var loaded = false;
+        var errorMessage = null;
+        var errorStack = null;
+ 
+        webpage.onError = function(msg, stack) {
+            errorMessage = msg;
+            errorStack = stack;
+        }
+
+        runs(function() {
+            webpage.open("http://127.0.0.1:8083/typeerror.html", function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+
+        runs(function(){
+            expect(errorMessage).toEqual("TypeError: \"test\".match(...) is null");
+            expect(errorStack.length).toEqual(1)
+            expect(errorStack[0].file).toEqual("http://127.0.0.1:8083/typeerror.html");
+            expect(errorStack[0].line).toEqual(6);
+            webpage.close();
+        });
+    });
 });

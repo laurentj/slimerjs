@@ -8,13 +8,29 @@ Release Notes of SlimerJS 0.9
 version 0.9.2
 =============
 
-Not released yet.
+SlimerJS 0.9.2 has been released on August 11th, 2014
 
 Improvements
 ------------
 
-  * Compatibility with XulRunner/Firefox 30 and 31b1
-  * packages: default Xulrunner version is now 30
+  * Compatibility with XulRunner/Firefox 30 and 31
+  * packages: default Xulrunner version is now 31
+  * setting only with or height of viewportSize is now taking account (#133)
+  * support of "virtual" dialog box appearing for a window.onbeforeunload:
+    ``webpage.onConfirm()`` is now called for this event (#198)
+
+Fixed bugs
+----------
+
+  * Fixed #194: ``webpage.onConsoleMessage()`` receives now all arguments given to
+    ``console.log()`` as a single string.
+  * Fixed the support of the ip argument for ``webserver.listen()``
+  * Fixed the support relative path given to require (bug appearing with CasperJS or in injected scripts ) #147
+  * Headers and redirectURL were missing in resources about redirection (#153, #144)
+  * Fixed issues with ``webpage.setContent()`` : location url was not set correctly
+    and resources were not loaded with the right url (#201)
+  * Fixed navigator.userAgent: it did not reflect the value of webpage.settings.userAgent (#166)
+  * webpage.onError had not been triggered for errors appearing during the load of the page (#190)
 
 version 0.9.1
 =============

@@ -4,7 +4,7 @@ CURRENTDIR=`pwd`
 SLIMERDIR=`dirname $0`
 SLIMERDIR=`cd $SLIMERDIR;pwd`
 
-XULRUNNER_VERSION="30.0"
+XULRUNNER_VERSION="31.0"
 XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XULRUNNER_VERSION/runtimes/"
 XULRUNNER_PACK_NAME="xulrunner-$XULRUNNER_VERSION.en-US"
 
@@ -22,7 +22,7 @@ usage()
     echo "  -h: displays this help"
     echo ""
     echo "xulrunner-bin-path: the path where xulrunner packages can be found"
-    echo " or can be stored after downloading them from mozilla site"
+    echo " or can be stored after downloading them from the mozilla site"
 }
 
 for i in $*

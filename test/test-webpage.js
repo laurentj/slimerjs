@@ -340,7 +340,6 @@ describe("WebPage.content", function(){
                 +"    </body></html>";
             //expect(webpage.content.indexOf(content)).toEqual(0);
             expect(webpage.content).toEqual(content);
-            webpage.close();
         });
     });
 
@@ -386,7 +385,6 @@ describe("WebPage.content", function(){
             webpage.close();
         });
     });
-
 });
 
 describe("WebPage.setContent", function(){
@@ -443,6 +441,7 @@ describe("WebPage.setContent", function(){
         expect(navReqUrl).toEqual(url);
         expect(navType).toEqual('Other');
         expect(loadingStatus).toEqual('success');
+        expect(webpage.url).toEqual(url);
     });
 
     it("can set the content on an existing browser",function() {
@@ -463,6 +462,7 @@ describe("WebPage.setContent", function(){
             webpage.setContent(content, url);
             expect(webpage.title).toEqual('An other content #3');
             expect(webpage.evaluate(function(){ return document.body.textContent;})).toEqual("setContent is working");
+            expect(webpage.url).toEqual(url);
             webpage.close();
             expect(loadStartedCalled).toBeTruthy();
             expect(navRequestedCalled).toBeTruthy();
@@ -485,7 +485,6 @@ describe("WebPage.setContent", function(){
         webpage.close();
     });
 });
-
 
 describe("WebPage.plainText", function(){
     var webpage;

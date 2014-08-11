@@ -376,7 +376,11 @@ TracingListener.prototype = {
         } catch(e) {
             console.exception(e);
         } finally {
-            this.originalListener.onDataAvailable(request, context, inputStream, offset, count);
+            try {
+                // loading may be aborted. let's catch the error...
+                this.originalListener.onDataAvailable(request, context, inputStream, offset, count);
+            } catch(e) {
+            }
         }
     },
     onStopRequest: function(request, context, statusCode) {
@@ -630,10 +634,6 @@ const traceResponse = function(id, request) {
         return response;
     }
 
-    if (request.status) { // network error
-        return response;
-    }
-
     if (response.status) {
         request.visitResponseHeaders(function(name, value) {
             value.split("\n").forEach(function(v) {
@@ -643,7 +643,7 @@ const traceResponse = function(id, request) {
     }
 
     // Getting redirect if any
-    if (parseInt(response.status / 100) == 3) {
+    if (parseInt(response.status / 100, 10) == 3) {
         response.headers.forEach(function(value) {
             if (value.name.toLowerCase() == "location") {
                 response.redirectURL = ioService.newURI(value.value, null, request.URI).spec;
