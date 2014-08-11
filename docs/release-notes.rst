@@ -8,7 +8,7 @@ Release Notes
 version 0.9.2
 =============
 
-Not released yet.
+SlimerJS 0.9.2 has been released on August 11th, 2014
 
 Improvements
 ------------
