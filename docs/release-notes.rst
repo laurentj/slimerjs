@@ -14,7 +14,7 @@ Improvements
 ------------
 
   * Compatibility with XulRunner/Firefox 30 and 31
-  * packages: default Xulrunner version is now 30
+  * packages: default Xulrunner version is now 31
   * setting only with or height of viewportSize is now taking account (#133)
   * support of "virtual" dialog box appearing for a window.onbeforeunload:
     ``webpage.onConfirm()`` is now called for this event (#198)
