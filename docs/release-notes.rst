@@ -5,6 +5,17 @@
 Release Notes
 =============
 
+version 0.9.3
+=============
+
+Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+
+Fixed bugs
+----------
+
+    * The cookie manager of SlimerJS ignored session cookies (#216)
+
+
 version 0.9.2
 =============
 

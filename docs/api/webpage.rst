@@ -148,7 +148,7 @@ Note: modifying an object in the array won't modify the cookie. You should
 retrieve the array, modify it, and then set the ``cookies`` property with this array.
 Probably you would prefer to use the ``addCookie()`` method to modify a cookie.
 
-If cookies are disabled, modifying this property does nothing.
+If cookies are disabled, or if no page is loaded, modifying this property does nothing.
 
 Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 
@@ -507,7 +507,7 @@ The domain and the path of the cookie will be set to the domain
 and the path of the current url.
 
 It returns true if the cookie has been really added. If cookies are
-disabled, the cookie is not added into the cookie database.
+disabled, or if no page is loaded, the cookie is not added into the cookie database.
 
 Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 

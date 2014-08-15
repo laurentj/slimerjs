@@ -28,6 +28,22 @@ function Cookie(name, value, domain, path) {
 
     this.secure =  false;
     this.expires = null;
+    this.expiry = null;
+}
+
+function initCookieFromnsICookie(nsCookie) {
+    let c = new Cookie(nsCookie.name, nsCookie.value, nsCookie.host, nsCookie.path);
+    c.httponly = nsCookie.isHttpOnly;
+    c.secure =  nsCookie.isSecure;
+    if (nsCookie.isSession) {
+        c.expires = 0;
+        c.expiry = 0;
+    }
+    else {
+        c.expires = nsCookie.expires;
+        c.expiry = nsCookie.expiry;
+    }
+    return c;
 }
 
 
@@ -58,13 +74,10 @@ var slCookiesManager = {
         while(cookiesEnum.hasMoreElements()) {
             let cookie = cookiesEnum.getNext()
                                     .QueryInterface(Ci.nsICookie2);
-            let c = new Cookie(cookie.name, cookie.value, cookie.host, cookie.path);
-            c.httponly = cookie.isHttpOnly;
-            c.secure =  cookie.isSecure;
-            c.expires = cookie.expires;
-            c.expiry = cookie.expiry;
+            let c = initCookieFromnsICookie(cookie);
             cookiesList.push(c);
         }
+
         return cookiesList;
     },
 
@@ -85,11 +98,7 @@ var slCookiesManager = {
                 continue;
             if (cookie.isSecure && uri.scheme !== 'https' )
                 continue;
-            let c = new Cookie(cookie.name, cookie.value, cookie.host, cookie.path);
-            c.httponly = cookie.isHttpOnly;
-            c.secure =  cookie.isSecure;
-            c.expires = cookie.expires;
-            c.expiry = cookie.expiry;
+            let c = initCookieFromnsICookie(cookie);
             cookiesList.push(c);
         }
         return cookiesList;
@@ -141,11 +150,12 @@ var slCookiesManager = {
     _addCookie: function (cookie, uri) {
         let expires = 0;
         // in phantomJs, expiry and expires can be a string or a number
-        if ("expiry" in cookie) {
-            expires = cookie.expiry;
-        }
-        else if ("expires" in cookie) {
+        // PhantomJS gives priority to "expires" over "expiry"
+         if ("expires" in cookie && cookie.expires !== null) {
             expires = cookie.expires;
+        }
+        else if ("expiry" in cookie && cookie.expiry !== null) {
+            expires = cookie.expiry;
         }
         if (typeof(expires) == "string") {
             expires = Math.ceil(Date.parse(expires) / 1000);
@@ -154,7 +164,12 @@ var slCookiesManager = {
             expires = Math.ceil(expires / 1000);
         }
 
-        let isSession = (expires <= 0);
+        let isSession = false;
+        if (expires <= 0) {
+            // if 0, the gecko cookies manager will ignore the cookie...
+            expires = (Date.now()/1000) + (24 * 60 * 60);
+            isSession = true;
+        }
         let domain = '';
         let path = '/';
         if (uri) {
