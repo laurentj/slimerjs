@@ -14,7 +14,7 @@ Fixed bugs
 ----------
 
     * The cookie manager of SlimerJS ignored session cookies (#216)
-
+    * webpage.frameContent should use the same code as webpage.content (#218)
 
 version 0.9.2
 =============
