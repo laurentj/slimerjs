@@ -221,14 +221,14 @@ for key codes.
 focusedFrameName
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the name of the child frame that has the focus. Read only.
 
 .. _webpage-frameContent:
 
 frameContent
 -----------------------------------------
 
-This property contain the source code of the current frame.
+This property contain the source code of `the selected frame <../manual/frames-manipulation.html>`_.
 You can set this property with the source code of an HTML page
 to replace the content of the current frame.
 
@@ -238,15 +238,18 @@ to replace the content of the current frame.
 frameName
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the name of `the selected frame <../manual/frames-manipulation.html>`_.
 
+Read only.
 
 .. _webpage-framePlainText:
 
 framePlainText
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the text version of the content of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Read only.
 
 
 .. _webpage-frameTitle:
@@ -254,7 +257,10 @@ Implemented. Documentation needed.
 frameTitle
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the title of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Read only.
+
 
 
 .. _webpage-frameUrl:
@@ -262,7 +268,11 @@ Implemented. Documentation needed.
 frameUrl
 -----------------------------------------
 
-Implemented. Documentation needed.
+
+Contains the URL of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Read only.
+
 
 
 .. _webpage-framesCount:
@@ -270,15 +280,18 @@ Implemented. Documentation needed.
 framesCount
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the number of child frames of `the selected frame <../manual/frames-manipulation.html>`_.
 
+Read only.
 
 .. _webpage-framesName:
 
 framesName
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the list of names of child frames of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Read only.
 
 
 .. _webpage-libraryPath:
@@ -517,7 +530,9 @@ Be careful about `the inconsistent behavior of the expiry property <cookies.html
 childFramesCount()
 -----------------------------------------
 
-Implemented. Documentation needed.
+Returns the number child frames of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Deprecated. Use :ref:`framesCount <webpage-framesCount>` instead.
 
 
 .. _webpage-childFramesName:
@@ -525,7 +540,9 @@ Implemented. Documentation needed.
 childFramesName()
 -----------------------------------------
 
- Implemented. Documentation needed.
+Returns the list of the names of child frames of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Deprecated. Use :ref:`framesName <webpage-framesName>` instead.
 
 
 .. _webpage-clearCookies:
@@ -551,7 +568,9 @@ to be able to reuse the webpage object.
 currentFrameName()
 -----------------------------------------
 
- Implemented. Documentation needed.
+Returns the name of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Deprecated. Use :ref:`frameName <webpage-frameName>` instead.
 
 
 .. _webpage-deleteCookie:
@@ -571,15 +590,20 @@ evaluateJavaScript(src)
 -----------------------------------------
 
 Evaluate the current javascript source (in a string), into the context of the
-loaded web page. It returns the result of the evaluation.
+loaded web page, or if a frame is selected, into the context of
+`the selected frame <../manual/frames-manipulation.html>`_.
+It returns the result of the evaluation.
 
 .. _webpage-evaluate:
 
 evaluate(func, arg1, arg2...)
 -----------------------------------------
 
-It executes the given function in the context of the loaded web page. It means
-that the code of the function cannot access to objects and variables of your script.
+It executes the given function in the context of the loaded web page, or if a frame is
+selected, into the context of `the selected frame <../manual/frames-manipulation.html>`_.
+It means that the code of the function cannot access to objects and variables of your
+script.
+
 For example, in this function, the ``document`` and ``window`` objects are belongs
 to the loaded page, not to your script. In other terms, you cannot use closures.
 
@@ -668,7 +692,8 @@ includeJs(url, callback)
 -----------------------------------------
 
 It loads into the current web page, the javascript file stored
-at the given url.
+at the given url. If `a frame is selected <../manual/frames-manipulation.html>`_,
+the file is loaded into this frame.
 
 When the load is done, the given callback is called.
 
@@ -678,8 +703,8 @@ injectJs(filename)
 -----------------------------------------
 
 It loads and executes the given javascript file into
-the context of the current script. So the loaded script
-has access to all variable of the current module.
+the context of the current web page. If `a frame is selected <../manual/frames-manipulation.html>`_,
+the file is executed into this frame.
 
 If the given filename is a relative path, SlimerJS tries
 to resolve the full path from the current working directory
@@ -688,7 +713,7 @@ If the file is not found, SlimerJS tries to resolve with
 the libraryPath.
 
 Note: there is a limitation in SlimerJS. If the loaded script
-wants to modify a variable of the current script/module, it should
+wants to modify a variable of the current web page/frame, it should
 call ``window.myvariable = '..'`` instead of ``myvariable = '..'``.
 
 .. _webpage-open:
@@ -979,22 +1004,26 @@ It stops the loading of the page.
 switchToFocusedFrame()
 -----------------------------------------
 
-Implemented. Documentation needed.
+It selects the frame that has the focus.
 
+See `frames manipulation <../manual/frames-manipulation.html>`_.
 
 .. _webpage-switchToFrame:
 
-switchToFrame()
+switchToFrame(name)
 -----------------------------------------
 
-Implemented. Documentation needed.
+It selects the frame that has the given name, and is the child of
+the current frame.
 
+See `frames manipulation <../manual/frames-manipulation.html>`_.
 
 .. _webpage-switchToChildFrame:
 
 switchToChildFrame()
 -----------------------------------------
-Implemented. Documentation needed.
+
+Deprecated. Use :ref:`webpage.switchToFrame() <webpage-switchToFrame>` instead.
 
 
 .. _webpage-switchToMainFrame:
@@ -1002,7 +1031,9 @@ Implemented. Documentation needed.
 switchToMainFrame()
 -----------------------------------------
 
-Implemented. Documentation needed.
+It selects the main frame, i.e. the root window.
+
+See `frames manipulation <../manual/frames-manipulation.html>`_.
 
 
 .. _webpage-switchToParentFrame:
@@ -1010,7 +1041,9 @@ Implemented. Documentation needed.
 switchToParentFrame()
 -----------------------------------------
 
-Implemented. Documentation needed.
+It selects the parent frame of the current frame.
+
+See `frames manipulation <../manual/frames-manipulation.html>`_.
 
 
 .. _webpage-uploadFile:
@@ -1023,9 +1056,9 @@ SlimerJs is a scriptable browser, you cannot manipulate the file picker
 opened when you click on this element. ``uploadFile()`` allows you to set the
 value of such elements.
 
-Arguments are the CSS selector of the input element, and the full path of the file.
-The file must exist. You can also indicate an array of path, if the input element
-accepts several files.
+Arguments are the CSS selector (in `the current frame <../manual/frames-manipulation.html>`_)
+of the input element, and the full path of the file. The file must exist. You can also
+indicate an array of path, if the input element accepts several files.
 
 Note that a virtual file picker is opened when calling ``uploadFile()``, and
 so the ``onFilePicker`` callback is called. If this callback exists and
