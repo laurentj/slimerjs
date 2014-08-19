@@ -101,5 +101,31 @@ describe("WebPage.onClosing", function(){
         });
     });
 
+    it("is called when webpage.close",function() {
+        var loaded = false;
+        var childClosing = 0;
+        webpage.onClosing = function(aPage) {
+            childClosing++;
+        }
+        // load the main page
+        runs(function() {
+            webpage.open(url, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        // close the page
+        runs(function(){
+            window.setTimeout(function(){ loaded = false;}, 500);
+            webpage.close();
+        });
+        // wait after the page closing
+        waitsFor(function(){ return (!loaded);}, 2000);
+        runs(function(){
+            expect(childClosing).toEqual(1);
+        });
+    });
+
 });
 

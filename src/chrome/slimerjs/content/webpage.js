@@ -7,6 +7,7 @@ var browser = null;
 window.addEventListener("load", function(event) {
     browser = document.getElementById('webpage');
     browser.stop();
+    browser.closing = false;
     if ("arguments" in window
         && window.arguments[0]
         && window.arguments[0].callback) {
@@ -14,11 +15,10 @@ window.addEventListener("load", function(event) {
     }
 }, true);
 
-var closing = false;
 window.addEventListener("DOMWindowClose", function(event) {
-    if (closing)
+    if (browser.closing)
         return;
-    closing = true;
+    browser.closing = true;
     if (browser.webpage) {
         browser.webpage.close();
     }

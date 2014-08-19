@@ -15,6 +15,7 @@ Fixed bugs
 
     * The cookie manager of SlimerJS ignored session cookies (#216)
     * webpage.frameContent should use the same code as webpage.content (#218)
+    * Fixed a regression after fixing #198: webpage.close() was called twice.
 
 version 0.9.2
 =============

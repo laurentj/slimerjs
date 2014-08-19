@@ -709,6 +709,7 @@ function _create(parentWebpageInfo) {
          */
         close: function() {
             if (browser) {
+                browser.closing = true;
                 try {
                     Services.console.unregisterListener(jsErrorListener);
                 }catch(e){}
@@ -1584,8 +1585,9 @@ function _create(parentWebpageInfo) {
 
         // -------------------------------- private methods to send some events
         closing:function (page) {
-            if (this.onClosing)
+            if (this.onClosing) {
                 this.onClosing(page);
+            }
         },
 
         initialized: function() {
