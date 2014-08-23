@@ -479,7 +479,7 @@ function prepareLoader(scriptInfo) {
                     content = '//'+content;
                 }
                 if (this != mainLoader.main) {
-                    content = '(function(){'+content+'\n}).apply(this);'
+                    content = '(function(require, exports, module){'+content+'\n}).call({},require, module.exports, module);\n';
                 }
                 Loader.load(loader, module, sandbox, content);
             }
