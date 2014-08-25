@@ -21,7 +21,7 @@ function create() {
          */
         listen: function(port, opt, callback) {
             if (arguments.length == 2 && "function" == typeof opt) {
-                callbac = opt;
+                callback = opt;
             }
             if (callback) {
                 this.registerPrefixHandler("/", callback);
