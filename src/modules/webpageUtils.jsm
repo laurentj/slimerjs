@@ -217,7 +217,7 @@ var webpageUtils = {
         if (!docShell) {
             docShell = window.QueryInterface(Ci.nsIInterfaceRequestor)
                          .getInterface(Ci.nsIWebNavigation)
-                         .QueryInterface(Ci.nsIDocShell)
+                         .QueryInterface(Ci.nsIDocShell);
         }
         let channel = docShell.currentDocumentChannel;
         let doc = window.document;
@@ -251,6 +251,43 @@ var webpageUtils = {
             encoder.setNode(doc);
             return encoder.encodeToString();
         }
+    },
+
+    /**
+     * set a new content to the given window
+     * @param nsIDocShell docShell
+     * @param string htmlContent
+     * @param nsIURI uri
+     */
+    setWindowContent: function (docShell, htmlContent, uri) {
+        
+        // prepare input stream and channel
+        var stringStream = Cc["@mozilla.org/io/string-input-stream;1"]
+                            .createInstance(Ci.nsIStringInputStream);
+        stringStream.setData(htmlContent, htmlContent.length);
+
+        var streamChannel = Cc["@mozilla.org/network/input-stream-channel;1"]
+                            .createInstance(Ci.nsIInputStreamChannel);
+        streamChannel.setURI(uri);
+        streamChannel.contentStream = stringStream;
+
+        var channel = streamChannel.QueryInterface(Ci.nsIChannel);
+        channel.contentCharset = "UTF-8"
+
+        var loadFlags = channel.LOAD_DOCUMENT_URI |
+                        channel.LOAD_CALL_CONTENT_SNIFFERS |
+                        channel.LOAD_INITIAL_DOCUMENT_URI |
+                        Ci.nsIRequest.LOAD_BYPASS_CACHE |
+                        Ci.nsIRequest.VALIDATE_NEVER |
+                        Ci.nsIRequest.LOAD_FRESH_CONNECTION
+
+        channel.loadFlags = loadFlags;
+
+        // load the given content through a URI loader
+        var URILoader = Cc["@mozilla.org/uriloader;1"]
+                        .getService(Ci.nsIURILoader);
+        var ir = docShell.QueryInterface(Ci.nsIInterfaceRequestor)
+        URILoader.openURI(channel, 0, ir);
     },
 
     getPrintOptions : function(webpage, options) {

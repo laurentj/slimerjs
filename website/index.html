@@ -91,9 +91,9 @@
                 <p></p>
 <pre>
 <span class="codetitre">Simple example</span>
-
+var <span class="object">webpage</span> = <span class="fonction">require</span>(<span class="literal">'webpage'</span>).<span class="fonction">create</span>();
 <span class="object">webpage</span>
-  .<span class="fonction">open</span>(url) <span class="comment">// loads a page</span>
+  .<span class="fonction">open</span>(<span class="literal">'http://somewhere'</span>) <span class="comment">// loads a page</span>
   .<span class="fonction">then</span>(function(){ <span class="comment">// executed after loading</span>
     <span class="comment">// store a screenshot of the page</span>
     <span class="object">webpage</span>.<span class="fonction">viewportSize</span> =
@@ -101,13 +101,13 @@
     <span class="object">webpage</span>.<span class="fonction">render</span>(<span class="literal">'page.png'</span>,
                    {onlyViewport:true});
     <span class="comment">// then open a second page</span>
-    return <span class="object">webpage</span>.<span class="fonction">open</span>(url2);
+    return <span class="object">webpage</span>.<span class="fonction">open</span>(<span class="literal">'http://somewhere2'</span>);
   })
   .<span class="fonction">then</span>(function(){
     <span class="comment">// click somewhere on the second page</span>
     <span class="object">webpage</span>.<span class="fonction">sendEvent</span>(<span class="literal">"click"</span>, 5, 5,
                         <span class="literal">'left'</span>, 0);
-    <span class="object">slimerjs</span>.<span class="fonction">exit</span>()
+    <span class="object">slimer</span>.<span class="fonction">exit</span>()
   });
 </pre>
             </div>

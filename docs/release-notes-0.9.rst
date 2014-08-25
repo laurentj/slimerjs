@@ -5,6 +5,19 @@
 Release Notes of SlimerJS 0.9
 =============================
 
+version 0.9.3
+=============
+
+Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+
+Fixed bugs
+----------
+
+    * The cookie manager of SlimerJS ignored session cookies (#216)
+    * webpage.frameContent should use the same code as webpage.content (#218)
+    * Fixed a regression after fixing #198: webpage.close() was called twice.
+    * fix error at startup about cache, with Gecko 32 (#208)
+
 version 0.9.2
 =============
 

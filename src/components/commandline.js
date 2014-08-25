@@ -167,11 +167,14 @@ slCommandLine.prototype = {
     handle : function (cmdLine) {
 
         // clear all caches, so scripts will be truly loaded
-        var cacheService = Components.classes["@mozilla.org/network/cache-service;1"]
-                           .getService(Components.interfaces.nsICacheService);
-
         try {
-            cacheService.evictEntries(Components.interfaces.nsICache.STORE_ANYWHERE);
+            if ('cache2' in Services) {
+                Services.cache2.clear();
+            }
+            else {
+                // GECKO <31
+                Services.cache.evictEntries(Services.cache.STORE_ANYWHERE);
+            }
         } catch(ex) {
             dump("error cache service:"+ ex+"\n");
         }

@@ -35,24 +35,35 @@ describe("webpage object", function(){
         'secure':   false,
         'expiry':  futureDate
     }
-
+    var cookie4 = {
+        'name':     'sessioncookie',
+        'value':    'bob',
+        'domain':   '127.0.0.1',
+        'path':     '/',
+        'httponly': true,
+        'secure':   false,
+        'expiry':  0
+    }
 
     var cookiesToSet = [
         cookie1,
         cookie2,
-        cookie3
+        cookie3,
+        cookie4
     ];
     
     
-    function checkCookie(c) {
+    function checkCookie(c, checkDate) {
+        expect(c.name in expectedCookies).toBeTruthy("cookie "+c.name+" is not expected");
         var cookie = expectedCookies[c.name];
         cookie.expires = c.expires // we don't test expires, because the format depends of system langage
         if (c.name == 'UserID') {
             cookie.expiry = c.expiry
             expect(c.expiry > Math.ceil((new Date()).getTime() / 1000) +3500 ).toBeTruthy();
         }
-        else
+        else if (!('expiry' in cookie)) {
             cookie.expiry = futureDateInSecond;
+        }
         expect(c).toEqual(cookie);
     }
     
@@ -121,6 +132,7 @@ describe("webpage object", function(){
             phantom.addCookie(cookie1);
             phantom.addCookie(cookie2);
             phantom.addCookie(cookie3);
+            phantom.addCookie(cookie4);
 
             expectedCookies = {
                 'foo' : {
@@ -138,13 +150,23 @@ describe("webpage object", function(){
                         'path':     '/',
                         'httponly': false,
                         'secure':   false
+                },
+                'sessioncookie' : {
+                    'name':     'sessioncookie',
+                    'value':    'bob',
+                    'domain':   '127.0.0.1',
+                    'path':     '/',
+                    'httponly': true,
+                    'secure':   false,
+                    'expiry':  0
                 }
             }
             
             var cookies = webpage.cookies;
-            expect(cookies.length).toEqual(2);
+            expect(cookies.length).toEqual(3);
             checkCookie(cookies[0]);
             checkCookie(cookies[1]);
+            checkCookie(cookies[2]);
         });
     });
 
@@ -174,15 +196,25 @@ describe("webpage object", function(){
                     'path':     '/foo/bar/',
                     'httponly': true,
                     'secure':   false
-                }
+                },
+            'sessioncookie' : {
+                    'name':   'sessioncookie',
+                    'value':    'bob',
+                    'domain':   '127.0.0.1',
+                    'path':     '/',
+                    'httponly': true,
+                    'secure':   false,
+                    'expiry' : 0
+            }
         }
 
         var cookies = phantom.cookies;
-        expect(cookies.length).toEqual(3);
+        expect(cookies.length).toEqual(4);
         checkCookie(cookies[0]);
         checkCookie(cookies[1]);
         checkCookie(cookies[2]);
-        
+        checkCookie(cookies[3]);
+
         expectedCookies = {
             'foo' : {
                     'name':     'foo',
@@ -191,12 +223,22 @@ describe("webpage object", function(){
                     'path':     '/',
                     'httponly': true,
                     'secure':   false
-                }
+                },
+            'sessioncookie' : {
+                'name':   'sessioncookie',
+                'value':    'bob',
+                'domain':   '127.0.0.1',
+                'path':     '/',
+                'httponly': true,
+                'secure':   false,
+                'expiry' : 0
+            }
         }
 
         cookies = webpage.cookies;
-        expect(cookies.length).toEqual(1);
+        expect(cookies.length).toEqual(2);
         checkCookie(cookies[0]);
+        checkCookie(cookies[1]);
     });
     
      it("can delete all cookies",function() {

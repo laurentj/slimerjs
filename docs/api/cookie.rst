@@ -15,10 +15,10 @@ A cookie object is an object that have these properties:
 - ``httponly``: true if the cookie should only be sent to, and can
   only be modified by, an HTTP connection.
 - ``secure``: true if the cookie should only be sent over a secure connection.
-- ``expires``: Holds the expiration date, formated in ISO format.
+- ``expires``: Holds the expiration date, formated in ISO format (for example  "2014-10-23" or "2014-10-23T14:48:00").
   This property should be null for cookies existing only during a session.
 - ``expiry``: : Holds the expiration date, in milliseconds since the epoch.
-  This property should be null for cookies existing only during a session.
+  This property should be null or 0 for cookies existing only during a session.
 
 .. _expires:
 

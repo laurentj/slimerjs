@@ -64,6 +64,7 @@ cookiesEnabled
 Indicates if the cookie manager is enabled (true) or disabled (false). You can
 modify this property to enable or disable the cookie manager.
 
+By default, it is enabled.
 
 .. _phantom-defaultErrorHandler:
 

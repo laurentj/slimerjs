@@ -709,6 +709,7 @@ function _create(parentWebpageInfo) {
          */
         close: function() {
             if (browser) {
+                browser.closing = true;
                 try {
                     Services.console.unregisterListener(jsErrorListener);
                 }catch(e){}
@@ -987,10 +988,27 @@ function _create(parentWebpageInfo) {
             if (!win){
                 return;
             }
-            let f = '(function(){document.open();';
-            f += 'document.write(decodeURIComponent("'+ encodeURIComponent (val)+'"));';
-            f += 'document.close();})()'
-            webpageUtils.evalInWindow (win, f);
+
+            let webNav = win.QueryInterface(Ci.nsIInterfaceRequestor)
+                            .getInterface(Ci.nsIWebNavigation);
+            let docShell = webNav.QueryInterface(Ci.nsIDocShell);
+
+            if ((typeof content) != "string") {
+                // for given DOM node, serialize it
+                let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
+                                .createInstance(Ci.nsIDocumentEncoder);
+                encoder.init(document, "text/html", de.OutputLFLineBreak | de.OutputRaw);
+                encoder.setNode(content);
+                content = encoder.encodeToString();
+            }
+
+            privProp.staticContentLoading = true;
+            webpageUtils.setWindowContent (docShell, content, webNav.currentURI.clone());
+
+            // wait until the content is loaded
+            let thread = Services.tm.currentThread;
+            while (privProp.staticContentLoading)
+                thread.processNextEvent(true);
         },
 
         get framePlainText() {
@@ -1319,35 +1337,9 @@ function _create(parentWebpageInfo) {
                 content = encoder.encodeToString();
             }
 
-            // prepare input stream and channel
-            var stringStream = Cc["@mozilla.org/io/string-input-stream;1"]
-                                .createInstance(Ci.nsIStringInputStream);
-            stringStream.setData(content, content.length);
-
-            var streamChannel = Cc["@mozilla.org/network/input-stream-channel;1"]
-                                .createInstance(Ci.nsIInputStreamChannel);
-            streamChannel.setURI(uri);
-            streamChannel.contentStream = stringStream;
-
-            var channel = streamChannel.QueryInterface(Ci.nsIChannel);
-            channel.contentCharset = "UTF-8"
-
-            var loadFlags = channel.LOAD_DOCUMENT_URI |
-                            channel.LOAD_CALL_CONTENT_SNIFFERS |
-                            channel.LOAD_INITIAL_DOCUMENT_URI |
-                            Ci.nsIRequest.LOAD_BYPASS_CACHE |
-                            Ci.nsIRequest.VALIDATE_NEVER |
-                            Ci.nsIRequest.LOAD_FRESH_CONNECTION
-
-            channel.loadFlags = loadFlags;
-
-            // load the given content through a URI loader
-            var URILoader = Cc["@mozilla.org/uriloader;1"]
-                            .getService(Ci.nsIURILoader);
-            var ir = browser.docShell.QueryInterface(Ci.nsIInterfaceRequestor)
             privProp.staticContentLoading = true;
 
-            URILoader.openURI(channel, 0, ir);
+            webpageUtils.setWindowContent (browser.docShell, content, uri);
 
             // wait until the content is loaded
             let thread = Services.tm.currentThread;
@@ -1598,8 +1590,9 @@ function _create(parentWebpageInfo) {
 
         // -------------------------------- private methods to send some events
         closing:function (page) {
-            if (this.onClosing)
+            if (this.onClosing) {
                 this.onClosing(page);
+            }
         },
 
         initialized: function() {
