@@ -18,6 +18,11 @@ Fixed bugs
     * Fixed a regression after fixing #198: webpage.close() was called twice.
     * fix error at startup about cache, with Gecko 32 (#208)
 
+Fixed PhantomJS conformance issues
+----------------------------------
+    * Request object given by WebServer is now writable
+    * WebServer.listen accepts now an "options" parameter, even if it is ignored for the moment.
+
 version 0.9.2
 =============
 
