@@ -14,7 +14,15 @@ function create() {
             return "WebServer";
         },
 
-        listen: function(port, callback) {
+        /**
+         * @param integer|string port    port or "host:port"
+         * @param object opt            optional options. (not supported)
+         * @param function callback     optional callback
+         */
+        listen: function(port, opt, callback) {
+            if (arguments.length == 2 && "function" == typeof opt) {
+                callbac = opt;
+            }
             if (callback) {
                 this.registerPrefixHandler("/", callback);
             }
