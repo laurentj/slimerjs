@@ -52,7 +52,7 @@ function create() {
 
         registerPathHandler: function(path, handlerCallback) {
             server.registerPathHandler(path, function (request, response) {
-                    var req = new HttpRequest(request);
+                    var req = createHttpRequest(request);
                     var resp = new HttpResponse(response);
                     handlerCallback(req, resp);
             });
@@ -60,7 +60,7 @@ function create() {
 
         registerPrefixHandler: function(prefix, handlerCallback) {
             server.registerPrefixHandler(prefix, function (request, response) {
-                    var req = new HttpRequest(request);
+                    var req = createHttpRequest(request);
                     var resp = new HttpResponse(response);
                     handlerCallback(req, resp);
                 });
@@ -129,61 +129,51 @@ function guessContentType(data) {
     return ['', false];
 }
 
-function HttpRequest(request) {
-    this._request = request;
+function createHttpRequest(request) {
 
+    var req = {
+        method : request.method,
+        url : '',
+        httpVersion: request.httpVersion,
+        headers: {},
+        post: '',
+        postRaw : '',
+         // not compatible with PhantomJS 1.8
+        path: request.path,
+         // not compatible with PhantomJS 1.8
+        queryString: request.queryString
+    }
+
+    // url
+    req.url = request.path;
+    if (request.queryString != '') {
+        req.url += '?'+request.queryString;
+    }
+   
+    // content
     let BinaryInputStream = Components.Constructor(
          "@mozilla.org/binaryinputstream;1",
          "nsIBinaryInputStream",
          "setInputStream");
     let count = request.bodyInputStream.available();
  
-    this._rawbody = this._body = new BinaryInputStream(request.bodyInputStream).readBytes(count);
+    req.postRaw = req.post = new BinaryInputStream(request.bodyInputStream).readBytes(count);
     if (request.hasHeader("content-type")){
         let type = request.getHeader("content-type");
         if (type == 'application/x-www-form-urlencoded') {
-            this._body = parseQueryString(this._rawbody);
+            req.post = parseQueryString(req.postRaw);
         }
     }
-}
 
-HttpRequest.prototype = {
-    get method () {
-        return this._request.method;
-    },
-    get url () {
-        let u = this._request.path;
-        if (this._request.queryString != '')
-            u += '?'+this._request.queryString;
-        return u;
-    },
-    get httpVersion() {
-        return this._request.httpVersion;
-    },
-    get headers() {
-        let henum = this._request.headers;
-        let harr = {}
-        while(henum.hasMoreElements()) {
-            let h = henum.getNext().QueryInterface(Components.interfaces.nsISupportsString).data;
-            harr[h] = this._request.getHeader(h);
-        }
-        return harr;
-    },
-    get post() {
-        return this._body;
-    },
-    get postRaw() {
-        return this._rawbody;
-    },
-
-    // not compatible with PhantomJS 1.8
-    get path () {
-        return this._request.path;
-    },
-    get queryString () {
-        return this._request.queryString;
+    // headers
+    let henum = request.headers;
+    while(henum.hasMoreElements()) {
+        let h = henum.getNext().QueryInterface(Components.interfaces.nsISupportsString).data;
+        req.headers[h] = request.getHeader(h);
     }
+    return req;
 }
+
 
 function HttpResponse(response) {
     this.headers = {}

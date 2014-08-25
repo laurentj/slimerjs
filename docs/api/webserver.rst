@@ -173,7 +173,6 @@ Request object
 .. index:: http request
 
 This is an object given to handlers, when the server receives a request from a browser.
-All of its properties are read only.
 
 .. _request-method:
 
