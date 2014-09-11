@@ -8,7 +8,7 @@ Release Notes
 version 0.9.3
 =============
 
-Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+SlimerJS 0.9.3 has been released on September 11th, 2014
 
 Fixed bugs
 ----------
