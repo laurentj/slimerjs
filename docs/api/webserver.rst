@@ -122,14 +122,33 @@ SlimerJS only.
 
 .. _webserver-listen:
 
-listen(port, callback)
------------------------------------------
+listen(port, callback) or listen(port, options, callback)
+---------------------------------------------------------
 
 This is the main method, that starts the server. You have to give a port, 80 or 8080 for example,
 and an optional callback (it is required if you didn't call a ``register*`` method before).
 The callback is a function that receives :ref:`Request <request>` object and
 a :ref:`Response <response>` object.
 
+.. code-block:: javascript
+
+   server.listen(8080, function(request, response) {
+       //...
+   })
+
+
+Note: by default, the web server binds to 127.0.0.1. If you want to bind with an other
+IP (the public ip of the machine for example), give the hostname or the ip (plus the port)
+to the method as a string:
+
+To be compatible with PhantomJS 1.9.7, an ``options`` object is allowed
+as second parameter. However SlimerJS ignores it.
+
+.. code-block:: javascript
+
+   server.listen("192.168.0.1:8080", function(request, response) {
+       //...
+   })
 
 .. _webserver-close:
 
@@ -154,7 +173,6 @@ Request object
 .. index:: http request
 
 This is an object given to handlers, when the server receives a request from a browser.
-All of its properties are read only.
 
 .. _request-method:
 

@@ -16,7 +16,7 @@ In the ``page`` variable, you have then an object with many properties and
 methods. See below.
 
 Note: almost properties and methods are implemented, but some are not documented yet.
-Please help us to document them ;-).
+Please help us to document them ;-). You can also read the PhantomJS documentation.
 
 
 Webpage object
@@ -148,7 +148,7 @@ Note: modifying an object in the array won't modify the cookie. You should
 retrieve the array, modify it, and then set the ``cookies`` property with this array.
 Probably you would prefer to use the ``addCookie()`` method to modify a cookie.
 
-If cookies are disabled, modifying this property does nothing.
+If cookies are disabled, or if no page is loaded, modifying this property does nothing.
 
 Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 
@@ -221,14 +221,14 @@ for key codes.
 focusedFrameName
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the name of the child frame that has the focus. Read only.
 
 .. _webpage-frameContent:
 
 frameContent
 -----------------------------------------
 
-This property contain the source code of the current frame.
+This property contain the source code of `the selected frame <../manual/frames-manipulation.html>`_.
 You can set this property with the source code of an HTML page
 to replace the content of the current frame.
 
@@ -238,15 +238,18 @@ to replace the content of the current frame.
 frameName
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the name of `the selected frame <../manual/frames-manipulation.html>`_.
 
+Read only.
 
 .. _webpage-framePlainText:
 
 framePlainText
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the text version of the content of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Read only.
 
 
 .. _webpage-frameTitle:
@@ -254,7 +257,10 @@ Implemented. Documentation needed.
 frameTitle
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the title of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Read only.
+
 
 
 .. _webpage-frameUrl:
@@ -262,7 +268,11 @@ Implemented. Documentation needed.
 frameUrl
 -----------------------------------------
 
-Implemented. Documentation needed.
+
+Contains the URL of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Read only.
+
 
 
 .. _webpage-framesCount:
@@ -270,15 +280,18 @@ Implemented. Documentation needed.
 framesCount
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the number of child frames of `the selected frame <../manual/frames-manipulation.html>`_.
 
+Read only.
 
 .. _webpage-framesName:
 
 framesName
 -----------------------------------------
 
-Implemented. Documentation needed.
+Contains the list of names of child frames of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Read only.
 
 
 .. _webpage-libraryPath:
@@ -507,7 +520,7 @@ The domain and the path of the cookie will be set to the domain
 and the path of the current url.
 
 It returns true if the cookie has been really added. If cookies are
-disabled, the cookie is not added into the cookie database.
+disabled, or if no page is loaded, the cookie is not added into the cookie database.
 
 Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
 
@@ -517,7 +530,9 @@ Be careful about `the inconsistent behavior of the expiry property <cookies.html
 childFramesCount()
 -----------------------------------------
 
-Implemented. Documentation needed.
+Returns the number child frames of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Deprecated. Use :ref:`framesCount <webpage-framesCount>` instead.
 
 
 .. _webpage-childFramesName:
@@ -525,7 +540,9 @@ Implemented. Documentation needed.
 childFramesName()
 -----------------------------------------
 
- Implemented. Documentation needed.
+Returns the list of the names of child frames of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Deprecated. Use :ref:`framesName <webpage-framesName>` instead.
 
 
 .. _webpage-clearCookies:
@@ -551,7 +568,9 @@ to be able to reuse the webpage object.
 currentFrameName()
 -----------------------------------------
 
- Implemented. Documentation needed.
+Returns the name of `the selected frame <../manual/frames-manipulation.html>`_.
+
+Deprecated. Use :ref:`frameName <webpage-frameName>` instead.
 
 
 .. _webpage-deleteCookie:
@@ -571,15 +590,20 @@ evaluateJavaScript(src)
 -----------------------------------------
 
 Evaluate the current javascript source (in a string), into the context of the
-loaded web page. It returns the result of the evaluation.
+loaded web page, or if a frame is selected, into the context of
+`the selected frame <../manual/frames-manipulation.html>`_.
+It returns the result of the evaluation.
 
 .. _webpage-evaluate:
 
 evaluate(func, arg1, arg2...)
 -----------------------------------------
 
-It executes the given function in the context of the loaded web page. It means
-that the code of the function cannot access to objects and variables of your script.
+It executes the given function in the context of the loaded web page, or if a frame is
+selected, into the context of `the selected frame <../manual/frames-manipulation.html>`_.
+It means that the code of the function cannot access to objects and variables of your
+script.
+
 For example, in this function, the ``document`` and ``window`` objects are belongs
 to the loaded page, not to your script. In other terms, you cannot use closures.
 
@@ -668,7 +692,8 @@ includeJs(url, callback)
 -----------------------------------------
 
 It loads into the current web page, the javascript file stored
-at the given url.
+at the given url. If `a frame is selected <../manual/frames-manipulation.html>`_,
+the file is loaded into this frame.
 
 When the load is done, the given callback is called.
 
@@ -678,8 +703,8 @@ injectJs(filename)
 -----------------------------------------
 
 It loads and executes the given javascript file into
-the context of the current script. So the loaded script
-has access to all variable of the current module.
+the context of the current web page. If `a frame is selected <../manual/frames-manipulation.html>`_,
+the file is executed into this frame.
 
 If the given filename is a relative path, SlimerJS tries
 to resolve the full path from the current working directory
@@ -688,7 +713,7 @@ If the file is not found, SlimerJS tries to resolve with
 the libraryPath.
 
 Note: there is a limitation in SlimerJS. If the loaded script
-wants to modify a variable of the current script/module, it should
+wants to modify a variable of the current web page/frame, it should
 call ``window.myvariable = '..'`` instead of ``myvariable = '..'``.
 
 .. _webpage-open:
@@ -990,22 +1015,26 @@ It stops the loading of the page.
 switchToFocusedFrame()
 -----------------------------------------
 
-Implemented. Documentation needed.
+It selects the frame that has the focus.
 
+See `frames manipulation <../manual/frames-manipulation.html>`_.
 
 .. _webpage-switchToFrame:
 
-switchToFrame()
+switchToFrame(name)
 -----------------------------------------
 
-Implemented. Documentation needed.
+It selects the frame that has the given name, and is the child of
+the current frame.
 
+See `frames manipulation <../manual/frames-manipulation.html>`_.
 
 .. _webpage-switchToChildFrame:
 
 switchToChildFrame()
 -----------------------------------------
-Implemented. Documentation needed.
+
+Deprecated. Use :ref:`webpage.switchToFrame() <webpage-switchToFrame>` instead.
 
 
 .. _webpage-switchToMainFrame:
@@ -1013,7 +1042,9 @@ Implemented. Documentation needed.
 switchToMainFrame()
 -----------------------------------------
 
-Implemented. Documentation needed.
+It selects the main frame, i.e. the root window.
+
+See `frames manipulation <../manual/frames-manipulation.html>`_.
 
 
 .. _webpage-switchToParentFrame:
@@ -1021,7 +1052,9 @@ Implemented. Documentation needed.
 switchToParentFrame()
 -----------------------------------------
 
-Implemented. Documentation needed.
+It selects the parent frame of the current frame.
+
+See `frames manipulation <../manual/frames-manipulation.html>`_.
 
 
 .. _webpage-uploadFile:
@@ -1034,9 +1067,9 @@ SlimerJs is a scriptable browser, you cannot manipulate the file picker
 opened when you click on this element. ``uploadFile()`` allows you to set the
 value of such elements.
 
-Arguments are the CSS selector of the input element, and the full path of the file.
-The file must exist. You can also indicate an array of path, if the input element
-accepts several files.
+Arguments are the CSS selector (in `the current frame <../manual/frames-manipulation.html>`_)
+of the input element, and the full path of the file. The file must exist. You can also
+indicate an array of path, if the input element accepts several files.
 
 Note that a virtual file picker is opened when calling ``uploadFile()``, and
 so the ``onFilePicker`` callback is called. If this callback exists and
@@ -1047,7 +1080,15 @@ returns a filename, the filename given to ``uploadFile()`` is ignored.
 onAlert
 -----------------------------------------
 
-Implemented. Documentation needed.
+This should be a callback function, called when the webpage do a ``window.alert('...')``.
+The callback receives the message. It allows you to do something during this process.
+
+
+.. code-block:: javascript
+
+    page.onAlert = function(text) {
+        console.log("Alert done! "+text);
+    }
 
 
 .. _webpage-onAuthPrompt:
@@ -1077,23 +1118,98 @@ To know more, see  :doc:`doc about http authentication with SlimerJS <../manual/
 onCallback
 -----------------------------------------
 
-Implemented. Documentation needed.
+Sometimes, you may need to pass values from the web page to the webpage object, at any time,
+not only when you have to evaluate javascript code inside the web page.
 
+From a script of the web page, you should then call the ``window.callPhantom()``
+function, exposed by SlimerJs to the document. You can pass one argument to this function.
+This argument is then passed to the function you set on ``webpage.onCallback``. This
+callback can return a value which is then the returned value of ``window.callPhantom()``.
+
+In your SlimerJS script:
+
+.. code-block:: javascript
+
+    page.onCallback = function(arg) {
+        return arg + " world";
+    }
+
+In your web page:
+
+.. code-block:: html
+
+    <script>
+      var returnedValue = window.callPhantom("hello");
+      // returnedValue == "hello world"
+    </script>
 
 .. _webpage-onClosing:
 
 onClosing
 -----------------------------------------
 
-Implemented. Documentation needed.
-
+function called when the browser is being closed, during a call of ``WebPage.close()``
+or during a call of ``window.close()`` inside the web page. It receives the webpage object
+as argument.
 
 .. _webpage-onConfirm:
 
 onConfirm
 -----------------------------------------
 
-Implemented. Documentation needed.
+This should be a function called when a dialog box asking a confirmation is opened by the
+browser, typically when the web page call ``window.confirm('text')``. It may be called
+also during some specific behavior, like during an ``beforeunload`` event.
+
+The argument given to the callback is the text of the confirmation
+
+Contrary to PhantomJS, SlimerJS can give also other arguments:
+
+- the title of the dialog box
+- the list of button labels (it may have until three labels) (optional)
+- an object for the checkbox. Sometimes the browser may want to display a confirm dialog box
+  with a checkbox. The object has a ``label`` property and a ``checked`` property that you
+  should set to true or false.
+
+If you have more than two buttons, your callback should return the button number (0, 1, 2,
+0 being often the approval button),
+else you can return true or false.
+
+.. code-block:: javascript
+
+    // simple callback
+    page.onConfirm = function(text) {
+        if (text == 'foo') {
+            if (something) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    // extended callback (SlimerJS only)
+    page.onConfirm = function(text, title, buttons, checkbox) {
+        if (buttons) {
+            // this is an extended confirm dialog box
+            // with a checkbox and/or with more than 2 buttons
+            if (text == 'bar') {
+                checkbox.checked = false
+            }
+            else if (buttons[0] === 'Leave Page') {
+                // support of dialog box appearing during an "beforeunload" event
+                return 0;
+            }
+            return 1;
+        }
+        else {
+            if (text == 'foo') {
+                return false;
+            }
+            return false;
+        }
+    }
+
 
 
 .. _webpage-onConsoleMessage:
@@ -1101,7 +1217,9 @@ Implemented. Documentation needed.
 onConsoleMessage
 -----------------------------------------
 
-This callback is called when page scripts call the various console methods (console.log(), console.info() etc.). This callback is ``not`` called when the Gecko engine itself outputs information to the console - see :ref:`onError <_webpage-onError>` for those messages.
+This callback is called when page scripts call the various console methods (console.log(),
+console.info() etc.). This callback is ``not`` called when the Gecko engine itself outputs
+information to the console - see :ref:`onError <webpage-onError>` for those messages.
 
 The callback accepts three arguments:
 
@@ -1115,7 +1233,8 @@ The callback accepts three arguments:
         // Process message here
     };
 
-
+If multiple arguments are given to ``console.log()``, the ``message`` argument contained
+all arguments concatenated as a string.
 
 
 .. _webpage-onError:
@@ -1123,8 +1242,14 @@ The callback accepts three arguments:
 onError
 -----------------------------------------
 
-Implemented. Documentation needed.
+This function is called when a javascript error appears in the web page. It receives
+the error message and the stack trace (an array of objects indicating the file, the line...)
 
+.. code-block:: javascript
+
+    page.onError = function(message, stack) {
+        
+    };
 
 .. _webpage-onFilePicker:
 
@@ -1251,7 +1376,15 @@ Example:
 onPageCreated
 -----------------------------------------
 
-Implemented. Documentation needed.
+This callback is invoked when a new child window (but not deeper descendant windows) is
+created by the page, e.g. using ``window.open()``. The function receives the webpage
+object corresponding to the new window.
+
+.. code-block:: javascript
+
+    page.onPageCreated = function(childPage) {
+        console.log('a new window is opened');
+    }
 
 
 .. _webpage-onPrompt:
@@ -1259,7 +1392,27 @@ Implemented. Documentation needed.
 onPrompt
 -----------------------------------------
 
-Implemented. Documentation needed.
+This callback allows you to respond to a prompt dialog, opened by the webpage
+with ``window.prompt()`` (in classical browsers, a dialog box with a field that the user
+can fill). The function receives the message and the default value for the
+response. It should return the response.
+
+In your SlimerJS script:
+
+.. code-block:: javascript
+
+    page.onPrompt = function(question, defaultResponse) {
+        return "Roger";
+    }
+
+In the web page:
+
+.. code-block:: html
+
+    <script>    
+        var firstname = window.prompt("Type your firstname", "Bob");
+        // firstname will be "Roger"
+    </script>
 
 
 .. _webpage-onResourceError:

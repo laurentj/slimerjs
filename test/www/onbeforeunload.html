@@ -1,0 +1,15 @@
+<html>
+<head><title>foo</title>
+<script type="text/javascript">
+
+window.addEventListener("beforeunload", function(e) {
+    var confirmationMessage = "Confirm to close";
+    // note: recent version of gecko (20+ ?), confirmation message is not displayed anymore
+    (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    return confirmationMessage;
+}, true);</script>
+</head>
+<body>
+    <a id="a" href="simplehello.html " style="position:absolute; top:0px; left:0px">Simple Hello </a>
+</body>
+</html>

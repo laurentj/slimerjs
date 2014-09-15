@@ -130,7 +130,11 @@ function _create(parentWebpageInfo) {
                 // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js#254
                 var consoleEvent = aSubject.wrappedJSObject;
                 if (webpageUtils.isOurWindow(browser, aData)) {
-                    webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
+                    var args = consoleEvent.arguments;
+                    if (!Array.isArray(args)) {
+                        args = Array.prototype.slice.call(args);
+                    }
+                    webpage.onConsoleMessage(args.join(' '), consoleEvent.lineNumber, consoleEvent.filename);
                     return
                 }
                 return;
@@ -148,7 +152,7 @@ function _create(parentWebpageInfo) {
                 return;
             try {
                 let msg = aMessage.QueryInterface(Ci.nsIScriptError);
-                //dump(" ************** jsErrorListener on error:"+aMessage.message+ "("+aMessage.category+")\n")
+                //dump(" ************** jsErrorListener  on error:"+msg.message+ "("+msg.category+") f:"+msg.flags+" ow:"+msg.outerWindowID+" is:"+webpageUtils.isOurWindow(browser, msg.outerWindowID)+"\n")
                 if (msg instanceof Ci.nsIScriptError
                     && !(msg.flags & Ci.nsIScriptError.warningFlag)
                     && msg.outerWindowID
@@ -225,6 +229,11 @@ function _create(parentWebpageInfo) {
                 if (wycywigReg.test(url)) {
                     return;
                 }
+                try {
+                    Services.console.unregisterListener(jsErrorListener);
+                }catch(e){}
+
+                Services.console.registerListener(jsErrorListener);
                 // phantomjs call onInitialized not only at the page creation
                 // but also after the content loading.. don't know why.
                 // let's imitate it. Only after a success
@@ -236,14 +245,10 @@ function _create(parentWebpageInfo) {
                 if (wycywigReg.test(url)) {
                     return;
                 }
-                if (channel.contentType == "text/html") {
-                    try {
-                        Services.console.unregisterListener(jsErrorListener);
-                    }catch(e){}
-
-                    Services.console.registerListener(jsErrorListener);
-                }
                 webpage.loadFinished(success, url, false);
+                if (privProp.staticContentLoading) {
+                    privProp.staticContentLoading = false;
+                }
                 if (deferred)
                     deferred.resolve(success);
             },
@@ -332,7 +337,8 @@ function _create(parentWebpageInfo) {
         framePath : [],
         childWindows : [], // list of webpage of child windows
         settings: {},
-        viewportSize : { width: 400, height: 300}
+        viewportSize : { width: 400, height: 300},
+        staticContentLoading : false
     }
 
     let defaultSettings = slConfiguration.getDefaultWebpageConfig();
@@ -703,14 +709,15 @@ function _create(parentWebpageInfo) {
          */
         close: function() {
             if (browser) {
+                browser.closing = true;
                 try {
                     Services.console.unregisterListener(jsErrorListener);
                 }catch(e){}
                 Services.obs.removeObserver(webpageObserver, "console-api-log-event");
                 netLog.unregisterBrowser(browser);
                 this.closing(this);
-                browser.webpage = null;
                 slLauncher.closeBrowser(browser);
+                browser.webpage = null;
                 if (parentWebpageInfo) {
                     parentWebpageInfo.detachChild(this);
                 }
@@ -723,7 +730,7 @@ function _create(parentWebpageInfo) {
 
         /**
          * function called when the browser is being closed, during a call of WebPage.close()
-         * or during a call of window.close() inside the web page (not implemented yet)
+         * or during a call of window.close() inside the web page
          */
         onClosing: null,
 
@@ -823,10 +830,10 @@ function _create(parentWebpageInfo) {
             if (typeof val != "object")
                 throw new Error("Bad argument type");
 
-            let w = val.width || 0;
-            let h = val.height || 0;
+            let w = val.width || privProp.viewportSize.width;
+            let h = val.height || privProp.viewportSize.height;
 
-            if (w <= 0 || h <= 0)
+            if (w < 0 || h < 0)
                 return;
 
             privProp.viewportSize.width = w;
@@ -981,10 +988,27 @@ function _create(parentWebpageInfo) {
             if (!win){
                 return;
             }
-            let f = '(function(){document.open();';
-            f += 'document.write(decodeURIComponent("'+ encodeURIComponent (val)+'"));';
-            f += 'document.close();})()'
-            webpageUtils.evalInWindow (win, f);
+
+            let webNav = win.QueryInterface(Ci.nsIInterfaceRequestor)
+                            .getInterface(Ci.nsIWebNavigation);
+            let docShell = webNav.QueryInterface(Ci.nsIDocShell);
+
+            if ((typeof content) != "string") {
+                // for given DOM node, serialize it
+                let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
+                                .createInstance(Ci.nsIDocumentEncoder);
+                encoder.init(document, "text/html", de.OutputLFLineBreak | de.OutputRaw);
+                encoder.setNode(content);
+                content = encoder.encodeToString();
+            }
+
+            privProp.staticContentLoading = true;
+            webpageUtils.setWindowContent (docShell, content, webNav.currentURI.clone());
+
+            // wait until the content is loaded
+            let thread = Services.tm.currentThread;
+            while (privProp.staticContentLoading)
+                thread.processNextEvent(true);
         },
 
         get framePlainText() {
@@ -1292,12 +1316,20 @@ function _create(parentWebpageInfo) {
                 openBlankBrowser(true);
             }
             browserJustCreated = false;
+            browser.webNavigation.stop(3);
+            let uri = browser.currentURI.clone();
             if (url) {
-                let uri = Services.io.newURI(url, null, null);
-                browser.docShell.setCurrentURI(uri);
-                this.navigationRequested(url, 'Other', true, true);
+                // if url given, take it
+                uri = Services.io.newURI(url, null, null);
             }
+            else {
+                url = uri.spec;
+            }
+
+            this.navigationRequested(url, 'Other', true, true);
+
             if ((typeof content) != "string") {
+                // for given DOM node, serialize it
                 let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
                                 .createInstance(Ci.nsIDocumentEncoder);
                 encoder.init(document, "text/html", de.OutputLFLineBreak | de.OutputRaw);
@@ -1305,12 +1337,14 @@ function _create(parentWebpageInfo) {
                 content = encoder.encodeToString();
             }
 
-            let f = '(function(){document.open();';
-            f += 'document.write(decodeURIComponent("'+ encodeURIComponent (content)+'"));';
-            f += 'document.close();})()';
-            this.loadStarted(url, false);
-            webpageUtils.evalInWindow (browser.contentWindow, f);
-            this.loadFinished('success', url, false);
+            privProp.staticContentLoading = true;
+
+            webpageUtils.setWindowContent (browser.docShell, content, uri);
+
+            // wait until the content is loaded
+            let thread = Services.tm.currentThread;
+            while (privProp.staticContentLoading)
+                thread.processNextEvent(true);
         },
 
         /**
@@ -1556,8 +1590,9 @@ function _create(parentWebpageInfo) {
 
         // -------------------------------- private methods to send some events
         closing:function (page) {
-            if (this.onClosing)
+            if (this.onClosing) {
                 this.onClosing(page);
+            }
         },
 
         initialized: function() {

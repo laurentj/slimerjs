@@ -181,3 +181,44 @@ describe("WebPage.onPrompt", function(){
         webpage.close();
     });
 });
+
+describe("WebPage and onbeforeunload", function(){
+    var webpage;
+    var url = "http://127.0.0.1:8083/onbeforeunload.html";
+    var result = { text:'', title:'', buttons:[] };
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
+
+    it("onConfirm should be called",function() {
+        var loaded = false;
+        
+        webpage.onConfirm = function(text, title, buttons) {
+            result.text = text;
+            result.title = title;
+            result.buttons = buttons
+            return true;
+        }
+        runs(function() {
+            webpage.open(url, function(success){
+                webpage.sendEvent("click", 5, 5, 'left', 0);
+                window.setTimeout(function(){
+                    loaded = true;
+                }, 1000)
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1500);
+        runs(function(){
+            expect(result.title).toEqual("Are you sure?");
+            expect(result.buttons[0]).toEqual("Leave Page");
+            expect(result.buttons[1]).toEqual("Stay on Page");
+            expect(webpage.title).toEqual('simple hello world');
+            webpage.close();
+        });
+    });
+});

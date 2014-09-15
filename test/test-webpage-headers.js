@@ -34,5 +34,26 @@ describe("WebPage", function(){
             webpage.close();
         });
     });
+    it("exposes good user agent into navigator object",function() {
+        var loaded = false;
+        var ua = '';
+        webpage.settings.userAgent = "Super Browser / 2.0"
+        // load the page that will returns received headers
+        runs(function() {
+            webpage.open("http://127.0.0.1:8083/simplehello.html", function(success){
+                ua = webpage.evaluate(function(){
+                    return window.navigator.userAgent;
+                });
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+
+        runs(function(){
+            expect(ua).toEqual('Super Browser / 2.0');
+            webpage.close();
+        });
+    });
 });
 

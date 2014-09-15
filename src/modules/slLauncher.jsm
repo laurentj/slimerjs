@@ -355,20 +355,21 @@ function prepareLoader(scriptInfo) {
             if (id[0] == '@') {
                 return id;
             }
-
-            if (!relativeId && slUtils.isAbsolutePath(id)) {
+            //dump("resolve: "+id+ " relativeId:" +relativeId+"\n");
+            if (relativeId === false && slUtils.isAbsolutePath(id)) {
                 // id is an absolute path
                 additionnalPaths.push(id);
+                //dump("additionnalPaths "+id+"\n");
                 return id;
             }
 
             let requirerUri = Services.io.newURI(requirer.uri, null, null);
             let requirerDir = requirerUri.QueryInterface(Ci.nsIFileURL).file.parent;
 
-            if (relativeId) {
+            if (relativeId !== false) {
                 // id is a relative path
                 additionnalPaths.push(requirerDir);
-                return relativeId;
+                //dump("additionnalPaths requirerDir "+requirerDir.path+" parent of "+requirer.uri+"\n");
             }
 
             additionnalPaths.push(scriptInfo.requirePath);
@@ -380,10 +381,15 @@ function prepareLoader(scriptInfo) {
                 // resolve against the current module path;
                 let path = requirePaths[i];
                 let dir;
-                if (path[0] == '.')
+                if (path[0] == '.' || !slUtils.isAbsolutePath(path)) {
                     additionnalPaths.push(slUtils.getAbsMozFile(path, requirerDir));
-                else
+                }
+                else {
                     additionnalPaths.push(slUtils.getMozFile(path));
+                }
+            }
+            if (relativeId) {
+                return relativeId;
             }
             return id;
         },
@@ -473,7 +479,7 @@ function prepareLoader(scriptInfo) {
                     content = '//'+content;
                 }
                 if (this != mainLoader.main) {
-                    content = '(function(){'+content+'\n}).apply(this);'
+                    content = '(function(require, exports, module){'+content+'\n}).call({},require, module.exports, module);\n';
                 }
                 Loader.load(loader, module, sandbox, content);
             }

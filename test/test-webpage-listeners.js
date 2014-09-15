@@ -148,7 +148,18 @@ describe("webpage with listeners", function() {
         });
         expect(!listR || listR.length == 0).toBeTruthy("request has been found (for "+url+")");
     }
-    
+
+    function searchHeaderInResource(res, headerName){
+        var h = null;
+        res.headers.some(function(header){
+            if (header.name === headerName) {
+                h = header.value;
+                return true;
+            }
+            return false;
+        });
+        return h;
+    }
     var async = new AsyncSpec(this);
 
     async.it("should be opened with a simple file",function(done) {
@@ -536,7 +547,8 @@ describe("webpage with listeners", function() {
                 expect(r.start.status).toEqual(301);
                 expect(r.start.statusText).toEqual('Moved Permanently');
                 expect(r.start.contentType).toBeNull("start content type");
-                expect(r.start.redirectURL).toBeNull();
+                expect(r.start.redirectURL).toEqual("http://localhost:8083/simplehello.html");
+                expect(searchHeaderInResource(r.start, 'foo')).toEqual('bar');
             }
             else
                 expect(r.start).toBeNull();
@@ -546,7 +558,8 @@ describe("webpage with listeners", function() {
             expect(r.end.status).toEqual(301, "end.status");
             expect(r.end.statusText).toEqual('Moved Permanently', "end.statusText");
             expect(r.end.contentType).toBeNull("end content type");
-            expect(r.end.redirectURL).toBeNull();
+            expect(r.end.redirectURL).toEqual("http://localhost:8083/simplehello.html");
+            expect(searchHeaderInResource(r.end, 'foo')).toEqual('bar');
             expect(r.err).toBeNull();
         });
         done();
@@ -638,7 +651,7 @@ describe("webpage with listeners", function() {
             expect(r.end.status).toEqual(301, "end.status");
             expect(r.end.statusText).toEqual('Moved Permanently', "end.statusText");
             expect(r.end.contentType).toBeNull("end content type");
-            expect(r.end.redirectURL).toBeNull();
+            expect(r.end.redirectURL).toEqual("http://localhost:8083/");
             expect(r.err).toBeNull();
         });
         done();
@@ -721,6 +734,8 @@ describe("webpage with listeners", function() {
                 expect(r.start.status).toEqual(302);
                 expect(r.start.statusText).toEqual('Found');
                 expect(r.start.contentType).toBeNull("start content type");
+                expect(r.start.redirectURL).toEqual("http://localhost:8083/simplehello.html");
+                expect(searchHeaderInResource(r.start, 'foo')).toEqual('bar');
             }
             else
                 expect(r.start).toBeNull();
@@ -730,7 +745,8 @@ describe("webpage with listeners", function() {
             expect(r.end.status).toEqual(302, "end.status");
             expect(r.end.statusText).toEqual('Found', "end.statusText");
             expect(r.end.contentType).toBeNull("end content type");
-            expect(r.end.redirectURL).toBeNull();
+            expect(r.end.redirectURL).toEqual("http://localhost:8083/simplehello.html");
+            expect(searchHeaderInResource(r.end, 'foo')).toEqual('bar');
             expect(r.err).toBeNull();
         });
         done();

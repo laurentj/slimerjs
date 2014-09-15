@@ -72,6 +72,7 @@ webserverTest.listen(8083, function(request, response) {
     if (request.url == '/redirectToSimpleHello') {
         response.statusCode = 301;
         response.headers['Location'] = 'http://localhost:8083/simplehello.html';
+        response.headers['foo'] = 'bar';
         response.write('');
         response.close();
         return;
@@ -88,6 +89,7 @@ webserverTest.listen(8083, function(request, response) {
     if (request.url == '/redirectToSimpleHello2') {
         response.statusCode = 302;
         response.headers['Location'] = '/simplehello.html';
+        response.headers['foo'] = 'bar';
         response.write('');
         response.close();
         return;

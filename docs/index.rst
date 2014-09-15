@@ -15,6 +15,7 @@ Manual
    configuration
    differences-with-phantomjs
    manual/http-authentication
+   manual/frames-manipulation
 
 API reference
 -------------
