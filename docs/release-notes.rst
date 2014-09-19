@@ -16,6 +16,9 @@ Fixed bugs
 
    * Webserver: request.post was not filled correctly (not an object) when the
      content is application/x-www-form-urlencoded (#228)
+   * Cookies: cookies set with ``phantom`` or ``webpage`` were not visible by default
+     in the loaded document.cookie because of their httpOnly property setted with true
+     by default. Not httpOnly is set to false by default.
 
 version 0.9.3
 =============

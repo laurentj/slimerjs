@@ -24,7 +24,7 @@ function Cookie(name, value, domain, path) {
     this.domain = domain || 'localhost';
     this.path = path || '/';
 
-    this.httponly = true;
+    this.httponly = false;
 
     this.secure =  false;
     this.expires = null;
@@ -167,7 +167,7 @@ var slCookiesManager = {
         let isSession = false;
         if (expires <= 0) {
             // if 0, the gecko cookies manager will ignore the cookie...
-            expires = (Date.now()/1000) + (24 * 60 * 60);
+            expires = Math.ceil(Date.now()/1000) + (24 * 60 * 60);
             isSession = true;
         }
         let domain = '';
@@ -190,7 +190,7 @@ var slCookiesManager = {
                 "name" in cookie ? cookie.name:'',
                 "value" in cookie ? cookie.value:'',
                 "secure" in cookie ? cookie.secure:false,
-                "httponly" in cookie ? cookie.httponly:true,
+                "httponly" in cookie ? cookie.httponly:false,
                 isSession,
                 expires
                 );

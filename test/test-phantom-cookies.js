@@ -43,7 +43,6 @@ describe("phantom object", function(){
                     'value':    'notretrieved',
                     'domain':   '127.0.0.1',
                     'path':     '/foo/bar/',
-                    'httponly': true,
                     'secure':   false,
                     'expiry':  futureDate
                 },
@@ -95,7 +94,7 @@ describe("phantom object", function(){
                     'value':    'notretrieved',
                     'domain':   '127.0.0.1',
                     'path':     '/foo/bar/',
-                    'httponly': true,
+                    'httponly': false,
                     'secure':   false
                 },
             'UserID': {
@@ -133,7 +132,7 @@ describe("phantom object", function(){
                     'value':    'notretrieved',
                     'domain':   '127.0.0.1',
                     'path':     '/foo/bar/',
-                    'httponly': true,
+                    'httponly': false,
                     'secure':   false
                 },
             'UserID': {
