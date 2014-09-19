@@ -40,4 +40,37 @@ describe("Webserver", function(){
             webpage.close();
         });
     });
+    
+
+     it("reads correctly post url encoded data",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.openUrl(url+"posturlencodeddata",
+                            {
+                                operation:"post",
+                                data: "http-response=abdc",
+                                headers: {
+                                    "Content-Type" : "application/x-www-form-urlencoded"
+                                }
+                            },
+                            null,
+                            function(success){
+                                loaded = true;
+                            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var result = JSON.parse(webpage.plainText);
+
+            expect(result.method).toEqual("POST");
+            expect( 'Content-Type' in result.headers).toBeTruthy();
+            expect(result.headers['Content-Type']).toEqual('application/x-www-form-urlencoded');
+            expect(result.body).toEqual("http-response=abdc");
+            expect(result.bodyData).toEqual({ 'http-response': 'abdc' });
+
+            webpage.close();
+        });
+    });
+
 });

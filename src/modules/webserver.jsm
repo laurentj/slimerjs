@@ -158,11 +158,16 @@ function createHttpRequest(request) {
     let count = request.bodyInputStream.available();
  
     req.postRaw = req.post = new BinaryInputStream(request.bodyInputStream).readBytes(count);
-    if (request.hasHeader("content-type")){
-        let type = request.getHeader("content-type");
-        if (type == 'application/x-www-form-urlencoded') {
-            req.post = parseQueryString(req.postRaw);
-        }
+    let type = '';
+    if (request.hasHeader("Content-Type")){
+        type = request.getHeader("Content-Type");
+    }
+    else if (request.hasHeader("content-type")){
+        type = request.getHeader("content-type");
+    }
+
+    if (type == 'application/x-www-form-urlencoded') {
+        req.post = parseQueryString(req.postRaw);
     }
 
     // headers

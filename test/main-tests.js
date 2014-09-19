@@ -157,6 +157,25 @@ webserverTest.listen(8083, function(request, response) {
         return;
     }
 
+    if (request.url == '/posturlencodeddata') {
+        response.statusCode = 200;
+        response.headers = { "Content-Type": "text/plain;charset=UTF-8"}
+        try {
+            var data = {
+                method: request.method,
+                headers: request.headers,
+                body: request.postRaw,
+                bodyData : request.post,
+            };
+            response.write(JSON.stringify(data));
+        }
+        catch(e) {
+            response.write("Error:"+e)
+        }
+        response.close();
+        return;
+    }
+
     if (request.url == '/misc_chars') {
         response.statusCode = 200;
         response.headers = {

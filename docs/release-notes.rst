@@ -11,6 +11,12 @@ version 0.9.4
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
 
+Fixed bugs
+----------
+
+   * Webserver: request.post was not filled correctly (not an object) when the
+     content is application/x-www-form-urlencoded (#228)
+
 version 0.9.3
 =============
 
