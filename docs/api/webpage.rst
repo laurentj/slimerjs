@@ -723,7 +723,7 @@ open(url...)
 
 .. index:: open, promise
 
-.. _promise: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+.. _promise: https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html
 
 This method allows to open a page into a virtual browser.
 
