@@ -723,11 +723,13 @@ open(url...)
 
 .. index:: open, promise
 
+.. _promise: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
 This method allows to open a page into a virtual browser.
 
 Since this operation is asynchronous, you cannot do something on
 the page after the call of ``open()``. You should provide a callback
-or you should use the returned promise (not compatible with PhantomJS),
+or you should use the returned promise_ (not compatible with PhantomJS),
 to do something on the loaded page. The callback or the promise receives
 a string "success" if the loading has been succeded.
 
@@ -744,7 +746,7 @@ Example with a callback function:
         }
    })
 
-Example with the returned promise (not compatible with PhantomJS):
+Example with the returned promise_ (not compatible with PhantomJS):
 
 .. code-block:: javascript
 
@@ -771,7 +773,7 @@ To load two pages, one after an other, here is how to do:
         })
    })
 
-With the promise, it's better in term of code (not compatible with PhantomJS):
+With the promise_, it's better in term of code (not compatible with PhantomJS):
 
 .. code-block:: javascript
 
@@ -788,6 +790,40 @@ With the promise, it's better in term of code (not compatible with PhantomJS):
            return page.open("http://example.com/page3")
        })
 
+To load N pages in parallel, here is how to do:
+
+.. code-block:: javascript
+
+   const URLS = [
+       'http://example.com/page1',
+       'http://example.com/page2'
+   ];
+   
+   var queue = [];
+   URLS.forEach(function(url) {
+       var p = new Promise(function(resolve, reject) {
+           var page = require('webpage').create();
+           page.open(url)
+               .then(function(status) {
+                   if (status == "success") {
+                       var title = page.title;
+                       console.log("Page title of " + url + " : " + title);
+                       page.close();
+                       resolve([url, title]);
+                   } else {
+                       console.log("Sorry, the page is not loaded for " + url);
+                       reject(new Error("Some problem occurred with " + url));
+                   }
+               });
+       });
+       queue.push(p);
+   });
+   
+   Promise.all(queue).then(function(values) {
+       console.log(values);
+       phantom.exit();
+   });
+   
 **Other arguments:**
 
 The ``open()`` method accepts several arguments:
@@ -800,7 +836,7 @@ The ``open()`` method accepts several arguments:
 - ``open(url, operation, data, callback)``
 - ``open(url, operation, data, headers, callback)``
 
-Remember that in all cases, the method returns a promise.
+Remember that in all cases, the method returns a promise_.
 
 ``httpConf`` is an object. See :ref:`webpage.openUrl <webpage-openUrl>` below.
 ``operation``, ``data`` and ``headers`` should have same type of values
