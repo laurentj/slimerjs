@@ -5,10 +5,30 @@
 Release Notes of SlimerJS 0.9
 =============================
 
-version 0.9.3
+version 0.9.4
 =============
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+
+
+Fixed bugs
+----------
+
+   * Webserver: request.post was not filled correctly (not an object) when the
+     content is application/x-www-form-urlencoded (#228)
+   * Cookies: cookies set with ``phantom`` or ``webpage`` were not visible by default
+     in the loaded document.cookie because of their httpOnly property setted with true
+     by default. Not httpOnly is set to false by default.
+
+version 0.9.3
+=============
+
+SlimerJS 0.9.3 has been released on September 11th, 2014
+
+Improvements
+------------
+
+  * Compatibility with XulRunner/Firefox 32
 
 Fixed bugs
 ----------
@@ -17,6 +37,11 @@ Fixed bugs
     * webpage.frameContent should use the same code as webpage.content (#218)
     * Fixed a regression after fixing #198: webpage.close() was called twice.
     * fix error at startup about cache, with Gecko 32 (#208)
+
+Fixed PhantomJS conformance issues
+----------------------------------
+    * Request object given by WebServer is now writable
+    * WebServer.listen accepts now an "options" parameter, even if it is ignored for the moment.
 
 version 0.9.2
 =============

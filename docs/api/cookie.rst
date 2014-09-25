@@ -13,7 +13,7 @@ A cookie object is an object that have these properties:
 - ``domain``: the domain name on which the cookie is attached
 - ``path``: the path in URLs on which the cookie is valid
 - ``httponly``: true if the cookie should only be sent to, and can
-  only be modified by, an HTTP connection.
+  only be modified by, an HTTP connection (i.e: cannot be read into document.cookie). default: false.
 - ``secure``: true if the cookie should only be sent over a secure connection.
 - ``expires``: Holds the expiration date, formated in ISO format (for example  "2014-10-23" or "2014-10-23T14:48:00").
   This property should be null for cookies existing only during a session.

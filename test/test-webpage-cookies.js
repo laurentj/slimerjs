@@ -21,7 +21,7 @@ describe("webpage object", function(){
         'value':    'notretrieved',
         'domain':   '127.0.0.1',
         'path':     '/foo/bar/',
-        'httponly': true,
+        'httponly': false,
         'secure':   false,
         'expiry':  futureDate
     }
@@ -194,7 +194,7 @@ describe("webpage object", function(){
                     'value':    'notretrieved',
                     'domain':   '127.0.0.1',
                     'path':     '/foo/bar/',
-                    'httponly': true,
+                    'httponly': false,
                     'secure':   false
                 },
             'sessioncookie' : {
@@ -257,7 +257,7 @@ describe("webpage object", function(){
                     'value':    'notretrieved',
                     'domain':   '127.0.0.1',
                     'path':     '/foo/bar/',
-                    'httponly': true,
+                    'httponly': false,
                     'secure':   false
                 }
         }
