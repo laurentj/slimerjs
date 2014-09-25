@@ -102,7 +102,7 @@ var slConfiguration = {
             let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
             if (cmdlineOpt == '') {
                 if (!(opt in this)) {
-                    this[opt] = optValue;
+                    this[opt] = defaultValue;
                 }
                 continue;
             }
