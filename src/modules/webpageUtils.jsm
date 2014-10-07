@@ -470,11 +470,11 @@ var webpageUtils = {
      * print the given content window into a PDF.
      * The code has been inspired by http://mxr.mozilla.org/mozilla-central/source/mobile/android/chrome/content/browser.js#932
      */
-    renderPageAsPDF : function(contentWindow, file, options) {
+    renderPageAsPDF : function(webpage, contentWindow, file, options) {
         let printSettings = Cc["@mozilla.org/gfx/printsettings-service;1"]
                                 .getService(Ci.nsIPrintSettingsService)
                                 .newPrintSettings;
-
+        
         printSettings.printSilent             = true;
         printSettings.showPrintProgress       = false;
         printSettings.printBGImages           = true;
@@ -504,6 +504,48 @@ var webpageUtils = {
         printSettings.paperHeight             = options.height;
         printSettings.paperSizeUnit           = Ci.nsIPrintSettings.kPaperSizeMillimeters;
         printSettings.scaling                 = options.ratio;
+
+        { // handling webpage.paperSize
+            let currentDPI = 96; // TODO: where to find it properly?
+            let stringToMillimeters = function(s) {
+                let units = {
+                    'mm': 1.0,
+                    'cm': 10.0,
+                    'in': 25.4,
+                    'px': 25.4 / currentDPI
+                };
+                let endsWith = function(str, suffix) {
+                    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+                };
+                let convert = function(u) {
+                    let n = parseFloat(s.substr(0, s.substr(0, s.length - u.length)));
+                    return n * units[u];
+                };
+                for (let u in units) if (endsWith(s, u)) return convert(u);
+                // default to pixels, TODO: could check for wrong units, how?
+                return convert('px');
+            };
+            let paperSize = webpage.paperSize;
+            if (typeof paperSize == 'undefined' || paperSize == null) {
+                let currentViewport = webpage.viewportSize;
+                paperSize = {
+                    width: currentViewport.width + 'px',
+                    height: currentViewport.height + 'px',
+                    margin: '0px'
+                };
+            }
+            
+            if (paperSize.width != null && paperSize.height != null) {
+                printSettings.paperWidth = stringToMillimeters(paperSize.width);
+                printSettings.paperHeight = stringToMillimeters(paperSize.height);
+                printSettings.shrinkToFit = false;
+            } else if (paperSize.format != null) {
+                // for now, we trust the printer config to have the format we want
+                printSettings.paperName = paperSize.format;
+            } else {
+                
+            }
+        }
 
         let ms = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
         let mimeInfo = ms.getFromTypeAndExtension("application/pdf", "pdf");

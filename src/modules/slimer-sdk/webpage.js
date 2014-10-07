@@ -1473,7 +1473,7 @@ function _create(parentWebpageInfo) {
                 let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file));
                 if (finalOptions.format == 'pdf') {
                     let printOptions = webpageUtils.getPrintOptions(this, finalOptions);
-                    return webpageUtils.renderPageAsPDF(browser.contentWindow, file, printOptions);
+                    return webpageUtils.renderPageAsPDF(this, browser.contentWindow, file, printOptions);
                 }
 
                 let canvas = webpageUtils.getScreenshotCanvas(
