@@ -877,7 +877,12 @@ The second parameter is an object containing options. Here are its possible prop
   except when webpage.clipRect is set.
 
 Note: because of a limitation of Gecko (see `Mozilla bug 650418 <https://bugzilla.mozilla.org/show_bug.cgi?id=650418>`_),
-plugins content like flash cannot be rendered in the screenshot (even if you can see it in the window).
+plugins content like flash cannot be rendered in the screenshot (even if you can see it in
+the window). Except in the case where the ``<object>`` element contains ``<param name="wmode" value="transparent">``.
+
+Note: An other limitation of Gecko on the canvas element (`used to render the page <https://developer.mozilla.org/fr/docs/Web/API/CanvasRenderingContext2D#drawWindow%28%29>`_
+inside SlimerJS) prevents us to get transparent background. However
+`there is a workaround <https://github.com/laurentj/slimerjs/issues/154#issuecomment-58495876>`_.
 
 
 .. _webpage-renderBase64:
