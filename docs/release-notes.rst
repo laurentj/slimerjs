@@ -19,6 +19,7 @@ Fixed bugs
    * Cookies: cookies set with ``phantom`` or ``webpage`` were not visible by default
      in the loaded document.cookie because of their httpOnly property setted with true
      by default. Not httpOnly is set to false by default.
+   * Linux: Shell wrapper "slimerjs" breaks if run in a whitespace containing directory (#234)
 
 version 0.9.3
 =============
