@@ -10,6 +10,11 @@ version 0.9.4
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
+Improvements
+------------
+
+   * New method ``slimer.isExiting()`` to check if ``slimer.exit()`` or ``phantom.exit()``
+     have been called.
 
 Fixed bugs
 ----------

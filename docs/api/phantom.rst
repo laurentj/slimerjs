@@ -125,6 +125,8 @@ because of a limitation in Firefox/XulRunner. This code is optional.
 
     phantom.exit();
 
+Note: your script may continue to be executed after the call of this method, because of
+the asynchronous behavior of this function.
 
 .. _phantom-injectJs:
 

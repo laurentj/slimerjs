@@ -7,6 +7,7 @@ var EXPORTED_SYMBOLS = ["slimer"];
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import('resource://slimerjs/slUtils.jsm');
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
+Components.utils.import('resource://slimerjs/slLauncher.jsm');
 
 var [major, minor, patch] = Services.appinfo.version.split('.');
 var _version = { major: checkInt(major), minor: checkInt(minor), patch: checkInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
@@ -49,7 +50,21 @@ var slimer =  {
      */
     exit : function(code) {
         let c = code || 0;
+        if (slLauncher.slimerExiting) {
+            return
+        }
+        slLauncher.slimerExiting = true;
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+    },
+
+    /**
+     * indicate if exit has been called. Since the exiting process is asynchronous,
+     * scripts may continues to be executed after exit(). So the script may interrupts its
+     * processing by checking this status
+     * @return bool true if exit() was called
+     */
+    isExiting : function() {
+        return slLauncher.slimerExiting;
     },
 
     /**

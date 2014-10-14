@@ -36,6 +36,20 @@ because of a limitation in Firefox/XulRunner.
     slimer.exit();
 
 
+Note: your script may continue to be executed after the call of this method, because of
+the asynchronous behavior of this function.
+
+.. _slimer-isexiting:
+
+isExiting()
+-----------------------------------------
+
+Indicate if ``exit()`` has been called. Since the exiting process is asynchronous,
+scripts may continues to be executed after exit(). So the script may interrupts its
+processing by checking this status
+
+Introduced: SlimerJS 0.9.4
+
 .. _slimer-hasfeature:
 
 hasFeature(featureName)
