@@ -75,6 +75,7 @@
               <h1>title</h1>
             </div-->
 
+<p>General FAQ. For the technical FAQ, <a href="http://docs.slimerjs.org/current/faq.html">see the manual</a>.</p>
 
 <dl id="faq">
     <dt id="why-not-headless">Why is it not natively headless?</dt>
@@ -109,39 +110,6 @@
         on the command line.
     </dd>
 
-    <dt id="rendering">The rendering of my web site is not really like in my favorite browser. Even in Firefox</dt>
-    <dd>A browser is very complex program. The final rendering (the appearance of the web page)
-        depends on many different things:
-        <ul>
-            <li>The browser engine (Gecko vs Webkit vs Presto vs Blink vs....)</li>
-            <li>The version of the browser engine (improvements and bug fixes are made in each
-               version of a browser)</li>
-            <li>The library used to draw graphics: depending the operating system the
-               browser is on, it uses a different graphics backend. For example, Firefox
-               uses the Cairo library, which uses DirectX on windows, or other libraries
-               on Linux or MacOs. So there are different algorithm, different implementations,
-                to draw the same thing.</li>
-            <li>The accelerated graphic cards: a browser can use hardware implementation
-            or can use software implementations if the graphic cards has no accelerated
-            graphic chipset. So different algorithm, different implementations: different
-            results.</li>
-            <li>To draw font (if the web page doesn't use web fonts), it depends on the installed fonts</li>
-            <li>Etc...</li>
-        </ul>
-
-        So, don't expect to have exactly the same results between any browser and SlimerJS.
-        Moreover, SlimerJS uses exactly the same rendering engine as Firefox: if you use
-        the lighweight edition, it uses Firefox itself, and for other editions, it uses
-        XulRunner, downloaded directly from Mozilla servers (and so built by Mozilla, exactly
-        the same way they build Firefox). <strong>At least, the rendering with SlimerJs
-        may be exactly the same as with Firefox</strong> (same gecko version, on the
-        same operating system). However you could have some difference in some extrem
-        case (high zooming for example) and with different operating system (even it is
-        the same gecko version).
-        <br />
-        You can speak with us about rendering issues, on the mailing list.
-    </dd>
-    
     <dt id="why-slimerjs-name">Why is it called "SlimerJs"?</dt>
     <dd>Slimer is the name of a ghost in the movie "GhostBusters". As you may know, the Firefox
         source code uses some references from this movie, and since PhantomJS,
