@@ -713,7 +713,9 @@ function _create(parentWebpageInfo) {
                 try {
                     Services.console.unregisterListener(jsErrorListener);
                 }catch(e){}
-                Services.obs.removeObserver(webpageObserver, "console-api-log-event");
+                try {
+                    Services.obs.removeObserver(webpageObserver, "console-api-log-event");
+                }catch(e){}
                 netLog.unregisterBrowser(browser);
                 this.closing(this);
                 slLauncher.closeBrowser(browser);

@@ -19,6 +19,7 @@ Improvements
 Fixed bugs
 ----------
 
+   * Two calls of webpage.close() may trigger an exception.
    * Webserver: request.post was not filled correctly (not an object) when the
      content is application/x-www-form-urlencoded (#228)
    * Cookies: cookies set with ``phantom`` or ``webpage`` were not visible by default
