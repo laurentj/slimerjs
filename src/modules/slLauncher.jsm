@@ -232,6 +232,7 @@ const nativeModules = {
     'net-log' : '@slimer-sdk/net-log',
     'webserver' : 'webserver',
     'system' : 'system',
+    'chrome': 'chrome',
     'vm':'@slimer-sdk/vm',
     'path':'@slimer-sdk/path',
 };
@@ -340,16 +341,12 @@ function prepareLoader(scriptInfo) {
             if (id in nativeModules)
                 return nativeModules[id];
 
-            if (id == 'chrome' || id.indexOf('@loader/') === 0) {
+            if (id.indexOf('@loader/') === 0) {
                 if (requirer.id[0] == '@') {
                     return id;
                 }
-                // the chrome module is only allowed in embedded modules
-                if (id == 'chrome') {
-                    throw new Error("Module "+ requirer.id+ " is not allowed to require the chrome module");
-                }
-                else if (id.indexOf('@loader/') === 0)
-                    throw new Error("Unknown "+ id +" module");
+
+                throw new Error("Unknown "+ id +" module");
             }
 
             if (id.startsWith('sdk/')) {
@@ -528,4 +525,3 @@ function prepareLoader(scriptInfo) {
 
     return loader;
 }
-
