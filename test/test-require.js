@@ -109,6 +109,10 @@ describe("require function", function() {
         expect(Ci).not.toBe(null);
         expect(Cu).not.toBe(null);
         expect(Cr).not.toBe(null);
+        expect(Cc).toBeDefined();
+        expect(Ci).toBeDefined();
+        expect(Cu).toBeDefined();
+        expect(Cr).toBeDefined();
     });
 });
 
