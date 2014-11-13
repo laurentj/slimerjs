@@ -95,47 +95,67 @@
             even those written with the <a href="http://coffeescript.org/">CoffeeScript</a> language!
             Your main script can be written with CoffeeScript as well. SlimerJS recognizes <code>*.coffee</code> files.</p>
 
-            <p>All of these features are executed on top of the core of Firefox.</p>
 
-            <h2>Disadvantages over PhantomJS</h2>
+            <h2>Use latest Javascript language features</h2>
 
-            <p>These APIs are similar to the APIs of <a href="http://phantomjs.org/">PhantomJS</a>
-            but there are <a href="http://docs.slimerjs.org/current/differences-with-phantomjs.html">a few
-            differences in their behavior</a>.
-            Some options and a few features are still missing. This is a work
-            in progress and full compatibility is the main goal for the release of SlimerJS 1.0.</p>
-            <p>However, most of scripts for PhantomJS run perfectly well right now with SlimerJS!</p>
+            <p>In your Slimerjs scripts, benefit from
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference">the power
+            of JavaScript 1.8.6</a>, that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">already
+            includes features of the future standard ECMAScript Harmony 6</a>:
+            iterators, generators, destructured assignement, Map and WeakMap, "let" keyword...</li>
+ 
 
-            <p>Contrary to PhantomJS, SlimerJS is not headless: you see windows and it needs
-            a graphical environment. You can use a tool
-               like <code>xvfb</code> on a Linux/MacOS system to have this headless feature
-               and to execute SlimerJS on Linux boxes that do not have xorg installed.</p>
+            <h2>A modern browser with latest HTML5/JS/CSS enhancements</h2>
+            
+            <p>Since SlimerJS is executed on top of a recent Gecko (the core of Firefox),
+            it supports all the HTML5 standards recently implemented in Firefox,
+            including things like audio, video, WebGL etc.</p>
+            
+            <p>In fact, SlimerJS is not really stuck to a specific version of Gecko:
+            it can use any recent version of Firefox/XULRunner 20+.</p>
 
-            <p>But...</p>
-
-            <h2>Advantages over PhantomJS</h2>
-
-            <p><span class="slm">SlimerJS</span> is not just a PhantomJS clone; it has additional features
-            right now:</p>
-
+            <p>The web page rendering in SlimerJS is <strong>strictly identical</strong>
+            to the rendering in Firefox.</p>
+            
+            <p><strong>No problem to launch your web site or your web app that use HTML5 bleeding
+            edge features!</strong></p>
+ 
+            <p>See <a href="downbload.html">the download page</a> to know the version of
+            Gecko embedded in the current version of Slimerjs
+            or the version of Firefox compatible with SlimerJS.</p>
+ 
+            <p>You can go on <a href="http://caniuse.com">caniuse.com</a> to see the list of
+            HTML5 features supported by Firefox and you can use in web pages loaded by
+            SlimerJS.</p>
+ 
+            <h2>And more...</h2>
+ 
             <ul>
-                <li>Benefit from <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference">the power of JavaScript 1.8.6</a>,
-                that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">already includes features
-                of the future standard ECMAScript Harmony 6</a>:
-                    iterators, generators, destructured assignement, Map and WeakMap, "let" keyword...</li>
-                <li>The web page rendering in SlimerJS is <strong>strictly identical</strong> to the rendering in Firefox</li>
                 <li>Many modules of the <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/">Mozilla Add-on SDK</a>
-                    are available and you can import them into your code in the same way as <strong>CommonJS</strong> modules.</li>
-                <li>Supports all the HTML5 standards recently implemented in Firefox, including things that
-                    are not available in PhantomJS: Audio, Video, WebGL etc.</li>
+                    are available and you can import them into your code in the same way as <strong>CommonJS</strong> modules.</li>               
                 <li><span class="slm">SlimerJS</span> is able to load Flash content if the Flash plugin is installed
                     (though the plugin's rendering cannot be seen when taking screenshots).</li>
                 <li>You can use <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html">Promises</a>
                     when opening a web page with <code>webpage.open()</code>!</li>
-                <li>SlimerJS is not really stuck to a specific version of Gecko: it can use any recent version of Firefox/XULRunner 20+</li>
             </ul>
 
-            <p><strong><a href="download.html">Try SlimerJS</a></strong> for your web projects!</p>
+            <p style="text-align:center;font-size:2em;margin:2em"><strong><a href="download.html">Try SlimerJS</a></strong> for your web projects!</p>
+
+ 
+ 
+            <h2>About differences with PhantomJS</h2>
+
+            <p>APIs of SlimerJS are similar to the APIs of <a href="http://phantomjs.org/">PhantomJS</a>
+            but there are <a href="http://docs.slimerjs.org/current/differences-with-phantomjs.html">a few
+            differences in their behavior</a>.
+            Some options and a few features are still missing. This is a work
+            in progress and full compatibility is the main goal for the release of SlimerJS 1.0.</p>
+
+            <p>However, most of scripts for PhantomJS run perfectly well right now with SlimerJS!</p>
+
+            <p>Contrary to PhantomJS, SlimerJS is not headless: you see windows and it needs
+            a graphical environment. You can use a tool like <code>xvfb</code> on a Linux/MacOS system to have this headless feature
+               and to execute SlimerJS on Linux boxes that do not have xorg installed.</p>
 
         </section>
       </div>
