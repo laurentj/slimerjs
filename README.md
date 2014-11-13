@@ -2,7 +2,7 @@
 
 SlimerJS is a scriptable browser. It allows you to manipulate a web page
 with an external Javascript script: opening a webpage, clicking on links, modifying the content...
-It is useful to do functional tests, page automaton, network monitoring, screen capture etc.
+It is useful to do functional tests, page automation, network monitoring, screen capture etc.
 
 It is a tool like [PhantomJs](http://phantomjs.org/), except that
 it runs Gecko instead of Webkit, and it is not (yet) natively headless.
