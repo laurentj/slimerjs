@@ -1,4 +1,5 @@
 # SlimerJS
+http://slimerjs.org/
 
 SlimerJS is a scriptable browser. It allows you to manipulate a web page
 with an external Javascript script: opening a webpage, clicking on links, modifying the content...
