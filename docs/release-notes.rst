@@ -15,6 +15,8 @@ Improvements
 
    * New method ``slimer.isExiting()`` to check if ``slimer.exit()`` or ``phantom.exit()``
      have been called.
+   * Compatibility with XulRunner/Firefox 33 and 34
+   * packages: default Xulrunner version is now 33
 
 Fixed PhantomJS conformance issues
 ----------------------------------
