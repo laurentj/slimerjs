@@ -17,6 +17,11 @@ describe("WebPage.onCallback", function(){
             receivedResults = data;
             if (data == "doerror")
                 throw new Error("oups");
+            else if (data == "returnobject") {
+                return {
+                    foo:'bar'
+                };
+            }
             return "received";
         }
 
@@ -41,8 +46,19 @@ describe("WebPage.onCallback", function(){
             expect(result).toEqual("received");
             expect(receivedResults.hello).toEqual("world");
 
+
+            result = webpage.evaluate(function(){
+                try {
+                    return window.callPhantom("returnobject");
+                }
+                catch(e){
+                    return "error in evaluate: "+e;
+                }
+            })
+            expect(result.foo).toEqual("bar");
+
             // verify that we receive exception from onCallback
-            var result = webpage.evaluate(function(){
+            result = webpage.evaluate(function(){
                 try {
                     return window.callPhantom("doerror");
                 }
