@@ -62,7 +62,7 @@ describe("WebPage.renderBase64()", function(){
             expect(typeof capture).toEqual("string");
             expect(capture.length > 1300).toBeTruthy();
 
-            var capture = webpage.renderBase64({format:'jpg', quality:0.5});
+            var capture = webpage.renderBase64({format:'jpg', quality:50});
             expect(typeof capture).toEqual("string");
             expect(capture.length > 2500).toBeTruthy();
         });

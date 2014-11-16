@@ -16,6 +16,12 @@ Improvements
    * New method ``slimer.isExiting()`` to check if ``slimer.exit()`` or ``phantom.exit()``
      have been called.
 
+Fixed PhantomJS conformance issues
+----------------------------------
+
+   * quality option for ``webpage.render()`` should be between 0 and 100, not between 0 and 1.
+
+
 Fixed bugs
 ----------
 
@@ -26,6 +32,7 @@ Fixed bugs
      in the loaded document.cookie because of their httpOnly property setted with true
      by default. Not httpOnly is set to false by default.
    * Linux: Shell wrapper "slimerjs" breaks if run in a whitespace containing directory (#234)
+
 
 version 0.9.3
 =============

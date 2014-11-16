@@ -869,7 +869,8 @@ The second parameter is an object containing options. Here are its possible prop
 
 - ``format``: indicate the file format (then the file extension is ignored). possible
   values: ``jpg``, ``png``, ``jpeg``.
-- ``quality``: the compression quality. A number between 0 and 1.
+- ``quality``: the compression quality. A number between 0 and 100 (in SlimerJS 0.9.2 and
+  lower, it was between 0 and 1)
 - ``ratio``: (SlimerJS only), a number between 0 and 1, indicating the "zoom level" of the capture.
    (``zoomFactor`` is then ignored)
 - ``onlyViewport``: (SlimerJS only), set to true if you only want to take a screenshot of
