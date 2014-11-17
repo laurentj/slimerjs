@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Verifying downloads · SlimerJS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Doc about how to verify archives of SlimerJS">
+    <meta name="author" content="">
+
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/docs.css" rel="stylesheet">
+    <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+<!-- Navbar
+================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+          <a class="brand" href="index.html"><span>Slimer</span>JS</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li class="active"><a href="download.html">Download</a></li>
+                <li><a href="http://docs.slimerjs.org">Documentation</a></li>
+                <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <div class="logo">
+        <img src="assets/img/glouton-boyEntete100.png"/>
+    </div>
+    <h1>Verifying downloads</h1>
+    <p class="lead">Verify archives of <i class="slm">SlimerJS</i> you downloaded</p>
+  </div>
+</header>
+
+<div class="container">
+
+    <div class="row-fluid">
+      <div class="span9">
+        
+        <section id="contents">
+            <p>You can verify files you downloaded by checking their checksums.
+            Checksums are stored in a file on download.slimerjs.org.</p>
+
+            <p>It's important to verify the checksum, to be sure that the file you have is
+            not corrupted, and is the original one.</p>
+
+            <p>So, download the CHECKSUM file (see the <a href="download.html">download page</a>).
+            This is a file having the same name of the target file with an additionnal
+            <code>.asc</code> extension. It contains a kind of big number for a specific
+            package. Store it in the same directory of the package you downloaded.</p>
+
+            <h2>Checking the authenticity of the checksum file</h2>
+            
+            <p>Even if it's better, you can skip the verification of the checksum file.
+            Verifying the checksum file allow to be sure that the file is the original
+            one, and has not been compromised.</p>
+
+            <p>The checksum file is signed with PGP. You have to install PGP program on
+            your computer (GnuPG on linux). Following instructions are for made
+            with GnuPG.</p>
+
+            <p>Then download our GPG public key: <a href="slimerjs-pubkey.gpg">slimerjs-pubkey.gpg</a>.</p>
+
+            <pre>
+                curl https://slimerjs.org/slimerjs-pubkey.gpg | gpg --import
+            </pre>
+
+            <p>And launch the verification:</p>
+            <pre>
+                gpg --verify-files *.asc
+            </pre>
+
+            <h2>Verifying checksum of a package</h2>
+
+            <p>Checksums have been calculated with sha256sum. You should install this
+            software. After downloading the package and its corresponding <code>.asc</code>
+            file, launch the verification:</p>
+
+            <pre>
+                sha256sum -c *.asc
+            </pre>
+
+        </section>
+      </div>
+    </div>
+  </div>
+
+
+    <footer class="footer">
+      <div class="container">
+          <ul class="bs-docs-social-buttons">
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/"><img class="imgbtn" src="assets/img/git2.png"> Source Code</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/fork"><img class="imgbtn" src="assets/img/git1.png"> Fork</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://twitter.com/slimerjs"><img src="assets/img/tweet.png"> Tweet</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/slimerjs"><img class="imgbtn" src="assets/img/tchat2.png"> Mail List</a> <span class="separator">//</span>
+            </li>
+            <li>
+              <a href="https://github.com/laurentj/slimerjs/issues"><img class="imgbtn" src="assets/img/bug_bleu.png"> Bug ? Ideas !</a>
+            </li>
+          </ul>
+          <p>Copyright 2013-2014 Laurent Jouanneau / Innophi - Design by <a href="http://www.3liz.com/">3Liz</a></p>
+      </div>
+    </footer>
+
+    <!--script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script-->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <!--script src="assets/js/holder/holder.js"></script-->
+    <!--script src="assets/js/google-code-prettify/prettify.js"></script-->
+    <script src="assets/js/application.js"></script>
+
+  </body>
+</html>
