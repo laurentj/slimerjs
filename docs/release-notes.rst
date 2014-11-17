@@ -5,6 +5,11 @@
 Release Notes
 =============
 
+version 0.9.5
+=============
+
+Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+
 version 0.9.4
 =============
 
