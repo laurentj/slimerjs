@@ -109,6 +109,10 @@ var phantom = {
      */
     exit : function(code) {
         let c = code || 0;
+        if (slLauncher.slimerExiting) {
+            return
+        }
+        slLauncher.slimerExiting = true;
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },
 

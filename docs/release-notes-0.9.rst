@@ -5,20 +5,40 @@
 Release Notes of SlimerJS 0.9
 =============================
 
-version 0.9.4
+version 0.9.5
 =============
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
+version 0.9.4
+=============
+
+SlimerJS 0.9.4 has been released on November 17th, 2014
+
+Improvements
+------------
+
+   * New method ``slimer.isExiting()`` to check if ``slimer.exit()`` or ``phantom.exit()``
+     have been called.
+   * Compatibility with XulRunner/Firefox 33 and 34
+   * packages: default Xulrunner version is now 33
+
+Fixed PhantomJS conformance issues
+----------------------------------
+
+   * quality option for ``webpage.render()`` should be between 0 and 100, not between 0 and 1.
 
 Fixed bugs
 ----------
 
+   * Two calls of webpage.close() may trigger an exception.
    * Webserver: request.post was not filled correctly (not an object) when the
      content is application/x-www-form-urlencoded (#228)
    * Cookies: cookies set with ``phantom`` or ``webpage`` were not visible by default
      in the loaded document.cookie because of their httpOnly property setted with true
      by default. Not httpOnly is set to false by default.
+   * Linux: Shell wrapper "slimerjs" breaks if run in a whitespace containing directory (#234)
+
 
 version 0.9.3
 =============

@@ -320,7 +320,7 @@ var webpageUtils = {
     getScreenshotOptions : function(webpage, options, alternateFormat) {
         let finalOptions = {
             format: 'png',
-            quality: 0.8,
+            quality: 80,
             ratio: webpage.zoomFactor,
             onlyViewport: false,
             contentType : 'image/png'
@@ -335,10 +335,18 @@ var webpageUtils = {
 
             if ('ratio' in options)
                 finalOptions.ratio = options.ratio;
-            if ('quality' in options)
-                finalOptions.quality = options.quality;
-            if ('onlyViewport' in options)
+            if ('quality' in options) {
+                if (options.quality > 1 ) {
+                    finalOptions.quality = parseInt(options.quality) / 100;
+                }
+                else {
+                    // for deprecated behavior, when value was between 0 and 1
+                    finalOptions.quality = parseFloat(options.quality);
+                }
+            }
+            if ('onlyViewport' in options) {
                 finalOptions.onlyViewport = options.onlyViewport;
+            }
         }
         else if (typeof(options) == 'string') {
             finalOptions.format = options;
@@ -354,6 +362,7 @@ var webpageUtils = {
         } else if (format != 'pdf') {
             throw new Error("Render format \"" + format + "\" is not supported");
         }
+
         return finalOptions;
     },
 

@@ -11,6 +11,10 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/slUtils.jsm');
 
+var listErrorName = ['Error','EvalError','InternalError','RangeError','ReferenceError',
+                     'SyntaxError','TypeError','URIError'];
+
+
 function callPhantomAPI() {}
 
 callPhantomAPI.prototype = {
@@ -45,15 +49,18 @@ callPhantomAPI.prototype = {
                     return result;
                 }
                 catch(e) {
+                    // an erro occured in the callback defined in the user script.
                     if (typeof e == 'object') {
-                        let expose = {
-                            message:'r',
-                            name:'r'
+                        // we cannot throw directly the catch error: since Gecko 33
+                        // properties and methods are hidden when passing to the
+                        // non-privileged compartiment. so we throw a new error
+                        // from the unprivileged compartiment.
+                        if ('name' in e && 'message' in e) {
+                            if (listErrorName.indexOf(e.name) != -1) {
+                                throw new self.window[e.name](e.message);
+                            }
                         }
-                        for (let p in e) {
-                            expose[p] = 'r';
-                        }
-                        e.__exposedProps__ = expose;
+                        throw new self.window.Error(""+e);
                     }
                     throw e;
                 }

@@ -905,7 +905,8 @@ The second parameter is an object containing options. Here are its possible prop
 
 - ``format``: indicate the file format (then the file extension is ignored). possible
   values: ``jpg``, ``png``, ``jpeg``, ``pdf``.
-- ``quality``: the compression quality. A number between 0 and 1.
+- ``quality``: the compression quality. A number between 0 and 100 (in SlimerJS 0.9.2 and
+  lower, it was between 0 and 1)
 - ``ratio``: (SlimerJS only), a number between 0 and 1, indicating the "zoom level" of the capture.
    (``zoomFactor`` is then ignored).
 - ``onlyViewport``: (SlimerJS only), set to true if you only want to take a screenshot of
@@ -913,7 +914,12 @@ The second parameter is an object containing options. Here are its possible prop
   except when webpage.clipRect is set.
 
 Note: because of a limitation of Gecko (see `Mozilla bug 650418 <https://bugzilla.mozilla.org/show_bug.cgi?id=650418>`_),
-plugins content like flash cannot be rendered in the screenshot (even if you can see it in the window).
+plugins content like flash cannot be rendered in the screenshot (even if you can see it in
+the window). Except in the case where the ``<object>`` element contains ``<param name="wmode" value="transparent">``.
+
+Note: An other limitation of Gecko on the canvas element (`used to render the page <https://developer.mozilla.org/fr/docs/Web/API/CanvasRenderingContext2D#drawWindow%28%29>`_
+inside SlimerJS) prevents us to get transparent background. However
+`there is a workaround <https://github.com/laurentj/slimerjs/issues/154#issuecomment-58495876>`_.
 
 For PDF rendering, the ``clipRect`` property, ``quality`` and ``onlyViewport`` options are
 ignored. And it supports additionnal properties:

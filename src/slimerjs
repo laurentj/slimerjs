@@ -172,9 +172,9 @@ export __SLIMER_ENV="$LISTVAR"
 
 # launch slimerjs with firefox/xulrunner
 if [ "$HIDE_ERRORS" == "Y" ]; then
-    "$SLIMERJSLAUNCHER" -app $SLIMERDIR/application.ini $PROFILE -no-remote "$@" 2> /dev/null
+    "$SLIMERJSLAUNCHER" -app "$SLIMERDIR/application.ini" $PROFILE -no-remote "$@" 2> /dev/null
 else
-    "$SLIMERJSLAUNCHER" -app $SLIMERDIR/application.ini $PROFILE -no-remote "$@"
+    "$SLIMERJSLAUNCHER" -app "$SLIMERDIR/application.ini" $PROFILE -no-remote "$@"
 fi
 
 EXITCODE=$?
