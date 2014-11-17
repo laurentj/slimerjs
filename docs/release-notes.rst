@@ -8,7 +8,7 @@ Release Notes
 version 0.9.4
 =============
 
-Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+SlimerJS 0.9.4 has been released on November 17th, 2014
 
 Improvements
 ------------
@@ -22,7 +22,6 @@ Fixed PhantomJS conformance issues
 ----------------------------------
 
    * quality option for ``webpage.render()`` should be between 0 and 100, not between 0 and 1.
-
 
 Fixed bugs
 ----------
