@@ -74,3 +74,38 @@ describe("Test networkRequest.abort()", function() {
     });
 });
 
+describe("Test networkRequest.abort() for subsequent requests", function() {
+
+    var webpage;
+    var url = "http://www.google.com/";
+    var loadStart = false, loadFinish = false, aborted = false;
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+        
+        webpage.onResourceRequested = function (request, networkRequest) {
+            if (/\.(?:png|css|js)/.test(request.url)) {
+                aborted = true;
+                networkRequest.abort();
+            }
+        }
+        webpage.onLoadStarted = function (url) {
+            loadStart = true;
+        }
+        webpage.onLoadFinished = function (status, url, isFrame) {
+            loadFinish = true;
+        }        
+    });
+    
+    it("should onLoadFinished called when subsequent request is aborted",function() {
+        runs(function() {
+            webpage.open(url, function(success){
+                expect(loadStart && loadFinish && aborted).toBe(true);
+            });
+        });
+    });
+});
+

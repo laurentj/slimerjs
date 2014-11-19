@@ -504,7 +504,7 @@ TracingListener.prototype = {
 const requestController = function(request, index, options) {
     return {
         abort: function() {
-            request.cancel(0);
+            request.cancel(Cr.NS_BINDING_ABORTED);
             if (typeof(options.onError) == "function") {
                 options.onError(
                     {
