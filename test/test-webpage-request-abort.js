@@ -4,7 +4,7 @@ describe("Test networkRequest.abort()", function() {
     var url = "http://www.google.com/";
     var orderArr = [];
     var resDate = null;
-    var resURL = "";
+    var resURL = "", starURL = "startURL", endURL = "endURL", loadStatus = "";
 
     beforeEach(function() {
         if (webpage) {
@@ -23,6 +23,13 @@ describe("Test networkRequest.abort()", function() {
             orderArr.push("onResourceReceived");
             resDate = response.time;
             resURL = response.url;
+        }
+        webpage.onLoadStarted = function (url) {
+            startURL = url;
+        }
+        webpage.onLoadFinished = function (status, url, isFrame) {
+            endURL = url;
+            loadStatus = status;
         }
     });
 
@@ -50,5 +57,20 @@ describe("Test networkRequest.abort()", function() {
         });
     });
 
+    it("should onLoadStarted and onLoadFinished be called",function() {
+        runs(function() {
+            webpage.open(url, function(success){
+                expect(startURL).toEqual(endURL);
+            });
+        });
+    });
+    
+    it("should status is fail",function() {
+        runs(function() {
+            webpage.open(url, function(success){
+                expect(loadStatus).toEqual("fail");
+            });
+        });
+    });
 });
 
