@@ -504,13 +504,22 @@ TracingListener.prototype = {
 const requestController = function(request, index, options) {
     return {
         abort: function() {
-            request.cancel(0);
+            request.cancel(Cr.NS_BINDING_ABORTED);
+            if (typeof(options.onError) == "function") {
+                options.onError(
+                    {
+                        id: index,
+                        url: request.URI.spec,
+                        errorCode: 95,
+                        errorString: "Resource loading aborted"
+                    });
+            }
             if (typeof(options.onResponse) == "function") {
                 options.onResponse(
                     {
                         id: index,
-                        url: "",
-                        time: null,
+                        url: request.URI.spec,
+                        time: new Date(),
                         headers: [],
                         bodySize: 0,
                         contentType: null,
@@ -522,19 +531,6 @@ const requestController = function(request, index, options) {
                         referrer: "",
                         body: ""
                     });
-            }
-            if (typeof(options.onError) == "function") {
-                options.onError(
-                    {
-                        id: index,
-                        url: request.URI.spec,
-                        errorCode: 95,
-                        errorString: "Resource loading aborted"
-                    });
-            }
-
-            if (typeof(options.onLoadFinished) == "function") {
-                options.onLoadFinished(request.URI.spec, "fail")
             }
         },
         changeUrl : function(url) {
