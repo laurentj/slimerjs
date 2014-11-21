@@ -42,7 +42,6 @@ if (system.args.length == 2) {
         phantom.injectJs("./test-"+system.args[1]+".js");
 }
 else {
-    phantom.injectJs("./test-webpage-render-segfault.js");
     phantom.injectJs("./test-environment.js");
     phantom.injectJs("./test-require.js");
     phantom.injectJs("./test-system.js");
@@ -54,6 +53,7 @@ else {
     phantom.injectJs("./test-webpage-mouseevent.js");
     phantom.injectJs("./test-webpage-callbacks.js");
     phantom.injectJs("./test-webpage-render.js");
+    phantom.injectJs("./test-webpage-render-segfault.js");
     phantom.injectJs("./test-webpage-prompt.js");
     phantom.injectJs("./test-webpage-open.js");
     phantom.injectJs("./test-webpage-frames.js");

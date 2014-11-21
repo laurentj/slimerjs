@@ -367,7 +367,9 @@ var webpageUtils = {
     },
 
     getScreenshotCanvas : function(window, ratio, onlyViewport, webpage) {
-
+        let MAX_WIDTH = 10000;
+        let MAX_HEIGHT = 10000;
+        
         if (!ratio || (ratio && ratio <= 0)) {
             ratio = 1;
         }
@@ -457,7 +459,12 @@ var webpageUtils = {
                 canvasHeight = givenClip.height;
             }
         }
-
+        
+        clip.width = Math.min(clip.width, MAX_WIDTH);
+        clip.height = Math.min(clip.height, MAX_HEIGHT);
+        canvasWidth = Math.min(canvasWidth, MAX_WIDTH);
+        canvasHeight = Math.min(canvasHeight, MAX_HEIGHT);
+        
         //dump("size clip: "+ clip.width +" x "+ clip.height+" @ "+clip.left+","+clip.top+"\n");
         //dump("size canvas: "+ canvasWidth +" x "+ canvasHeight+"\n");
         //dump("Ratio:"+ratio+"\n");

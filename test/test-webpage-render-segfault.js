@@ -8,15 +8,15 @@ describe("WebPage.render() segmentation faults", function(){
         webpage = require("webpage").create();
     });
     
-    it("Segfault www.tamasoft.co.jp/en/general-info/unicode.html", function() {
+    it("should not error with very big page", function() {
         var loaded = false;
         runs(function() {
-            webpage.open("http://www.tamasoft.co.jp/en/general-info/unicode.html", function(success){
+            webpage.open("http://127.0.0.1:8083/bigpage.html", function(success){
                 loaded = true;
             });
         });
 
-        waitsFor(function(){ return loaded;}, 60000);
+        waitsFor(function(){ return loaded;}, 10000);
         runs(function() {
             webpage.renderBase64("jpg");
             webpage.close();
@@ -24,7 +24,7 @@ describe("WebPage.render() segmentation faults", function(){
         })
     });
     
-    it("Segfault sportal.bg", function() {
+    it("should not segfault", function() {
         var loaded = false;
         runs(function() {
             webpage.open("http://sportal.bg", function(success){
