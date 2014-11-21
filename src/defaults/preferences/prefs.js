@@ -29,3 +29,7 @@ pref("dom.allow_scripts_to_close_windows", true);
 
 
 pref("dom.mozTCPSocket.enabled", true);
+
+//Enable plugin crash protection
+//http://kb.mozillazine.org/Plugin-container_and_out-of-process_plugins
+pref('dom.ipc.plugins.enabled', true);
