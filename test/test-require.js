@@ -102,6 +102,18 @@ describe("require function", function() {
         require.paths.pop();
         expect(requireIntoInjectedScript.myinclude).toEqual('ok');
     });
+
+    it("should be able to load the chrome module", function() {
+        const { Cc, Ci, Cu, Cr } = require('chrome');
+        expect(Cc).not.toBe(null);
+        expect(Ci).not.toBe(null);
+        expect(Cu).not.toBe(null);
+        expect(Cr).not.toBe(null);
+        expect(Cc).toBeDefined();
+        expect(Ci).toBeDefined();
+        expect(Cu).toBeDefined();
+        expect(Cr).toBeDefined();
+    });
 });
 
 describe("the loaded module requiredexample", function() {
