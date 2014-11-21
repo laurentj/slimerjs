@@ -78,7 +78,7 @@ describe("Test networkRequest.abort() for subsequent requests", function() {
 
     var webpage;
     var url = "http://www.google.com/";
-    var loadStart = false, loadFinish = false, aborted = false;
+    var loadStart = 0, loadFinish = 0, aborted = false;
 
     beforeEach(function() {
         if (webpage) {
@@ -93,17 +93,19 @@ describe("Test networkRequest.abort() for subsequent requests", function() {
             }
         }
         webpage.onLoadStarted = function (url) {
-            loadStart = true;
+            loadStart++;
         }
         webpage.onLoadFinished = function (status, url, isFrame) {
-            loadFinish = true;
+            loadFinish++;
         }        
     });
     
     it("should onLoadFinished called when subsequent request is aborted",function() {
         runs(function() {
             webpage.open(url, function(success){
-                expect(loadStart && loadFinish && aborted).toBe(true);
+                expect(loadStart).toEqual(1);
+                expect(loadFinish).toEqual(1);
+                expect(aborted).toBe(true);
             });
         });
     });

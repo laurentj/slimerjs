@@ -816,12 +816,12 @@ describe("webpage with listeners", function() {
             expect(r.end).toNotBe(null);
             expect(r.err).toNotBe(null);
             expect(r.req.id == r.end.id).toBeTruthy();
-            expect(r.end.url).toEqual("");
+            expect(r.end.url).toEqual("http://localhost:8083/simplehello.html");
             expect(r.req.method).toEqual("GET");
             expect(r.end.status).toBeNull();
             expect(r.end.statusText).toBeNull();
             expect(r.end.contentType).toBeNull();
-            expect(r.err.errorCode).toEqual(95);
+            expect(r.err.errorCode).toEqual(99);
         });
         done();
     });

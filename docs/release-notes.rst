@@ -12,6 +12,13 @@ Not released yet. You can download `the preview version <http://download.slimerj
 
 Contributors: Asen Bozhilov
 
+Fixed PhantomJS conformance issues
+----------------------------------
+
+   * req.abort() did not trigger onResourceError at the right time
+   * when a resource request is aborted, onLoadFinished was called for each other
+     resource requests.
+
 Fixed bugs
 ----------
 
