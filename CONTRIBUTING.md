@@ -52,6 +52,7 @@ didn't introduce regressions. And you should add tests... that test your changes
 
 To run tests, just launch
 
-    src/slimerjs  test/main-tests.js
+    src/slimerjs  test/launch-main-tests.js
+    src/slimerjs  test/launch-rendering-tests.js
 
 We use the test framework [Jasmine](http://pivotal.github.io/jasmine/).

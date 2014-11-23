@@ -23,7 +23,7 @@ Here is a simple example:
         //...
     });
 
-See `tests for SlimerJS <https://github.com/laurentj/slimerjs/blob/master/test/main-tests.js#L61>`_
+See `tests for SlimerJS <https://github.com/laurentj/slimerjs/blob/master/test/webserver-for-tests.js#L61>`_
 to have a complex example.
 
 Callbacks receive two object: a :ref:`Request <request>` object and a :ref:`Response <response>` object. You have
