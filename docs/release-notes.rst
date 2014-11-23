@@ -10,7 +10,13 @@ version 0.9.5
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
-Contributors: Asen Bozhilov
+Contributors: Asen Bozhilov, Marco Castelluccio
+
+Improvements
+------------
+
+    * access to the chrome module
+
 
 Fixed PhantomJS conformance issues
 ----------------------------------
