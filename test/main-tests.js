@@ -29,7 +29,6 @@ phantom.injectJs("./jasmine/jasmine-console.js");
 phantom.injectJs("./jasmine/jasmine.async.min.js");
 
 var slimerEnv = this;
-var webServerFactory = require("webserver");
 var fs = require("fs");
 var system = require("system");
 var onlywebserver = false;
@@ -42,7 +41,6 @@ if (system.args.length == 2) {
         phantom.injectJs("./test-"+system.args[1]+".js");
 }
 else {
-    phantom.injectJs("./test-webpage-render-segfault.js");
     phantom.injectJs("./test-environment.js");
     phantom.injectJs("./test-require.js");
     phantom.injectJs("./test-system.js");
@@ -53,7 +51,6 @@ else {
     phantom.injectJs("./test-webpage-keyevent2.js");
     phantom.injectJs("./test-webpage-mouseevent.js");
     phantom.injectJs("./test-webpage-callbacks.js");
-    phantom.injectJs("./test-webpage-render.js");
     phantom.injectJs("./test-webpage-prompt.js");
     phantom.injectJs("./test-webpage-open.js");
     phantom.injectJs("./test-webpage-frames.js");
@@ -68,207 +65,8 @@ else {
     phantom.injectJs("./test-webpage-request-abort.js");
 }
 
-var webserverTest = webServerFactory.create();
-webserverTest.listen(8083, function(request, response) {
+phantom.injectJs("./webserver-for-tests.js");
 
-    if (request.url == '/redirectToSimpleHello') {
-        response.statusCode = 301;
-        response.headers['Location'] = 'http://localhost:8083/simplehello.html';
-        response.headers['foo'] = 'bar';
-        response.write('');
-        response.close();
-        return;
-    }
-
-    if (request.url == '/redirectToRoot') {
-        response.statusCode = 301;
-        response.headers['Location'] = 'http://localhost:8083';
-        response.write('');
-        response.close();
-        return;
-    }
-
-    if (request.url == '/redirectToSimpleHello2') {
-        response.statusCode = 302;
-        response.headers['Location'] = '/simplehello.html';
-        response.headers['foo'] = 'bar';
-        response.write('');
-        response.close();
-        return;
-    }
-
-    if (request.url == '/getHeaders') {
-        response.statusCode = 200;
-        response.headers = { "Content-Type": "text/plain;charset=UTF-8"}
-        try {
-            var data = {
-                method: request.method,
-                headers: request.headers,
-                body: request.postRaw
-            };
-            response.write(JSON.stringify(data));
-        }
-        catch(e) {
-            response.write("Error:"+e)
-        }
-        response.close();
-        return;
-    }
-
-    if (request.url == '/getCookies') {
-        response.statusCode = 200;
-        response.headers = {
-            "Content-Type": "text/plain;charset=UTF-8",
-            "Set-Cookie": "UserID=JohnDoe; Max-Age=3600;"
-        }
-        try {
-            response.write(JSON.stringify(request.headers));
-        }
-        catch(e) {
-            response.write("Error:"+e)
-        }
-        response.close();
-        return;
-    }
-
-    if (request.url == '/needauth') {
-        var headers = { "Content-Type": "text/plain;charset=UTF-8"}
-        var message = '';
-        if (! ('Authorization' in request.headers)
-            || request.headers['Authorization'] != 'Basic bGF1cmVudDoxMjM0') {
-            headers['WWW-Authenticate'] = 'Basic realm="Slimer auth test"';
-            message = 'auth is needed';
-            response.statusCode = 401;
-        }
-        else {
-            message = "authentication is ok";
-            response.statusCode = 200;
-        }
-
-        response.headers = headers;
-        response.write(message);
-        response.close();
-        return;
-    }
-
-    if (request.url == '/asynchronousResponse') {
-        window.setTimeout(function () {
-            response.write('done'); // response is generated asynchronously
-            response.close();
-        }, 200);
-        return;
-    }
-
-    if (request.url == '/posturlencodeddata') {
-        response.statusCode = 200;
-        response.headers = { "Content-Type": "text/plain;charset=UTF-8"}
-        try {
-            var data = {
-                method: request.method,
-                headers: request.headers,
-                body: request.postRaw,
-                bodyData : request.post,
-            };
-            response.write(JSON.stringify(data));
-        }
-        catch(e) {
-            response.write("Error:"+e)
-        }
-        response.close();
-        return;
-    }
-
-    if (request.url == '/misc_chars') {
-        response.statusCode = 200;
-        response.headers = {
-            "Content-Type": "text/plain;charset=UTF-8",
-        }
-        try {
-            //response.setEncoding('UTF-8');
-            response.write("Hello World! 你好 ! çàéè");
-        }
-        catch(e) {
-            response.write("Error:"+e)
-        }
-        response.close();
-        return;
-    }
-
-    if (/^\/statuscode\//.test(request.url)) {
-        response.statusCode = parseInt(/\/(\d+)$/.exec(request.url)[1], 10);
-        if (response.statusCode != 204 && response.statusCode != 304) {
-            response.headers = {
-                "Content-Type": "text/plain;charset=UTF-8",
-            }
-            response.write("A response");
-        }
-        else
-            response.write("");
-
-        response.close();
-        return;
-    }
-
-    var filepath = phantom.libraryPath+'/www'+request.url;
-    if (fs.exists(filepath)){
-        if (fs.isFile(filepath)) {
-            response.statusCode = 200;
-            var str = ''
-            var h = {};
-            var enc = '';
-            var binfile = false;
-            if (filepath.match(/\.png$/)) {
-                //response.setEncoding("binary");
-                //h['Content-Type'] = 'image/png';
-                binfile = true;
-            }
-            else if (filepath.match(/\.css$/)) {
-                h['Content-Type'] = 'text/css';
-            }
-            else if (filepath.match(/\.js$/)) {
-                h['Content-Type'] = 'text/javascript';
-            }
-            else if (filepath.match(/\.txt$/)) {
-               h['Content-Type'] = 'text/plain;charset=UTF-8';
-            }
-            else if (filepath.match(/\.json$/)) {
-               h['Content-Type'] = 'application/json';
-            }
-            else {
-                h['Content-Type'] = 'text/html;charset=UTF-8';
-            }
-
-            if (binfile)
-                str = fs.read(filepath, "b")
-            else
-                str = fs.read(filepath)
-
-            h['Content-Length'] = str.length;
-            response.headers = h;
-            response.write(str);
-            response.close();
-        }
-        else {
-            response.statusCode = 200;
-            response.headers['Content-type'] = 'text/html';
-            response.write('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>directory</title></head><body>directory</body></html>');
-            response.close();
-        }
-    }
-    else {
-        response.statusCode = 404;
-        response.headers['Content-type'] = 'text/html';
-        response.write('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>error</title></head><body>File Not Found</body></html>');
-        response.close();
-    }
-});
-
-var webserverTestWebPage = webServerFactory.create();
-webserverTestWebPage.listen(8082, function(request, response) {
-    response.statusCode = 200;
-    response.write('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>hello world</title></head><body>Hello!</body></html>');
-    response.close();
-});
 
 if (onlywebserver) {
     console.log("Web servers are started. listen on http://localhost:8083 and http://localhost:8082")
