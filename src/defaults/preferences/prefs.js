@@ -9,9 +9,11 @@ pref("dom.report_all_js_exceptions", true);
 
 pref("browser.fixup.alternate.enabled", false);
 
-// disable warnings about long script run time
-pref("dom.max_script_run_time" ,0);
-pref("dom.max_chrome_script_run_time" ,0);
+// enable long running script callback on pages
+pref("dom.max_script_run_time", 10);
+
+// disable warnings about long chrome script run time
+pref("dom.max_chrome_script_run_time", 0);
 
 // for xulrunner, to display error pages instead of alert box
 pref("browser.xul.error_pages.enabled", true);
@@ -32,4 +34,4 @@ pref("dom.mozTCPSocket.enabled", true);
 
 //Enable plugin crash protection
 //http://kb.mozillazine.org/Plugin-container_and_out-of-process_plugins
-pref('dom.ipc.plugins.enabled', true);
+pref("dom.ipc.plugins.enabled", true);

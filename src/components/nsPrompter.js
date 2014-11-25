@@ -320,6 +320,10 @@ let PromptUtils = {
         // values, lest the prompt forget to set them.
         for (let propName in obj)
             obj[propName] = propBag.getProperty(propName);
+    },
+    
+    isSlowScriptDialog : function (title) {
+        return this.domBundle.GetStringFromName("KillScriptTitle") === title;
     }
 };
 
@@ -332,6 +336,15 @@ XPCOMUtils.defineLazyGetter(PromptUtils, "strBundle", function () {
     return bundle;
 });
 
+XPCOMUtils.defineLazyGetter(PromptUtils, "domBundle", function () {
+    let bunService = Cc["@mozilla.org/intl/stringbundle;1"].
+                     getService(Ci.nsIStringBundleService);
+    let bundle = bunService.createBundle("chrome://global/locale/dom/dom.properties");
+    if (!bundle)
+        throw "String dom bundle for Prompter not present!";
+    return bundle;
+});
+
 XPCOMUtils.defineLazyGetter(PromptUtils, "ellipsis", function () {
     let ellipsis = "\u2026";
     try {
@@ -339,7 +352,6 @@ XPCOMUtils.defineLazyGetter(PromptUtils, "ellipsis", function () {
     } catch (e) { }
     return ellipsis;
 });
-
 
 
 function openModalWindow(domWin, uri, args) {
@@ -622,6 +634,14 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         }
         let webpage = this._findWebPage();
         if (webpage) {
+            if (PromptUtils.isSlowScriptDialog(title)) {
+                if (webpage.onLongRunningScript) {
+                    webpage.stopJavaScript.__interrupt__ = false;
+                    webpage.onLongRunningScript(text.split('\n')[2]);
+                    return Number(webpage.stopJavaScript.__interrupt__);
+                }
+                return 0;
+            }
             if (webpage.onConfirm) {
                 let chk = { label: checkLabel, checked: checkValue.value };
                 let ok = webpage.onConfirm(text, title, buttons, chk);

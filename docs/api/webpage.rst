@@ -44,7 +44,7 @@ Functions list:
 :ref:`deleteCookie() <webpage-deleteCookie>` :ref:`evaluateJavaScript() <webpage-evaluateJavaScript>` :ref:`evaluate() <webpage-evaluate>` 
 :ref:`evaluateAsync() <webpage-evaluateAsync>` :ref:`getPage() <webpage-getPage>` :ref:`go() <webpage-go>` 
 :ref:`goBack() <webpage-goBack>` :ref:`goForward() <webpage-goForward>` :ref:`includeJs() <webpage-includeJs>` 
-:ref:`injectJs() <webpage-injectJs>` :ref:`open() <webpage-open>` :ref:`openUrl() <webpage-openUrl>` 
+:ref:`injectJs() <webpage-injectJs>` :ref:`stopJavaScript() <webpage-stopJavaScript>` :ref:`open() <webpage-open>` :ref:`openUrl() <webpage-openUrl>` 
 :ref:`release() <webpage-release>` :ref:`reload() <webpage-reload>` :ref:`render() <webpage-render>` 
 :ref:`renderBase64() <webpage-renderBase64>` :ref:`sendEvent() <webpage-sendEvent>` 
 :ref:`setContent() <webpage-setContent>` :ref:`stop() <webpage-stop>` :ref:`switchToFocusedFrame() <webpage-switchToFocusedFrame>` 
@@ -55,7 +55,7 @@ Functions list:
 Callbacks list:
 
 :ref:`onAlert <webpage-onAlert>` :ref:`onAuthPrompt <webpage-onAuthPrompt>`  :ref:`onCallback <webpage-onCallback>` :ref:`onClosing <webpage-onClosing>` 
-:ref:`onConfirm <webpage-onConfirm>` :ref:`onConsoleMessage <webpage-onConsoleMessage>` :ref:`onError <webpage-onError>` 
+:ref:`onConfirm <webpage-onConfirm>` :ref:`onConsoleMessage <webpage-onConsoleMessage>` :ref:`onLongRunningScript <webpage-onLongRunningScript>` :ref:`onError <webpage-onError>` 
 :ref:`onFilePicker <webpage-onFilePicker>` :ref:`onInitialized <webpage-onInitialized>` :ref:`onLoadFinished <webpage-onLoadFinished>` 
 :ref:`onLoadStarted <webpage-onLoadStarted>` :ref:`onNavigationRequested <webpage-onNavigationRequested>` :ref:`onPageCreated <webpage-onPageCreated>` 
 :ref:`onPrompt <webpage-onPrompt>` :ref:`onResourceError <webpage-onResourceError>`
@@ -716,6 +716,13 @@ Note: there is a limitation in SlimerJS. If the loaded script
 wants to modify a variable of the current web page/frame, it should
 call ``window.myvariable = '..'`` instead of ``myvariable = '..'``.
 
+.. _webpage-stopJavaScript:
+
+stopJavaScript()
+-----------------------------------------
+Stop long running JavaScript within `onLongRunningScript` callback.
+Called outside of the `onLongRunningScript` callback it does nothing.
+
 .. _webpage-open:
 
 open(url...)
@@ -1278,6 +1285,19 @@ The callback accepts three arguments:
 If multiple arguments are given to ``console.log()``, the ``message`` argument contained
 all arguments concatenated as a string.
 
+.. _webpage-onLongRunningScript:
+
+onLongRunningScript
+-----------------------------------------
+This function is called when there is slow or endless script on the page.
+It receives message argument with information about the slow script. (SlimerJS only)
+The script execution can be stopped using `stopJavaScript()` method.    
+
+.. code-block:: javascript
+
+    page.onLongRunningScript = function(message) {
+        page.stopJavaScript();
+    };
 
 .. _webpage-onError:
 

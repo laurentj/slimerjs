@@ -66,6 +66,7 @@ else {
     phantom.injectJs("./test-webpage-cookies.js");
     phantom.injectJs("./test-webpage-httpauth.js");
     phantom.injectJs("./test-webpage-request-abort.js");
+    phantom.injectJs("./test-webpage-longrunningscript.js");
 }
 
 var webserverTest = webServerFactory.create();
