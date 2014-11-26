@@ -148,7 +148,7 @@ const onRequestStart = function(subject, data) {
 
     if (typeof(options.onRequest) === "function") {
         options.onRequest(req,
-                          requestController(subject, index, options));
+                          requestController(subject, index, options, req));
     }
     if (subject.status) {
         let [code, msg] = getErrorCode(subject.status);
@@ -184,7 +184,7 @@ const onFileRequestStart = function(subject, browser) {
             headers: []
         }
         options.onRequest(request,
-                          requestController(subject, index, options));
+                          requestController(subject, index, options, request));
     }
 };
 
@@ -500,8 +500,9 @@ TracingListener.prototype = {
  * @param nsIRequest/nsIChannel request
  * @param integer index  the number of the request
  * @param object options
+ * @param object requestPhantom  the request object exposed to the script
  */
-const requestController = function(request, index, options) {
+const requestController = function(request, index, options, requestPhantom) {
     return {
         abort: function() {
             request.cancel(Cr.NS_BINDING_ABORTED);
@@ -514,26 +515,11 @@ const requestController = function(request, index, options) {
                         errorString: "Resource loading aborted"
                     });
             }
-            if (typeof(options.onResponse) == "function") {
-                options.onResponse(
-                    {
-                        id: index,
-                        url: request.URI.spec,
-                        time: new Date(),
-                        headers: [],
-                        bodySize: 0,
-                        contentType: null,
-                        contentCharset: null,
-                        redirectURL: null,
-                        stage: "end",
-                        status: null,
-                        statusText: null,
-                        referrer: "",
-                        body: ""
-                    });
-            }
         },
         changeUrl : function(url) {
+            if (DEBUG_NETWORK_PROGRESS) {
+                slDebugLog("network: resource request #"+requestPhantom.id+": url changed to  "+url+" flags="+loadFlags(request));
+            }
             let uri = ioService.newURI(url, null, null);
             request.redirectTo(uri);
         },
@@ -841,9 +827,12 @@ ProgressListener.prototype = {
 
         if (!(request instanceof Ci.nsIChannel || "URI" in request)) {
             // ignore requests that are not a channel/http channel
+            //if (DEBUG_NETWORK_PROGRESS)
+            //    slDebugLog("network: request not a http channel");
             return
         }
         let uri = request.URI.spec;
+
         let loadContext = this.getLoadContext(request);
 
         if (!this.isFromMainWindow(loadContext)) {

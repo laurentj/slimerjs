@@ -49,7 +49,7 @@ describe("phantom object", function() {
     });
 
     it("should contain the script name", function(){
-        expect(phantom.scriptName.substr(-13,13)).toEqual("main-tests.js");
+        expect(phantom.scriptName.substr(-13,13)).toEqual("launch-main-tests.js");
     });
 
     it("should have a defaultPageSettings property", function() {

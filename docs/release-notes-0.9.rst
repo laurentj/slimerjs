@@ -10,6 +10,31 @@ version 0.9.5
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
+Contributors: Asen Bozhilov, Marco Castelluccio
+
+Improvements
+------------
+
+    * access to the chrome module
+
+
+Fixed PhantomJS conformance issues
+----------------------------------
+
+   * req.abort() did not trigger onResourceError at the right time
+   * when a resource request is aborted, onLoadFinished was called for each other
+     resource requests.
+
+Fixed bugs
+----------
+
+   * when a resource request is aborted, it doesn't abort anymore other requests (#130)
+   * Callback given to ``webpage.open()`` is now really called after the page loading:
+     it allows to call ``render()`` without a delay (``setTimeout``...).
+     It avoids "pending is null" exception in some case...
+   * taking screenshot may crashed because of flash plugin crash. Plugins are now loaded
+     their own process.
+
 version 0.9.4
 =============
 

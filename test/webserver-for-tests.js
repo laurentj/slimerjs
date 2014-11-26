@@ -1,9 +1,8 @@
-#!/usr/bin/env slimerjs
 /*
 * This file is part of the SlimerJS project from Innophi.
 * https://github.com/laurentj/slimerjs
 *
-* Copyright (c) 2013 Laurent Jouanneau
+* Copyright (c) 2014 Laurent Jouanneau
 *
 * Permission is hereby granted, free of charge, to any person obtaining a
 * copy of this software and associated documentation files (the "Software"),
@@ -24,51 +23,8 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-phantom.injectJs("./jasmine/jasmine.js");
-phantom.injectJs("./jasmine/jasmine-console.js");
-phantom.injectJs("./jasmine/jasmine.async.min.js");
 
-var slimerEnv = this;
 var webServerFactory = require("webserver");
-var fs = require("fs");
-var system = require("system");
-var onlywebserver = false;
-
-if (system.args.length == 2) {
-    if (system.args[1] == '--only-web-servers' || system.args[1] == '--only-web-server') {
-        onlywebserver = true;
-    }
-    else
-        phantom.injectJs("./test-"+system.args[1]+".js");
-}
-else {
-    phantom.injectJs("./test-webpage-render-segfault.js");
-    phantom.injectJs("./test-environment.js");
-    phantom.injectJs("./test-require.js");
-    phantom.injectJs("./test-system.js");
-    phantom.injectJs("./test-webserver.js");
-    phantom.injectJs("./test-webpage.js");
-    phantom.injectJs("./test-webpage-listeners.js");
-    phantom.injectJs("./test-webpage-keyevent.js");
-    phantom.injectJs("./test-webpage-keyevent2.js");
-    phantom.injectJs("./test-webpage-mouseevent.js");
-    phantom.injectJs("./test-webpage-callbacks.js");
-    phantom.injectJs("./test-webpage-render.js");
-    phantom.injectJs("./test-webpage-prompt.js");
-    phantom.injectJs("./test-webpage-open.js");
-    phantom.injectJs("./test-webpage-frames.js");
-    phantom.injectJs("./test-webpage-callPhantom.js");
-    phantom.injectJs("./test-webpage-onerror.js");
-    phantom.injectJs("./test-webpage-navigation.js");
-    phantom.injectJs("./test-webpage-headers.js");
-    phantom.injectJs("./test-webpage-filepicker.js");
-    phantom.injectJs("./test-phantom-cookies.js");
-    phantom.injectJs("./test-webpage-cookies.js");
-    phantom.injectJs("./test-webpage-httpauth.js");
-    phantom.injectJs("./test-webpage-request-abort.js");
-    phantom.injectJs("./test-webpage-longrunningscript.js");
-}
-
 var webserverTest = webServerFactory.create();
 webserverTest.listen(8083, function(request, response) {
 
@@ -270,23 +226,3 @@ webserverTestWebPage.listen(8082, function(request, response) {
     response.write('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>hello world</title></head><body>Hello!</body></html>');
     response.close();
 });
-
-if (onlywebserver) {
-    console.log("Web servers are started. listen on http://localhost:8083 and http://localhost:8082")
-}
-else {
-    // Launch tests
-    var jEnv = jasmine.getEnv();
-    var reporter = new jasmine.ConsoleReporter(
-                                    function(msg){
-                                        console.log(msg.replace('\n', ''));
-                                    },
-                                    function(rep){
-                                        phantom.exit();
-                                    },
-                                    true);
-    jEnv.addReporter(reporter);
-    jEnv.updateInterval = 1000;
-    jEnv.defaultTimeoutInterval = 15000; // for DNS check: it can be long on some systems
-    jEnv.execute();
-}
