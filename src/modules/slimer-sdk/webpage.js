@@ -1136,6 +1136,15 @@ function _create(parentWebpageInfo) {
             return true;
         },
 
+        
+        /**
+         * Stop JavaScript within a onLongRunningScript callback.
+         * Called outside of onLongRunningScript it does nothing. 
+         */
+        stopJavaScript : function stopJavaScript () {
+            stopJavaScript.__interrupt__ = true;
+        },
+        
         onError : phantom.defaultErrorHandler,
 
         // --------------------------------- content manipulation
@@ -1564,6 +1573,8 @@ function _create(parentWebpageInfo) {
         onFilePicker : null,
 
         onPrompt : null,
+        
+        onLongRunningScript : null,
 
         // ------------------------------ browsing callbacks
 
