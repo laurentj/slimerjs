@@ -19,14 +19,14 @@ Implemented. Documentation needed.
 pid
 -----------------------------------------
 
-Implemented. Documentation needed.
+Always returns ``0`` (no Mozilla API to retrieve the PID)
 
 .. _system-platform:
 
 platform
 -----------------------------------------
 
-Implemented. Documentation needed.
+Returns ``"slimerjs"``.
 
 .. _system-env:
 
