@@ -269,7 +269,7 @@ slCommandLine.prototype = {
         for(let i=0; i < nbArgs; i++) {
             let arg = cmdLine.getArgument(i);
             if (arg.charAt(0) == '-' && realArgs) {
-                let r = new RegExp("-"+arg+"(\=[^\s]+)?")
+                let r = new RegExp("-"+arg+"(\=[^ \t\r\n]+)?")
                 let result = r.exec(realArgs);
                 if (result) {
                     if (result[1]) {
