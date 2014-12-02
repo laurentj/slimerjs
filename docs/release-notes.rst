@@ -10,7 +10,7 @@ version 0.9.5
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
-Contributors: Asen Bozhilov, Marco Castelluccio
+Contributors: Asen Bozhilov, Marco Castelluccio, Darren Cook
 
 Improvements
 ------------
@@ -34,6 +34,7 @@ Fixed bugs
      It avoids "pending is null" exception in some case...
    * taking screenshot may crashed because of flash plugin crash. Plugins are now loaded
      their own process.
+   * fix error when argument values on the command line began with a "s"
 
 version 0.9.4
 =============
