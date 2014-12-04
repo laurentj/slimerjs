@@ -190,8 +190,10 @@ except OSError as err:
     sys.exit(1)
 
 exitCode = 0
-with open(PROFILE_DIR + '/exitstatus', 'r') as statusFile:
-    exitCode = int(statusFile.read())
+exitFile = PROFILE_DIR + '/exitstatus'
+if os.path.isfile(exitFile):
+    with open(exitFile, 'r') as f:
+        exitCode = int(f.read())
     
 if CREATE_TEMP:
     shutil.rmtree(PROFILE_DIR)
