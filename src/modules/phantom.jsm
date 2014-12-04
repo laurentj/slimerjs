@@ -100,18 +100,16 @@ var phantom = {
     /**
      * quit the application.
      *
-     * The given exit code is not supported because there is no way
-     * in Mozilla to return this code after the shutdown of the application.
-     *
      * @param integer code the exit code for the shell console. 0 means ok (default value)
      * @phantomcompatibilityissue
      * @internal to resolve the issue, we should provide our own patched xulrunner
      */
     exit : function(code) {
-        let c = code || 0;
+        let c = +code || 0;
         if (slLauncher.slimerExiting) {
             return
         }
+        slUtils.writeExitStatus(c);
         slLauncher.slimerExiting = true;
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },

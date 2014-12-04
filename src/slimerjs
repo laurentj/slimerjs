@@ -177,7 +177,7 @@ else
     "$SLIMERJSLAUNCHER" -app "$SLIMERDIR/application.ini" $PROFILE -no-remote "$@"
 fi
 
-EXITCODE=$?
+EXITCODE=`cat $PROFILE_DIR/exitstatus`
 
 if [ "$PROFILE_DIR" != "" ]; then
     rm -rf $PROFILE_DIR

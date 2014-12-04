@@ -118,8 +118,7 @@ exit(code)
 
 It stops the script and SlimerJS exit.
 
-To be compatible with PhantomJS, it accepts an exit code but it is ignored
-because of a limitation in Firefox/XulRunner. This code is optional.
+It accepts an optional exit code. Default is 0. 
 
 .. code-block:: javascript
 
