@@ -911,7 +911,8 @@ It supports only JPG, PNG and PDF format (and gif probably in future version).
 The second parameter is an object containing options. Here are its possible properties:
 
 - ``format``: indicate the file format (then the file extension is ignored). possible
-  values: ``jpg``, ``png``, ``jpeg``, ``pdf``.
+  values: ``jpg``, ``png``, ``jpeg``, ``pdf``, ``bmp`` and ``ico``. Gecko doesn't have a
+  GIF encoder so it is not available.
 - ``quality``: the compression quality. A number between 0 and 100 (in SlimerJS 0.9.2 and
   lower, it was between 0 and 1)
 - ``ratio``: (SlimerJS only), a number between 0 and 1, indicating the "zoom level" of the capture.
@@ -947,6 +948,7 @@ renderBase64(format)
 
 This method takes a screenshot of the web page and returns it as a string containing the
 image in base64. The format indicates the format of the image: ``jpg``, ``png``, ``jpeg``.
+Gecko doesn't have a  GIF encoder so it is not available..
 
 You can limit the area to capture by setting the ``clipRect`` property.
 

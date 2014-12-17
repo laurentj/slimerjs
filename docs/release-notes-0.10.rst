@@ -13,7 +13,7 @@ Still in development
 New API
 -------
 
-- ``webpage.render()`` can now generates PDF
+- ``webpage.render()`` can now generates PDF, BMP and ICO.
 * ``webpage.onLongRunningScript`` and ``webpage.stopJavascript()`` to allow to be informed of
    webpage having long running scripts (compatible with Phantomjs 2)
 
@@ -32,7 +32,7 @@ Fixed PhantomJS conformance issues
 Other informations about this release
 -------------------------------------
 
-- XulRunner 30 is bundled into packages
+- XulRunner 33 is bundled into packages
 
 
 Missing APIS in SlimerJS 0.10

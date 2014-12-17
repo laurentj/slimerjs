@@ -359,6 +359,11 @@ var webpageUtils = {
             finalOptions.contentType = "image/png";
         } else if (format == "jpeg" || format == 'jpg') {
             finalOptions.contentType = "image/jpeg";
+        } else if (format == "bmp") {
+            finalOptions.contentType = "image/bmp";
+        } else if (format == "ico") {
+            finalOptions.contentType = "image/vnd.microsoft.icon";
+            finalOptions.quality = '-moz-parse-options:format=bmp;bpp=32';
         } else if (format != 'pdf') {
             throw new Error("Render format \"" + format + "\" is not supported");
         }

@@ -181,9 +181,9 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>openUrl(url, httpConf, settings)    </td><td>Implemented. SlimerJS only: it returns a promise. Only GET and POST method are supported.</td></tr>
     <tr><td>release()                           </td><td>Implemented</td></tr>
     <tr><td>reload()                            </td><td>Implemented</td></tr>
-    <tr><td>render(filename, options)             </td><td>Implemented. Only PNG, JPG and PDF are supported for now. </td></tr>
-    <tr><td>renderBytes(format, options)          </td><td>Implemented. SlimerJS only. Only PNG and JPG are supported for now.</td></tr>
-    <tr><td>renderBase64(format, options)         </td><td>Implemented. Only PNG and JPG are supported for now.</td></tr>
+    <tr><td>render(filename, options)           </td><td>Implemented. Only PNG, JPG, BMP, ICO and PDF are supported for now. </td></tr>
+    <tr><td>renderBytes(format, options)        </td><td>Implemented. SlimerJS only. Only PNG, BMP, ICO and JPG are supported for now.</td></tr>
+    <tr><td>renderBase64(format, options)       </td><td>Implemented. Only PNG and JPG are supported for now.</td></tr>
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td>Implemented</td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
     <tr><td>setContent(content, url)            </td><td>Implemented</td></tr>
