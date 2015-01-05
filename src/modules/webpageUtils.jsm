@@ -117,7 +117,11 @@ var webpageUtils = {
         if (!target || target.localName.toLowerCase() != 'a') {
             return;
         }
-        if (!target.getAttribute('href').startsWith('javascript:')) {
+        var attribute = target.getAttribute('href');
+        if (!attribute) {
+            return;
+        }
+        if (!attribute.startsWith('javascript:')) {
             return;
         }
         let ready = false;
