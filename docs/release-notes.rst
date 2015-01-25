@@ -17,7 +17,8 @@ Improvements
 
     * access to the chrome module
     * the window has now an icon, appearing in the task bar of the desktop
-
+    * Compatibility with XulRunner/Firefox 35 and 36b1
+    * packages: default Xulrunner version is now 35
 
 Fixed PhantomJS conformance issues
 ----------------------------------
