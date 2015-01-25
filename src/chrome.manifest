@@ -30,3 +30,6 @@ contract @mozilla.org/filepicker;1 {4d447d76-5205-4685-9237-9a35c7349adf}
 
 manifest components/httpd.manifest
 manifest components/SiteSpecificUserAgent.manifest
+
+content branding chrome/branding/content/
+locale branding en-US chrome/branding/locale/

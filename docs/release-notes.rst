@@ -40,6 +40,7 @@ Fixed bugs
      into their own process.
    * fix error when argument values on the command line began with a "s"
    * fix: sendEvent hang with mouse click on a <a> element without href attribute (#287)
+   * fix error gecko pages loaded with the error "XML Parsing Error: undefined entity"
    * fix typo and idioms on the website
 
 version 0.9.4
