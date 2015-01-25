@@ -164,6 +164,7 @@ REM    echo                                      (default is no)
 REM    echo   --script-encoding=^<enc^>            Sets the encoding used for the starting
 REM    echo                                      script (default is utf8)
 REM    echo   --web-security=^<bool^>            Enables web security (default is yes)
+    echo   --ssl-protocol=^<version^>         Indicates the ssl protocol to use. SSLv3, TLSv1, TLSv1.0, TLSv1.1, TLSv1.2, TLS, any
     echo   --version or v                     Prints out SlimerJS version
 REM    echo   --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded
 REM    echo                                      GhostDriver) '127.0.0.1:8910'

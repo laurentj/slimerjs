@@ -97,6 +97,7 @@ def showHelp():
     print("  --proxy-auth=<username:password>   Provides authentication information for the")
     print("                                     proxy")
     print("  --proxy-type=[http|socks5|none|auto|system|config-url]    Specifies the proxy type (default is http)")
+    print("  --ssl-protocol=[SSLv3|TLSv1|TLSv1.0|TLSv1.1|TLSv1.2|TLS|any]   Indicates the ssl protocol to use.")
     #print("  --script-encoding=<enc>            Sets the encoding used for the starting")
     #print("                                     script (default is utf8)")
     #print("  --web-security=<bool>              Enables web security (default is yes)")

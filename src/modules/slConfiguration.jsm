@@ -47,7 +47,8 @@ var optionsSpec = {
     javascriptCanCloseWindows : ['', '', true, false],
     remoteDebuggerPort : ['remote-debugger-port', 'int', -1, false],
     remoteDebuggerAutorun : ['remote-debugger-autorun', 'bool', false, false],
-    sslCertificatesPath : ['ssl-certificates-path', 'path', '', false]
+    sslCertificatesPath : ['ssl-certificates-path', 'path', '', false],
+    sslProtocol : ['ssl-protocol', 'sslproto', '', true]
 };
 
 var slConfiguration = {
@@ -161,6 +162,14 @@ var slConfiguration = {
         }
         else {
             Services.prefs.setIntPref("dom.storage.default_quota", Math.ceil(this.offlineStorageDefaultQuota /1024));
+        }
+
+        if (this.sslProtocol > -1) {
+            Services.prefs.setIntPref('security.tls.version.min', this.sslProtocol);
+            Services.prefs.setIntPref('security.tls.version.max', this.sslProtocol);
+        }
+        else if (this.sslProtocol == -2) {
+            Services.prefs.setIntPref('security.tls.version.min', 0);
         }
 
         Services.prefs.setBoolPref('browser.cache.disk.enable', this.diskCacheEnabled);
@@ -291,6 +300,28 @@ var slConfiguration = {
         return val;
     },
 
+    parse_sslproto: function(val, cmdlineOpt) {
+        
+        if (val == "SSLv3") {
+            return 0;
+        }
+        else if (val == "TLSv1") {
+            return 1;
+        }
+        else if (val == "TLSv1.1") {
+            return 2;
+        }
+        else if (val == "TLSv1.2") {
+            return 3;
+        }
+        else if (val == "TLS") {
+            return -1;
+        }
+        else if (val == "any") {
+            return -2;
+        }
+        throw new Error("Invalid value for '"+cmdlineOpt+"' option. It should be: SSLv3, TLSv1, TLSv1.1, TLSv1.2, TLS or 'any'");
+    },
     handleConfigFile: function(fileName) {
         let file = slUtils.getMozFile(fileName, this.workingDirectory);
         let fileContent = slUtils.readSyncStringFromFile(file);
@@ -397,6 +428,7 @@ var slConfiguration = {
     javascriptCanOpenWindows : true,
     javascriptCanCloseWindows : true,
     sslCertificatesPath : null,
-    enableCoffeeScript: true
+    enableCoffeeScript: true,
+    sslProtocol: -1
 }
 

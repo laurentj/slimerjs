@@ -20,6 +20,7 @@ Improvements
     * the window has now an icon, appearing in the task bar of the desktop
     * Compatibility with XulRunner/Firefox 35 and 36b1
     * packages: default Xulrunner version is now 35
+    * support of the ``--ssl-protocol`` command line parameter (#264, #26)
 
 Fixed PhantomJS conformance issues
 ----------------------------------
@@ -195,7 +196,6 @@ Fixed PhantomJS conformance issues
 Other informations about this release
 -------------------------------------
 
-- SlimerJS will not support the ``--ssl-protocol`` option because Gecko only supports SSL3
 - New experimental startup script, ``slimerjs.py`` in python, which is a plateform independant script
 - Reworked the code of the module resolver to be more efficient
 - Some internal changes have been done to embed GhostDriver in the future. Some issues

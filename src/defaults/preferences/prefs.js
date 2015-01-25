@@ -33,3 +33,5 @@ pref("dom.mozTCPSocket.enabled", true);
 //Enable plugin crash protection
 //http://kb.mozillazine.org/Plugin-container_and_out-of-process_plugins
 pref('dom.ipc.plugins.enabled', true);
+
+pref('security.tls.version.min', 1); // no SSLv3 support

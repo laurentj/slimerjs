@@ -43,7 +43,7 @@ PhantomJS options
 --remote-debugger-port=number
 --remote-debugger-autorun=[yes|no|true|false]
 --script-encoding=encoding
---ssl-protocol=[SSLv3|SSLv2|TLSv1|any]            Unsupported          Firefox supports only the SSL 3 protocol
+--ssl-protocol=[ssl protocol name]                Supported (0.9.5)    Indicates the SSL protocol to use. See notes about it below. Default is TLS.
 --ssl-certificates-path=/path/to/dir              N/A. see profiles
 --version or -v                                   Supported            Displays the version of SlimerJS
 --webdriver or --wd or -w
@@ -102,6 +102,19 @@ SlimerJS supports also some specific values for ``--proxy-type``:
 - ``config-url``: SlimerJS uses the proxy configuration set into a file. The HTTP or file:// URL
    of this file should be indicated with the ``--proxy=`` option.
 
+About SSL protocols
+--------------------
+
+Gecko/Firefox/Xulrunner do not support SSLv2 protocol. It supports only SSLv3 to latest
+TLS version (v1.2 for Gecko 35). However, SSLv3 is deactivated because of a vulnerability
+in the SSLv3 protocol ( `POODLE <http://en.wikipedia.org/wiki/POODLE>`_ ).
+
+When you use the ``--ssl-protocol`` flag, you indicates to use the indicated protocol.
+No other will be used. Except the value ``any``, to use SSLv3 to TLSv1.2, or ``TLS``
+to use any TLS version. In these case, the browser will use the best protocol supported by
+the web server.
+
+Possible values are: ``SSLv3``, ``TLSv1``, ``TLSv1.1``, ``TLSv1.2``, ``TLS``, ``any``.
 
 Configuration file
 ==================
