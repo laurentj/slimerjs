@@ -10,7 +10,8 @@ version 0.9.5
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
-Contributors: Asen Bozhilov, Marco Castelluccio, Darren Cook
+Contributors: Asen Bozhilov, Marco Castelluccio, Darren Cook, Emmanuel ROECKER, Maciej
+Brencz, Artem Sapegin, Ian McGowan
 
 Improvements
 ------------
@@ -37,6 +38,8 @@ Fixed bugs
    * taking screenshot may crashed because of flash plugin crash. Plugins are now loaded
      into their own process.
    * fix error when argument values on the command line began with a "s"
+   * fix: sendEvent hang with mouse click on a <a> element without href attribute (#287)
+   * fix typo and idioms on the website
 
 version 0.9.4
 =============
