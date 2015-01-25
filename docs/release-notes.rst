@@ -16,6 +16,7 @@ Improvements
 ------------
 
     * access to the chrome module
+    * the window has now an icon, appearing in the task bar of the desktop
 
 
 Fixed PhantomJS conformance issues
@@ -33,7 +34,7 @@ Fixed bugs
      it allows to call ``render()`` without a delay (``setTimeout``...).
      It avoids "pending is null" exception in some case...
    * taking screenshot may crashed because of flash plugin crash. Plugins are now loaded
-     their own process.
+     into their own process.
    * fix error when argument values on the command line began with a "s"
 
 version 0.9.4
