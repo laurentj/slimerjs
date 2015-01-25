@@ -18,8 +18,8 @@ You cannot use the MingW32 environment on Windows because there are some issues 
 (no output in the console, and it lacks on some commands like mktemp).
 
 On Linux, standalone editions need these libraries: libpthread.so, libdl.so, libstdc++.so,
-libm.so, libgcc_s.so, libc.so, ld-linux-x86-64.so, libXrender1.so, libasound.so.2, libgtk-x11-2.0.so.0. On Ubuntu/Debian, you can install/verify
-it by doing:
+libm.so, libgcc_s.so, libc.so, ld-linux-x86-64.so, libXrender1.so, libasound.so.2,
+libgtk-x11-2.0.so.0. On Ubuntu/Debian, you can install/verify it by doing:
 
 .. code-block:: bash
 
@@ -87,6 +87,16 @@ variable from a command line:
 You can of course set this variable in your .bashrc, .profile or in the computer
 properties on Windows.
 
+An alternative on linux or macos, is to create a link to an installed xulrunner package.
+Go into the SlimerJS directory and type for example:
+
+.. code-block:: bash
+
+    ln -s /usr/lib/xulrunner
+
+The path could change, depending of where Xulrunner is installed.
+
+
 Using unstable version or very old versions of Firefox/XulRunner
 ----------------------------------------------------------------
 
@@ -144,3 +154,35 @@ Then launch SlimerJS like this:
 
 You won't see any windows. If you have any problems with xvfb, see its
 documentation.
+
+Using flash plugin or other kind plugins
+----------------------------------------
+
+SlimerJS is able to load Flash content if the Flash plugin is installed,
+and is able to load any other plugins.
+
+In fact, every NPAPI plugins that work with any browser can be used by SlimerJS.
+Just install them as indicated by the vendor, and it will be theorically recognized
+by SlimerJS. See `details on MDN <https://developer.mozilla.org/en-US/Add-ons/Plugins/Gecko_Plugin_API_Reference/Plug-in_Development_Overview#Installing_Plug-ins>`_ .
+
+For example, on linux, install the corresponding package. However, in some case, you should
+probably use the xulrunner or the Firefox package of the distro, instead of the xulrunner
+provided by SlimerJS. This is apparently the case for Fedora for example.
+
+Note: plugins are not Firefox/XUL/JS extensions. Plugins and "extensions" are two
+different things in the gecko world. Extensions for Firefox are pieces of code to extends
+some features of Gecko and/or to add some UI things in the interface of Firefox. Plugins
+are black boxes that can only be loaded with the html element ``<object>``, like Flash.
+
+See `detailed definition of plugins on MDN <https://developer.mozilla.org/en-US/Add-ons/Plugins>`_ .
+
+Creating extensions?
+--------------------
+
+Theorically, you can create XUL/JS extensions for SlimerJS like you do for Firefox, but
+their installation is not easy since their are no user interface to install them. However,
+it is theorically possible to create and install extensions.
+
+See `documentation on MDN <https://developer.mozilla.org/en-US/Add-ons>`_.
+
+
