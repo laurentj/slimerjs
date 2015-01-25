@@ -27,6 +27,11 @@ function create() {
                 this.registerPrefixHandler("/", callback);
             }
             let host = "localhost";
+            // FIXME: we cannot bind to 0.0.0.0 by default because we should
+            // then add identity of every network interface, in order
+            // to avoid 400 error. See httpd.js:1609 -> var scheme = identity.getScheme(host, port);
+            // and added an identity with host=0.0.0.0 does not work: many errors in httpd
+            // during a request.
             if (typeof port === "string" && port.indexOf(':') != -1){
                 [host, port] = port.split(':');
                 port = parseInt(port);
