@@ -8,7 +8,7 @@ Release Notes
 version 0.9.5
 =============
 
-Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+SlimerJS 0.9.5 has been released on January 25th, 2015.
 
 Contributors: Asen Bozhilov, Marco Castelluccio, Darren Cook, Emmanuel ROECKER, Maciej
 Brencz, Artem Sapegin, Ian McGowan
