@@ -40,6 +40,7 @@ Modules
    api/system
    api/webserver
    api/fs
+   api/sdk-modules
 
 Indices and tables
 ==================
