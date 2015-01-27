@@ -349,7 +349,7 @@ function prepareLoader(scriptInfo) {
                 throw new Error("Unknown "+ id +" module");
             }
 
-            if (id.startsWith('sdk/')) {
+            if (id.startsWith('sdk/') || id.startsWith('core-modules/')) {
                 return '@addons-sdk/'+id;
             }
 

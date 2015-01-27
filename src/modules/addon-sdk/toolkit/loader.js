@@ -183,7 +183,7 @@ const Sandbox = iced(function Sandbox(options) {
     // option that is not supported by Cu.Sandbox,
     principal: 'principal' in options ? options.principal : systemPrincipal,
     wantXrays: 'wantXrays' in options ? options.wantXrays : true,
-    sandboxPrototype: 'prototype' in options ? options.prototype : {},
+    sandboxPrototype: 'prototype' in options ? options.prototype : {}
   };
 
   let sandbox = Cu.Sandbox(options.principal, options);
@@ -280,7 +280,7 @@ const load = iced(function load(loader, module, initialSandbox, src) {
       fileName: { value: fileName, writable: true, configurable: true },
       lineNumber: { value: lineNumber, writable: true, configurable: true },
       stack: { value: serializeStack(frames), writable: true, configurable: true },
-      toString: { value: function() toString, writable: true, configurable: true },
+      toString: { value: function() toString, writable: true, configurable: true }
     });
   }
 

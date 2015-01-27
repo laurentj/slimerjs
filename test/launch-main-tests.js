@@ -44,6 +44,7 @@ else {
     phantom.injectJs("./test-environment.js");
     phantom.injectJs("./test-require.js");
     phantom.injectJs("./test-system.js");
+    phantom.injectJs("./test-core-modules.js");
     phantom.injectJs("./test-webserver.js");
     phantom.injectJs("./test-webpage.js");
     phantom.injectJs("./test-webpage-listeners.js");
