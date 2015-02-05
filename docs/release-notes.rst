@@ -5,6 +5,18 @@
 Release Notes
 =============
 
+version 0.9.6
+=============
+
+Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+
+
+Improvements
+------------
+
+    * improved information displayed in the console for some javascript error messages occuring into the web page
+
+
 version 0.9.5
 =============
 
