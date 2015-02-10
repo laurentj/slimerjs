@@ -657,18 +657,18 @@ describe("webpage.sendEvent", function() {
         expect(key.keyupK).toEqual(-1);   
         expect(key.keyupC).toEqual(-1);   
         expect(input).toEqual("");
-        expect(key.keypressAlt).toEqual(false); // value with phantomjs is -1
-        expect(key.keypressShift).toEqual(false); // value with phantomjs is -1
-        expect(key.keypressCtrl).toEqual(false); // value with phantomjs is -1
-        expect(key.keypressMeta).toEqual(false); // value with phantomjs is -1
-        expect(key.keyupAlt).toEqual(-1); // value with phantomjs is false
-        expect(key.keyupShift).toEqual(-1);// value with phantomjs is false
-        expect(key.keyupCtrl).toEqual(-1);// value with phantomjs is false
-        expect(key.keyupMeta).toEqual(-1);// value with phantomjs is false
-        expect(key.keydownAlt).toEqual(-1);// value with phantomjs is false
-        expect(key.keydownShift).toEqual(-1);// value with phantomjs is false
-        expect(key.keydownCtrl).toEqual(-1);// value with phantomjs is false
-        expect(key.keydownMeta).toEqual(-1);// value with phantomjs is false
+        expect(key.keypressAlt).toEqual(false); 
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false); 
+        expect(key.keypressMeta).toEqual(false); 
+        expect(key.keyupAlt).toEqual(-1); 
+        expect(key.keyupShift).toEqual(-1);
+        expect(key.keyupCtrl).toEqual(-1);
+        expect(key.keyupMeta).toEqual(-1);
+        expect(key.keydownAlt).toEqual(-1);
+        expect(key.keydownShift).toEqual(-1);
+        expect(key.keydownCtrl).toEqual(-1);
+        expect(key.keydownMeta).toEqual(-1);
     });
 
     it("send keypress event with the RETURN keycode",function() {
@@ -678,25 +678,25 @@ describe("webpage.sendEvent", function() {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", webpage.event.key.Return);
         readResult()
-        expect(key.keydownK).toEqual(-1); // value with phantomjs is 46
-        expect(key.keydownC).toEqual(-1); // value with phantomjs is 0
-        expect(key.keypressK).toEqual(13);// value with phantomjs is -1
-        expect(key.keypressC).toEqual(0); // value with phantomjs is -1
-        expect(key.keyupK).toEqual(-1);   // value with phantomjs is 46
-        expect(key.keyupC).toEqual(-1);   // value with phantomjs is 0
+        expect(key.keydownK).toEqual(-1); 
+        expect(key.keydownC).toEqual(-1); 
+        expect(key.keypressK).toEqual(13);
+        expect(key.keypressC).toEqual(0); 
+        expect(key.keyupK).toEqual(-1);   
+        expect(key.keyupC).toEqual(-1);   
         expect(input).toEqual("");
-        expect(key.keypressAlt).toEqual(false); // value with phantomjs is -1
-        expect(key.keypressShift).toEqual(false); // value with phantomjs is -1
-        expect(key.keypressCtrl).toEqual(false); // value with phantomjs is -1
-        expect(key.keypressMeta).toEqual(false); // value with phantomjs is -1
-        expect(key.keyupAlt).toEqual(-1); // value with phantomjs is false
-        expect(key.keyupShift).toEqual(-1);// value with phantomjs is false
-        expect(key.keyupCtrl).toEqual(-1);// value with phantomjs is false
-        expect(key.keyupMeta).toEqual(-1);// value with phantomjs is false
-        expect(key.keydownAlt).toEqual(-1);// value with phantomjs is false
-        expect(key.keydownShift).toEqual(-1);// value with phantomjs is false
-        expect(key.keydownCtrl).toEqual(-1);// value with phantomjs is false
-        expect(key.keydownMeta).toEqual(-1);// value with phantomjs is false
+        expect(key.keypressAlt).toEqual(false); 
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(-1);
+        expect(key.keyupShift).toEqual(-1);
+        expect(key.keyupCtrl).toEqual(-1);
+        expect(key.keyupMeta).toEqual(-1);
+        expect(key.keydownAlt).toEqual(-1);
+        expect(key.keydownShift).toEqual(-1);
+        expect(key.keydownCtrl).toEqual(-1);
+        expect(key.keydownMeta).toEqual(-1);
     });
     
     it("send keypress event with a keycode of a non-printable char",function() {
