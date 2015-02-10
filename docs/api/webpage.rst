@@ -988,6 +988,10 @@ than one character:
 
 The targeted DOM element is the DOM element that has the focus.
 
+Note: the DOMEvent.DOM_VK_ENTER key code has been removed in Gecko 30+. So using
+page.event.key.Enter will do nothing (or you receive 0 as key code in your event listener).
+Use page.event.key.Return instead.
+
 .. _webpage-setContent:
 
 setContent(content, url)
