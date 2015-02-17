@@ -1481,10 +1481,9 @@ function _create(parentWebpageInfo) {
             let file = fs.absolute(filename);
 
             try {
-                let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file));
+                let finalOptions = webpageUtils.getRenderOptions(this, options, fs.extension(file));
                 if (finalOptions.format == 'pdf') {
-                    let printOptions = webpageUtils.getPrintOptions(this, finalOptions);
-                    return webpageUtils.renderPageAsPDF(browser.contentWindow, file, printOptions);
+                    return webpageUtils.renderPageAsPDF(browser.contentWindow, file, finalOptions);
                 }
 
                 let canvas = webpageUtils.getScreenshotCanvas(
