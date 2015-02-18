@@ -672,7 +672,7 @@ const imageInfo = function(response, data) {
             animated: outParam.value.animated
         };
     } catch(e) {
-        console.debug("Failed to load image information - ", response.url);
+        //console.debug("Failed to load image information - "+ response.url);
         return {
             width: 0,
             height: 0,

@@ -54,16 +54,21 @@ var webpageUtils = {
                     .QueryInterface(Ci.nsIInterfaceRequestor)
                     .getInterface(Ci.nsIDOMWindowUtils);
         if (domWindowUtils.outerWindowID == outerWindowId) {
-            return true;
+            return browser.currentURI.spec;
         }
         // probably the window is an iframe of the webpage. check if this is
         // the case
+        // FIXME use windowMediator.getOuterWindowWithId https://bugzilla.mozilla.org/show_bug.cgi?id=861495
         let iframe = domWindowUtils.getOuterWindowWithId(outerWindowId);
         if (iframe) {
             let dwu = iframe.top.QueryInterface(Ci.nsIInterfaceRequestor)
                             .getInterface(Ci.nsIDOMWindowUtils);
             if (dwu.outerWindowID == domWindowUtils.outerWindowID) {
-                return true;
+                let frameLoader = iframe.QueryInterface(Components.interfaces.nsIFrameLoaderOwner).frameLoader;
+                if (!frameLoader) {
+                    return browser.currentURI.spec+"#from-an-unknown-iframe";
+                }
+                return frameLoader.docShell.QueryInterface(Components.interfaces.nsIWebNavigation).currentURI.spec;
             }
         }
         return false;

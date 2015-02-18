@@ -152,18 +152,27 @@ function _create(parentWebpageInfo) {
                 return;
             try {
                 let msg = aMessage.QueryInterface(Ci.nsIScriptError);
-                //dump(" ************** jsErrorListener  on error:"+msg.message+ "("+msg.category+") f:"+msg.flags+" ow:"+msg.outerWindowID+" is:"+webpageUtils.isOurWindow(browser, msg.outerWindowID)+"\n")
+                //dump(" ************** jsErrorListener  on error:"+msg.message.substr(0,30)+ "("+msg.category+") f:"+msg.flags+" ow:"+msg.outerWindowID+" is:"+webpageUtils.isOurWindow(browser, msg.outerWindowID)+"\n")
+                let frameUrl = webpageUtils.isOurWindow(browser, msg.outerWindowID);
                 if (msg instanceof Ci.nsIScriptError
                     && !(msg.flags & Ci.nsIScriptError.warningFlag)
                     && msg.outerWindowID
-                    && webpageUtils.isOurWindow(browser, msg.outerWindowID)
+                    && frameUrl
                     && msg.category == "content javascript"
                     ) {
                     let col = 0;
                     if ('columnNumber' in msg) {
                         col = msg.columnNumber;
                     }
-                    webpage.onError(aMessage.errorMessage, [{file:aMessage.sourceName, line:aMessage.lineNumber, column:col,  'function':null}]);
+
+                    let stack = [];
+                    stack.push({
+                        file:(msg.sourceName === null? frameUrl:msg.sourceName),
+                        line: msg.lineNumber,
+                        column:col,
+                        'function':null
+                    })
+                    webpage.onError(msg.message, stack);
                 }
             }
             catch(e) {

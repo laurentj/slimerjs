@@ -4,7 +4,7 @@ CURRENTDIR=`pwd`
 SLIMERDIR=`dirname $0`
 SLIMERDIR=`cd $SLIMERDIR;pwd`
 
-XULRUNNER_VERSION="33.1.1"
+XULRUNNER_VERSION="35.0.1"
 XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XULRUNNER_VERSION/runtimes/"
 XULRUNNER_PACK_NAME="xulrunner-$XULRUNNER_VERSION.en-US"
 
@@ -82,6 +82,9 @@ cp slimerjs.bat $TARGETDIR
 cp slimerjs.py $TARGETDIR
 cp LICENSE $TARGETDIR
 cp README.md $TARGETDIR
+
+mkdir -p $TARGETDIR/chrome/
+cp -a chrome/icons $TARGETDIR/chrome/
 
 # zip chrome files into omni.ja
 zip -r $TARGETDIR/omni.ja chrome/ components/ defaults/ modules/ chrome.manifest --exclude @package_exclude.lst

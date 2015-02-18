@@ -5,18 +5,34 @@
 Release Notes of SlimerJS 0.9
 =============================
 
-version 0.9.5
+version 0.9.6
 =============
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
-Contributors: Asen Bozhilov, Marco Castelluccio
+
+Improvements
+------------
+
+    * improved information displayed in the console for some javascript error messages occuring into the web page
+
+
+version 0.9.5
+=============
+
+SlimerJS 0.9.5 has been released on January 25th, 2015.
+
+Contributors: Asen Bozhilov, Marco Castelluccio, Darren Cook, Emmanuel ROECKER, Maciej
+Brencz, Artem Sapegin, Ian McGowan
 
 Improvements
 ------------
 
     * access to the chrome module
-
+    * the window has now an icon, appearing in the task bar of the desktop
+    * Compatibility with XulRunner/Firefox 35 and 36b1
+    * packages: default Xulrunner version is now 35
+    * support of the ``--ssl-protocol`` command line parameter (#264, #26)
 
 Fixed PhantomJS conformance issues
 ----------------------------------
@@ -33,7 +49,11 @@ Fixed bugs
      it allows to call ``render()`` without a delay (``setTimeout``...).
      It avoids "pending is null" exception in some case...
    * taking screenshot may crashed because of flash plugin crash. Plugins are now loaded
-     their own process.
+     into their own process.
+   * fix error when argument values on the command line began with a "s"
+   * fix: sendEvent hang with mouse click on a <a> element without href attribute (#287)
+   * fix error gecko pages loaded with the error "XML Parsing Error: undefined entity"
+   * fix typo and idioms on the website
 
 version 0.9.4
 =============
@@ -189,7 +209,6 @@ Fixed PhantomJS conformance issues
 Other informations about this release
 -------------------------------------
 
-- SlimerJS will not support the ``--ssl-protocol`` option because Gecko only supports SSL3
 - New experimental startup script, ``slimerjs.py`` in python, which is a plateform independant script
 - Reworked the code of the module resolver to be more efficient
 - Some internal changes have been done to embed GhostDriver in the future. Some issues
