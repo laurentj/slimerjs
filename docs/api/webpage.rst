@@ -934,9 +934,24 @@ ignored. And it supports additionnal properties:
 
 - ``resolution``: in dpi. By default: 300.
 - ``marginTop``, ``marginRight``, ``marginBottom``, ``marginLeft``: margin as millimeters
-- ``unwriteableMarginTop``, ``unwriteableMarginRight``,
-   ``unwriteableMarginBottom``, ``unwriteableMarginLeft``: unwriteable margin as millimeters
-- ``height``, ``width``: by default, the viewport size.
+- ``unwriteableMarginTop``, ``unwriteableMarginRight``, ``unwriteableMarginBottom``, ``unwriteableMarginLeft``: unwriteable margin as millimeters
+- ``height``, ``width``: in milimeters, by default the viewport size
+- ``orientation``: page orientation (0 - portrait, 1 - landscape)
+- ``shrinkToFit``: try to fit content in page (bool) 
+- ``printBGColors``, ``printBGImages``: control printing of background colors and images (bool)
+- ``title``: title of printed content
+- ``footerStrCenter``, ``footerStrLeft``, ``footerStrRight``, ``headerStrCenter``, ``headerStrLeft``, ``headerStrRight`` : page header and footer, there are special variables that can be used in header and footer:
+
+ ====================  ===========================================================
+ Variable              Description
+ ====================  ===========================================================
+ ``&T``                title
+ ``&U``                URL
+ ``&D``                date/time
+ ``&P``                current page number
+ ``&PT``               total number of pages in form "*page* ``of`` *total*"
+ ``&L``                last page number   
+ ====================  ===========================================================
 
 Note: On MacOSx, you probably have to install a "PDF driver" as a printer on your system.
 See for example `PDFWriter for mac <http://sourceforge.net/projects/pdfwriterformac/>`_.

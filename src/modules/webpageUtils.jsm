@@ -299,11 +299,28 @@ var webpageUtils = {
 
         let printOptions = {
             ratio: webpage.zoomFactor,
+            shrinkToFit: true,
             format: 'pdf',
-            height: currentViewport.height,
-            width: currentViewport.width,
+            // Convert pixels to milimeters. Viewport is in pixels
+            // http://www.w3.org/TR/CSS21/syndata.html#length-units 
+            height: currentViewport.height/96*25.4,
+            width: currentViewport.width/96*25.4,
+            // orientation: 0 - portrait, 1 - landscape 
+            orientation : 0,
             onlyViewport: false,
             resolution: 300, // dpi
+            printBGImages: true,
+            printBGColors: true,
+            title: webpage.title,
+            // Header and footer
+            footerStrCenter : "",
+            footerStrLeft : "",
+            footerStrRight : "",
+            headerStrCenter : "",
+            headerStrLeft : "",
+            headerStrRight : "",
+            // here margins are in milimeters, but when they is passed to
+            // nsIPrintSetting must be converted in inches! 
             marginTop: 0,
             marginRight: 0,
             marginBottom: 0,
@@ -313,7 +330,6 @@ var webpageUtils = {
             unwriteableMarginBottom: 0,
             unwriteableMarginLeft: 0
         };
-
         if (typeof(options) == 'object') {
           for (var attr in options) { printOptions[attr] = options[attr]; }
         }
@@ -375,6 +391,15 @@ var webpageUtils = {
         return finalOptions;
     },
 
+    getRenderOptions : function(webpage, options, alternateFormat) {
+    	let finalOptions = this.getScreenshotOptions(webpage, options, alternateFormat);
+    	if (finalOptions.format == "pdf") {
+    		options.format = "pdf"; // override
+    		finalOptions = this.getPrintOptions(webpage, options); 
+    	}
+    	return finalOptions;
+    },
+	
     getScreenshotCanvas : function(window, ratio, onlyViewport, webpage) {
 
         if (!ratio || (ratio && ratio <= 0)) {
@@ -492,36 +517,40 @@ var webpageUtils = {
         let printSettings = Cc["@mozilla.org/gfx/printsettings-service;1"]
                                 .getService(Ci.nsIPrintSettingsService)
                                 .newPrintSettings;
-
         printSettings.printSilent             = true;
         printSettings.showPrintProgress       = false;
-        printSettings.printBGImages           = true;
-        printSettings.printBGColors           = true;
+        printSettings.printBGImages           = options.printBGImages;
+        printSettings.printBGColors           = options.printBGColors;
         printSettings.printToFile             = true;
         printSettings.toFileName              = file;
         printSettings.printFrameType          = Ci.nsIPrintSettings.kFramesAsIs;
         printSettings.outputFormat            = Ci.nsIPrintSettings.kOutputFormatPDF;
-        printSettings.footerStrCenter         = "";
-        printSettings.footerStrLeft           = "";
-        printSettings.footerStrRight          = "";
-        printSettings.headerStrCenter         = "";
-        printSettings.headerStrLeft           = "";
-        printSettings.headerStrRight          = "";
-        printSettings.marginTop               = options.marginTop;
-        printSettings.marginRight             = options.marginRight;
-        printSettings.marginBottom            = options.marginBottom;
-        printSettings.marginLeft              = options.marginLeft;
-        printSettings.unwriteableMarginTop    = options.unwriteableMarginTop;
-        printSettings.unwriteableMarginRight  = options.unwriteableMarginRight;
-        printSettings.unwriteableMarginBottom = options.unwriteableMarginBottom;
-        printSettings.unwriteableMarginLeft   = options.unwriteableMarginLeft;
+        printSettings.title                   = options.title;
+        printSettings.footerStrCenter         = options.footerStrCenter;
+        printSettings.footerStrLeft           = options.footerStrLeft;
+        printSettings.footerStrRight          = options.footerStrRight;
+        printSettings.headerStrCenter         = options.headerStrCenter;
+        printSettings.headerStrLeft           = options.headerStrLeft;
+        printSettings.headerStrRight          = options.headerStrRight;
+        // Warning! Margins are always in Inches independent of paperSizeUnit
+        printSettings.marginTop               = options.marginTop/25.4;
+        printSettings.marginRight             = options.marginRight/25.4;
+        printSettings.marginBottom            = options.marginBottom/25.4;
+        printSettings.marginLeft              = options.marginLeft/25.4;
+        printSettings.unwriteableMarginTop    = options.unwriteableMarginTop/25.4;
+        printSettings.unwriteableMarginRight  = options.unwriteableMarginRight/25.4;
+        printSettings.unwriteableMarginBottom = options.unwriteableMarginBottom/25.4;
+        printSettings.unwriteableMarginLeft   = options.unwriteableMarginLeft/25.4;
+
         printSettings.resolution              = options.resolution;
         printSettings.paperName               = 'Custom'
         printSettings.paperSizeType           = 1;
         printSettings.paperWidth              = options.width;
         printSettings.paperHeight             = options.height;
         printSettings.paperSizeUnit           = Ci.nsIPrintSettings.kPaperSizeMillimeters;
+        printSettings.shrinkToFit             = options.shrinkToFit;
         printSettings.scaling                 = options.ratio;
+        printSettings.orientation             = options.orientation;
 
         let ms = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
         let mimeInfo = ms.getFromTypeAndExtension("application/pdf", "pdf");
