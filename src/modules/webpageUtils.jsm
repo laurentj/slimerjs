@@ -302,7 +302,7 @@ var webpageUtils = {
             shrinkToFit: true,
             format: 'pdf',
             // Convert pixels to milimeters. Viewport is in pixels
-				// http://www.w3.org/TR/CSS21/syndata.html#length-units 
+            // http://www.w3.org/TR/CSS21/syndata.html#length-units 
             height: currentViewport.height/96*25.4,
             width: currentViewport.width/96*25.4,
             // orientation: 0 - portrait, 1 - landscape 
@@ -311,16 +311,16 @@ var webpageUtils = {
             resolution: 300, // dpi
             printBGImages: true,
             printBGColors: true,
-            title: "",
+            title: webpage.title,
             // Header and footer
-				footerStrCenter : "",
-				footerStrLeft : "",
-				footerStrRight : "",
-				headerStrCenter : "",
-				headerStrLeft : "",
-				headerStrRight : "",
+            footerStrCenter : "",
+            footerStrLeft : "",
+            footerStrRight : "",
+            headerStrCenter : "",
+            headerStrLeft : "",
+            headerStrRight : "",
             // here margins are in milimeters, but when they is passed to
-				// nsIPrintSetting must be converted in inches! 
+            // nsIPrintSetting must be converted in inches! 
             marginTop: 0,
             marginRight: 0,
             marginBottom: 0,
