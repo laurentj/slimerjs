@@ -66,9 +66,7 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>clearCookies()                      </td><td>Implemented</td></tr>
     <tr><td>defaultErrorHandler(message, stack) </td><td>Implemented</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
-    <tr><td>exit(returnValue)                   </td><td>Partial implementation. The exit code cannot be returned
-                                                    to the shell console because the Mozilla toolkit does not
-                                                    provide a way to return it.</td></tr>
+    <tr><td>exit(returnValue)                   </td><td>Implemented</td></tr>
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
     <tr><td>onerror(msg, trace)                 </td><td>Implemented</td></tr>
 </table>

@@ -174,6 +174,7 @@ if sys.platform == "win32":
 SLCMD.extend(PROFILE)
 SLCMD.extend(SYS_ARGS)
 
+exitCode = 0
 try:
     if HIDE_ERRORS:
         try:
@@ -181,20 +182,23 @@ try:
         except ImportError:
             DEVNULL = open(os.devnull, 'wb')
 
-        subprocess.call(SLCMD, stderr=DEVNULL)
+        exitCode = subprocess.call(SLCMD, stderr=DEVNULL)
     else:
-        subprocess.call(SLCMD)
+        exitCode = subprocess.call(SLCMD)
 
 except OSError as err:
     print('Fatal: %s. Are you sure %s exists?' % (err, SLIMERJSLAUNCHER))
     sys.exit(1)
 
-exitCode = 0
-exitFile = PROFILE_DIR + '/exitstatus'
-if os.path.isfile(exitFile):
-    with open(exitFile, 'r') as f:
-        exitCode = int(f.read())
-    
+if exitCode == 0:
+    exitFile = PROFILE_DIR + '/exitstatus'
+    if os.path.isfile(exitFile):
+        with open(exitFile, 'r') as f:
+            exitCode = int(f.read())
+else:
+    if exitCode == 1:
+        print('Gecko error: it seems %s is not compatible with SlimerJS. See Gecko version compatibility.' % (SLIMERJSLAUNCHER))
+
 if CREATE_TEMP:
     shutil.rmtree(PROFILE_DIR)
     

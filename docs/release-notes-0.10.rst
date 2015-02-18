@@ -17,6 +17,11 @@ New API
 * ``webpage.onLongRunningScript`` and ``webpage.stopJavascript()`` to allow to be informed of
    webpage having long running scripts (compatible with Phantomjs 2)
 
+Improvements
+------------
+
+- Exit code is now supported with ``slimer.exit()`` and ``phantom.exit()`` (except with slimerjs.bat)
+
 Fixed bugs
 ----------
 

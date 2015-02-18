@@ -177,10 +177,16 @@ else
     "$SLIMERJSLAUNCHER" -app "$SLIMERDIR/application.ini" $PROFILE -no-remote "$@"
 fi
 
-EXITCODE=0
-EXITFILE="$PROFILE_DIR/exitstatus"
-if [ -f $EXITFILE ]; then 
-    EXITCODE=`cat $EXITFILE`
+EXITCODE=$?
+if [ $EXITCODE == 0 ]; then
+    EXITFILE="$PROFILE_DIR/exitstatus"
+    if [ -f $EXITFILE ]; then
+        EXITCODE=`cat $EXITFILE`
+    fi
+else
+    if [ $EXITCODE == 1 ]; then
+        echo "Gecko error: it seems $SLIMERJSLAUNCHER is not compatible with SlimerJS. See Gecko version compatibility."
+    fi
 fi
 
 if [ "$PROFILE_DIR" != "" ]; then
