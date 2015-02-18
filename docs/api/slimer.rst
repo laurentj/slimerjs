@@ -28,8 +28,7 @@ exit()
 
 It stops the script and SlimerJS exit.
 
-It accepts an optional exit code but it is ignored
-because of a limitation in Firefox/XulRunner.
+It accepts an optional exit code. Default is 0. 
 
 .. code-block:: javascript
 

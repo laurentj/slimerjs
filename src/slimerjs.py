@@ -174,7 +174,6 @@ if sys.platform == "win32":
 SLCMD.extend(PROFILE)
 SLCMD.extend(SYS_ARGS)
 
-exitCode = 0
 try:
     if HIDE_ERRORS:
         try:
@@ -182,14 +181,20 @@ try:
         except ImportError:
             DEVNULL = open(os.devnull, 'wb')
 
-        exitCode = subprocess.call(SLCMD, stderr=DEVNULL)
+        subprocess.call(SLCMD, stderr=DEVNULL)
     else:
-        exitCode = subprocess.call(SLCMD)
+        subprocess.call(SLCMD)
 
 except OSError as err:
     print('Fatal: %s. Are you sure %s exists?' % (err, SLIMERJSLAUNCHER))
     sys.exit(1)
 
+exitCode = 0
+exitFile = PROFILE_DIR + '/exitstatus'
+if os.path.isfile(exitFile):
+    with open(exitFile, 'r') as f:
+        exitCode = int(f.read())
+    
 if CREATE_TEMP:
     shutil.rmtree(PROFILE_DIR)
     

@@ -91,7 +91,6 @@ In the API
      sandbox
    - Modules must be files, not folders.  ``node_modules`` folders are not
      searched specially (SlimerJS provides ``require.paths``).
-- Exit code is ignored with ``phantom.exit()``. There is no API for that in Gecko
 - ``phantom.exit()`` or ``slimer.exit()`` is done asynchronously. Your script may continue after
    the call of these methods. You can use ``slimer.isExiting()`` to control your processing.
 - The callback ``webpage.onNavigationRequest`` receives bad parameters.

@@ -14,7 +14,6 @@ const scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(C
 
 Cu.import("resource://gre/modules/Services.jsm");
 
-
 var slUtils = {};
 
 const isWin = (Services.dirsvc.get("CurWorkD", Ci.nsIFile) instanceof Ci.nsILocalFileWin);
@@ -173,6 +172,26 @@ slUtils.readChromeFile = function readChromeFile(url) {
     input.close();
     return str;
 }
+
+/**
+ *  Writes exit status code in `ProfileDir/exitstatus` file.
+ *  Note:
+ *  We must follow the evolution of xulrunner in order to remove this patch.
+ *  If they add API for user defined exit status of xulrunner, we must use it instead of this patch. 
+ */
+slUtils.writeExitStatus = function (status) {
+    let str = String(status);
+    let foStream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(Ci.nsIFileOutputStream);
+    let file = Services.dirsvc.get("ProfD", Ci.nsIFile);
+    file.append("exitstatus");
+    foStream.init(file, (0x02 | 0x08 | 0x20), parseInt("0444", 8), 0);
+    try {
+        foStream.write(str, str.length);
+    }
+    finally {
+        foStream.close();
+    }
+} 
 
 slUtils.getWebpageFromContentWindow = function getWebpageFromContentWindow(contentWin) {
     let browser = slUtils.getBrowserFromContentWindow(contentWin);
