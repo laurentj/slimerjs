@@ -10,6 +10,8 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
+Cu.import("resource://slimerjs/slUtils.jsm");
+Cu.import("resource://slimerjs/slConfiguration.jsm");
 
 function Prompter() {
     // Note that EmbedPrompter clones this implementation.
@@ -20,7 +22,7 @@ Prompter.prototype = {
     QueryInterface   : XPCOMUtils.generateQI([Ci.nsIPromptFactory, Ci.nsIPromptService, Ci.nsIPromptService2]),
 
 
-    /* ----------  private memebers  ---------- */
+    /* ----------  private members  ---------- */
 
     pickPrompter : function (domWin) {
         return new ModalPrompter(domWin);
@@ -124,6 +126,7 @@ let PromptUtils = {
     },
 
     confirmExHelper : function (flags, button0, button1, button2) {
+
         const BUTTON_DEFAULT_MASK = 0x03000000;
         let defaultButtonNum = (flags & BUTTON_DEFAULT_MASK) >> 24;
         let isDelayEnabled = (flags & Ci.nsIPrompt.BUTTON_DELAY_ENABLE);
@@ -318,30 +321,10 @@ let PromptUtils = {
         for (let propName in obj)
             obj[propName] = propBag.getProperty(propName);
     },
-
-    getTabModalPrompt : function (domWin) {
-        var promptBox = null;
-
-        try {
-            // Get the topmost window, in case we're in a frame.
-            var promptWin = domWin.top;
-
-            // Get the chrome window for the content window we're using.
-            // (Unwrap because we need a non-IDL property below.)
-            var chromeWin = promptWin.QueryInterface(Ci.nsIInterfaceRequestor)
-                                     .getInterface(Ci.nsIWebNavigation)
-                                     .QueryInterface(Ci.nsIDocShell)
-                                     .chromeEventHandler.ownerDocument
-                                     .defaultView.wrappedJSObject;
-
-            if (chromeWin.getTabModalPromptBox)
-                promptBox = chromeWin.getTabModalPromptBox(promptWin);
-        } catch (e) {
-            // If any errors happen, just assume no tabmodal prompter.
-        }
-
-        return promptBox;
-    },
+    
+    isSlowScriptDialog : function (title) {
+        return this.domBundle.GetStringFromName("KillScriptTitle") === title;
+    }
 };
 
 XPCOMUtils.defineLazyGetter(PromptUtils, "strBundle", function () {
@@ -353,6 +336,15 @@ XPCOMUtils.defineLazyGetter(PromptUtils, "strBundle", function () {
     return bundle;
 });
 
+XPCOMUtils.defineLazyGetter(PromptUtils, "domBundle", function () {
+    let bunService = Cc["@mozilla.org/intl/stringbundle;1"].
+                     getService(Ci.nsIStringBundleService);
+    let bundle = bunService.createBundle("chrome://global/locale/dom/dom.properties");
+    if (!bundle)
+        throw "String dom bundle for Prompter not present!";
+    return bundle;
+});
+
 XPCOMUtils.defineLazyGetter(PromptUtils, "ellipsis", function () {
     let ellipsis = "\u2026";
     try {
@@ -360,7 +352,6 @@ XPCOMUtils.defineLazyGetter(PromptUtils, "ellipsis", function () {
     } catch (e) { }
     return ellipsis;
 });
-
 
 
 function openModalWindow(domWin, uri, args) {
@@ -449,21 +440,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
 
 
     openPrompt : function (args) {
-        // Check pref, if false/missing do not ever allow tab-modal prompts.
-        const prefName = "prompts.tab_modal.enabled";
-        let prefValue = false;
-        if (Services.prefs.getPrefType(prefName) == Services.prefs.PREF_BOOL)
-            prefValue = Services.prefs.getBoolPref(prefName);
-
-        let allowTabModal = this.allowTabModal && prefValue;
-
-        if (allowTabModal && this.domWin) {
-            let tabPrompt = PromptUtils.getTabModalPrompt(this.domWin);
-            if (tabPrompt) {
-                openTabPrompt(this.domWin, tabPrompt, args);
-                return;
-            }
-        }
+//FIXME HERE: call webpage callback
 
         // If we can't do a tab modal prompt, fallback to using a window-modal dialog.
         const COMMON_DIALOG = "chrome://global/content/commonDialog.xul";
@@ -477,28 +454,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
     },
 
     _findWebPage : function () {
-        try {
-            let win = this.domWin.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                    .getInterface(Components.interfaces.nsIWebNavigation)
-                    .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
-                    .rootTreeItem
-                    .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                    .getInterface(Components.interfaces.nsIDOMWindow);
-
-            let doc = win.document;
-            if (doc.documentElement.getAttribute("windowtype") != 'slimerpage') {
-                return null;
-            }
-
-            let webpageElement = doc.getElementById('webpage');
-            if (!webpageElement) {
-                return null;
-            }
-            return webpageElement.webpage;
-        }
-        catch(e) {
-            return null;
-        }
+        return slUtils.getWebpageFromContentWindow(this.domWin)
     },
 
     /*
@@ -582,7 +538,8 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         let webpage = this._findWebPage();
         if (webpage) {
             if (webpage.onConfirm) {
-                return webpage.onConfirm(text);
+                let ok = webpage.onConfirm(text, title);
+                return !!ok;
             }
             return false;
         }
@@ -594,7 +551,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
             ok:         false,
         };
 
-        this.openPrompt(args);
+        //this.openPrompt(args);
 
         // Did user click Ok or Cancel?
         return args.ok;
@@ -603,6 +560,24 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
     confirmCheck : function (title, text, checkLabel, checkValue) {
         if (!title)
             title = PromptUtils.getLocalizedString("ConfirmCheck");
+
+        let webpage = this._findWebPage();
+        if (webpage) {
+            if (webpage.onConfirm) {
+                let chk = { label: checkLabel, checked: checkValue.value };
+                let buttons = ["Ok", "Cancel"];
+                let ok = webpage.onConfirm(text, title, buttons, chk);
+                checkValue.value = !!chk.checked;
+                if (ok === 0) {
+                    ok = true;
+                }
+                else if (ok === 1) {
+                    ok = false;
+                }
+                return (!!ok);
+            }
+            return false;
+        }
 
         let args = {
             promptType: "confirmCheck",
@@ -613,10 +588,10 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
             ok:         false,
         };
 
-        this.openPrompt(args);
+        //this.openPrompt(args);
 
         // Checkbox state always returned, even if cancel clicked.
-        checkValue.value = args.checked;
+        //checkValue.value = args.checked;
 
         // Did user click Ok or Cancel?
         return args.ok;
@@ -644,20 +619,54 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         args.defaultButtonNum = defaultButtonNum;
         args.enableDelay = isDelayEnabled;
 
+        let buttons = [];
         if (label0) {
             args.button0Label = label0;
+            buttons.push(label0);
             if (label1) {
                 args.button1Label = label1;
+                buttons.push(label1);
                 if (label2) {
                     args.button2Label = label2;
+                    buttons.push(label2);
                 }
             }
         }
+        let webpage = this._findWebPage();
+        if (webpage) {
+            if (PromptUtils.isSlowScriptDialog(title)) {
+                if (webpage.onLongRunningScript) {
+                    webpage.stopJavaScript.__interrupt__ = false;
+                    webpage.onLongRunningScript(text.split('\n')[2]);
+                    return Number(webpage.stopJavaScript.__interrupt__);
+                }
+                return 0;
+            }
+            if (webpage.onConfirm) {
+                let chk = { label: checkLabel, checked: checkValue.value };
+                let ok = webpage.onConfirm(text, title, buttons, chk);
+                checkValue.value = !!chk.checked;
+                if (ok === true) {
+                    ok = 0;
+                }
+                else if (ok === false) {
+                    ok = 1;
+                }
+                else {
+                    ok = parseInt(ok, 10);
+                    if (isNaN(ok)) {
+                        ok = 0;
+                    }
+                }
+                return ok;
+            }
+            return 0;
+        }
 
-        this.openPrompt(args);
+        //this.openPrompt(args);
 
         // Checkbox state always returned, even if cancel clicked.
-        checkValue.value = args.checked;
+        //checkValue.value = args.checked;
 
         // Get the number of the button the user clicked.
         return args.buttonNumClicked;
@@ -691,7 +700,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
             ok:         false,
         };
 
-        this.openPrompt(args);
+        //this.openPrompt(args);
 
         // Did user click Ok or Cancel?
         let ok  = args.ok;
@@ -809,18 +818,17 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         let message = PromptUtils.makeAuthMessage(channel, authInfo);
 
         let [username, password] = PromptUtils.getAuthInfo(authInfo);
+        let [host, realm]  = PromptUtils.getAuthTarget(channel, authInfo);
+        let credentials = {
+            username:       username,
+            password:       password
+        }
 
-        let userParam = { value: username };
-        let passParam = { value: password };
-
-        let ok;
-        if (authInfo.flags & Ci.nsIAuthInformation.ONLY_PASSWORD)
-            ok = this.nsIPrompt_promptPassword(null, message, passParam, checkLabel, checkValue);
-        else
-            ok = this.nsIPrompt_promptUsernameAndPassword(null, message, userParam, passParam, checkLabel, checkValue);
-
-        if (ok)
-            PromptUtils.setAuthInfo(authInfo, userParam.value, passParam.value);
+        let ok = this._slimerPromptUsernameAndPassword(channel.URI.spec, authInfo, credentials, realm);
+        if (ok) {
+            checkValue.value = false;
+            PromptUtils.setAuthInfo(authInfo, credentials.username, credentials.password);
+        }
         return ok;
     },
 
@@ -832,6 +840,58 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         //
         // Bug 565582 will change this.
         throw Cr.NS_ERROR_NOT_IMPLEMENTED;
+    },
+
+    _slimerPromptUsernameAndPassword : function (url, authInfo, credentials, realm) {
+        if (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY) {
+            if (slConfiguration.proxyType == 'http' || slConfiguration.proxyType == 'socks5'
+                || slConfiguration.proxyType == 'socks') {
+//FIXME : check number of attempts
+                credentials.username = slConfiguration.proxyAuthUser;
+                credentials.password = slConfiguration.proxyAuthPassword;
+                return true;
+            }
+            return false;
+        }
+        let webpage;
+        let browser = slUtils.getBrowserFromContentWindow(this.domWin);
+        if (browser)
+            webpage = browser.webpage;
+        if (!webpage)
+            return false;
+
+        let onlyPassword = (authInfo.flags & Ci.nsIAuthInformation.ONLY_PASSWORD);
+        if (authInfo.flags & Ci.nsIAuthInformation.PREVIOUS_FAILED) {
+            browser.authAttempts ++;
+            let max = (webpage.settings.maxAuthAttempts === undefined?3:webpage.settings.maxAuthAttempts);
+            if (browser.authAttempts >= max) {
+                return false;
+            }
+        }
+        if (onlyPassword
+            && webpage.settings.password != ''
+            && webpage.settings.password != null
+            && webpage.settings.password != undefined
+            ) {
+            credentials.password = webpage.settings.password;
+        }
+        else if (!onlyPassword
+                 && webpage.settings.userName != ''
+                 && webpage.settings.userName != null
+                 && webpage.settings.userName != undefined 
+                 && webpage.settings.password != ''
+                 && webpage.settings.password != null
+                 && webpage.settings.password != undefined
+                 ) {
+            credentials.username = webpage.settings.userName;
+            credentials.password = webpage.settings.password;
+        }
+        else if (webpage.onAuthPrompt) { 
+            let type = (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY? 'proxy': 'http');
+            return webpage.onAuthPrompt(type, url, realm, credentials);
+        }
+
+        return true;
     },
 
     /* ----------  nsIWritablePropertyBag2 ---------- */

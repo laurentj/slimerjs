@@ -1,8 +1,15 @@
 
 describe("WebPage with frames", function(){
-    var webpage = require("webpage").create();
+    var webpage;
     var domain = "http://127.0.0.1:8083/";
     var url = domain+"frame_main.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     it("can be loaded",function() {
         var loaded = false;
@@ -81,7 +88,7 @@ describe("WebPage with frames", function(){
         expect(webpage.currentFrameName()).toEqual('subframebottom');
         expect(webpage.frameUrl).toEqual(domain+"simplehello.html");
         expect(webpage.frameContent).toNotEqual('');
-        expect(webpage.framePlainText).toEqual(' Hello World! ');
+        expect(webpage.framePlainText).toEqual(' Hello World! 你好 ! çàéèç ');
 
         // test switchToParentFrame
         webpage.switchToParentFrame();

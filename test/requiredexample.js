@@ -11,3 +11,10 @@ exports.throwExcept = function(){
 exports.throwExcept2 = function(){
     throw "An exception"
 }
+
+exports.hasWindowObject = (window != undefined);
+exports.hasDocumentObject = (document != undefined);
+exports.hasConsoleObject = (console != undefined);
+exports.hasAlertFunction = (alert != undefined);
+exports.hasConfirmFunction = (confirm != undefined);
+exports.hasPhantomObject = (phantom != undefined)

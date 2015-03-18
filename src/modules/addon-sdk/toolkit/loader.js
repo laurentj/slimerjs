@@ -10,8 +10,11 @@
  * Some functionnalities have been added:
  *  - the possibility to indicate the javascript version in the loader options
  *    to evaluate modules with this version.
- *  - the possiblity to indicate our own sandbox for the main module
- *  - the possibility to indicate a source code for the main module
+ *  - the possiblity to indicate our own sandbox for the module loading
+ *  - the possibility to indicate a source code for the module loading
+ * The support of sameGroupAs option for sandboxes has been removed
+ * since it is not supported any more into recents Firefox versions.
+ * 
  * main contributor: Laurent Jouanneau
  */
 
@@ -64,14 +67,14 @@ const keys = Object.keys;
 // Workaround for bug 674195. Freezing objects from other compartments fail,
 // so we use `Object.freeze` from the same component instead.
 function freeze(object) {
-  if (prototypeOf(object) === null) {
+  /*if (prototypeOf(object) === null) {
       Object.freeze(object);
   }
   else {
     prototypeOf(prototypeOf(object.isPrototypeOf)).
       constructor. // `Object` from the owner compartment.
       freeze(object);
-  }
+  }*/
   return object;
 }
 
@@ -167,8 +170,6 @@ exports.serializeStack = serializeStack
 // - `wantXrays`: A Boolean value indicating whether code outside the sandbox
 //    wants X-ray vision with respect to objects inside the sandbox. Defaults
 //    to `true`.
-// - `sandbox`: A sandbox to share JS compartment with. If omitted new
-//    compartment will be created.
 // For more details see:
 // https://developer.mozilla.org/en/Components.utils.Sandbox
 const Sandbox = iced(function Sandbox(options) {
@@ -178,16 +179,12 @@ const Sandbox = iced(function Sandbox(options) {
     // still can expose via prototype.
     wantComponents: false,
     sandboxName: options.name,
+    //wantXHRConstructor: false,
+    // option that is not supported by Cu.Sandbox,
     principal: 'principal' in options ? options.principal : systemPrincipal,
     wantXrays: 'wantXrays' in options ? options.wantXrays : true,
     sandboxPrototype: 'prototype' in options ? options.prototype : {},
-    sameGroupAs: 'sandbox' in options ? options.sandbox : null
   };
-
-  // Make `options.sameGroupAs` only if `sandbox` property is passed,
-  // otherwise `Cu.Sandbox` will throw.
-  if (!options.sameGroupAs)
-    delete options.sameGroupAs;
 
   let sandbox = Cu.Sandbox(options.principal, options);
 
@@ -209,12 +206,12 @@ exports.Sandbox = Sandbox;
 // - `options.encoding`: Source encoding, defaults to 'UTF-8'.
 // - `options.line`: Line number to start count from for stack traces.
 //    Defaults to 1.
-// - `options.version`: Version of JS used, defaults to '1.8'.
+// - `options.version`: Version of JS used, defaults to 'ECMAv5'.
 const evaluate = iced(function evaluate(sandbox, uri, options) {
   let { source, line, version, encoding } = override({
     encoding: 'UTF-8',
     line: 1,
-    version: '1.8',
+    version: 'ECMAv5',
     source: null
   }, options);
 
@@ -232,38 +229,11 @@ const load = iced(function load(loader, module, initialSandbox, src) {
 
   let sandbox;
   if (initialSandbox) {
-    // The new sandbox should "inherits" from the initial sandbox
-
-    // we create the prototype of the new sandbox.
-    // we don't import directly require and module.exports
-    // into the initialSandbox else properties of module.exports
-    // are shadowed and an __exposedProps__ should be needed.
-    // this is why we create a new sandbox with a new prototype
-    // that contains properties of the initial sandbox and
-    // the properties we want to inject
-
-    let proto = create(globals, descriptor({
-        require: require,
-        module: module,
-        exports: module.exports
-      }));
-    proto = create(initialSandbox, descriptor(proto));
-
-    sandbox = Sandbox({
-      name: module.uri,
-      // set this sandbox property so we can reuse its compartment
-      // when creating the new one to reduce memory consumption.
-      sandbox: initialSandbox,
-      prototype: proto,
-      wantXrays: false
-    });
+    sandbox = initialSandbox;
   }
   else {
     sandbox = Sandbox({
       name: module.uri,
-      // Get an existing module sandbox, if any, so we can reuse its compartment
-      // when creating the new one to reduce memory consumption.
-      sandbox: sandboxes[keys(sandboxes).shift()],
       // We expose set of properties defined by `CommonJS` specification via
       // prototype of the sandbox. Also globals are deeper in the prototype
       // chain so that each module has access to them as well.
@@ -328,8 +298,12 @@ function normalize(uri) { return uri.substr(-3) === '.js' ? uri : uri + '.js'; }
 // Utility function to join paths. In common case `base` is a
 // `requirer.uri` but in some cases it may be `baseURI`. In order to
 // avoid complexity we require `baseURI` with a trailing `/`.
-const resolve = iced(function resolve(id, base) {
-  if (!isRelative(id)) return id;
+// SlimerJS patch: base can be a file path, with \ as separator on windows
+const resolve = iced(function resolve(id, aBase) {
+  let base = aBase;
+  if (typeof aBase != 'string') {
+    base = aBase.id;
+  }
   let paths = id.split('/');
   let result = base.split('/');
   result.pop();
@@ -351,6 +325,7 @@ const resolveURI = iced(function resolveURI(id, mapping) {
     if (id.indexOf(path) === 0)
       return normalize(id.replace(path, uri));
   }
+  return null;
 });
 exports.resolveURI = resolveURI;
 
@@ -359,7 +334,7 @@ exports.resolveURI = resolveURI;
 // of `require` that is allowed to load only a modules that are associated
 // with it during link time.
 const Require = iced(function Require(loader, requirer) {
-  let { modules, mapping, resolve, load } = loader;
+  let { modules, mapping, resolve, resolveURI, load } = loader;
 
   function require(id) {
     if (!id) // Throw if `id` is not passed.
@@ -367,12 +342,10 @@ const Require = iced(function Require(loader, requirer) {
                   + requirer.id, requirer.uri);
 
     // Resolve `id` to its requirer if it's relative.
-    let requirement = requirer ? resolve(id, requirer.id) : id;
-
+    let requirement = requirer ? resolve(id, requirer) : id;
 
     // Resolves `uri` of module using loaders resolve function.
     let uri = resolveURI(requirement, mapping);
-
     if (!uri) // Throw if `uri` can not be resolved.
       throw Error('Module: Can not resolve "' + id + '" module required by ' +
                   requirer.id + ' located at ' + requirer.uri, requirer.uri);
@@ -397,19 +370,19 @@ const Require = iced(function Require(loader, requirer) {
 });
 exports.Require = Require;
 
-const main = iced(function main(loader, id, sandbox, source) {
+const main = iced(function main(loader, id) {
   let uri = resolveURI(id, loader.mapping)
   let module = loader.main = loader.modules[uri] = Module(id, uri);
-  return load(loader, module, sandbox, source).exports;
+  return load(loader, module).exports;
 });
 exports.main = main;
 
 // Makes module object that is made available to CommonJS modules when they
 // are evaluated, along with `exports` and `require`.
 const Module = iced(function Module(id, uri) {
-  return create(null, {
+  return create({}, {
     id: { enumerable: true, value: id },
-    exports: { enumerable: true, writable: true, value: create(null) },
+    exports: { enumerable: true, writable: true, value: create({}) },
     uri: { value: uri }
   });
 });
@@ -444,14 +417,15 @@ exports.unload = unload;
 //   If `resolve` does not returns `uri` string exception will be thrown by
 //   an associated `require` call.
 // - `javascriptVersion` to indicate with which javascript version modules
-//   will be executed (default: 1.8)
+//   will be executed (default: ECMAv5)
 const Loader = iced(function Loader(options) {
-  let { modules, globals, resolve, paths, javascriptVersion } = override({
+  let { modules, globals, resolve, paths, javascriptVersion, resolveURI } = override({
     paths: {},
     modules: {},
     globals: {},
     resolve: exports.resolve,
-    javascriptVersion : '1.8'
+    javascriptVersion : 'ECMAv5',
+    resolveURI:exports.resolveURI
   }, options);
 
   // We create an identity object that will be dispatched on an unload
@@ -500,6 +474,7 @@ const Loader = iced(function Loader(options) {
     // Map of module sandboxes indexed by module URIs.
     sandboxes: { enumerable: false, value: {} },
     resolve: { enumerable: false, value: resolve },
+    resolveURI: { enumerable: false, value: resolveURI },
     load: { enumerable: false, value: options.load || load },
     javascriptVersion : { enumerable: false, value: javascriptVersion },
     // Main (entry point) module, it can be set only once, since loader

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>navigation</title>
+        <script type="text/javascript">
+            var jsclick1 = false;
+            var jsclick2 = false;
+            function setJsClick1() {jsclick1 = true;}
+            /*document.addEventListener('click', function(event) {
+                dump('click on '+event.target.localName+' - '+event.target.id+'\n')
+            }, true);*/
+        </script>
+    </head>
+    <body>
+        <a id="a" href="simplehello.html" style="position:absolute; top:0px; left:0px">Simple Hello </a>
+        <a  id="b" href="javascript:setJsClick1()" style="position:absolute; top:30px; left:0px">click</a>
+        <a  id="c" href="#" onclick="jsclick2 = true; return false" style="position:absolute; top:50px; left:0px">click2</a>
+    </body>
+</html>

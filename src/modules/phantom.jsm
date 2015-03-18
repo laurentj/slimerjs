@@ -8,12 +8,15 @@ Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import('resource://slimerjs/slUtils.jsm');
 Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import('resource://slimerjs/slCookiesManager.jsm');
 
-var httpCookies = [];
 
-var libPath = slConfiguration.scriptFile.parent.clone();
+
+var libPath = (slConfiguration.scriptFile ? slConfiguration.scriptFile.parent.clone(): null);
 
 var errorHandler;
+
+var defaultSettings = null;
 
 var phantom = {
 
@@ -25,14 +28,18 @@ var phantom = {
         return slConfiguration.args[0];
     },
 
+    get page () {
+        throw new Error("phantom.page not implemented. Irrelevant for Slimerjs");
+    },
+
     // ------------------------  cookies
 
     /**
-     * set a list of cookies
+     * set a list of cookies for any domain
      * @param cookie[] val
      */
     set cookies (val) {
-        httpCookies = val;
+        slCookiesManager.setCookies(val);
     },
 
     /**
@@ -40,55 +47,70 @@ var phantom = {
      * @return cookie[]
      */
     get cookies () {
-        return httpCookies;
+        return slCookiesManager.getCookies();
     },
 
     /**
      * if set to true, cookies will be send in requests
      */
-    cookiesEnabled : true,
+    get cookiesEnabled () {
+        return slCookiesManager.isCookiesEnabled();
+    },
+
+    set cookiesEnabled(val) {
+        slCookiesManager.enableCookies(val);
+    },
 
     /**
      * add a cookie in the cookie jar
      * @param cookie cookie
+     * @return boolean true if the cookie has been set
      */
     addCookie : function(cookie) {
-        throw "Not Implemented";
+        return slCookiesManager.addCookie(cookie);
     },
 
     /**
      * erase all cookies
      */
     clearCookies : function() {
-        httpCookies = [];
+        slCookiesManager.clearCookies();
     },
 
     /**
-     * delete a cookie
+     * delete all cookies that have the given name
+     * @param string cookieName  the cookie name
+     * @return boolean true if deletion is ok
      */
     deleteCookie : function(cookieName) {
-        throw "Not Implemented";
+        return slCookiesManager.deleteCookie(cookieName);
     },
 
     /**
-     * return the version of SlimerJS
+     * return the version of PhantomJS on which this implementation is compatible
      */
     get version() {
-        return { major: 1, minor: 9, patch: 0, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+        return { major: 1, minor: 9, patch: 2, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+    },
+
+    get defaultPageSettings () {
+        return slConfiguration.getDefaultWebpageConfig();
     },
 
     /**
      * quit the application.
-     *
-     * The given exit code is not supported because there is no way
-     * in Mozilla to return this code after the shutdown of the application.
      *
      * @param integer code the exit code for the shell console. 0 means ok (default value)
      * @phantomcompatibilityissue
      * @internal to resolve the issue, we should provide our own patched xulrunner
      */
     exit : function(code) {
-        let c = code || 0;
+        let c = +code || 0;
+        if (slLauncher.slimerExiting) {
+            return
+        }
+        slUtils.writeExitStatus(c);
+        slLauncher.slimerExiting = true;
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },
 
@@ -97,44 +119,55 @@ var phantom = {
      * @var string
      */
     get libraryPath () {
+        if (!libPath) {
+            return "";
+        }
         return libPath.path;
     },
     set libraryPath (path) {
-        libPath = Components.classes['@mozilla.org/file/local;1']
-                        .createInstance(Components.interfaces.nsILocalFile);
-        libPath.initWithPath(path);
+        libPath = slUtils.getMozFile(path);
     },
 
     /**
      * injects an external script into the SlimerJS sandbox runtime
      */
     injectJs: function(filename) {
-        // filename resolved against the libraryPath property
-        let f = getMozFile(filename, libPath);
-        let source = readSyncStringFromFile(f);
-        slLauncher.injectJs(source, Services.io.newFileURI(f).spec);
+        if (slConfiguration.mainScriptURI.scheme != 'file') {
+            let uri = slConfiguration.mainScriptURI;
+            let fileUrl = uri.scheme+'://'+uri.host+'/'+slConfiguration.scriptModulePath+filename;
+            let source = slUtils.readChromeFile(fileUrl);
+            return slLauncher.injectJs(source, fileUrl);
+        }
+
+        // resolve the filename against the current working directory
+        let f = slUtils.getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Components.interfaces.nsIFile));
+        if (!f.exists()) {
+            // filename resolved against the libraryPath property
+            f = slUtils.getAbsMozFile(filename, libPath);
+            if (!f.exists()) {
+                dump("Error phantom.injectJs: Can't open '"+filename+"'\n");
+                return false;
+            }
+        }
+        let source = slUtils.readSyncStringFromFile(f);
+        return slLauncher.injectJs(source, Services.io.newFileURI(f).spec);
     },
 
     /**
      * set the handler for errors
      */
     set onError (val) {
-        errorHandler = val;
+        slLauncher.errorHandler = val;
     },
     /**
      * get the handler for errors
      */
     get onError () {
-        return errorHandler;
+        return slLauncher.errorHandler;
     },
 
-    defaultErrorHandler : function (msg, stack) {
-        dump("\nScript Error: "+msg+"\n");
-        dump("       Stack:\n");
-        stack.forEach(function(t) {
-            dump('         -> ' + (t.file || t.sourceURL) + ': ' + t.line + (t.function ? ' (in function ' + t.function + ')' : '')+"\n");
-        })
-        dump("\n");
+    get defaultErrorHandler () {
+        return slLauncher.defaultErrorHandler;
     },
 
     __exposedProps__ : {
@@ -146,26 +179,11 @@ var phantom = {
         clearCookies : 'r',
         deleteCookie : 'r',
         exit : 'r',
+        page : 'r',
         injectJs : 'r',
         onError : 'rw',
-        defaultErrorHandler : 'r'
+        defaultErrorHandler : 'r',
+        defaultPageSettings : 'r'
     }
-}
-
-errorHandler = phantom.defaultErrorHandler;
-
-/**
- * cookie object for http requests
- */
-function cookie(name, value, domain, path) {
-    this.name = name;
-    this.value = value;
-    this.domain = domain || 'localhost';
-    this.path = path || '/';
-
-    this.httponly = true;
-
-    this.secure =  false;
-    this.expires = null;
 }
 

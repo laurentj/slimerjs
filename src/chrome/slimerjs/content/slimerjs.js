@@ -13,14 +13,18 @@ Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import('resource://slimerjs/slUtils.jsm');
 
 function startup() {
-
+   document.getElementById("versionnumber").textContent =  Services.appinfo.version
     var runtimeIframe = document.getElementById('runtime');
     try {
-        slLauncher.launchMainScript(runtimeIframe.contentWindow, slConfiguration.scriptFile);
+        slLauncher.launchMainScript(runtimeIframe.contentWindow);
     }
     catch(e) {
         dumpex(e, 'Error during the script execution\n');
         dumpStack(e.stack);
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     }
+}
+
+function quit() {
+    Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
 }

@@ -6,26 +6,26 @@
 const { Cc, Ci, Cu, Cr } = require('chrome');
 Cu.import('resource://slimerjs/slLauncher.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
+Cu.import('resource://slimerjs/slConsole.jsm');
 Cu.import('resource://slimerjs/slConfiguration.jsm');
+Cu.import('resource://slimerjs/phantom.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
 Cu.import('resource://slimerjs/slQTKeyCodeToDOMCode.jsm');
+Cu.import('resource://slimerjs/webpageUtils.jsm');
+Cu.import('resource://slimerjs/slCookiesManager.jsm');
+Cu.import('resource://slimerjs/slDebug.jsm');
 
-const fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
-
+const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
-const {
-    getScreenshotCanvas, setAuthHeaders, removeAuthPrompt,
-    getCookies, setCookies, Cookie
-} = require("./utils");
 
 const fs = require("sdk/io/file");
 const base64 = require("sdk/base64");
 const Q = require("sdk/core/promise");
-const timer = require("sdk/timers");
 const heritage = require("sdk/core/heritage");
-
+const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
+                        .createInstance(Ci.nsIPrincipal);
 const netLog = require('net-log');
 netLog.startTracer();
 
@@ -34,6 +34,15 @@ netLog.startTracer();
  * @module webpage
  */
 function create() {
+    let [webpage, win] = _create(null);
+    return webpage;
+}
+exports.create = create;
+
+/**
+ * @return [webpage, window]
+ */
+function _create(parentWebpageInfo) {
 
     // -----------------------  private properties and functions for the webpage object
 
@@ -42,10 +51,11 @@ function create() {
      */
     var browser = null;
 
+    var browserJustCreated = true;
     /**
      * library path
      */
-    var libPath = slConfiguration.scriptFile.parent.clone();
+    var libPath = (slConfiguration.scriptFile ? slConfiguration.scriptFile.parent.clone(): null);
 
     /**
      * utility function to create a sandbox when executing a
@@ -54,6 +64,7 @@ function create() {
     function createSandBox(win) {
         let sandbox = Cu.Sandbox(win,
             {
+                'principal':systemPrincipal,
                 'sandboxName': browser.currentURI.spec,
                 'sandboxPrototype': win,
                 'wantXrays': false
@@ -63,17 +74,44 @@ function create() {
 
     var webPageSandbox = null;
 
-    function evalInSandbox (src) {
+    /**
+     * evaluate javascript code into a sandbox
+     * @see webpage.evaluate(), webpage.evaluateJavascript()...
+     * @param string src the source code to evaluate
+     * @param string file the file name associated to the source code
+     */
+    function evalInSandbox (src, file) {
         if (!webPageSandbox)
             webPageSandbox = new WeakMap();
         let win = getCurrentFrame();
         if (!webPageSandbox.has(win))
             webPageSandbox.set(win, createSandBox(win));
         try {
-            return Cu.evalInSandbox(src, webPageSandbox.get(win));
+            let res = Cu.evalInSandbox(src, webPageSandbox.get(win), 'ECMAv5', file, 1);
+            // QWebFrame.evaluateJavascript() used by PhantomJS
+            // always returns null when no value are returned by
+            // the script.
+            if (res === undefined)
+                return null;
+            return res;
         }
         catch(e) {
-            throw new Error('Error during javascript evaluation in the web page: '+e)
+            if (webpage.onError) {
+                var err = getTraceException(e, '');
+                if (err[1]) {
+                    err[1].forEach(function(item){
+                        if ('line' in item)
+                            item.line = parseInt(item.line);
+                        item.file = item.sourceURL;
+                    })
+                }
+                else err[1] = [];
+                webpage.onError('Error: '+err[0], err[1]);
+                return null;
+            }
+            else {
+                throw new Error('Error during javascript evaluation in the web page: '+e)
+            }
         }
     }
 
@@ -90,24 +128,14 @@ function create() {
                     return;
                 // aData == outer window id
                 // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js#254
-                let domWindowUtils = browser.contentWindow
-                            .QueryInterface(Ci.nsIInterfaceRequestor)
-                            .getInterface(Ci.nsIDOMWindowUtils);
                 var consoleEvent = aSubject.wrappedJSObject;
-                if (domWindowUtils.outerWindowID == aData) {
-                    webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
-                    return
-                }
-                // probably the window is an iframe of the webpage. check if this is
-                // the case
-                let iframe = domWindowUtils.getOuterWindowWithId(aData);
-                if (iframe) {
-                    let dwu = iframe.top.QueryInterface(Ci.nsIInterfaceRequestor)
-                            .getInterface(Ci.nsIDOMWindowUtils);
-                    if (dwu.outerWindowID == domWindowUtils.outerWindowID) {
-                        webpage.onConsoleMessage(consoleEvent.arguments[0], consoleEvent.lineNumber, consoleEvent.filename);
-                        return;
+                if (webpageUtils.isOurWindow(browser, aData)) {
+                    var args = consoleEvent.arguments;
+                    if (!Array.isArray(args)) {
+                        args = Array.prototype.slice.call(args);
                     }
+                    webpage.onConsoleMessage(args.join(' '), consoleEvent.lineNumber, consoleEvent.filename);
+                    return
                 }
                 return;
             }
@@ -115,46 +143,137 @@ function create() {
     }
 
     /**
+     * a listener for the console service, to track errors in the content window.
+     * Unfortunately, we don't have no way to retrieve the stack :-/
+     */
+    var jsErrorListener = {
+        observe:function( aMessage ){
+            if (!webpage.onError)
+                return;
+            try {
+                let msg = aMessage.QueryInterface(Ci.nsIScriptError);
+                //dump(" ************** jsErrorListener  on error:"+msg.message.substr(0,30)+ "("+msg.category+") f:"+msg.flags+" ow:"+msg.outerWindowID+" is:"+webpageUtils.isOurWindow(browser, msg.outerWindowID)+"\n")
+                let frameUrl = webpageUtils.isOurWindow(browser, msg.outerWindowID);
+                if (msg instanceof Ci.nsIScriptError
+                    && !(msg.flags & Ci.nsIScriptError.warningFlag)
+                    && msg.outerWindowID
+                    && frameUrl
+                    && msg.category == "content javascript"
+                    ) {
+                    let col = 0;
+                    if ('columnNumber' in msg) {
+                        col = msg.columnNumber;
+                    }
+
+                    let stack = [];
+                    stack.push({
+                        file:(msg.sourceName === null? frameUrl:msg.sourceName),
+                        line: msg.lineNumber,
+                        column:col,
+                        'function':null
+                    })
+                    webpage.onError(msg.message, stack);
+                }
+            }
+            catch(e) {
+                //dump("**************** jsErrorListener err:"+e+"\n")
+            }
+        },
+        QueryInterface: function (iid) {
+            if (!iid.equals(Ci.nsIConsoleListener) &&
+                !iid.equals(Ci.nsISupports)) {
+                throw Cr.NS_ERROR_NO_INTERFACE;
+            }
+            return this;
+        }
+    };
+
+    /**
      * build an object of options for the netlogger
      */
-    function getNetLoggerOptions(webpage, deferred) {
+    function getNetLoggerOptions(webpage, deferred, firstRequestHeaders) {
+        var wycywigReg = /^wyciwyg:\/\//;
+        var firstRequestHeadersUsed = false;
         return {
-            onRequest: function(request) {webpage.resourceRequested(request);},
-            onResponse:  function(res) {webpage.resourceReceived(res);},
+            _onRequest: function(request) {
+                request = request.QueryInterface(Ci.nsIHttpChannel);
+                if (webpage.settings.userAgent)
+                    request.setRequestHeader("User-Agent", webpage.settings.userAgent, false);
+                let h;
+                if (firstRequestHeadersUsed) {
+                    h = webpage.customHeaders;
+                }
+                else {
+                    h = firstRequestHeaders;
+                    firstRequestHeadersUsed = true;
+                }
+                for (var hname in h) {
+                    request.setRequestHeader(hname, h[hname], false);
+                }
+            },
+            onRequest: function(requestData, request) {
+                webpage.resourceRequested(requestData, request);
+            },
+            onResponse:  function(res) {
+                webpage.resourceReceived(res);
+            },
+            onError:  function(err) {
+                webpage.resourceError(err);
+            },
             captureTypes: webpage.captureContent,
-            onLoadStarted: function(url){ webpage.loadStarted(); },
-            onURLChanged: function(url){ webpage.urlChanged(url);},
+            onLoadStarted: function(url){
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                webpage.loadStarted(url, false);
+            },
+            onURLChanged: function(url){
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                webpage.urlChanged(url);
+            },
             onTransferStarted :null,
             onContentLoaded: function(url, success){
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                try {
+                    Services.console.unregisterListener(jsErrorListener);
+                }catch(e){}
+
+                Services.console.registerListener(jsErrorListener);
                 // phantomjs call onInitialized not only at the page creation
                 // but also after the content loading.. don't know why.
                 // let's imitate it. Only after a success
                 if (success)
                     webpage.initialized();
-                else {
-                    // in case of a network fail, phantomjs send
-                    // a resourceReceived event.
-                    webpage.resourceReceived({
-                        id: 1,
-                        url: url,
-                        time: new Date(),
-                        headers: {},
-                        bodySize: 0,
-                        contentType: null,
-                        contentCharset: null,
-                        redirectURL: null,
-                        stage: "end",
-                        status: null,
-                        statusText: null,
-                        referrer: "",
-                        body: ""
-                    });
-                }
             },
             onLoadFinished: function(url, success){
-                webpage.loadFinished(success);
+                let channel = browser.docShell.currentDocumentChannel;
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                webpage.loadFinished(success, url, false);
+                if (privProp.staticContentLoading) {
+                    privProp.staticContentLoading = false;
+                }
                 if (deferred)
                     deferred.resolve(success);
+            },
+            onFrameLoadStarted : function(url, duringMainLoad) {
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                if (!duringMainLoad)
+                    webpage.loadStarted(url, true)
+            },
+            onFrameLoadFinished : function(url, success, frameWindow, duringMainLoad) {
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                if (!duringMainLoad)
+                    webpage.loadFinished(success, url, true);
             }
         }
     }
@@ -182,11 +301,24 @@ function create() {
         openURI : function(aURI, aOpener, aWhere, aContext)
         {
             // create the webpage object for this child window
-            var childPage = create();
-            // open the window
-            var win = childPage._openBlankBrowser(aOpener);
+            let opener = (webpage.ownsPages?aOpener:null);
+            let parentWPInfo = null;
+            let childPage, win;
+            if (webpage.ownsPages) {
+                parentWPInfo = {
+                    window: opener,
+                    detachChild:function(child){
+                        let idx = privProp.childWindows.indexOf(child);
+                        if (idx != -1) {
+                            privProp.childWindows.splice(0,1);
+                        }
+                    }
+                }
+            }
+            [childPage, win] = _create(parentWPInfo);
 
-            privProp.childWindows.push(childPage);
+            if (webpage.ownsPages)
+                privProp.childWindows.push(childPage);
 
             // call the callback
             webpage.rawPageCreated(childPage);
@@ -212,8 +344,15 @@ function create() {
     var privProp = {
         clipRect : null,
         framePath : [],
-        childWindows : [],
-        settings: heritage.mix({}, slConfiguration.getDefaultWebpageConfig())
+        childWindows : [], // list of webpage of child windows
+        settings: {},
+        viewportSize : { width: 400, height: 300},
+        staticContentLoading : false
+    }
+
+    let defaultSettings = slConfiguration.getDefaultWebpageConfig();
+    for (let p in defaultSettings) {
+        privProp.settings[p] = defaultSettings[p]
     }
 
     function getCurrentFrame() {
@@ -250,32 +389,37 @@ function create() {
         return win;
     }
 
-    function isChromeWindow(win) {
-        try  {
-            win.QueryInterface(Ci.nsIDOMChromeWindow)
-            return true;
-        }catch(e) {
-            return false;
-        }
-    }
-
     /**
-     * a function to return the focusedWindow.
-     * The focus given to a window can take time asynchronously
-     * so we're waiting that the focus is done.
+     *  @return array 0:the webpage object, 1:the chrome window
      */
-    function getFocusedWindow() {
-        let win = fm.focusedWindow;
-        let stop = false;
-        timer.setTimeout(function(){ stop = true},300);
+    function openBlankBrowser(noInitializedEvent) {
+        let options = getNetLoggerOptions(webpage, null, webpage.customHeaders);
+        let ready = false;
+        let parentWindow = (parentWebpageInfo?parentWebpageInfo.window:null);
+        let win = slLauncher.openBrowser(function(nav){
+            browser = nav;
+            browser.webpage = webpage;
+            browserJustCreated = true;
+            browser.authAttempts = 0;
+            Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
+            netLog.registerBrowser(browser, options);
+            if (!noInitializedEvent)
+                webpage.initialized();
+            ready = true;
+        }, parentWindow, privProp.viewportSize);
+
+        win.QueryInterface(Ci.nsIDOMChromeWindow)
+           .browserDOMWindow = slBrowserDOMWindow;
+
+        // we're waiting synchronously after the initialisation of the new window, because we need
+        // to have a ready browser element and then to have an existing win.content.
+        // slBrowserDOMWindow.openURI needs to return this win.content so the
+        // caller will load the URI into this window object.
         let thread = Services.tm.currentThread;
-        while (!stop && (!win || isChromeWindow(win))) {
+        while (!ready)
             thread.processNextEvent(true);
-            win = fm.focusedWindow;
-        }
-        if (stop)
-            return null;
-        return win;
+
+        return [webpage, win];
     }
 
     // ----------------------------------- webpage
@@ -285,6 +429,18 @@ function create() {
      * @module webpage
      */
     var webpage = {
+
+        /**
+         * toString on a webpage object indicates
+         * qtruntimeobject in PhantomJS.
+         * here is an alternate way to know if the
+         * object is a webpage object
+         */
+        __type : 'qtruntimeobject',
+
+        get objectName () {
+            return "WebPage";
+        },
 
         /**
           Object containing various settings of the web page
@@ -302,8 +458,6 @@ function create() {
             - javascriptCanOpenWindows
             - javascriptCanCloseWindows
             Note: The settings apply only during the initial call to the WebPage#open function. Subsequent modification of the settings object will not have any impact.
-
-            @notimplemented
          */
         get settings (){
             return privProp.settings;
@@ -322,32 +476,61 @@ function create() {
         captureContent : [],
 
         // ------------------------ cookies and headers
+
+        /**
+         * list of headers to set on every request for the webpage
+         */
+        customHeaders : {},
+
+        /**
+         * retrieve the list of cookies of the domain of the current url
+         * @return cookie[]
+         */
         get cookies() {
-            throw "Not Implemented"
+            if (!browser || browserJustCreated || !browser.currentURI)
+                return [];
+            return slCookiesManager.getCookiesForUri(browser.currentURI);
         },
 
+        /**
+         * set a list of cookies for the domain of the web page
+         * @param cookie[] val
+         */
         set cookies(val) {
-            throw "Not Implemented"
+            if (!browser || browserJustCreated)
+                return;
+            slCookiesManager.setCookies(val, browser.currentURI);
         },
 
-        get customHeaders() {
-            throw "Not Implemented"
-        },
-
-        set customHeaders(val) {
-            throw "Not Implemented"
-        },
-
+        /**
+         * add a cookie in the cookie manager for the current url
+         * @param cookie cookie
+         * @return boolean true if the cookie has been set
+         */
         addCookie: function(cookie) {
-            throw "Not Implemented"
+            if (!browser || browserJustCreated)
+                return false;
+            return slCookiesManager.addCookie(cookie, browser.currentURI);
         },
 
+        /**
+         * erase all cookies of the current domain
+         */
         clearCookies: function() {
-            throw "Not Implemented"
+            if (browser && !browserJustCreated)
+                slCookiesManager.clearCookies(browser.currentURI);
         },
 
+        /**
+         * delete all cookies that have the given name
+         * on the current domain
+         * @param string cookieName  the cookie name
+         * @return boolean true if deletion is ok
+         */
         deleteCookie: function(cookieName) {
-            throw "Not Implemented"
+            if (!browser || browserJustCreated)
+                return false;
+            return slCookiesManager.deleteCookie(cookieName, browser.currentURI);
         },
 
         // -------------------------------- History
@@ -376,13 +559,7 @@ function create() {
             browser.goForward();
         },
 
-        get navigationLocked() {
-            throw "Not Implemented"
-        },
-
-        set navigationLocked(val) {
-            throw "Not Implemented"
-        },
+        navigationLocked : false,
 
         reload : function() {
             browser.reload();
@@ -396,28 +573,126 @@ function create() {
 
         /**
          * Open a web page in a browser
+         *
+         * It can accept several arguments and only the first
+         * one is required:
+         *
+         * open(url)
+         * open(url, callback)
+         * open(url, httpConf)
+         * open(url, httpConf, callback)
+         * open(url, operation, data)
+         * open(url, operation, data, callback)
+         * open(url, operation, data, headers, callback)
+         *
          * @param string url    the url of the page to open
          * @param function callback  a function called when the page is loaded. it
          *                           receives "success" or "fail" as parameter.
+         * @param string|object httpConf see httpConf arg of openUrl
+         * @param string operation
+         * @param string data
+         * @param object headers
          */
-        open: function(url, callback) {
-            var me = this;
-            let deferred = Q.defer();
+        open: function(url, arg1, arg2, arg3, arg4) {
 
+            switch(arguments.length) {
+                case 1:
+                    return this.openUrl(url, 'get');
+                    break;
+                case 2:
+                    if (typeof arg1 === 'function') {
+                        return this.openUrl(url, 'get', null, arg1);
+                    }
+                    else {
+                        return this.openUrl(url, arg1);
+                    }
+                    break;
+                case 3:
+                    if (typeof arg2 === 'function') {
+                        return this.openUrl(url, arg1, null, arg2);
+                    }
+                    else {
+                        return this.openUrl(url, {
+                            operation: arg1,
+                            data: arg2
+                        });
+                    }
+                    break;
+                case 4:
+                    return this.openUrl(url, {
+                            operation: arg1,
+                            data: arg2
+                        }, null, arg3);
+                    break;
+                case 5:
+                    return this.openUrl(url, {
+                            operation: arg1,
+                            data: arg2,
+                            headers: arg3
+                        }, null, arg4);
+                    break;
+            }
+            throw "open: arguments are missing";
+        },
+
+        /**
+         * open a webpage
+         * @param string url       the url of the page to load
+         * @param string httpConf  the http method 'get', 'post', 'head', 'post', 'delete'
+         * @param object httpConf  an object with two properties
+         *          operation: http method (default: get)
+         *          data: body of the request
+         *          headers: (optional)
+         *          encoding: (optional, default utf8)
+         * @param object settings  it replaces webpage.settings.
+         * @return void
+         */
+        openUrl: function(url, httpConf, settings, callback) {
+
+            if (settings)
+                this.settings = settings;
+
+            if (!httpConf) {
+                httpConf = {
+                    operation: 'get',
+                }
+            }
+            else if (typeof httpConf == 'string') {
+                httpConf = {
+                    operation: httpConf,
+                }
+            }
+
+            var me = this;
+
+            // create a promise that we will return
+            let deferred = Q.defer();
             deferred.promise.then(function(result) {
                 if (callback) {
-                    callback(result);
-                    callback = null;
+                    try {
+                        callback(result);
+                        callback = null;
+                    }
+                    catch(e) {
+                        slLauncher.showError(e);
+                    }
                 }
                 return result;
             });
 
-            var options = getNetLoggerOptions(this, deferred);
+            var options = getNetLoggerOptions(this, deferred, this.customHeaders);
+
+            if (DEBUG_WEBPAGE)
+                slDebugLog("webpage: openUrl "+url+" conf:"+slDebugGetObject(httpConf));
 
             if (browser) {
+                if (browserJustCreated){
+                    webpage.initialized();
+                    browserJustCreated = false;
+                }
                 // don't recreate a browser if already opened.
                 netLog.registerBrowser(browser, options);
-                browser.loadURI(url);
+                webpageUtils.browserLoadURI(browser, url, httpConf);
                 return deferred.promise;
             }
 
@@ -427,9 +702,11 @@ function create() {
                 Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
                 browser.stop();
                 me.initialized();
+                browserJustCreated = false;
+                browser.authAttempts = 0;
                 netLog.registerBrowser(browser, options);
-                browser.loadURI(url);
-            });
+                webpageUtils.browserLoadURI(browser, url, httpConf);
+            }, null, privProp.viewportSize);
             // to catch window.open()
             win.QueryInterface(Ci.nsIDOMChromeWindow)
                .browserDOMWindow= slBrowserDOMWindow;
@@ -437,99 +714,121 @@ function create() {
         },
 
         /**
-         * @private
-         */
-        _openBlankBrowser: function(parentWindow) {
-            var me = this;
-
-            if (browser) {
-                throw Cr.NS_ERROR_UNEXPECTED;
-            }
-            var options = getNetLoggerOptions(this, null);
-            var ready = false;
-            var win = slLauncher.openBrowser(function(nav){
-                browser = nav;
-                browser.webpage = me;
-                Services.obs.addObserver(webpageObserver, "console-api-log-event", true);
-                netLog.registerBrowser(browser, options);
-                me.initialized();
-                ready = true;
-            }, parentWindow);
-
-            win.QueryInterface(Ci.nsIDOMChromeWindow)
-               .browserDOMWindow = slBrowserDOMWindow;
-
-            // we're waiting synchronously after the initialisation of the new window, because we need
-            // to have a ready browser element and then to have an existing win.content.
-            // slBrowserDOMWindow.openURI needs to return this win.content so the
-            // caller will load the URI into this window object.
-            let thread = Services.tm.currentThread;
-            while (!ready)
-                thread.processNextEvent(true);
-            return win;
-        },
-
-        openUrl: function(url, httpConf, settings) {
-            throw "Not Implemented"
-        },
-
-        /**
          * close the browser
          */
         close: function() {
             if (browser) {
-                Services.obs.removeObserver(webpageObserver, "console-api-log-event");
+                browser.closing = true;
+                try {
+                    Services.console.unregisterListener(jsErrorListener);
+                }catch(e){}
+                try {
+                    Services.obs.removeObserver(webpageObserver, "console-api-log-event");
+                }catch(e){}
                 netLog.unregisterBrowser(browser);
                 this.closing(this);
-                browser.webpage = null;
                 slLauncher.closeBrowser(browser);
+                browser.webpage = null;
+                if (parentWebpageInfo) {
+                    parentWebpageInfo.detachChild(this);
+                }
             }
             webPageSandbox = null;
             browser=null;
+            if (DEBUG_WEBPAGE)
+                slDebugLog("webpage: close");
         },
 
         /**
          * function called when the browser is being closed, during a call of WebPage.close()
-         * or during a call of window.close() inside the web page (not implemented yet)
+         * or during a call of window.close() inside the web page
          */
         onClosing: null,
 
-        get ownsPages () {
-            throw "Not Implemented"
-        },
+        /**
+         * This boolean indicates if pages opening by the webpage (by window.open())
+         * should be children of the webpage (true) or not (false). Default is true.
+         *
+         * If true, children pages can be retrieved by getPage(), pages, pagesWindowName
+         */
+        ownsPages : true,
 
+        /**
+         * Returns a Child Page that matches the given "window.name".
+         *
+         * @param string windowName
+         * @return webpage the found webpage
+         */
         getPage: function (windowName) {
-            throw "Not Implemented"
+            let pages = privProp.childWindows.filter(function(page){
+                if(page.windowName == windowName)
+                    return true;
+                return false;
+            });
+            if (pages.length)
+                return pages[0];
+            return null;
         },
 
+        /**
+         * Returns a list of child pages that this page has currently opened
+         * with `window.open()`.
+         * If a child page is closed (by `window.close()` or by `webpage.close()`),
+         * the page is automatically removed from this list.
+         *
+         * You should not keep a strong reference to this array since you obtain
+         * only a copy, so you won't see changes.
+         *
+         * If "ownsPages" is "false", this list won't owns the child pages.
+         *
+         * @return array list of child pages currently opened.
+         */
         get pages () {
-            throw "Not Implemented"
+            return privProp.childWindows.filter(function(page){ return true;});
         },
 
+        /**
+         * Returns a list of window name of child pages.
+         *
+         * The window name is the name given to `window.open()`.
+         *
+         * The list is only from child pages that have been created when
+         * ownsPages was true.
+         *
+         * @return array  list of strings
+         */
         get pagesWindowName () {
-            throw "Not Implemented"
+            return privProp.childWindows.map(function(page){ return page.windowName;});
         },
 
         release : function() {
-            throw "Not Implemented"
+            this.close();
         },
 
         get scrollPosition() {
-            throw "Not Implemented"
+            let pos = {top:0, left:0}
+            pos.top = browser.contentWindow.scrollY;
+            pos.left = browser.contentWindow.scrollX;
+            return pos;
         },
 
         set scrollPosition(val) {
-            throw "Not Implemented"
+            let pos = heritage.mix({top:0, left:0}, val);
+            browser.contentWindow.scrollTo(pos.left, pos.top);
         },
+
         get url() {
-            if (browser)
+            if (browser && !browserJustCreated)
                 return browser.currentURI.spec;
             return "";
         },
 
         get viewportSize() {
             if (!browser)
-                return {width:0, height:0};
+                return {
+                    width: privProp.viewportSize.width,
+                    height: privProp.viewportSize.height
+                };
             let win = browser.ownerDocument.defaultView.top;
             return {
                 width: win.innerWidth,
@@ -538,22 +837,29 @@ function create() {
         },
 
         set viewportSize(val) {
-            if (!browser)
-                return;
-            let win = browser.ownerDocument.defaultView.top;
 
             if (typeof val != "object")
                 throw new Error("Bad argument type");
 
-            let w = val.width || 0;
-            let h = val.height || 0;
+            let w = val.width || privProp.viewportSize.width;
+            let h = val.height || privProp.viewportSize.height;
 
-            if (w <= 0 || h <= 0)
+            if (w < 0 || h < 0)
                 return;
+
+            privProp.viewportSize.width = w;
+            privProp.viewportSize.height = h;
+
+            if (!browser)
+                return;
+
+            let win = browser.ownerDocument.defaultView.top;
 
             let domWindowUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
                                     .getInterface(Ci.nsIDOMWindowUtils);
             domWindowUtils. setCSSViewport(w,h);
+            win.resizeTo(w,h);
+            domWindowUtils.redraw(1);
         },
 
         get windowName () {
@@ -588,7 +894,7 @@ function create() {
             if (!browser) {
                 return '';
             }
-            var win = getFocusedWindow();
+            var win = webpageUtils.getFocusedWindow();
             if (win && win.name && win.name != 'webpage')
                 return win.name;
             return '';
@@ -626,7 +932,7 @@ function create() {
             if (!browser) {
                 return false;
             }
-            var win = getFocusedWindow();
+            var win = webpageUtils.getFocusedWindow();
             if (!win)
                 return -1;
             var l = [];
@@ -685,17 +991,35 @@ function create() {
             if (!win){
                 return false;
             }
-            const de = Ci.nsIDocumentEncoder
-            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-            let doc = win.document;
-            encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
-            encoder.setNode(doc);
-            return encoder.encodeToString();
+            return webpageUtils.getWindowContent(win, null, false);
         },
 
         set frameContent(val) {
-            throw "Not Implemented"
+            var win = getCurrentFrame();
+            if (!win){
+                return;
+            }
+
+            let webNav = win.QueryInterface(Ci.nsIInterfaceRequestor)
+                            .getInterface(Ci.nsIWebNavigation);
+            let docShell = webNav.QueryInterface(Ci.nsIDocShell);
+
+            if ((typeof content) != "string") {
+                // for given DOM node, serialize it
+                let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
+                                .createInstance(Ci.nsIDocumentEncoder);
+                encoder.init(document, "text/html", de.OutputLFLineBreak | de.OutputRaw);
+                encoder.setNode(content);
+                content = encoder.encodeToString();
+            }
+
+            privProp.staticContentLoading = true;
+            webpageUtils.setWindowContent (docShell, content, webNav.currentURI.clone());
+
+            // wait until the content is loaded
+            let thread = Services.tm.currentThread;
+            while (privProp.staticContentLoading)
+                thread.processNextEvent(true);
         },
 
         get framePlainText() {
@@ -703,13 +1027,8 @@ function create() {
             if (!win){
                 return false;
             }
-            const de = Ci.nsIDocumentEncoder
-            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-            let doc = win.document;
-            encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly | de.OutputRaw);
-            encoder.setNode(doc);
-            return encoder.encodeToString();
+
+            return webpageUtils.getWindowContent(win, null, true, privProp.settings.plainTextAllContent);
         },
 
         get frameTitle() {
@@ -735,61 +1054,68 @@ function create() {
          */
         evaluate: function(func) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
-            let args = JSON.stringify(Array.prototype.slice.call(arguments).slice(1));
-            func = '('+func.toString()+').apply(this, ' + args + ');';
-            return evalInSandbox(func);
+            if (!(func instanceof Function
+                  || typeof func === 'function'
+                  || typeof func === 'string'
+                  || func instanceof String)) {
+                throw new Error("Wrong use of WebPage#evaluate");
+            }
+
+            let args = Array.prototype.slice.call(arguments).slice(1).map(
+                          function(arg){
+                                let type = typeof arg;
+                                switch(type) {
+                                    case 'object':
+                                        if (!arg || arg instanceof RegExp) {
+                                            return ""+arg;
+                                        }
+                                    case 'string':
+                                        return JSON.stringify(arg);
+                                    default:
+                                        return ""+arg
+                                }
+                          });
+
+            let f = '('+func.toString()+').apply(this, [' + args.join(",") + ']);';
+            return evalInSandbox(f, 'phantomjs://webpage.evaluate()');
         },
 
         evaluateJavaScript: function(src) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
-            return evalInSandbox(src);
+            return evalInSandbox(src, 'phantomjs://webpage.evaluateJavaScript()');
         },
 
         evaluateAsync: function(func) {
             if (!browser)
-                throw "WebPage not opened";
-            func = '('+func.toSource()+')();';
+                throw new Error("WebPage not opened");
+            let f = '('+func.toSource()+')();';
             browser.contentWindow.setTimeout(function() {
-                evalInSandbox(func);
+                evalInSandbox(f, 'phantomjs://webpage.evaluateAsync()');
             }, 0)
         },
 
         includeJs: function(url, callback) {
             if (!browser)
-                throw "WebPage not opened";
-            // we don't use the sandbox, because with it, scripts
-            // of the loaded page cannot access to variables/functions
-            // created by the injected script. And this behavior
-            // is necessary to be compatible with phantomjs.
+                throw new Error("WebPage not opened");
             var win = getCurrentFrame();
             if (!win){
-                throw "No window available";
+                throw new Error("No window available");
             }
-            let doc = win.document;
-            let body = doc.documentElement.getElementsByTagName("body")[0];
-            let script = doc.createElement('script');
-            script.setAttribute('type', 'text/javascript');
-            script.setAttribute('src', url);
-            let listener = function(event){
-                script.removeEventListener('load', listener, true);
-                callback();
-            }
-            script.addEventListener('load', listener, true);
-            body.appendChild(script);
+            webpageUtils.evalInWindow (win, null, url, callback);
         },
 
         get libraryPath () {
+            if (!libPath)
+                return "";
             return libPath.path;
         },
 
         set libraryPath (path) {
-            libPath = Cc['@mozilla.org/file/local;1']
-                            .createInstance(Ci.nsILocalFile);
-            libPath.initWithPath(path);
+            libPath = slUtils.getMozFile(path);
         },
 
         /**
@@ -799,73 +1125,69 @@ function create() {
          * this context. We have same
          * issue that https://bugzilla.mozilla.org/show_bug.cgi?id=783499
          * the only solution is to do window.myvariable = something in the
-         * given function, instead of myvariable = something 
+         * given function, instead of myvariable = something
          */
         injectJs: function(filename) {
             if (!browser) {
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             }
-            // filename resolved against the libraryPath property
-            let f = getMozFile(filename, libPath);
-            let source = readSyncStringFromFile(f);
-            evalInSandbox(source);
+            let f = slUtils.getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            if (!f.exists()) {
+                // filename resolved against the libraryPath property
+                f = slUtils.getAbsMozFile(filename, libPath);
+                if (!f.exists()) {
+                    dump("Error injectJs: can't open '"+filename+"'\n");
+                    return false;
+                }
+            }
+            let source = slUtils.readSyncStringFromFile(f);
+            evalInSandbox(source, filename);
+            return true;
         },
-        get onError() {
-            throw "Not Implemented"
+
+        
+        /**
+         * Stop JavaScript within a onLongRunningScript callback.
+         * Called outside of onLongRunningScript it does nothing. 
+         */
+        stopJavaScript : function stopJavaScript () {
+            stopJavaScript.__interrupt__ = true;
         },
-        set onError(callback) {
-            throw "Not Implemented"
-        },
+        
+        onError : phantom.defaultErrorHandler,
 
         // --------------------------------- content manipulation
 
         get content () {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
-            const de = Ci.nsIDocumentEncoder
-            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-            let doc = browser.contentDocument;
-            encoder.init(doc, "text/html", de.OutputLFLineBreak | de.OutputRaw);
-            encoder.setNode(doc);
-            return encoder.encodeToString();
+            return webpageUtils.getWindowContent(browser.contentWindow,
+                                    browser.docShell, false);
         },
 
         set content(val) {
-            throw "Not Implemented"
+            this.setContent(val, null);
         },
 
         get offlineStoragePath() {
-            throw "Not Implemented"
-        },
-
-        set offlineStoragePath(val) {
-            throw "Not Implemented"
+            return slConfiguration.offlineStoragePath;
         },
 
         get offlineStorageQuota() {
-            throw "Not Implemented"
-        },
-
-        set offlineStorageQuota(val) {
-            throw "Not Implemented"
+            return slConfiguration.offlineStorageDefaultQuota;
         },
 
         get plainText() {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
 
-            const de = Ci.nsIDocumentEncoder
-            let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/plain"]
-                            .createInstance(Ci.nsIDocumentEncoder);
-            let doc = browser.contentDocument;
-            encoder.init(doc, "text/plain", de.OutputLFLineBreak | de.OutputBodyOnly);
-            encoder.setNode(doc);
-            return encoder.encodeToString();
+            return webpageUtils.getWindowContent(browser.contentWindow,
+                                    browser.docShell, true, privProp.settings.plainTextAllContent);
         },
 
         sendEvent: function(eventType, arg1, arg2, button, modifier) {
+
             if (!browser)
                 throw new Error("WebPage not opened");
 
@@ -876,7 +1198,7 @@ function create() {
                                         .getInterface(Ci.nsIDOMWindowUtils);
             if (modifier) {
                 let  m = 0;
-                let mod = this.event.modifiers;
+                let mod = this.event.modifier;
                 if (modifier & mod.shift) m |= domWindowUtils.MODIFIER_SHIFT;
                 if (modifier & mod.alt) m |= domWindowUtils.MODIFIER_ALT;
                 if (modifier & mod.ctrl) m |= domWindowUtils.MODIFIER_CONTROL;
@@ -898,6 +1220,9 @@ function create() {
                 if (DOMKeyCode.modifier && modifier == 0)
                     modifier = DOMKeyCode.modifier;
 
+                if (DEBUG_WEBPAGE) {
+                    slDebugLog("webpage: sendEvent DOMEvent:"+eventType+" keycode:"+DOMKeyCode.keyCode+" charCode:"+DOMKeyCode.charCode+" mod:"+modifier)
+                }
                 domWindowUtils.sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 return;
             }
@@ -905,14 +1230,23 @@ function create() {
                 let key = arg1;
                 if (typeof key == "number") {
                     let DOMKeyCode = convertQTKeyCode(key);
+                    if (DEBUG_WEBPAGE) {
+                        slDebugLog("webpage: sendEvent DOMEvent:keypress keycode:"+DOMKeyCode.keyCode+" charCode:"+DOMKeyCode.charCode+" mod:"+modifier)
+                    }
                     domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 }
                 else if (key.length == 1) {
                     let charCode = key.charCodeAt(0);
                     let DOMKeyCode = convertQTKeyCode(charCode);
+                    if (DEBUG_WEBPAGE) {
+                        slDebugLog("webpage: sendEvent DOMEvent:keypress keycode:"+DOMKeyCode.keyCode+" charCode:"+charCode+" mod:"+modifier)
+                    }
                     domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, modifier);
                 }
                 else {
+                    if (DEBUG_WEBPAGE) {
+                        slDebugLog("webpage: sendEvent keydown,keypress,keyup for the string:'"+key+"' mod:"+modifier)
+                    }
                     for(let i=0; i < key.length;i++) {
                         let charCode = key.charCodeAt(i);
                         let DOMKeyCode = convertQTKeyCode(charCode);
@@ -933,13 +1267,17 @@ function create() {
             let x = arg1 || 0;
             let y = arg2 || 0;
 
+            if (DEBUG_WEBPAGE) {
+                slDebugLog("webpage: sendEvent "+eventType+" x:"+x+" y:"+y+" btn:"+btn+" mod:"+modifier)
+            }
+
             // mouse events
             if (eventType == "mousedown" ||
                 eventType == "mouseup" ||
                 eventType == "mousemove") {
-
                 domWindowUtils.sendMouseEvent(eventType,
                         x, y, btn, 1, modifier);
+                webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
                 return;
             }
             else if (eventType == "mousedoubleclick") {
@@ -948,6 +1286,7 @@ function create() {
                 // note that is undocumented (2013-02-22)
                 domWindowUtils.sendMouseEvent("mousedown",
                         x, y, btn, 2, modifier);
+                webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
                 return;
             }
             else if (eventType == "doubleclick") {
@@ -959,6 +1298,7 @@ function create() {
                         x, y, btn, 2, modifier);
                 domWindowUtils.sendMouseEvent("mouseup",
                         x, y, btn, 2, modifier);
+                webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
                 return;
             }
             else if (eventType == "click") {
@@ -966,14 +1306,15 @@ function create() {
                         x, y, btn, 1, modifier);
                 domWindowUtils.sendMouseEventToWindow("mouseup",
                         x, y, btn, 1, modifier);
+                webpageUtils.sleepIfJavascriptURI(domWindowUtils, x, y)
                 return;
             }
 
-            throw "Unknown event type";
+            throw new Error("Unknown event type");
         },
 
         event : {
-            modifiers : {
+            modifier : {
                 shift:  0x02000000,
                 ctrl:   0x04000000,
                 alt:    0x08000000,
@@ -991,11 +1332,99 @@ function create() {
         },
 
         setContent: function(content, url) {
-            throw "Not Implemented"
+            if (!browser) {
+                openBlankBrowser(true);
+            }
+            browserJustCreated = false;
+            browser.webNavigation.stop(3);
+            let uri = browser.currentURI.clone();
+            if (url) {
+                // if url given, take it
+                uri = Services.io.newURI(url, null, null);
+            }
+            else {
+                url = uri.spec;
+            }
+
+            this.navigationRequested(url, 'Other', true, true);
+
+            if ((typeof content) != "string") {
+                // for given DOM node, serialize it
+                let encoder = Cc["@mozilla.org/layout/documentEncoder;1?type=text/html"]
+                                .createInstance(Ci.nsIDocumentEncoder);
+                encoder.init(document, "text/html", de.OutputLFLineBreak | de.OutputRaw);
+                encoder.setNode(content);
+                content = encoder.encodeToString();
+            }
+
+            privProp.staticContentLoading = true;
+
+            webpageUtils.setWindowContent (browser.docShell, content, uri);
+
+            // wait until the content is loaded
+            let thread = Services.tm.currentThread;
+            while (privProp.staticContentLoading)
+                thread.processNextEvent(true);
         },
 
+        /**
+         * set a file to an <input type="file">. this can be a list of files.
+         * a click event is generated on the element.
+         * @param string selector  a CSS selector to an <input type="file">
+         * @param string|array      list of files to select
+         */
         uploadFile: function(selector, filename) {
-            throw "Not Implemented"
+
+            if (!browser) {
+                return;
+            }
+            // check the selector
+            let exists = this.evaluate(function(sel){
+                    var el = document.querySelector(sel)
+                    return (el?true:false);
+                }, selector);
+
+            if (!exists) {
+                console.log("Warning uploadFile: "+selector+" does not exist");
+                return;
+            }
+
+            // set files. Only take existing files.
+            let files;
+            if (!Array.isArray(filename))
+                files = [filename];
+            else
+                files = filename;
+
+            browser.uploadFiles = [];
+            files.forEach(function(file) {
+                try {
+                    let selectedFile = slUtils.getMozFile(file);
+                    if (selectedFile.exists()) {
+                        browser.uploadFiles.push(selectedFile);
+                    }
+                }
+                catch(e) {
+                }
+            });
+
+            if (!browser.uploadFiles.length) {
+                return
+            }
+            browser.uploadFilesReaded = false;
+            // send a click. It will open the file picker which will
+            // take browser.uploadFiles
+            this.evaluate(function(sel){
+                    var el = document.querySelector(sel);
+                    if (!el) {
+                        return;
+                    }
+                    var ev = document.createEvent('MouseEvents');
+                    ev.initEvent("click", true, true);
+                    el.dispatchEvent(ev);
+                }, selector);
+
+            slUtils.sleep(500, function(){ return browser.uploadFilesReaded;} ); // wait after the file picker opening
         },
 
         // ------------------------------- Screenshot and pdf export
@@ -1005,29 +1434,31 @@ function create() {
          * when calling render*() methods
          */
         get clipRect () {
-            return privProp.clipRect;
+            if (privProp.clipRect)
+                return privProp.clipRect;
+            return {top:0, left:0, width:0, height:0}
         },
         set clipRect (value) {
             let requirements = {
                 top: {
-                    is: ["number"],
-                    ok: function(val) val >= 0,
-                    msg: "top should be a positive integer"
+                    is: ["undefined", "number"],
+                    ok: function(val)  val === undefined || val >= 0,
+                    msg: "clipRect.top should be a positive integer"
                 },
                 left: {
-                    is: ["number"],
-                    ok: function(val) val >= 0,
-                    msg: "left should be a positive integer"
+                    is: ["undefined", "number"],
+                    ok: function(val)  val === undefined || val >= 0,
+                    msg: "clipRect.left should be a positive integer"
                 },
                 width: {
-                    is: ["number"],
-                    ok: function(val) val > 0,
-                    msg: "width should be a positive integer"
+                    is: ["undefined", "number"],
+                    ok: function(val) val === undefined || val >= 0,
+                    msg: "clipRect.width should be a positive integer"
                 },
                 height: {
-                    is: ["number"],
-                    ok: function(val) val > 0,
-                    msg: "height should be a positive integer"
+                    is: ["undefined", "number"],
+                    ok: function(val) val === undefined || val >= 0,
+                    msg: "clipRect.height should be a positive integer"
                 },
             }
             if (typeof(value) === "object") {
@@ -1039,72 +1470,120 @@ function create() {
         paperSize : null,
         get zoomFactor () {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             return browser.markupDocumentViewer.fullZoom;
         },
         set zoomFactor (val) {
             if (!browser)
-                throw "WebPage not opened";
+                throw new Error("WebPage not opened");
             browser.markupDocumentViewer.fullZoom = val;
+            let domWindowUtils = browser.contentWindow
+                                        .QueryInterface(Ci.nsIInterfaceRequestor)
+                                        .getInterface(Ci.nsIDOMWindowUtils);
+            domWindowUtils.redraw(1);
         },
-        render: function(filename, ratio) {
+
+        render: function(filename, options) {
             if (!browser)
-                throw "WebPage not opened";
-            let format = fs.extension(filename).toLowerCase() || 'png';
-            let content = this.renderBytes(format, ratio);
-            fs.write(filename, content, "wb");
-        },
+                throw new Error("WebPage not opened");
 
-        renderBytes: function(format, ratio) {
-            return base64.decode(this.renderBase64(format, ratio));
-        },
+            let file = fs.absolute(filename);
 
-        renderBase64: function(format, ratio) {
-            if (!browser)
-                throw "WebPage not opened";
+            try {
+                let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file));
+                if (finalOptions.format == 'pdf') {
+                    let printOptions = webpageUtils.getPrintOptions(this, finalOptions);
+                    return webpageUtils.renderPageAsPDF(browser.contentWindow, file, printOptions);
+                }
 
-            format = (format || "png").toString().toLowerCase();
-            let qual = undefined;
-            if (format == "png") {
-                format = "image/png";
-            } else if (format == "jpeg") {
-                format = "image/jpeg";
-                qual = 0.8;
-            } else {
-                throw new Error("Render format \"" + format + "\" is not supported");
+                let canvas = webpageUtils.getScreenshotCanvas(
+                                            browser.contentWindow,
+                                            finalOptions.ratio,
+                                            finalOptions.onlyViewport, this);
+                let content = null;
+                canvas.toBlob(function(blob) {
+                    let reader = new browser.contentWindow.FileReader();
+                    reader.onloadend = function() {
+                        content = reader.result;
+                    }
+                    reader.readAsBinaryString(blob);
+                }, finalOptions.contentType, finalOptions.quality);
+
+                let thread = Services.tm.currentThread;
+                while (content === null) {
+                    thread.processNextEvent(true);
+                }
+
+                let dir = fs.directory(file);
+                if (!fs.exists(dir)) {
+                    fs.makeTree(dir);
+                }
+
+                fs.write(file, content, "wb");
+                return true;
             }
+            catch(e) {
+                return false;
+            }
+        },
 
-            let canvas = getScreenshotCanvas(browser.contentWindow,
-                                             privProp.clipRect, ratio);
+        renderBytes: function(options) {
+            if (!browser)
+                throw new Error("WebPage not opened");
+            try {
+                let finalOptions = webpageUtils.getScreenshotOptions(this, options);
+                let canvas = webpageUtils.getScreenshotCanvas(
+                                            browser.contentWindow,
+                                            finalOptions.ratio,
+                                            finalOptions.onlyViewport, this);
+                let content = null;
+                canvas.toBlob(function(blob) {
+                    let reader = new browser.contentWindow.FileReader();
+                    reader.onloadend = function() {
+                        content = reader.result;
+                    }
+                    reader.readAsBinaryString(blob);
+                }, finalOptions.contentType, finalOptions.quality);
 
-            return canvas.toDataURL(format, qual).split(",", 2)[1];
+                let thread = Services.tm.currentThread;
+                while (content === null) {
+                    thread.processNextEvent(true);
+                }
+                return content;
+            }
+            catch(e) {
+                return null;
+            }
+        },
+
+        renderBase64: function(options) {
+            if (!browser)
+                throw new Error("WebPage not opened");
+            let finalOptions = webpageUtils.getScreenshotOptions(this, options)
+
+            let canvas = webpageUtils.getScreenshotCanvas(browser.contentWindow,
+                                            finalOptions.ratio, finalOptions.onlyViewport, this);
+
+            return canvas.toDataURL(finalOptions.contentType, finalOptions.quality).split(",", 2)[1];
         },
 
         //--------------------------------------------------- window popup callback
 
         onAlert : null,
 
-        get onCallback() {
-            throw "Not Implemented"
-        },
+        onAuthPrompt: null,
 
-        set onCallback(callback) {
-            throw "Not Implemented"
-        },
+        onCallback : null,
 
         onConfirm : null,
 
         onConsoleMessage : null,
 
-        get onFilePicker() {
-            throw "Not Implemented"
-        },
-
-        set onFilePicker(callback) {
-            throw "Not Implemented"
-        },
+        onFilePicker : null,
 
         onPrompt : null,
+        
+        onLongRunningScript : null,
 
         // ------------------------------ browsing callbacks
 
@@ -1117,16 +1596,12 @@ function create() {
         //This callback is invoked when the page starts the loading. There is no argument passed to the callback.
         onLoadStarted: null,
 
-        get onNavigationRequested() {
-            throw "Not Implemented"
-        },
-
-        set onNavigationRequested(callback) {
-            throw "Not Implemented"
-        },
+        onNavigationRequested: null,
 
         // This callback is invoked when a new child window (but not deeper descendant windows) is created by the page, e.g. using window.open
         onPageCreated: null,
+
+        onResourceError : null,
 
         onResourceRequested : null,
 
@@ -1137,12 +1612,22 @@ function create() {
 
         // -------------------------------- private methods to send some events
         closing:function (page) {
-            if (this.onClosing)
+            if (this.onClosing) {
                 this.onClosing(page);
+            }
         },
 
         initialized: function() {
             webPageSandbox = null;
+            if (browser) {
+                let ds = browser.docShell;
+                ds.allowImages = privProp.settings.loadImages;
+                ds.allowJavascript = privProp.settings.javascriptEnabled;
+            }
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onInitialized");
+            }
+
             if (this.onInitialized)
                 this.onInitialized();
         },
@@ -1157,20 +1642,39 @@ function create() {
                 onConsoleMessage(message, lineNumber, fileName);
         },
 
-        loadFinished: function(status) {
+        loadFinished: function(status, url, isFrame) {
+            browserJustCreated = false;
             webPageSandbox = null;
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onLoadFinished status:"+status+" url:"+url+" isFrame:"+isFrame);
+            }
             if (this.onLoadFinished)
-                this.onLoadFinished(status);
+                this.onLoadFinished(status, url, isFrame);
         },
 
-        loadStarted: function() {
+        loadStarted: function(url, isFrame) {
             webPageSandbox = null;
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onLoadStarted url:"+url+" isFrame:"+isFrame);
+            }
             if (this.onLoadStarted)
-                this.onLoadStarted();
+                this.onLoadStarted(url, isFrame);
         },
 
-        navigationRequested: function(url, navigationType, navigationLocked, isMainFrame) {
-            throw "Not Implemented"
+        /**
+         * @param string url  the url of the requested page
+         * @param string navigationType a string indicated the origin:
+         *          "Undefined" "LinkClicked" "FormSubmitted" "BackOrForward" "Reload" "FormResubmitted" "Other"
+         * @param boolean willNavigate  true if the navigation is not locked
+         * @param boolean isMainFrame true if it comes from the mainFrame
+         */
+
+        navigationRequested: function(url, navigationType, willNavigate, isMainFrame) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onNavigationRequested url:"+url+" navigationType:"+navigationType+" willNavigate:"+willNavigate+" isMainFrame:"+isMainFrame);
+            }
+            if (this.onNavigationRequested)
+                this.onNavigationRequested(url, navigationType, willNavigate, isMainFrame)
         },
 
         rawPageCreated: function(page) {
@@ -1178,29 +1682,41 @@ function create() {
                 this.onPageCreated(page);
         },
 
+        resourceError: function(error) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onResourceError error:"+slDebugGetObject(error));
+            }
+            if (this.onResourceError)
+                this.onResourceError(error);
+        },
+
         resourceReceived: function(request) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onResourceReceived request:"+slDebugGetObject(request, ['body']));
+            }
             if (this.onResourceReceived)
                 this.onResourceReceived(request);
         },
 
-        resourceRequested: function(resource) {
+        resourceRequested: function(resource, request) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onResourceRequested resource:"+slDebugGetObject(resource));
+            }
             if (this.onResourceRequested)
-                this.onResourceRequested(resource);
+                this.onResourceRequested(resource, request);
         },
 
         urlChanged: function(url) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onUrlChanged url:"+url);
+            }
             webPageSandbox = null;
             if (this.onUrlChanged)
                 this.onUrlChanged(url);
         }
     };
 
-    return webpage;
-}
-exports.create = create;
+    // initialization
+    return openBlankBrowser(false);
+} // end of _create
 
-/*
-function WebPage() {
-    this.prototype = create();
-}
-*/

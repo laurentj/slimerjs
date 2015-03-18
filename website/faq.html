@@ -39,7 +39,7 @@
             <ul class="nav">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="features.html">Features</a></li>
-                <li><a href="install.html">Install</a></li>
+                <li><a href="download.html">Download</a></li>
                 <li><a href="http://docs.slimerjs.org">Documentation</a></li>
                 <li><a href="http://github.com/laurentj/slimerjs">Source Code</a></li>
                 <li class="active"><a href="faq.html">FAQ</a></li>
@@ -75,65 +75,80 @@
               <h1>title</h1>
             </div-->
 
+<p>General FAQ. For the technical FAQ, <a href="http://docs.slimerjs.org/current/faq.html">see the manual</a>.</p>
 
-<dl>
-    <dt>Why is it not natively headless?</dt>
+<dl id="faq">
+    <dt id="why-not-headless">Why is it not natively headless?</dt>
     <dd>You see windows during the execution of your script? It's normal.
-        Gecko, the rendering engine of Firefox, cannot render web content without a graphical window.
-        See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=446591">Mozilla bug 446591</a>.
-        However you can launch <span class="slm">SlimerJS</span> with xvfb if you are under
-        linux or MacOSx, to have a headless <span class="slm">SlimerJS</span>.</dd>
-
-    <dt>Why do we need Firefox or XulRunner?</dt>
-    <dd><span class="slm">SlimerJS</span> does not embed Gecko directly, because the Mozilla plateform is a huge library.
-        Most of time, web developers have already Firefox installed, so downloading and installing
-        an other Gecko is useless. With only its 350ko, <span class="slm">SlimerJS</span> saves megabytes of bandwidth and
-        it avoid to distribute a version for each platform (linux, macos, windows...). It allows
-        you to choose your Firefox version.<br>
-        Probably in the future <span class="slm">SlimerJS</span> will embed its own version of Gecko, if we had to hack
-        Gecko for some reason (headless feature for example), or if users really want to
-        have it.
+        Gecko, the rendering engine of Firefox, cannot render web content without a
+        graphical window.<br />
+        You can launch <span class="slm">SlimerJS</span> with xvfb if you are under
+        linux or MacOSx, to have a headless <span class="slm">SlimerJS</span>.<br/>
+        <a href="https://github.com/laurentj/slimerjs/issues/80">There is a hope</a>
+        for future release of SlimerJS, with latest improvements made in Gecko.
     </dd>
 
-    <dt>Hey, CapserJS does not work with <span class="slm">SlimerJS</span>!</dt>
-    <dd>Yes, because:
-        <ol>
-            <li><span class="slm">SlimerJS</span> does not implement yet all the PhantomJS API</li>
-            <li>CasperJS does not know SlimerJS but
-                <a href="https://github.com/n1k0/casperjs/issues/482">we are working on this issue</a>.
-            </li>
-        </ol>
-        We hope that SlimerJS 0.7 or 0.8 will work with CasperJS.
+    <dt id="gecko">What is Gecko?</dt>
+    <dd>Gecko is the core engine of Firefox.</dd>
+
+    <dt id="firefox-compatibility">Which version of Firefox is SlimerJS compatible with?</dt>
+    <dd>It depends of the package you downloaded. If you chose
+        a package dedicated to a specific platform, <span class="slm">SlimerJS</span>
+        embeds Gecko 33. So it is compatible with Firefox 33.<br>
+        If you chose the lightweight package, it runs with <em>your</em> Firefox, so
+        it can run with any version since Firefox 20 (probably lower versions
+        but you could have some issues; Not tested).<br>Note that officially, SlimerJS
+        is only compatible with stable versions of Firefox.
     </dd>
 
-    <dt>Why is it called "SlimerJs"?</dt>
-    <dd>Slimer is the name of a ghost in the movie "GhostBusters". As you may now, the Firefox
+    <dt id="firefox-unstable">Can SlimerJS be executed with unstable version of Firefox?</dt>
+    <dd>Yes, if you make some changes. This is explained <a href="http://docs.slimerjs.org/current/installation.html#using-unstable-version-or-very-old-versions-of-firefox-xulrunner">in the installation manual</a>.</dd>
+
+    <dt id="launch-casperjs">Can CasperJS be launched with <span class="slm">SlimerJS</span>?</dt>
+    <dd>Yes, since SlimerJS 0.8, and with CasperJS 1.1beta1 or higher.
+        Just launch CasperJS as usual by adding <code>--engine=slimerjs</code>
+        on the command line.
+    </dd>
+
+    <dt id="why-slimerjs-name">Why is it called "SlimerJs"?</dt>
+    <dd>Slimer is the name of a ghost in the movie "GhostBusters". As you may know, the Firefox
         source code uses some references from this movie, and since PhantomJS,
         CasperJs and other related tools, is a matter of ghosts... ;-)</dd>
 
-    <dt>How can I contribute?</dt>
+    <dt>I found some English errors on the web site or in the documentation</dt>
+    <dd>Our apologies for that. English is not the mother tongue of the main author. And he
+        didn't work enough at school in English class :). However, he will be very happy
+        to receive your help to fix English errors. See below how to contribute :-)
+    </dd>
+    <dt id="how-to-contribute">How can I contribute?</dt>
     <dd>
         You can contribute in many ways:
         <ul>
             <li>Report bugs or ideas of improvements into
                 <a href="https://github.com/laurentj/slimerjs/issues">"issues" on github</a></li>
             <li>Improve the code by providing patches. <span class="slm">SlimerJS</span> is entirely in Javascript!!
-            <a href="https://github.com/laurentj/slimerjs/fork_select">Fork the repository in github</a>,
-            commit, and do pull requests. Please create one dedicated branch for each bugs/features.</li>
+            <a href="https://github.com/laurentj/slimerjs/blob/master/CONTRIBUTING.md">See instructions
+            to contribute</a>.</li>
             <li><a href="https://github.com/laurentj/slimerjs/tree/master/docs">Document the API</a>.
                  The documentation is stored in the github repository.</li>
+            <li><a href="https://github.com/laurentj/slimerjs/tree/master/website">Improve the web site</a>.
+                 The web site is also stored in the github repository.</li>
             <li>Other ideas? Discuss with us on the IRC channel or in the mailing list
              (<a href="community.html">see the community page</a>).</li>
         </ul>
     </dd>
 
-    <dt>Is there a build of SlimerJS containing latest improvements?</dt>
-    <dd>Yes, each days a build is made from the "master" branch of the source code.
-    This is the nightly build. Since this is a version in development, don't use it
+    <dt id="nightlies">Is there a build of SlimerJS containing the latest improvements?</dt>
+    <dd>Yes, each day a build is made from the "master" branch and the stable branch
+    of the source code.
+    This is the nightly build. Since these are development versions don't use them
     in production.<br>
-    <a href="http://download.slimerjs.org/slimerjs-nightly.zip">Download the archive here</a> and
-    <a href="http://download.slimerjs.org/slimerjs-doc-nightly.zip">its documentation</a>
-    (that you can view <a href="http://docs.slimerjs.org/nightly/">online here</a>).
+    Download the archive
+    <a href="http://download.slimerjs.org/nightlies/latest-slimerjs-stable/">from the stable branch</a>
+    (which contains only latest bug fixes) or
+    <a href="http://download.slimerjs.org/nightlies/latest-slimerjs-master/">from the master branch</a>
+    (which contains latest improvements for the future major release).
+    You can view the documentation from the master branch <a href="http://docs.slimerjs.org/nightly/">online here</a>.
     </dd>
 
     <dt>Why are there no tests on the WebServer object in the source code?</dt>
@@ -175,7 +190,7 @@
               <a href="https://github.com/laurentj/slimerjs/issues"><img class="imgbtn" src="assets/img/bug_bleu.png"> Bug ? Ideas !</a>
             </li>
           </ul>
-          <p>Copyright 2013 Laurent Jouanneau / Innophi - Design by <a href="http://www.3liz.com/">3Liz</a></p>
+          <p>Copyright 2013-2015 Laurent Jouanneau / Innophi - Design by <a href="http://www.3liz.com/">3Liz</a></p>
       </div>
     </footer>
 

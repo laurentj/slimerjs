@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 "use strict";
 
-const {Cc, Ci, Cr} = require("chrome");
+const {Cc, Ci, Cr, Cu} = require("chrome");
 const {mix} = require("sdk/core/heritage");
 const unload = require("sdk/system/unload");
 
@@ -11,6 +11,9 @@ const observers = require("sdk/deprecated/observer-service");
 
 const imgTools = Cc["@mozilla.org/image/tools;1"].getService(Ci.imgITools);
 const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+
+Cu.import('resource://slimerjs/slDebug.jsm');
+Cu.import("resource://gre/modules/Services.jsm");
 
 let browserMap = new WeakMap();
 
@@ -21,9 +24,8 @@ exports.registerBrowser = function(browser, options) {
             onRequest: null,
             onResponse: null,
 
-            // These two if you need to tamper data
+            // if you need to tamper data
             _onRequest: null,
-            _onResponse: null,
 
             // Mime types to capture (regexp array)
             captureTypes: [],
@@ -34,6 +36,7 @@ exports.registerBrowser = function(browser, options) {
 
             // The mask.
             // called when the load of new document is asked.
+            // receives the uri that is loading
             onLoadStarted: null,
 
             // The red underpants.
@@ -55,10 +58,21 @@ exports.registerBrowser = function(browser, options) {
 
             // The t-shirt with the SUPER logo (or not).
             // called when the document is ready.
-            // Received "success" or "fail" as parameter.
+            // Receives the URI, "success" or "fail"
             // all resources are loaded.
             // the document has just received the load event.
-            onLoadFinished: null
+            onLoadFinished: null,
+
+            // called when the load of frame is starting.
+            // receives the uri that is loading, and a boolean
+            // indicating if it is during the load of the main document (true) or not
+            onFrameLoadStarted: null,
+
+            // called when a frame is loaded.
+            // Receives the URI, "success" or "fail", and a boolean indicating
+            // if it is during the load of the main document (true) or not
+            onFrameLoadFinished: null
+
         }, options || {}),
         requestList: [],
         progressListener: null
@@ -91,9 +105,6 @@ exports.unregisterBrowser = function(browser) {
 
 const startTracer = function() {
     observers.add("http-on-modify-request", onRequestStart);
-    observers.add("http-on-examine-response", onRequestResponse);
-    observers.add("http-on-examine-cached-response", onRequestResponse);
-
     unload.when(exports.stopTracer);
 };
 exports.startTracer = startTracer;
@@ -101,8 +112,6 @@ exports.startTracer = startTracer;
 const stopTracer = function() {
     try {
         observers.remove("http-on-modify-request", onRequestStart);
-        observers.remove("http-on-examine-response", onRequestResponse);
-        observers.remove("http-on-examine-cached-response", onRequestResponse);
     } catch(e) {
         console.exception(e);
     }
@@ -113,7 +122,12 @@ const stopTracer = function() {
 };
 exports.stopTracer = stopTracer;
 
+/**
+ * @param nsIRequest/nsIChannel subject
+ * @param string data
+ */
 const onRequestStart = function(subject, data) {
+
     let browser = getBrowserForRequest(subject);
     if (!browser || !browserMap.has(browser)) {
         return;
@@ -126,16 +140,55 @@ const onRequestStart = function(subject, data) {
         options._onRequest(subject);
     }
 
+    let req = traceRequest(index, subject);
+
+    if (DEBUG_NETWORK_PROGRESS) {
+        slDebugLog("network: resource request #"+req.id+" started: "+req.method+" - "+req.url+" flags="+loadFlags(subject));
+    }
+
     if (typeof(options.onRequest) === "function") {
-        options.onRequest(traceRequest(index, subject));
+        options.onRequest(req,
+                          requestController(subject, index, options, req));
+    }
+    if (subject.status) {
+        let [code, msg] = getErrorCode(subject.status);
+        if (DEBUG_NETWORK_PROGRESS) {
+            slDebugLog("network: resource request #"+req.id+" in error: #"+code+" - "+msg);
+        }
+
+        if (typeof(options.onError) === "function") {
+            options.onError({id: req.id, url: req.url, errorCode:code, errorString:msg});
+        }
+    }
+
+    let listener = new TracingListener(index, options, subject);
+    subject.QueryInterface(Ci.nsITraceableChannel);
+    listener.originalListener = subject.setNewListener(listener);
+};
+
+const onFileRequestStart = function(subject, browser) {
+    let {options, requestList} = browserMap.get(browser);
+    requestList.push(subject.name);
+    let index = requestList.length;
+
+    /*if (typeof(options._onRequest) === "function") {
+        options._onRequest(subject);
+    }*/
+
+    if (typeof(options.onRequest) === "function") {
+        let request = {
+            id: index,
+            method: 'GET',
+            url: subject.URI.spec,
+            time: new Date(),
+            headers: []
+        }
+        options.onRequest(request,
+                          requestController(subject, index, options, request));
     }
 };
 
-const onRequestResponse = function(subject, data) {
-    let browser = getBrowserForRequest(subject);
-    if (!browser || !browserMap.has(browser)) {
-        return;
-    }
+const onFileRequestResponse = function(subject, browser) {
 
     // Get request ID
     let index;
@@ -148,40 +201,167 @@ const onRequestResponse = function(subject, data) {
         return val;
     });
 
-    if (typeof(options._onResponse) === "function") {
-        options._onResponse(subject);
-    }
+    let response = {
+        id: index,
+        url: subject.URI.spec,
+        time: new Date(),
+        headers: [],
+        bodySize: 0,
+        contentType: null,
+        contentCharset: null,
+        redirectURL: null,
+        stage: "start",
+        status: null,
+        statusText: null,
 
-    let listener = new TracingListener(subject, index, browserMap.get(browser).options);
-    subject.QueryInterface(Ci.nsITraceableChannel);
-    listener.originalListener = subject.setNewListener(listener);
+        // Extensions
+        referrer: "",
+        body: ""
+    };
+    if (typeof(options.onResponse) == "function") {
+        options.onResponse(mix({}, response));
+    }
 };
 
+const onFileRequestResponseDone = function(subject, browser) {
 
-const TracingListener = function(subject, index, options) {
+    // Get request ID
+    let index;
+    let {options, requestList} = browserMap.get(browser);
+    requestList = requestList.map(function(val, i) {
+        if (subject.name == val) {
+            index = i + 1;
+            return val;
+        }
+        return val;
+    });
+
+    let response = {
+        id: index,
+        url: subject.URI.spec,
+        time: new Date(),
+        headers: [],
+        bodySize: subject.contentLength,
+        contentType: null, //subject.contentType, phantomjs doesn't provide it
+        contentCharset: subject.contentCharset,
+        redirectURL: null,
+        stage: "end",
+        status: null,
+        statusText: null,
+
+        // Extensions
+        referrer: "",
+        body: ""
+    };
+    if (typeof(options.onResponse) == "function") {
+        options.onResponse(mix({}, response));
+    }
+};
+
+const TracingListener = function(index, options, request) {
+    this.index = index;
     this.options = options;
-    this.response = traceResponse(index, subject);
+    this.response = null;
+    this.errorAlreadyNotified = false;
     this.data = [];
     this.dataLength = 0;
+    this.originalRequest = request;
 };
 TracingListener.prototype = {
     onStartRequest: function(request, context) {
-        this.originalListener.onStartRequest(request, context);
-        if (typeof(request.URI) === "undefined" || !this._inWindow(request)) {
+        try {
+            request.QueryInterface(Ci.nsIHttpChannel);
+            this.originalListener.onStartRequest(request, context);
+        } catch(e) {
+            //dump("netlog onStartRequest error: "+e+"\n")
+        }
+
+        if (typeof(request.URI) === "undefined" ||!this._inWindow(request)) {
             return;
         }
 
-        this.response.stage = "start";
-        this.response.time = new Date();
+        if (this.originalRequest.status == Cr.NS_BINDING_REDIRECTED) {
+            // when there is a redirection, the original chanel has this status
+            // but we receive as "request" argument the new channel. We should ignore
+            // this new channel because it has its own TracingListener
+            this.response = traceResponse(this.index, this.originalRequest);
+            this.response.contentType = null;
+            if (typeof(this.options.onResponse) == "function") {
+                this.options.onResponse(mix({}, this.response));
+                this._triggerEndResponse(null, null);
+            }
+            this.originalRequest = null;
+            return;
+        }
+        this.response = traceResponse(this.index, request);
 
-        if (typeof(this.options.onResponse) == "function") {
-            this.options.onResponse(mix({}, this.response));
+        if (DEBUG_NETWORK_PROGRESS) {
+            slDebugLog("network: resource #"+this.response.id+" response 'start': "+this.response.url+" flags="+loadFlags(request));
+        }
+
+        if (request.status) {
+            let [code, msg] = getErrorCode(request.status);
+            if (DEBUG_NETWORK_PROGRESS) {
+                slDebugLog("network: resource #"+this.response.id+" response in error: #"+code+" - "+msg);
+            }
+            if (typeof(this.options.onError) === "function")
+                this.options.onError({id: this.response.id, url: this.response.url, errorCode:code, errorString:msg});
+            this.errorAlreadyNotified = true;
+        }
+        else {
+            if (typeof(this.options.onResponse) == "function") {
+                this.options.onResponse(mix({}, this.response));
+            }
+
+            let errorCode = 0, errorStr;
+            if (this.response.status >= 500 ) {
+                errorCode = 301;
+                errorStr ='Error downloading '+this.response.url+' - server replied: '+this.response.statusText;
+            }
+            else if (this.response.status >= 400 ) {
+                errorStr ='Error downloading '+this.response.url+' - server replied: '+this.response.statusText;
+                switch(this.response.status) {
+                    case 401:
+                        errorCode = 204;
+                        errorStr ='Unauthorized content';
+                        break;
+                    case 403:
+                        errorCode = 201;
+                        errorStr ='the access to the remote content was denied';
+                        break;
+                    case 404:
+                        errorCode = 203;
+                        errorStr ='the remote content was not found at the server';
+                        break;
+                    case 418: errorCode = 302; break;
+                    default:
+                        errorCode = 299;
+                        break;
+                }
+            }
+
+            if (errorCode) {
+                if (DEBUG_NETWORK_PROGRESS) {
+                    slDebugLog("network: resource #"+this.response.id+" response in error (2): #"+errorCode+" - "+errorStr);
+                }
+
+                if (typeof(this.options.onError) === "function")
+                    this.options.onError({id: this.response.id,
+                                         url: this.response.url,
+                                         errorCode:errorCode,
+                                         errorString:errorStr});
+                this.errorAlreadyNotified = true;
+            }
         }
     },
     onDataAvailable: function(request, context, inputStream, offset, count) {
+
         try {
-            request = request.QueryInterface(Ci.nsIChannel);
-            if (typeof(request.URI) !== "undefined" && this._inWindow(request)) {
+            //request = request.QueryInterface(Ci.nsIChannel);
+            if (this.originalRequest &&
+                typeof(request.URI) !== "undefined" &&
+                this._inWindow(request)) {
+
                 this.dataLength += count;
                 let win = getWindowForRequest(request);
                 if (this._defragURL(win.location) == request.URI.spec ||
@@ -196,13 +376,18 @@ TracingListener.prototype = {
         } catch(e) {
             console.exception(e);
         } finally {
-            this.originalListener.onDataAvailable(request, context, inputStream, offset, count);
+            try {
+                // loading may be aborted. let's catch the error...
+                this.originalListener.onDataAvailable(request, context, inputStream, offset, count);
+            } catch(e) {
+            }
         }
     },
     onStopRequest: function(request, context, statusCode) {
-        this.originalListener.onStopRequest(request, context, statusCode);
 
-        if (typeof(request.URI) === "undefined" || !this._inWindow(request)) {
+        this.originalListener.onStopRequest(request, context, statusCode);
+        request = request.QueryInterface(Ci.nsIHttpChannel);
+        if (typeof(request.URI) === "undefined" || !this._inWindow(request) || !this.originalRequest) {
             this.data = [];
             return;
         }
@@ -213,34 +398,22 @@ TracingListener.prototype = {
             return;
         }
 
-        if (typeof(this.options.onResponse) != "function") {
-            return;
+        if (DEBUG_NETWORK_PROGRESS) {
+            slDebugLog("network: resource #"+this.response.id+" response end status: "+this.response.url);
         }
-
-        // Finish response
-        this.response.stage = "end";
-        this.response.time = new Date();
-        this.response.body = this.data.join("");
-        this.response.bodySize = this.dataLength;
-
-        if (this.response.redirectURL) {
-            this.response.body = "";
-            this.response.bodySize = 0;
-        }
-
-        if (this.response.body) {
-            if (/^image\//.test(this.response.contentType)) {
-                this.response.imageInfo = imageInfo(this.response, this.response.body);
+        if (request.status) {
+            let [code, msg] = getErrorCode(request.status);
+            if (DEBUG_NETWORK_PROGRESS) {
+                slDebugLog("network: resource #"+this.response.id+" response in error: "+code+" - "+msg);
             }
-            if (!this._shouldCapture(request) &&
-                this._defragURL(browser.contentWindow.location) != request.URI.spec)
-            {
-                this.response.body = "";
+            if (!this.errorAlreadyNotified && typeof(this.options.onError) === "function") {
+                this.options.onError({id: this.response.id, url: this.response.url, errorCode:code, errorString:msg});
             }
+            this.errorAlreadyNotified = false;
         }
-        this.data = [];
 
-        this.options.onResponse(mix({}, this.response));
+        this._triggerEndResponse(browser, request);
+        this.originalRequest = null;
     },
 
     _inWindow: function(request) {
@@ -283,6 +456,36 @@ TracingListener.prototype = {
         return location.href.substr(0, location.href.length - location.hash.length);
     },
 
+    _triggerEndResponse : function(browser, request) {
+        if (typeof(this.options.onResponse) != "function") {
+            return;
+        }
+
+        // Finish response
+        this.response.stage = "end";
+        this.response.time = new Date();
+        this.response.body = this.data.join("");
+        this.response.bodySize = this.dataLength;
+
+        if (this.response.redirectURL) {
+            this.response.body = "";
+            this.response.bodySize = 0;
+        }
+
+        if (this.response.body && this.originalRequest) {
+            if (/^image\//.test(this.response.contentType)) {
+                this.response.imageInfo = imageInfo(this.response, this.response.body);
+            }
+            if (!this._shouldCapture(request) &&
+                this._defragURL(browser.contentWindow.location) != request.URI.spec)
+            {
+                this.response.body = "";
+            }
+        }
+        this.data = [];
+        this.options.onResponse(mix({}, this.response));
+    },
+
     QueryInterface: function (aIID) {
         if (aIID.equals(Ci.nsIStreamListener) ||
             aIID.equals(Ci.nsISupports)) {
@@ -293,63 +496,146 @@ TracingListener.prototype = {
 };
 
 
+/**
+ * @param nsIRequest/nsIChannel request
+ * @param integer index  the number of the request
+ * @param object options
+ * @param object requestPhantom  the request object exposed to the script
+ */
+const requestController = function(request, index, options, requestPhantom) {
+    return {
+        abort: function() {
+            request.cancel(Cr.NS_BINDING_ABORTED);
+            if (typeof(options.onError) == "function") {
+                options.onError(
+                    {
+                        id: index,
+                        url: request.URI.spec,
+                        errorCode: 95,
+                        errorString: "Resource loading aborted"
+                    });
+            }
+        },
+        changeUrl : function(url) {
+            if (DEBUG_NETWORK_PROGRESS) {
+                slDebugLog("network: resource request #"+requestPhantom.id+": url changed to  "+url+" flags="+loadFlags(request));
+            }
+            let uri = ioService.newURI(url, null, null);
+            request.redirectTo(uri);
+        },
+
+        setHeader : function (key, value, merge) {
+            merge = (merge?true:false);
+            if (value == null) { // null value means to delete the header
+                value = '';
+                merge = false;
+            }
+            request.setRequestHeader(key, value, merge);
+        }
+    }
+}
+
 /*
 Request & Response objects
 */
 const traceRequest = function(id, request) {
     request.QueryInterface(Ci.nsIHttpChannel);
     let headers = [];
+
     request.visitRequestHeaders(function(name, value) {
         value.split("\n").forEach(function(v) {
             headers.push({"name": name, "value": v});
         });
     });
 
-    return {
+    let res = {
         id: id,
         method: request.requestMethod,
         url: request.URI.spec,
         time: new Date(),
         headers: headers
     };
+
+    let stream = request.QueryInterface(Ci.nsIUploadChannel).uploadStream;
+    if (stream && (request.requestMethod == 'POST' || request.requestMethod == 'PUT')) {
+        try {
+            // QueryInterface throw an exception if stream is not a seekable stream
+            stream.QueryInterface(Ci.nsISeekableStream);
+
+            let scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(Ci.nsIScriptableInputStream);
+            scriptableStream.init(stream);
+            let postData = scriptableStream.read(scriptableStream.available());
+            // note: we don't close scriptableStream else it closes stream
+
+            // let's rewind the stream to start
+            stream.seek(stream.NS_SEEK_SET, 0);
+
+            // some headers were in the stream, let's remove them
+            if (postData.indexOf("\r\n\r\n")>-1) {
+                postData = postData.split("\r\n\r\n",2)[1];
+            }
+
+            // like in phantomjs, postData should be undefined if not post method
+            res.postData = postData; 
+        }
+        catch(e) {
+           // no seekable stream or other errors
+           // let's consider that there are no post data
+        }
+    }
+    return res;
 };
 
 const traceResponse = function(id, request) {
     request.QueryInterface(Ci.nsIHttpChannel);
-    let headers = [];
-    request.visitResponseHeaders(function(name, value) {
-        value.split("\n").forEach(function(v) {
-            headers.push({"name": name, "value": v});
+    let response = {
+            id: id,
+            url: request.URI.spec,
+            time: new Date(),
+            headers: [],
+            bodySize: 0,
+            contentType: null,
+            contentCharset: null,
+            redirectURL: null,
+            stage: "start",
+            status: null,
+            statusText: null,
+            // Extensions
+            referrer: "",
+            body: ""
+    };
+
+    try {
+        response.status = request.responseStatus;
+        response.statusText = unescape(encodeURIComponent(request.responseStatusText));
+        response.contentType = request.contentType;
+        response.contentCharset = request.contentCharset;
+    } catch(e) {
+        // status code is not available.
+        // probably an 101, 102, 118, 408 http response
+        return response;
+    }
+
+    if (response.status) {
+        request.visitResponseHeaders(function(name, value) {
+            value.split("\n").forEach(function(v) {
+                response.headers.push({"name": name, "value": v});
+            });
         });
-    });
+    }
 
     // Getting redirect if any
-    let redirect = null
-    if (parseInt(request.responseStatus / 100) == 3) {
-        headers.forEach(function(value) {
+    if (parseInt(response.status / 100, 10) == 3) {
+        response.headers.forEach(function(value) {
             if (value.name.toLowerCase() == "location") {
-                redirect = ioService.newURI(value.value, null, request.URI).spec;
+                response.redirectURL = ioService.newURI(value.value, null, request.URI).spec;
             }
         });
     }
 
-    return {
-        id: id,
-        url: request.URI.spec,
-        time: null,
-        headers: headers,
-        bodySize: 0,
-        contentType: request.contentType,
-        contentCharset: request.contentCharset,
-        redirectURL: redirect,
-        stage: null,
-        status: request.responseStatus,
-        statusText: unescape(encodeURIComponent(request.responseStatusText)),
-
-        // Extensions
-        referrer: request.referrer != null && request.referrer.spec || "",
-        body: ""
-    };
+    // Extensions
+    response.referrer = request.referrer != null && request.referrer.spec || "";
+    return response;
 };
 
 
@@ -386,7 +672,7 @@ const imageInfo = function(response, data) {
             animated: outParam.value.animated
         };
     } catch(e) {
-        console.debug("Failed to load image information - ", response.url);
+        //console.debug("Failed to load image information - "+ response.url);
         return {
             width: 0,
             height: 0,
@@ -424,7 +710,7 @@ exports.getWindowForRequest = getWindowForRequest;
 const getBrowserForRequest = function(request) {
     if (request instanceof Ci.nsIRequest) {
         try {
-            request.QueryInterface(Ci.nsIHttpChannel);
+            request.QueryInterface(Ci.nsIChannel);
             let window = getWindowForRequest(request);
             if (window) {
                 let browser = window.QueryInterface(Ci.nsIInterfaceRequestor)
@@ -444,7 +730,8 @@ exports.getBrowserForRequest = getBrowserForRequest;
 const ProgressListener = function(browser, options) {
     this.browser = browser;
     this.options = options;
-    this.mainPageURI = '';
+    this.mainPageURI = null;
+    this.redirecting = false;
 };
 ProgressListener.prototype = {
     QueryInterface: function(aIID){
@@ -455,30 +742,36 @@ ProgressListener.prototype = {
        throw(Cr.NS_NOINTERFACE);
     },
 
-    isFromMainWindow : function (aChannel) {
+    getLoadContext: function (aChannel) {
+        if (!aChannel)
+            return null;
+
         let notificationCallbacks =
                 aChannel.notificationCallbacks ? aChannel.notificationCallbacks : aChannel.loadGroup.notificationCallbacks;
 
         if (!notificationCallbacks) {
-            return false;
+            return null;
         }
         try {
             if(notificationCallbacks.getInterface(Ci.nsIXMLHttpRequest)) {
                 // ignore requests from XMLHttpRequest
-                return false;
+                return null;
             }
         }
         catch(e) { }
         try {
-            let loadContext = notificationCallbacks.getInterface(Ci.nsILoadContext);
-            if (loadContext.isContent && this.browser.contentWindow == loadContext.associatedWindow) {
-                return true;
-            }
+            return notificationCallbacks.getInterface(Ci.nsILoadContext);
         }
         catch (e) {}
-        return false;
+        return null;
     },
 
+    isFromMainWindow: function (loadContext) {
+        if (loadContext  && loadContext.isContent
+            && this.browser.contentWindow == loadContext.associatedWindow)
+            return true;
+        return false;
+    },
 
     isLoadRequested: function(flags) {
         return (
@@ -493,6 +786,14 @@ ProgressListener.prototype = {
             flags & Ci.nsIWebProgressListener.STATE_TRANSFERRING &&
             flags & Ci.nsIWebProgressListener.STATE_IS_REQUEST &&
             flags & Ci.nsIWebProgressListener.STATE_IS_DOCUMENT
+        );
+    },
+
+    isRedirectionStart: function(flags) {
+        return (
+            flags & Ci.nsIWebProgressListener.STATE_START &&
+            flags & Ci.nsIWebProgressListener.STATE_IS_REQUEST &&
+            this.redirecting
         );
     },
 
@@ -516,7 +817,8 @@ ProgressListener.prototype = {
         if (flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_ERROR_PAGE) {
             return;
         }
-        if (typeof(this.options.onURLChanged) === "function") {
+        if (typeof(this.options.onURLChanged) === "function"
+            && this.isFromMainWindow(this.getLoadContext(request))) {
             this.options.onURLChanged(location.spec);
         }
     },
@@ -525,30 +827,79 @@ ProgressListener.prototype = {
 
         if (!(request instanceof Ci.nsIChannel || "URI" in request)) {
             // ignore requests that are not a channel/http channel
+            //if (DEBUG_NETWORK_PROGRESS)
+            //    slDebugLog("network: request not a http channel");
             return
         }
         let uri = request.URI.spec;
 
-        if (!this.isFromMainWindow(request)) {
+        let loadContext = this.getLoadContext(request);
+
+        if (!this.isFromMainWindow(loadContext)) {
+            // we receive a new status for a page that is loading in a frame
+            if (DEBUG_NETWORK_PROGRESS)
+                slDebugLog("network: frame request "+uri+ " flags:"+debugFlags(flags));
+
+            if (this.isLoadRequested(flags)) {
+                if (typeof(this.options.onFrameLoadStarted) === "function") {
+                    this.options.onFrameLoadStarted(uri, (this.mainPageURI != null));
+                }
+            }
+            else if (this.isLoaded(flags)) {
+                if (typeof(this.options.onFrameLoadFinished) === "function") {
+                    let win = (loadContext?loadContext.associatedWindow:null);
+                    let success = "success";
+                    if (uri != 'about:blank' && request.status) {
+                        success = 'fail';
+                    }
+                    this.options.onFrameLoadFinished(uri, success, win, (this.mainPageURI != null));
+                }
+            }
             return;
         }
 
         try {
-            if (this.mainPageURI == '') {
+            if (this.mainPageURI == null) {
                 if (this.isLoadRequested(flags)) {
-                    this.mainPageURI = uri;
+                    if (DEBUG_NETWORK_PROGRESS)
+                        slDebugLog("network: main request starting - "+uri+ " flags:"+debugFlags(flags));
+                    this.mainPageURI = request.URI;
                     if (typeof(this.options.onLoadStarted) === "function") {
-                        this.options.onLoadStarted(uri);
+                        this.options.onLoadStarted(uri, false);
+                    }
+                    if (request.URI.scheme == 'file') {
+                        // for file:// protocol, we don't have http-on-* events
+                        // let's call options.onRequest...
+                        onFileRequestStart(request, this.browser);
                     }
                 }
-                return;
-            }
-            // ignore all request that are not the main request
-            if (this.mainPageURI != uri) {
+                else if (this.isRedirectionStart(flags)) {
+                    this.redirecting = false;
+                    this.mainPageURI = request.URI;
+                    if (DEBUG_NETWORK_PROGRESS)
+                        slDebugLog("network: redirection starting - "+uri+ " flags:"+debugFlags(flags));
+                }
+                else if (DEBUG_NETWORK_PROGRESS)
+                    slDebugLog("network: request ignored. main page uri not started yet - "+uri+ " flags:"+debugFlags(flags));
                 return;
             }
 
+            // ignore all request that are not the main request
+            if (!this.mainPageURI.equalsExceptRef(request.URI)) {
+                if (DEBUG_NETWORK_PROGRESS)
+                    slDebugLog("network: request ignored: "+uri+ " flags:"+debugFlags(flags));
+                return;
+            }
+
+            if (DEBUG_NETWORK_PROGRESS)
+                slDebugLog("network: main request "+uri+ " flags:"+debugFlags(flags));
+
             if (this.isStart(flags)) {
+                if (request.URI.scheme == 'file') {
+                    // for file:// protocol, we don't have http-on-* events
+                    // let's call options.onResponse...
+                    onFileRequestResponse(request, this.browser);
+                }
                 if (typeof(this.options.onTransferStarted) === "function") {
                     this.options.onTransferStarted(uri);
                 }
@@ -556,44 +907,223 @@ ProgressListener.prototype = {
             }
 
             if (this.isTransferDone(flags)) {
+                if (request.URI.scheme == 'file') {
+                    // for file:// protocol, we don't have http-on-* events
+                    // let's call options.onResponse...
+                    onFileRequestResponseDone(request, this.browser);
+                }
                 if (typeof(this.options.onContentLoaded) === "function") {
                     this.options.onContentLoaded(uri, (request.status?false:true));
                 }
                 return;
             }
+
             if (this.isLoaded(flags)) {
-                this.mainPageURI = '';
+                this.mainPageURI = null;
                 if (typeof(this.options.onLoadFinished) === "function") {
                     let success = "success";
+                    try {
+                        if (request.responseStatus == 204 || request.responseStatus == 205) {
+                            success = 'fail';
+                        }
+                    }catch(e) {}
                     if (uri != 'about:blank' && request.status) {
                         success = 'fail';
                     }
-                    this.options.onLoadFinished(uri, success);
+                    // call onLoadFinished asynchronously, so there are chances that
+                    // it is called when the docshell is ready and the page is displayed
+                    let opt = this.options;
+                    Services.tm.currentThread.dispatch({ run: function(){
+                        opt.onLoadFinished(uri, success, false);
+                    }}, Ci.nsIEventTarget.DISPATCH_NORMAL);
                 }
                 return;
             }
 
-            try {
-                if (request.responseStatus == 301
-                    || request.responseStatus == 302
-                    || request.responseStatus == 307) {
-                    this.mainPageURI = request.getResponseHeader('Location');
-                }
+            if (flags & Ci.nsIWebProgressListener.STATE_REDIRECTING) {
+                this.redirecting = true;
+                this.mainPageURI = null;
+                request.QueryInterface(Ci.nsIHttpChannel);
+                if (DEBUG_NETWORK_PROGRESS)
+                    slDebugLog("network: main request redirect from "+request.name);
             }
-            catch(e) {
-                // in some case, request.responseStatus is not available
-            }
-
-            return;
         } catch(e) {
+            if (DEBUG_NETWORK_PROGRESS)
+                slDebugLog("network: on state change error:"+e);
             console.exception(e);
         }
     },
-    onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){},
-    onSecurityChange : function(aWebProgress, aRequest, aState) { },
+    onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){
+        if (!DEBUG_NETWORK_PROGRESS)
+            return;
+        if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
+            // ignore requests that are not a channel/http channel
+            return
+        }
+        slDebugLog("network: status change for "+aRequest.URI.spec+ " : "+aMessage);
+    },
+    onSecurityChange : function(aWebProgress, aRequest, aState) {
+        if (!DEBUG_NETWORK_PROGRESS)
+            return;
+        if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
+            // ignore requests that are not a channel/http channel
+            return
+        }
+        slDebugLog("network: security change for "+aRequest.URI.spec+ " : "+debugSecurityFlags(flags));
+    },
     debug : function(aWebProgress, aRequest) {},
     onProgressChange : function (aWebProgress, aRequest,
             aCurSelfProgress, aMaxSelfProgress,
-            aCurTotalProgress, aMaxTotalProgress)
-    {}
+            aCurTotalProgress, aMaxTotalProgress) {
+        if (!DEBUG_NETWORK_PROGRESS)
+            return;
+        if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
+            // ignore requests that are not a channel/http channel
+            return
+        }
+        slDebugLog("network: progress total:"+aCurTotalProgress+"/"+aMaxTotalProgress+"; uri: "+aCurSelfProgress+"/"+aCurTotalProgress+" for "+aRequest.URI.spec);
+    }
 };
+
+
+function getErrorCode(status) {
+    let errorCode = 99;
+    let errorString = 'an unknown network-related error was detected ('+status+')'; //for network error, base is: 0x804b0000
+    // see http://mxr.mozilla.org/mozilla-release/source/xpcom/base/ErrorList.h#118  for Gecko codes
+    switch (status) {
+        case Cr.NS_ERROR_MALFORMED_URI:        errorCode= 399 ;  errorString="The URI is malformed"; break;
+        case Cr.NS_ERROR_CONNECTION_REFUSED:   errorCode= 1;   errorString="the remote server refused the connection"; break;
+        case Cr.NS_ERROR_NET_TIMEOUT:          errorCode= 4;   errorString="the connection to the remote server timed out"; break;
+        case Cr.NS_ERROR_OFFLINE:              errorCode= 97;  errorString="The requested action could not be completed in the offline state"; break;
+        case Cr.NS_ERROR_NO_CONTENT:           errorCode= 298; errorString="Channel opened successfully but no data will be returned"; break;
+        case Cr.NS_ERROR_ALREADY_CONNECTED:
+        case Cr.NS_ERROR_NOT_CONNECTED:
+        case Cr.NS_ERROR_ALREADY_OPENED:
+        case Cr.NS_ERROR_DNS_LOOKUP_QUEUE_FULL:
+        case Cr.NS_ERROR_UNKNOWN_SOCKET_TYPE:
+        case Cr.NS_ERROR_INSUFFICIENT_DOMAIN_LEVELS:
+        case Cr.NS_ERROR_SOCKET_CREATE_FAILED: errorCode=8 ;   errorString="The connection was broken due to disconnection from the network or failure to start the network"; break;
+        case Cr.NS_ERROR_UNKNOWN_PROTOCOL:     errorCode= 301; errorString="The URI scheme corresponds to an unknown protocol handler"; break;
+        case Cr.NS_ERROR_PORT_ACCESS_NOT_ALLOWED: errorCode= 96; errorString="Establishing a connection to an unsafe or otherwise banned port was prohibited"; break;
+        case Cr.NS_ERROR_NOT_RESUMABLE:
+        case Cr.NS_ERROR_NET_INTERRUPT:
+        case Cr.NS_ERROR_NET_RESET:            errorCode= 2;   errorString="the remote server closed the connection prematurely"; break;
+        case Cr.NS_ERROR_INVALID_CONTENT_ENCODING: errorCode= 399; errorString="The content encoding of the source document is incorrect"; break;
+        case Cr.NS_ERROR_UNKNOWN_HOST:         errorCode= 3;   errorString="The lookup of the hostname failed"; break;
+        case Cr.NS_ERROR_REDIRECT_LOOP:        errorCode= 297; errorString="The request failed as a result of a detected redirection loop"; break;
+        case Cr.NS_ERROR_CORRUPTED_CONTENT:    errorCode= 296; errorString="Corrupted content was received from server"; break;
+        case Cr.NS_ERROR_PROXY_CONNECTION_REFUSED: errorCode=101; errorString="The connection to the proxy server was refused"; break;
+        case Cr.NS_ERROR_UNKNOWN_PROXY_HOST:   errorCode= 103; errorString="The lookup of the proxy hostname failed"; break;
+        case Cr.NS_ERROR_REMOTE_XUL:
+        case Cr.NS_ERROR_UNSAFE_CONTENT_TYPE: errorCode= 9; errorString="the background request is not currently allowed due to platform policy"; break;
+        case Cr.NS_ERROR_HOST_IS_IP_ADDRESS: errorCode= 399; errorString="The host string is an IP address"; break;
+        case Cr.NS_ERROR_FIRST_HEADER_FIELD_COMPONENT_EMPTY: errorCode= 399; errorString="Syntax error in headers"; break;
+        case Cr.NS_ERROR_IN_PROGRESS:
+            errorString += " - in progress";
+            break;
+        case Cr.NS_ERROR_ENTITY_CHANGED:
+            errorString += " - entity changed";
+            break;
+        case Cr.NS_ERROR_CACHE_KEY_NOT_FOUND:
+        case Cr.NS_ERROR_CACHE_DATA_IS_STREAM:
+        case Cr.NS_ERROR_CACHE_DATA_IS_NOT_STREAM:
+        case Cr.NS_ERROR_CACHE_WAIT_FOR_VALIDATION:
+        case Cr.NS_ERROR_CACHE_ENTRY_DOOMED:
+        case Cr.NS_ERROR_CACHE_READ_ACCESS_DENIED:
+        case Cr.NS_ERROR_CACHE_WRITE_ACCESS_DENIED:
+        case Cr.NS_ERROR_CACHE_IN_USE:
+        case Cr.NS_ERROR_DOCUMENT_NOT_CACHED:
+            errorCode= 295; errorString="Error with the cache"; break;
+        case Cr.NS_BINDING_FAILED:
+            errorString="The request failed for some unknown reason"; break
+        case Cr.NS_BINDING_ABORTED:
+            errorString="The request has been aborted"; break
+        case Cr.NS_BINDING_REDIRECTED:
+            errorString="The request has been aborted by a redirection"; break
+    }
+    return [errorCode, errorString];
+}
+
+
+
+function debugFlags(flags) {
+    let s = '';
+
+    if (flags & Ci.nsIWebProgressListener.STATE_START)
+        s += "START,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_REDIRECTING)
+        s += "REDIRECTING,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_TRANSFERRING)
+        s += "TRANSFERRING,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_NEGOTIATING)
+        s += "NEGOTIATING,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_STOP)
+        s += "STOP,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_REQUEST)
+        s += "IS_REQ,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_DOCUMENT)
+        s += "IS_DOC,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_NETWORK)
+        s += "IS_NET,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_WINDOW)
+        s += "IS_WIN,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_RESTORING)
+        s += "RESTORING,";
+    return s;
+}
+
+function debugSecurityFlags(flags) {
+    let s = '';
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_INSECURE)
+        s += "IS_INSECURE,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_BROKEN)
+        s += "IS_BROKEN,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_IS_SECURE)
+        s += "IS_SECURE,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_SECURE_HIGH)
+        s += "SECURE_HIGH,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_SECURE_MED)
+        s += "SECURE_MED,";
+
+    if (flags & Ci.nsIWebProgressListener.STATE_SECURE_LOW)
+        s += "SECURE_LOW,";
+    return s;
+}
+
+
+function loadFlags(request) {
+
+    let s = '';
+    let f = request.loadFlags;
+
+    if ((f & Ci.nsIChannel.LOAD_DOCUMENT_URI) == Ci.nsIChannel.LOAD_DOCUMENT_URI)
+        s += "DOCUMENT_URI, ";
+
+    if ((f & Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI) == Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI)
+        s += "RETARGETED_DOCUMENT_URI, ";
+
+    if ((f & Ci.nsIChannel.LOAD_REPLACE) == Ci.nsIChannel.LOAD_REPLACE)
+        s += "REPLACE, ";
+
+    if ((f & Ci.nsIChannel.LOAD_INITIAL_DOCUMENT_URI) == Ci.nsIChannel.LOAD_INITIAL_DOCUMENT_URI)
+        s += "INITIAL_DOCUMENT_URI, ";
+
+    if ((f & Ci.nsIChannel.LOAD_TARGETED) == Ci.nsIChannel.LOAD_TARGETED)
+        s += "TARGETED, ";
+
+    return s;
+}

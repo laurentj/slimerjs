@@ -1,5 +1,16 @@
 #hauntedwall {
     text-align:center;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4), 0px 0px 30px rgba(0, 0, 0, 0.075);
+}
+
+#hauntedwall h2 span {
+    color: rgb(0, 151, 58);
+}
+
+#hauntedwall h2 {
+    font-size: 20pt;
+    color: rgb(59, 59, 60);
 }
 
 #hauntedwall image {
@@ -7,11 +18,15 @@
     transition-duration: 8s;
     opacity:0;
     width:10px;
-    height:10px;
+    height:7px;
+}
+#hauntedwall:hover image {
+    opacity:0.9;
+    width:100px;
+    height:71px;
 }
 
-#hauntedwall:hover image {
-    opacity:0.5;
-    width:100px;
-    height:100px;
+#version {
+    font-size:8pt;
+    color: #636262;
 }

@@ -11,6 +11,7 @@ their authors under the licenses listed alongside.
     https://github.com/laurentj/addon-sdk/tree/master/lib/sdk/io
 
 * components/httpd.js
+* modules/httpUtils.jsm
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
     These files comes from Mozilla source code
@@ -18,23 +19,19 @@ their authors under the licenses listed alongside.
 
 * components/ConsoleAPI.js
 * components/nsPrompter.js
+* components/SiteSpecificUserAgent.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
     This file comes originally from the source code of Firefox
     http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js
     http://mxr.mozilla.org/mozilla-central/source/toolkit/components/prompts/src/nsPrompter.js
+    http://mxr.mozilla.org/mozilla-central/source/dom/base/SiteSpecificUserAgent.js
 
 * modules/slimer-sdk/net-log.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/
     The author is Olivier Meunier and Laurent Jouanneau
     and this file comes from https://github.com/olivier-m/jetpack-net-log/
-
-* modules/slimer-sdk/utils.js
-    is released under the Mozilla Public License, v. 2.0
-    see http://mozilla.org/MPL/2.0/
-    The author is Olivier Meunier and this file comes from
-    https://github.com/olivier-m/jetpack-webpage/
 
 * modules/slimer-sdk/webpage.js
     is released under the Mozilla Public License, v. 2.0

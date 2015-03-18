@@ -4,9 +4,23 @@ by others project or contributors, is Laurent Jouanneau.
 
 ## Contributors
 
-* Matthew Kastor
-    - bin/slimerjs.bat
+```
+$ git shortlog -s -n | cut -c8-
+Laurent Jouanneau
+Vincent Meurisse
+laurentj
+Matthew Kastor
+Niek van der Maas
+Bartvds
+Boris Staal
+Darren Cook
+Jaime Iniesta
+fumitoito
+Krzysztof Jurewicz
+```
+
+See also [contribution graphs on github](https://github.com/laurentj/slimerjs/graphs/contributors).
 
 ## Other authors
 
-See LICENCE file
+See the LICENSE file

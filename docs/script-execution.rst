@@ -1,8 +1,8 @@
-.. index:: script, execution, javascript environment, require
+.. index:: script, execution, javascript environment
 
-================
-Script execution
-================
+============================
+Script execution and modules
+============================
 
 The main script
 ===============
@@ -11,11 +11,9 @@ The main script
 
 The script you give to SlimerJS is a javascript script.
 
-The script is considered by SlimerJS as a module. SlimerJS uses the module
-system of the Mozilla Addons SDK. It implements the
+The script is considered by SlimerJS as a module. SlimerJS uses a modified version of
+the module system of the Mozilla Addons SDK. It implements the
 `CommonJS module specification version 1.1.1 <http://wiki.commonjs.org/wiki/Modules/1.1.1>`_
-(except that the ``require()`` function has not a path attribute; it will have it in
-a future version of SlimerJS).
 
 The script has access only to few objects in its context (see below). Modules
 define other objects. Some are provided by SlimerJS, but you'll certainly provide
@@ -31,7 +29,7 @@ it into your script.
 Modules
 =======
 
-.. index:: module
+.. index:: module, require, require.paths
 
 A module is a javascript file that defines functions to export and has an id.
 The id of modules you provide and use, is the name of the module file in the
@@ -41,17 +39,17 @@ Some internal module have a specific id. The script given to SlimerJS is the
 module "main".
 
 To define functions and variables to export, the module should store
-these functions and variables into an ``export`` object
+these functions and variables into an ``exports`` object
 
 .. code-block:: javascript
     
-    export.printHello = function(param) {
+    exports.printHello = function(param) {
         console.log('hello '+param)
     }
     
-    export.aValue = 123
+    exports.aValue = 123
     
-    export.otherFunction = function() {  }
+    exports.otherFunction = function() {  }
 
 If the module is stored into a ``hello.js`` file in the same directory of the main script,
 in the main script you can use the module like this:
@@ -65,12 +63,19 @@ in the main script you can use the module like this:
     hello.printHello('Bob');
 
 
-In the current version of SlimerJS, you can only load modules that are stored in the
+By default, you can only load modules that are stored in the
 directory of the main script (and in its sub-directories). The id you give to the
 require function is always resolved from this directory, except if you indicate an
 id starting with "./": it is resolved from the id of the current module.
 
-In a future version (0.7), you could load modules from other directories.
+If you want to load modules from other directories, you can indicate their path into the
+array ``require.paths``
+
+.. code-block:: javascript
+
+    var path = fs.absolute(phantom.libraryPath + '/../vendor-modules/');
+    require.paths.push(path);
+
 
 Modules and main script context
 ===============================

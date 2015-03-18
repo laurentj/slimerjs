@@ -2,3 +2,5 @@
 *.xpi
 _dist
 docs/_build/
+misc/
+website/*.gpg

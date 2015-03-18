@@ -11,8 +11,15 @@ describe("webpage.sendEvent", function() {
             keypad: 0x20000000
         };
 
-    var webpage = require("webpage").create();
+    var webpage;
     var url = "http://127.0.0.1:8083/charcode.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
 
     function retrieveKeyCode(){
         var r = [result,
@@ -602,6 +609,96 @@ describe("webpage.sendEvent", function() {
     });
     // ----------------------------------------------- non-printable keycode: keypress
 
+    it("send keypress event with the LEFT keycode",function() {
+        // -> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent
+        // and it don't send a keypress event !!
+
+        webpage.evaluate(resetKeyCode);
+        webpage.sendEvent("keypress", webpage.event.key.Left);
+        readResult()
+        expect(key.keydownK).toEqual(-1); 
+        expect(key.keydownC).toEqual(-1); 
+        expect(key.keypressK).toEqual(37);
+        expect(key.keypressC).toEqual(0); 
+        expect(key.keyupK).toEqual(-1);   
+        expect(key.keyupC).toEqual(-1);   
+        expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false);
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false); 
+        expect(key.keypressMeta).toEqual(false); 
+        expect(key.keyupAlt).toEqual(-1); 
+        expect(key.keyupShift).toEqual(-1);
+        expect(key.keyupCtrl).toEqual(-1);
+        expect(key.keyupMeta).toEqual(-1);
+        expect(key.keydownAlt).toEqual(-1);
+        expect(key.keydownShift).toEqual(-1);
+        expect(key.keydownCtrl).toEqual(-1);
+        expect(key.keydownMeta).toEqual(-1);
+    });
+
+    it("send keypress event with the ENTER keycode",function() {
+        // -> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent
+        // and it don't send a keypress event !!
+
+        webpage.evaluate(resetKeyCode);
+        webpage.sendEvent("keypress", webpage.event.key.Enter);
+        readResult()
+        expect(key.keydownK).toEqual(-1);
+        expect(key.keydownC).toEqual(-1);
+        if (slimer.geckoVersion.major < 30) {
+            expect(key.keypressK).toEqual(14);
+        }
+        else {
+            // in Firefox 30+, no more DOM_VK_ENTER https://bugzilla.mozilla.org/show_bug.cgi?id=969247
+            expect(key.keypressK).toEqual(0);
+        }
+        expect(key.keypressC).toEqual(0); 
+        expect(key.keyupK).toEqual(-1);   
+        expect(key.keyupC).toEqual(-1);   
+        expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false); 
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false); 
+        expect(key.keypressMeta).toEqual(false); 
+        expect(key.keyupAlt).toEqual(-1); 
+        expect(key.keyupShift).toEqual(-1);
+        expect(key.keyupCtrl).toEqual(-1);
+        expect(key.keyupMeta).toEqual(-1);
+        expect(key.keydownAlt).toEqual(-1);
+        expect(key.keydownShift).toEqual(-1);
+        expect(key.keydownCtrl).toEqual(-1);
+        expect(key.keydownMeta).toEqual(-1);
+    });
+
+    it("send keypress event with the RETURN keycode",function() {
+        // -> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent
+        // and it don't send a keypress event !!
+
+        webpage.evaluate(resetKeyCode);
+        webpage.sendEvent("keypress", webpage.event.key.Return);
+        readResult()
+        expect(key.keydownK).toEqual(-1); 
+        expect(key.keydownC).toEqual(-1); 
+        expect(key.keypressK).toEqual(13);
+        expect(key.keypressC).toEqual(0); 
+        expect(key.keyupK).toEqual(-1);   
+        expect(key.keyupC).toEqual(-1);   
+        expect(input).toEqual("");
+        expect(key.keypressAlt).toEqual(false); 
+        expect(key.keypressShift).toEqual(false);
+        expect(key.keypressCtrl).toEqual(false);
+        expect(key.keypressMeta).toEqual(false);
+        expect(key.keyupAlt).toEqual(-1);
+        expect(key.keyupShift).toEqual(-1);
+        expect(key.keyupCtrl).toEqual(-1);
+        expect(key.keyupMeta).toEqual(-1);
+        expect(key.keydownAlt).toEqual(-1);
+        expect(key.keydownShift).toEqual(-1);
+        expect(key.keydownCtrl).toEqual(-1);
+        expect(key.keydownMeta).toEqual(-1);
+    });
+    
     it("send keypress event with a keycode of a non-printable char",function() {
         // -> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent
         // and it don't send a keypress event !!
@@ -635,11 +732,11 @@ describe("webpage.sendEvent", function() {
         // -> phantomjs generates a keydown + keyup event when we send a keypress event: inconsistent
         // and it don't send a keypress event !!
         webpage.evaluate(resetKeyCodeAndInit);
-        webpage.sendEvent("keypress", webpage.event.key.Delete, null, null, modifier.shift);
+        webpage.sendEvent("keypress", webpage.event.key.End, null, null, modifier.shift);
         readResult()
         expect(key.keydownK).toEqual(-1); // value with phantomjs is 46
         expect(key.keydownC).toEqual(-1); // value with phantomjs is 0
-        expect(key.keypressK).toEqual(46);// value with phantomjs is -1
+        expect(key.keypressK).toEqual(35);// value with phantomjs is -1
         expect(key.keypressC).toEqual(0); // value with phantomjs is -1
         expect(key.keyupK).toEqual(-1);   // value with phantomjs is 46
         expect(key.keyupC).toEqual(-1);   // value with phantomjs is 0
@@ -700,7 +797,12 @@ describe("webpage.sendEvent", function() {
         expect(key.keypressC).toEqual(0); // value with phantomjs is -1
         expect(key.keyupK).toEqual(-1);   // value with phantomjs is 46
         expect(key.keyupC).toEqual(-1);   // value with phantomjs is 0
-        expect(input).toEqual("a");
+        if (slimer.geckoVersion.major > 25) {
+            expect(input).toEqual("abc"); // regression in Gecko 26a2+?
+        }
+        else {
+            expect(input).toEqual("a");
+        }
         expect(key.keypressAlt).toEqual(false);// value with phantomjs is -1
         expect(key.keypressShift).toEqual(false);// value with phantomjs is -1
         expect(key.keypressCtrl).toEqual(true);// value with phantomjs is -1
