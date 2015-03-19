@@ -325,6 +325,10 @@ var webpageUtils = {
             marginRight: 0,
             marginBottom: 0,
             marginLeft: 0,
+            edgeTop: 0,
+            edgeLeft: 0,
+            edgeBottom: 0,
+            edgeRight: 0,
             unwriteableMarginTop: 0,
             unwriteableMarginRight: 0,
             unwriteableMarginBottom: 0,
@@ -512,6 +516,7 @@ var webpageUtils = {
     /**
      * print the given content window into a PDF.
      * The code has been inspired by http://mxr.mozilla.org/mozilla-central/source/mobile/android/chrome/content/browser.js#932
+     * About nsIPrintSettings interface you can read http://lxr.mozilla.org/mozilla-central/source/widget/nsIPrintSettings.idl     
      */
     renderPageAsPDF : function(contentWindow, file, options) {
         let printSettings = Cc["@mozilla.org/gfx/printsettings-service;1"]
@@ -532,11 +537,18 @@ var webpageUtils = {
         printSettings.headerStrCenter         = options.headerStrCenter;
         printSettings.headerStrLeft           = options.headerStrLeft;
         printSettings.headerStrRight          = options.headerStrRight;
+
         // Warning! Margins are always in Inches independent of paperSizeUnit
         printSettings.marginTop               = options.marginTop/25.4;
         printSettings.marginRight             = options.marginRight/25.4;
         printSettings.marginBottom            = options.marginBottom/25.4;
         printSettings.marginLeft              = options.marginLeft/25.4;
+
+        printSettings.edgeTop                 = options.edgeTop/25.4;
+        printSettings.edgeLeft                = options.edgeLeft/25.4;
+        printSettings.edgeBottom              = options.edgeBottom/25.4;
+        printSettings.edgeRight               = options.edgeRight/25.4;
+
         printSettings.unwriteableMarginTop    = options.unwriteableMarginTop/25.4;
         printSettings.unwriteableMarginRight  = options.unwriteableMarginRight/25.4;
         printSettings.unwriteableMarginBottom = options.unwriteableMarginBottom/25.4;
