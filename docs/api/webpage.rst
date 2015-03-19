@@ -935,6 +935,7 @@ ignored. And it supports additionnal properties:
 - ``resolution``: in dpi. By default: 300.
 - ``marginTop``, ``marginRight``, ``marginBottom``, ``marginLeft``: margin as millimeters
 - ``unwriteableMarginTop``, ``unwriteableMarginRight``, ``unwriteableMarginBottom``, ``unwriteableMarginLeft``: unwriteable margin as millimeters
+- ``edgeTop``, ``edgeRight``, ``edgeBottom``, ``edgeLeft``: positioning of the headers and footers on the page. They're measured in milimeters as an offset from the unwriteable margin
 - ``height``, ``width``: in milimeters, by default the viewport size
 - ``orientation``: page orientation (0 - portrait, 1 - landscape)
 - ``shrinkToFit``: try to fit content in page (bool) 
