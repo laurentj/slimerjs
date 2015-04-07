@@ -11,11 +11,13 @@ Services.prefs.setBoolPref('browser.dom.window.dump.enabled', true);
 Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import('resource://slimerjs/slUtils.jsm');
+Components.utils.import('resource://slimerjs/slimer.jsm');
 
 function startup() {
    document.getElementById("versionnumber").textContent =  Services.appinfo.version
     var runtimeIframe = document.getElementById('runtime');
     try {
+        slimer.mainWindow = this;
         slLauncher.launchMainScript(runtimeIframe.contentWindow);
     }
     catch(e) {
