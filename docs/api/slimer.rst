@@ -103,3 +103,8 @@ wait(milliseconds)
 SlimerJS do a pause during the given amount of time (in milliseconds).
 It can be useful in some case to wait after a reflow or something like that.
 Note that it does not freeze the browser.
+
+mainWindow
+------------------------------------------
+
+Contains a handle to the initial XUL window (with the SlimerJS logo).
