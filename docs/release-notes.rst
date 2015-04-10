@@ -16,6 +16,10 @@ Improvements
 
     * improved information displayed in the console for some javascript error messages occuring into the web page
 
+Fixed bugs
+----------
+
+    * Fix SSL support. Only support sslv3 was activated whereas it should be disabled (#335, #304)
 
 version 0.9.5
 =============

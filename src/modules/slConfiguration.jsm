@@ -48,7 +48,7 @@ var optionsSpec = {
     remoteDebuggerPort : ['remote-debugger-port', 'int', -1, false],
     remoteDebuggerAutorun : ['remote-debugger-autorun', 'bool', false, false],
     sslCertificatesPath : ['ssl-certificates-path', 'path', '', false],
-    sslProtocol : ['ssl-protocol', 'sslproto', '', true]
+    sslProtocol : ['ssl-protocol', 'sslproto', -1, true]
 };
 
 var slConfiguration = {
