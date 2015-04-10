@@ -1,7 +1,6 @@
 /*
-
-this is a simple test file.
-Since we cannot load external file yet, tests are very very basic
+First test file in the history of SlimerJS, used to tests very basic things before the use
+of a true framework, to not depend of features that didn't exist at that time
 */
 console.log('Initial tests');
 
@@ -46,7 +45,7 @@ if ("slimer" in this) {
     assertExists(slimer.version, "has slimer.version object? ");
     assertEquals("0", slimer.version.major, "slimer has the good major version");
     assertEquals("9", slimer.version.minor, "slimer has the good minor version");
-    assertEquals("5", slimer.version.patch, "slimer has the good patch version");
+    assertEquals("6", slimer.version.patch, "slimer has the good patch version");
 }
 else
     console.warn("==> No slimer object!")
