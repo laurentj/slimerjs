@@ -13,6 +13,7 @@ const de = Ci.nsIDocumentEncoder;
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/httpUtils.jsm');
+Cu.import('resource://slimerjs/slUtils.jsm');
 
 var webpageUtils = {
 
@@ -201,6 +202,10 @@ var webpageUtils = {
         // let's reproduce behavior we have in browser.loadURIWithFlags
         browser.userTypedClear++;
 
+        if (!/^[a-z]+\:/i.test(uri) ) {
+            let f = slUtils.getAbsMozFile(uri, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            uri = Services.io.newFileURI(f).spec;
+        }
         try {
           browser.webNavigation.loadURI(uri,
                                      0,
