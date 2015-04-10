@@ -16,6 +16,11 @@ Improvements
 
     * improved information displayed in the console for some javascript error messages occuring into the web page
 
+Fixed PhantomJS conformance issues
+----------------------------------
+
+    * webpage should be able to accept file path (without file://) (#265)
+
 Fixed bugs
 ----------
 
