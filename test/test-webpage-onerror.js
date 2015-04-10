@@ -33,7 +33,7 @@ describe("WebPage.onError", function(){
         waitsFor(function(){ return loaded;}, 1000);
 
         runs(function(){
-            expect(errorMessage).toEqual("Error: error on click");
+            expect(errorMessage).toEqual("[JavaScript Error: \"Error: error on click\" {file: \"http://127.0.0.1:8083/onerror.html\" line: 8}]");
             expect(errorStack.length).toEqual(1)
             expect(errorStack[0].file).toEqual("http://127.0.0.1:8083/onerror.html")
             expect(errorStack[0].line).toEqual(8)
@@ -180,7 +180,7 @@ describe("WebPage.onError", function(){
         waitsFor(function(){ return loaded;}, 1000);
 
         runs(function(){
-            expect(errorMessage).toEqual("Error: error from doerror.js");
+            expect(errorMessage).toEqual('[JavaScript Error: "Error: error from doerror.js" {file: "http://127.0.0.1:8083/doerror.js" line: 2}]');
             expect(errorStack.length).toEqual(1)
             expect(errorStack[0].file).toEqual("http://127.0.0.1:8083/doerror.js")
             expect(errorStack[0].line).toEqual(2)
@@ -213,7 +213,7 @@ describe("WebPage.onError", function(){
         waitsFor(function(){ return loaded;}, 1000);
 
         runs(function(){
-            expect(errorMessage).toEqual("TypeError: \"test\".match(...) is null");
+            expect(errorMessage).toEqual("[JavaScript Error: \"TypeError: \"test\".match(...) is null\" {file: \"http://127.0.0.1:8083/typeerror.html\" line: 6}]");
             expect(errorStack.length).toEqual(1)
             expect(errorStack[0].file).toEqual("http://127.0.0.1:8083/typeerror.html");
             expect(errorStack[0].line).toEqual(6);
