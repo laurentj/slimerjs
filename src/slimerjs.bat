@@ -1,6 +1,5 @@
 @echo off
 
-SET SLIMERJSLAUNCHER="%SLIMERJSLAUNCHER%"
 REM % ~ d[rive] p[ath] 0[script name] is the absolute path to this bat file, without quotes, always.
 REM ~ strips quotes from the argument
 SET SLIMERDIR=%~dp0
@@ -74,21 +73,21 @@ FOR %%A IN (%*) DO (
     )
 )
 
-if not exist %SLIMERJSLAUNCHER% (
+if not exist "%SLIMERJSLAUNCHER%" (
     if exist "%SLIMERDIR%\xulrunner\xulrunner.exe" (
         SET SLIMERJSLAUNCHER="%SLIMERDIR%\xulrunner\xulrunner.exe"
     )
 )
-if not exist %SLIMERJSLAUNCHER% (
+if not exist "%SLIMERJSLAUNCHER%" (
     call :findFirefox
 )
-if not exist %SLIMERJSLAUNCHER% (
+if not exist "%SLIMERJSLAUNCHER%" (
     echo SLIMERJSLAUNCHER environment variable is missing or the path is invalid.
     echo Set it with the path to Firefox or xulrunner.
-    echo The current value of SLIMERJSLAUNCHER is: %SLIMERJSLAUNCHER%
+    echo "The current value of SLIMERJSLAUNCHER is: %SLIMERJSLAUNCHER%"
     REM %% escapes the percent sign so it displays literally
-    echo SET SLIMERJSLAUNCHER="%%programfiles%%\Mozilla Firefox\firefox.exe"
-    echo SET SLIMERJSLAUNCHER="%%programfiles%%\XULRunner\xulrunner.exe"
+    echo SET SLIMERJSLAUNCHER=%%programfiles%%\Mozilla Firefox\firefox.exe
+    echo SET SLIMERJSLAUNCHER=%%programfiles%%\XULRunner\xulrunner.exe
     pause
     exit 1
 )
@@ -116,9 +115,9 @@ SET PROFILE=-profile %PROFILEDIR%
 
 :callexec
 if ["%HIDE_ERRORS%"]==[""] (
-    %SLIMERJSLAUNCHER% -app "%SLIMERDIR%application.ini" %PROFILE% -attach-console -no-remote %__SLIMER_ARGS%
+    "%SLIMERJSLAUNCHER%" -app "%SLIMERDIR%application.ini" %PROFILE% -attach-console -no-remote %__SLIMER_ARGS%
 ) ELSE (
-    %SLIMERJSLAUNCHER% -app "%SLIMERDIR%application.ini" %PROFILE% -attach-console -no-remote %__SLIMER_ARGS% 2>NUL
+    "%SLIMERJSLAUNCHER%" -app "%SLIMERDIR%application.ini" %PROFILE% -attach-console -no-remote %__SLIMER_ARGS% 2>NUL
 )
 
 if ["%CREATETEMP%"]==["Y"] (
@@ -199,5 +198,5 @@ if exist "%programfiles%\Mozilla Firefox\firefox.exe" (
 if exist "%programfiles% (x86)\Mozilla Firefox\firefox.exe" (
     SET SLIMERJSLAUNCHER="%programfiles% (x86)\Mozilla Firefox\firefox.exe"
 )
-echo SLIMERJSLAUNCHER is set to %SLIMERJSLAUNCHER%
+echo "SLIMERJSLAUNCHER is set to %SLIMERJSLAUNCHER%"
 goto :eof
