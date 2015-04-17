@@ -89,7 +89,7 @@ if not exist "%SLIMERJSLAUNCHER%" (
     echo SET SLIMERJSLAUNCHER=%%programfiles%%\Mozilla Firefox\firefox.exe
     echo SET SLIMERJSLAUNCHER=%%programfiles%%\XULRunner\xulrunner.exe
     pause
-    rem exit 1
+    exit 1
 )
 
 
