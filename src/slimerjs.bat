@@ -1,5 +1,5 @@
 @echo off
-
+SETLOCAL EnableDelayedExpansion
 REM % ~ d[rive] p[ath] 0[script name] is the absolute path to this bat file, without quotes, always.
 REM ~ strips quotes from the argument
 SET SLIMERDIR=%~dp0
@@ -89,11 +89,10 @@ if not exist "%SLIMERJSLAUNCHER%" (
     echo SET SLIMERJSLAUNCHER=%%programfiles%%\Mozilla Firefox\firefox.exe
     echo SET SLIMERJSLAUNCHER=%%programfiles%%\XULRunner\xulrunner.exe
     pause
-    exit 1
+    rem exit 1
 )
 
 
-SETLOCAL EnableDelayedExpansion
 
 REM store environment variable into __SLIMER_ENV for SlimerJS
 FOR /F "usebackq delims==" %%i IN (`set`) DO set __SLIMER_ENV=!__SLIMER_ENV!,%%i
@@ -192,11 +191,12 @@ goto :eof
 
 
 :findFirefox
+echo %programfiles%
 if exist "%programfiles%\Mozilla Firefox\firefox.exe" (
-    SET SLIMERJSLAUNCHER="%programfiles%\Mozilla Firefox\firefox.exe"
+    SET "SLIMERJSLAUNCHER=%programfiles%\Mozilla Firefox\firefox.exe"
 )
-if exist "%programfiles% (x86)\Mozilla Firefox\firefox.exe" (
-    SET SLIMERJSLAUNCHER="%programfiles% (x86)\Mozilla Firefox\firefox.exe"
+if exist "%programfiles(x86)%\Mozilla Firefox\firefox.exe" (
+    SET "SLIMERJSLAUNCHER=%programfiles(x86)%\Mozilla Firefox\firefox.exe"
 )
 echo "SLIMERJSLAUNCHER is set to %SLIMERJSLAUNCHER%"
 goto :eof
