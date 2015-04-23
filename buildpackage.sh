@@ -8,6 +8,12 @@ XULRUNNER_VERSION="35.0.1"
 XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XULRUNNER_VERSION/runtimes/"
 XULRUNNER_PACK_NAME="xulrunner-$XULRUNNER_VERSION.en-US"
 
+# specific version for Mac, since Xulrunner 34 to 39 does not work https://bugzilla.mozilla.org/show_bug.cgi?id=1105044
+XULRUNNER_MAC_VERSION="33.1.1"
+XULRUNNER_MAC_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XULRUNNER_MAC_VERSION/runtimes/"
+XULRUNNER_MAC_PACK_NAME="xulrunner-$XULRUNNER_MAC_VERSION.en-US"
+
+
 cd $SLIMERDIR
 
 BUILD_BIN_PACKAGE="y"
@@ -128,13 +134,13 @@ if [ ! -d $XULRUNNER_PACK_NAME.linux-x86_64 ]; then
     mv xulrunner $XULRUNNER_PACK_NAME.linux-x86_64
 fi
 
-if [ ! -f "$XRDIR/$XULRUNNER_PACK_NAME.mac.tar.bz2" ]
+if [ ! -f "$XRDIR/$XULRUNNER_MAC_PACK_NAME.mac.tar.bz2" ]
 then
-    wget "$XULRUNNER_DNL_URL/$XULRUNNER_PACK_NAME.mac.tar.bz2"
+    wget "$XULRUNNER_MAC_DNL_URL/$XULRUNNER_MAC_PACK_NAME.mac.tar.bz2"
 fi
-if [ ! -d $XULRUNNER_PACK_NAME.mac ]; then
-    tar xjf "$XULRUNNER_PACK_NAME.mac.tar.bz2"
-    mv XUL.framework/Versions/Current $XULRUNNER_PACK_NAME.mac
+if [ ! -d $XULRUNNER_MAC_PACK_NAME.mac ]; then
+    tar xjf "$XULRUNNER_MAC_PACK_NAME.mac.tar.bz2"
+    mv XUL.framework/Versions/Current $XULRUNNER_MAC_PACK_NAME.mac
     rm -rf XUL.framework
 fi
 
@@ -164,7 +170,7 @@ rm -rf $TARGETDIR/xulrunner
 
 echo "Build MacOS package..."
 cd $XRDIR
-cp -a $XULRUNNER_PACK_NAME.mac $TARGETDIR/xulrunner
+cp -a $XULRUNNER_MAC_PACK_NAME.mac $TARGETDIR/xulrunner
 cp $SLIMERDIR/src/macos/Info.plist $TARGETDIR/xulrunner/
 cd $TARGETDIR/..
 tar cjf "slimerjs-$VERSION-mac.tar.bz2" "slimerjs-$VERSION"
