@@ -136,7 +136,7 @@ for i in $*; do
             CREATE_TEMP=''
             ;;
     esac
-    if [[ $i == --debug* ]] && [[ "$i" == *errors* ]]; then
+    if [[ "$i" == --debug* || "$i" == *errors* ]]; then
         HIDE_ERRORS='N'
     fi
 done
