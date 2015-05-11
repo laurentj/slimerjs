@@ -81,7 +81,7 @@ function showHelp() {
     #echo "                                     script (default is utf8)"
     echo "  --ssl-protocol=[SSLv3|TLSv1|TLSv1.0|TLSv1.1|TLSv1.2|TLS|any]   Indicates the ssl protocol to use."
     #echo "  --web-security=<bool>              Enables web security (default is yes)"
-    echo "  --version or v                     Prints out SlimerJS version"
+    echo "  --version or -v                    Prints out SlimerJS version"
     #echo "  --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded"
     #echo "                                     GhostDriver) '127.0.0.1:8910'"
     #echo "  --webdriver=[<IP>:]<PORT>          Starts in 'Remote WebDriver mode' in the"
