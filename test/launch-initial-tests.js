@@ -1,7 +1,6 @@
 /*
-
-this is a simple test file.
-Since we cannot load external file yet, tests are very very basic
+First test file in the history of SlimerJS, used to tests very basic things before the use
+of a true framework, to not depend of features that didn't exist at that time
 */
 console.log('Initial tests');
 

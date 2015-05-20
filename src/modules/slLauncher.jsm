@@ -97,6 +97,7 @@ var slLauncher = {
                                     'wantXrays': true
                                 });
             let src = slUtils.readChromeFile("resource://slimerjs/coffee-script/extras/coffee-script.js");
+            Cu.evalInSandbox('var CoffeeScript;', coffeeScriptSandbox, 'ECMAv5', 'slLauncher::launchMainScript', 1);
             Cu.evalInSandbox(src, coffeeScriptSandbox, 'ECMAv5', 'coffee-scripts.js', 1);
         }
 

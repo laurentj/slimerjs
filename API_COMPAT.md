@@ -126,7 +126,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>ownsPages                           </td><td>Implemented</td></tr>
     <tr><td>pages                               </td><td>Implemented</td></tr>
     <tr><td>pagesWindowName                     </td><td>Implemented</td></tr>
-    <tr><td>paperSize                           </td><td></td></tr>
+    <tr><td>paperSize                           </td><td>Implemented. 'header' and 'footer' properties are not supported yet.</td></tr>
     <tr><td>plainText                           </td><td>Implemented</td></tr>
     <tr><td>scrollPosition                      </td><td>Implemented</td></tr>
     <tr><td>settings                            </td><td>Implemented</td></tr>

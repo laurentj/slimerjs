@@ -347,7 +347,8 @@ function _create(parentWebpageInfo) {
         childWindows : [], // list of webpage of child windows
         settings: {},
         viewportSize : { width: 400, height: 300},
-        staticContentLoading : false
+        staticContentLoading : false,
+        paperSize : null
     }
 
     let defaultSettings = slConfiguration.getDefaultWebpageConfig();
@@ -1467,7 +1468,25 @@ function _create(parentWebpageInfo) {
                 privProp.clipRect = null;
             }
         },
-        paperSize : null,
+        /**
+         * dimensions for the PDF rendering
+         *  {width:'', height:'', margin:''}
+         *  or
+         *  {format:'', orientation:'', margin:''}
+         *
+         *  margin can be a single dimension or an object containing
+         *  one or more of the following properties: 'top', 'left', 'bottom', 'right'
+         *
+         *  format: "A4" etc.
+         *  orientation: "landscape" or "portrait"
+         *  dimension: supported unit 
+         */
+        get paperSize () {
+            return privProp.paperSize;
+        },
+        set paperSize (val) {
+            privProp.paperSize = val;
+        },
         get zoomFactor () {
             if (!browser)
                 throw new Error("WebPage not opened");
@@ -1492,8 +1511,11 @@ function _create(parentWebpageInfo) {
             try {
                 let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file));
                 if (finalOptions.format == 'pdf') {
-                    let printOptions = webpageUtils.getPrintOptions(this, finalOptions);
-                    return webpageUtils.renderPageAsPDF(browser.contentWindow, file, printOptions);
+                    let printOptions = webpageUtils.getPrintOptions(this, browser.contentWindow, file, finalOptions);
+                    if (printOptions === null) {
+                        return false;
+                    }
+                    return webpageUtils.renderPageAsPDF(browser.contentWindow, printOptions);
                 }
 
                 let canvas = webpageUtils.getScreenshotCanvas(

@@ -376,7 +376,35 @@ ownsPages was true.
 paperSize
 -----------------------------------------
 
-Not implemented.
+Contains an object specifiying some dimensions for the PDF rendering.
+If null, the PDF size will be the viewport size of the webpage.
+
+It can be either:
+
+.. code-block:: javascript
+
+    {width:'', height:'', margin:''}
+
+or
+
+.. code-block:: javascript
+
+    {format:'', orientation:'', margin:''}
+
+Margin (optional) can be a single dimension or an object containing one or more of the following
+properties: 'top', 'left', 'bottom', 'right'. Default is 0.
+
+Dimensions in width, height, margin should be a number following by a unit: 'mm', 'cm', 'in',
+'px'. No unit means 'px'.
+
+Format should one of these strings : "A4", "B5", "Letter", "Legal", "Executive",
+"A0", "A1", "A2", "A3", "A5", "A6", "A7", "A8", "A9",
+"B0", "B1", "B10", "B2", "B3", "B4", "B6", "B7", "B8", "B9",
+"C5E", "Comm10E", "DLE", "Folio", "Ledger", "Tabloid".
+
+Orientation (optional) is "landscape" or 'portrait' (default).
+
+'header' and 'footer' properties supported in PhantomJS are not supported yet by SlimerJS.
 
 .. _webpage-plainText:
 
@@ -930,13 +958,7 @@ inside SlimerJS) prevents us to get transparent background. However
 `there is a workaround <https://github.com/laurentj/slimerjs/issues/154#issuecomment-58495876>`_.
 
 For PDF rendering, the ``clipRect`` property, ``quality`` and ``onlyViewport`` options are
-ignored. And it supports additionnal properties:
-
-- ``resolution``: in dpi. By default: 300.
-- ``marginTop``, ``marginRight``, ``marginBottom``, ``marginLeft``: margin as millimeters
-- ``unwriteableMarginTop``, ``unwriteableMarginRight``,
-   ``unwriteableMarginBottom``, ``unwriteableMarginLeft``: unwriteable margin as millimeters
-- ``height``, ``width``: by default, the viewport size.
+ignored. Some options for PDF should be set in the ``paperSize`` property.
 
 Note: On MacOSx, you probably have to install a "PDF driver" as a printer on your system.
 See for example `PDFWriter for mac <http://sourceforge.net/projects/pdfwriterformac/>`_.

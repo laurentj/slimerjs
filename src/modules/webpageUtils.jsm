@@ -13,6 +13,7 @@ const de = Ci.nsIDocumentEncoder;
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/httpUtils.jsm');
+Cu.import('resource://slimerjs/slUtils.jsm');
 
 var webpageUtils = {
 
@@ -201,6 +202,10 @@ var webpageUtils = {
         // let's reproduce behavior we have in browser.loadURIWithFlags
         browser.userTypedClear++;
 
+        if (!/^[a-z]+\:/i.test(uri) ) {
+            let f = slUtils.getAbsMozFile(uri, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            uri = Services.io.newFileURI(f).spec;
+        }
         try {
           browser.webNavigation.loadURI(uri,
                                      0,
@@ -297,33 +302,6 @@ var webpageUtils = {
                         .getService(Ci.nsIURILoader);
         var ir = docShell.QueryInterface(Ci.nsIInterfaceRequestor)
         URILoader.openURI(channel, 0, ir);
-    },
-
-    getPrintOptions : function(webpage, options) {
-        let currentViewport = webpage.viewportSize;
-
-        let printOptions = {
-            ratio: webpage.zoomFactor,
-            format: 'pdf',
-            height: currentViewport.height,
-            width: currentViewport.width,
-            onlyViewport: false,
-            resolution: 300, // dpi
-            marginTop: 0,
-            marginRight: 0,
-            marginBottom: 0,
-            marginLeft: 0,
-            unwriteableMarginTop: 0,
-            unwriteableMarginRight: 0,
-            unwriteableMarginBottom: 0,
-            unwriteableMarginLeft: 0
-        };
-
-        if (typeof(options) == 'object') {
-          for (var attr in options) { printOptions[attr] = options[attr]; }
-        }
-
-        return printOptions;
     },
 
     getScreenshotOptions : function(webpage, options, alternateFormat) {
@@ -489,15 +467,44 @@ var webpageUtils = {
         return canvas;
     },
 
-    /**
-     * print the given content window into a PDF.
-     * The code has been inspired by http://mxr.mozilla.org/mozilla-central/source/mobile/android/chrome/content/browser.js#932
-     */
-    renderPageAsPDF : function(contentWindow, file, options) {
+    getPrintOptions : function(webpage, contentWindow, file, options) {
+        let currentViewport = webpage.viewportSize;
+        let paperSize = webpage.paperSize;
+        if (typeof paperSize == 'undefined' || paperSize === null) {
+            paperSize = {
+                width: currentViewport.width + 'px',
+                height: currentViewport.height + 'px',
+                margin: '0px'
+            };
+        }
+        if (!('width' in paperSize && 'height' in paperSize) &&
+            !('format' in paperSize)) {
+            return null;
+        }
+
+        let domWindowUtils = contentWindow.QueryInterface(Ci.nsIInterfaceRequestor)
+                                        .getInterface(Ci.nsIDOMWindowUtils);
+        let currentScreenDPI = domWindowUtils.displayDPI || 96;
+
+        let stringToInches = function(s) {
+            let units = {
+                'mm': 25.4,
+                'cm': 2.54,
+                'in': 1,
+                'px': currentScreenDPI
+            };
+            let convert = function(u) {
+                let n = parseFloat(s.substr(0, s.length - u.length));
+                return n / units[u];
+            };
+            for (let u in units) if (s.endsWith(u)) return convert(u);
+            // default to pixels, TODO: could check for wrong units, how?
+            return parseFloat(s) / currentScreenDPI;
+        };
+
         let printSettings = Cc["@mozilla.org/gfx/printsettings-service;1"]
                                 .getService(Ci.nsIPrintSettingsService)
                                 .newPrintSettings;
-
         printSettings.printSilent             = true;
         printSettings.showPrintProgress       = false;
         printSettings.printBGImages           = true;
@@ -512,21 +519,72 @@ var webpageUtils = {
         printSettings.headerStrCenter         = "";
         printSettings.headerStrLeft           = "";
         printSettings.headerStrRight          = "";
-        printSettings.marginTop               = options.marginTop;
-        printSettings.marginRight             = options.marginRight;
-        printSettings.marginBottom            = options.marginBottom;
-        printSettings.marginLeft              = options.marginLeft;
-        printSettings.unwriteableMarginTop    = options.unwriteableMarginTop;
-        printSettings.unwriteableMarginRight  = options.unwriteableMarginRight;
-        printSettings.unwriteableMarginBottom = options.unwriteableMarginBottom;
-        printSettings.unwriteableMarginLeft   = options.unwriteableMarginLeft;
-        printSettings.resolution              = options.resolution;
-        printSettings.paperName               = 'Custom'
-        printSettings.paperSizeType           = 1;
-        printSettings.paperWidth              = options.width;
-        printSettings.paperHeight             = options.height;
-        printSettings.paperSizeUnit           = Ci.nsIPrintSettings.kPaperSizeMillimeters;
+        printSettings.marginTop               = 0;
+        printSettings.marginRight             = 0;
+        printSettings.marginBottom            = 0;
+        printSettings.marginLeft              = 0;
+        printSettings.unwriteableMarginTop    = 0;
+        printSettings.unwriteableMarginRight  = 0;
+        printSettings.unwriteableMarginBottom = 0;
+        printSettings.unwriteableMarginLeft   = 0;
+        printSettings.resolution              = 300;
+        printSettings.paperSizeUnit           = Ci.nsIPrintSettings.kPaperSizeInches;
         printSettings.scaling                 = options.ratio;
+
+        if ('width' in paperSize && 'height' in paperSize) {
+            printSettings.paperSizeType =  printSettings.kPaperSizeDefined;
+            printSettings.paperName = 'Custom';
+            printSettings.paperWidth = stringToInches(paperSize.width);
+            printSettings.paperHeight = stringToInches(paperSize.height);
+            printSettings.shrinkToFit = false;
+        } else {
+            // for now, we trust the printer config to have the format we want
+            printSettings.paperName = paperSize.format;
+            printSettings.paperSizeType  = printSettings.kPaperSizeNativeData;
+            if ("orientation" in paperSize) {
+                if (paperSize.orientation == "landscape") {
+                    printSettings.orientation = printSettings.kLandscapeOrientation;
+                } else {
+                    printSettings.orientation = printSettings.kPortraitOrientation;
+                }
+            }
+        }
+
+        if ("border" in paperSize && !("margin" in paperSize)) {
+            // backwards compatibility with old PhantomJS versions
+            paperSize.margin = paperSize.border;
+        }
+        if ("margin" in paperSize) {
+            if (typeof paperSize.marging == "object") {
+                let getMargin = function(border) {
+                    if (border in paperSize.margin) {
+                        return stringToInches(paperSize.margin[border]);
+                    } else {
+                        return 0
+                    }
+                }
+                printSettings.marginTop = getMargin('top');
+                printSettings.marginRight = getMargin('right');
+                printSettings.marginBottom = getMargin('bittom');
+                printSettings.marginLeft = getMargin('left');
+            }
+            else {
+                let margin = stringToInches(paperSize.margin);
+                printSettings.marginTop = margin;
+                printSettings.marginRight = margin;
+                printSettings.marginBottom = margin;
+                printSettings.marginLeft = margin;
+            }
+        }
+        return printSettings;
+    },
+    
+    /**
+     * print the given content window into a PDF.
+     * The code has been inspired by
+     *  http://mxr.mozilla.org/mozilla-central/source/mobile/android/chrome/content/browser.js#1284
+     */
+    renderPageAsPDF : function(contentWindow, printSettings) {
 
         let ms = Cc["@mozilla.org/mime;1"].getService(Ci.nsIMIMEService);
         let mimeInfo = ms.getFromTypeAndExtension("application/pdf", "pdf");
@@ -550,7 +608,8 @@ var webpageUtils = {
                     printEnding = true;
                 }
             },
-            onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){},
+            onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage){
+            },
             onSecurityChange : function(aWebProgress, aRequest, aState) { },
             onProgressChange : function (aWebProgress, aRequest,
                     aCurSelfProgress, aMaxSelfProgress,
@@ -560,8 +619,9 @@ var webpageUtils = {
         webBrowserPrint.print(printSettings, wpListener);
 
         let thread = Services.tm.currentThread;
-        while (!printEnding)
+        while (!printEnding) {
             thread.processNextEvent(true);
+        }
 
         return true;
     }
