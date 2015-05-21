@@ -1566,6 +1566,8 @@ informations:
 - ``statusText``: the HTTP response text for the status ("Ok"...)
 - ``referrer``: the referer url (slimerjs only)
 - ``body``: the content, it may change during multiple call for the same request (slimerjs only).
+- ``httpVersion.major``: the major part of the HTTP protocol version.
+- ``httpVersion.minor``: the minor part of the HTTP protocol version.
 
 
 .. code-block:: javascript
