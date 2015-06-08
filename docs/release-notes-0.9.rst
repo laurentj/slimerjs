@@ -5,15 +5,24 @@
 Release Notes of SlimerJS 0.9
 =============================
 
-version 0.9.6
+version 0.9.7
 =============
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
 
+version 0.9.6
+=============
+
+SlimerJS 0.9.6 has been released on June 8th, 2015.
+
+Contributors: Ivan Enderlin, Jerry Lundström, Hallvord R. M. Steen
+
 Improvements
 ------------
 
+    * Compatibility with XulRunner/Firefox 38 and 39beta
+    * packages: default Xulrunner version is now 38
     * improved information displayed in the console for some javascript error messages occuring into the web page
 
 Fixed PhantomJS conformance issues
@@ -25,6 +34,9 @@ Fixed bugs
 ----------
 
     * Fix SSL support. Only support sslv3 was activated whereas it should be disabled (#335, #304)
+    * Fix ``HIDE_ERRORS`` switcher ( #356)
+    * Fix error "Permission denied to access property CoffeeScript" with Gecko 37+ (#350)
+    * Fix issues in the .bat file (windows) (#348)
 
 version 0.9.5
 =============
