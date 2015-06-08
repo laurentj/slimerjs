@@ -5,16 +5,24 @@
 Release Notes
 =============
 
-version 0.9.6
+version 0.9.7
 =============
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
+
+
+version 0.9.6
+=============
+
+SlimerJS 0.9.6 has been released on June 8th, 2015.
 
 Contributors: Ivan Enderlin, Jerry Lundström, Hallvord R. M. Steen
 
 Improvements
 ------------
 
+    * Compatibility with XulRunner/Firefox 38 and 39beta
+    * packages: default Xulrunner version is now 38
     * improved information displayed in the console for some javascript error messages occuring into the web page
 
 Fixed PhantomJS conformance issues
