@@ -602,8 +602,26 @@ const traceResponse = function(id, request) {
             statusText: null,
             // Extensions
             referrer: "",
-            body: ""
+            body: "",
+            httpVersion: {
+                major: 1,
+                minor: 0
+            }
     };
+
+    // Try to get the HTTP protocol version, may fail due to nsIHttpChannelInternal being internal
+    try {
+        let httpVersionMaj = {};
+        let httpVersionMin = {};
+
+        let channel = request.QueryInterface(Ci.nsIHttpChannelInternal);
+        channel.getResponseVersion(httpVersionMaj, httpVersionMin);
+
+        response.httpVersion.major = httpVersionMaj.value;
+        response.httpVersion.minor = httpVersionMin.value;
+    } catch(e) {
+        // Ignore errors
+    }
 
     try {
         response.status = request.responseStatus;
