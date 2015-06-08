@@ -10,6 +10,7 @@ version 0.9.6
 
 Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
 
+Contributors: Ivan Enderlin, Jerry Lundström, Hallvord R. M. Steen
 
 Improvements
 ------------
@@ -25,6 +26,9 @@ Fixed bugs
 ----------
 
     * Fix SSL support. Only support sslv3 was activated whereas it should be disabled (#335, #304)
+    * Fix ``HIDE_ERRORS`` switcher ( #356)
+    * Fix error "Permission denied to access property CoffeeScript" with Gecko 37+ (#350)
+    * Fix issues in the .bat file (windows) (#348)
 
 version 0.9.5
 =============
