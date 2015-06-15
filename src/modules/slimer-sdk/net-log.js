@@ -16,6 +16,7 @@ Cu.import('resource://slimerjs/slDebug.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 
 let browserMap = new WeakMap();
+let wireBytes = {};
 
 exports.registerBrowser = function(browser, options) {
     let data = {
@@ -483,7 +484,7 @@ TracingListener.prototype = {
             }
         }
         this.data = [];
-        this.options.onResponse(mix({}, this.response));
+        this.options.onResponse(mix({}, this.response, { _wireBytes: wireBytes[request.URI.spec] }));
     },
 
     QueryInterface: function (aIID) {
@@ -993,6 +994,10 @@ ProgressListener.prototype = {
     onProgressChange : function (aWebProgress, aRequest,
             aCurSelfProgress, aMaxSelfProgress,
             aCurTotalProgress, aMaxTotalProgress) {
+        wireBytes[aRequest.URI.spec] = {
+            current: aCurSelfProgress,
+            total: aCurTotalProgress
+        };
         if (!DEBUG_NETWORK_PROGRESS)
             return;
         if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
