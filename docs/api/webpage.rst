@@ -406,6 +406,38 @@ Orientation (optional) is "landscape" or 'portrait' (default).
 
 'header' and 'footer' properties supported in PhantomJS are not supported yet by SlimerJS.
 
+SlimerJS supports 'headerStr' and 'footerStr' properties which are static text with following special symbols interpretation.
+ ====================  ===========================================================
+ Variable              Description
+ ====================  ===========================================================
+ ``&T``                title
+ ``&U``                URL
+ ``&D``                date/time
+ ``&P``                current page number
+ ``&PT``               total number of pages in form "*page* ``of`` *total*"
+ ``&L``                last page number   
+ ====================  ===========================================================
+
+The font of header and footer can't be modified.
+  
+'headerStr' and 'footerStr' can be objects with properties for position (left,center,right) of header/footer.
+
+.. code-block:: javascript
+
+    {
+	 	 headerStr:{left:'', center:'&T', right:''}
+		 , footerStr:{left:'', center:'', right:'&P of &L'}
+	 }
+
+SlimerJS supports following additional properties of paperSize.
+
+- ``unwriteableMargin``: unwriteable margins
+- ``edge`` : positioning of the headers and footers on the page. They're measured as an offset from the unwriteable margin
+- ``shrinkToFit``: try to fit content in page (bool) 
+- ``printBGColors``, ``printBGImages``: control printing of background colors and images (bool)
+- ``title``: title of printed content (see 'headerStr' and 'footerStr')
+ 
+
 .. _webpage-plainText:
 
 plainText
@@ -959,6 +991,7 @@ inside SlimerJS) prevents us to get transparent background. However
 
 For PDF rendering, the ``clipRect`` property, ``quality`` and ``onlyViewport`` options are
 ignored. Some options for PDF should be set in the ``paperSize`` property.
+
 
 Note: On MacOSx, you probably have to install a "PDF driver" as a printer on your system.
 See for example `PDFWriter for mac <http://sourceforge.net/projects/pdfwriterformac/>`_.
