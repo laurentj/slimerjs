@@ -22,6 +22,10 @@ const fileHandler = Cc["@mozilla.org/network/protocol;1?name=file"]
                      .getService(Ci.nsIFileProtocolHandler)
 const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
                         .createInstance(Ci.nsIPrincipal)
+const appInfo = Cc["@mozilla.org/xre/app-info;1"]
+                .getService(Ci.nsIXULAppInfo);
+const versionComparator = Cc["@mozilla.org/xpcom/version-comparator;1"]
+                          .getService(Ci.nsIVersionComparator);
 
 /**
  * this function retrieves various informations
@@ -92,9 +96,10 @@ var slLauncher = {
             // prepare the sandbox to execute coffee script injected with injectJs
             coffeeScriptSandbox = Cu.Sandbox(contentWindow,
                                 {
-                                    'sandboxName': 'coffeescript',
-                                    'sandboxPrototype': {},
-                                    'wantXrays': true
+                                    sandboxName: 'coffeescript',
+                                    // XULrunner 40.0 and above handles sandboxPrototype different then before
+                                    sandboxPrototype: versionComparator.compare(appInfo.platformVersion, '40') < 0 ? {} : contentWindow,
+                                    wantXrays: true
                                 });
             let src = slUtils.readChromeFile("resource://slimerjs/coffee-script/extras/coffee-script.js");
             Cu.evalInSandbox('var CoffeeScript;', coffeeScriptSandbox, 'ECMAv5', 'slLauncher::launchMainScript', 1);
