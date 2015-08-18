@@ -17,6 +17,11 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 let browserMap = new WeakMap();
 
+/**
+ * Register network callbacks on the given browser
+ * @param XULElement browser
+ * @param object options  it may contains some callbacks
+ */
 exports.registerBrowser = function(browser, options) {
     let data = {
         options: mix({
@@ -36,41 +41,45 @@ exports.registerBrowser = function(browser, options) {
 
             // The mask.
             // called when the load of new document is asked.
-            // receives the uri that is loading
+            // receives the uri (string) that is loading
             onLoadStarted: null,
 
             // The red underpants.
             // called when the URL is changed.
             // The document is not loaded yet.
-            // the callback received the new URI
+            // the callback received the new URI (string)
             onURLChanged: null,
 
             // The red mantle.
             // called when the download of the content
             // of the main document is started.
+            // the callback received the URI (string)
             onTransferStarted :null,
 
             // The blue tights.
             // called when the main content is loaded.
             // dependant resources are not loaded yet
-            // and the document is not parsed yet
+            // and the document is not parsed yet.
+            // the callback received the URI (string)
+            // and a boolean: true if request is ok
             onContentLoaded: null,
 
             // The t-shirt with the SUPER logo (or not).
             // called when the document is ready.
-            // Receives the URI, "success" or "fail"
-            // all resources are loaded.
+            // Receives the URI, and "success" or "fail".
+            // All resources are loaded at this time.
             // the document has just received the load event.
             onLoadFinished: null,
 
             // called when the load of frame is starting.
-            // receives the uri that is loading, and a boolean
-            // indicating if it is during the load of the main document (true) or not
+            // Receives the uri that is loading, and a boolean indicating if it is during
+            // the load of the main document (true) or not
             onFrameLoadStarted: null,
 
             // called when a frame is loaded.
-            // Receives the URI, "success" or "fail", and a boolean indicating
-            // if it is during the load of the main document (true) or not
+            // Receives the URI, "success" or "fail", the associated window object, and a
+            // boolean indicating if it is during the load of the main document (true) or
+            // not.
             onFrameLoadFinished: null
 
         }, options || {}),
@@ -883,7 +892,7 @@ ProgressListener.prototype = {
                         slDebugLog("network: main request starting - "+uri+ " flags:"+debugFlags(flags));
                     this.mainPageURI = request.URI;
                     if (typeof(this.options.onLoadStarted) === "function") {
-                        this.options.onLoadStarted(uri, false);
+                        this.options.onLoadStarted(uri);
                     }
                     if (request.URI.scheme == 'file') {
                         // for file:// protocol, we don't have http-on-* events
@@ -952,7 +961,7 @@ ProgressListener.prototype = {
                     // it is called when the docshell is ready and the page is displayed
                     let opt = this.options;
                     Services.tm.currentThread.dispatch({ run: function(){
-                        opt.onLoadFinished(uri, success, false);
+                        opt.onLoadFinished(uri, success);
                     }}, Ci.nsIEventTarget.DISPATCH_NORMAL);
                 }
                 return;

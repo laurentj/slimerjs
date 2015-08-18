@@ -175,7 +175,7 @@ var slLauncher = {
 
     /**
      * create a new browser element. call the given callback when it is ready,
-     * with the browser element as parameter.
+     * with the XUL browser element as parameter.
      */
     openBrowser : function(callback, parentWindow, size) {
         if (!parentWindow)
