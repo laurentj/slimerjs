@@ -30,7 +30,7 @@ var server = require("webserver").create(), //< webserver
     _log;                                   //< logger for "main.js"
 
 // "ghostdriver" global namespace
-ghostdriver = {
+var ghostdriver = {
     system  : require("system"),
     hub     : require("./hub_register.js"),
     logger  : require("./logger.js"),
