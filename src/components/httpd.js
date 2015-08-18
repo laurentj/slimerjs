@@ -2765,6 +2765,8 @@ ServerHandler.prototype =
         var sis = new ScriptableInputStream(fis);
         var s = Cu.Sandbox(gGlobalObject);
         s.importFunction(dump, "dump");
+        s.importFunction(atob, "atob");
+        s.importFunction(btoa, "btoa");
 
         // Define a basic key-value state-preservation API across requests, with
         // keys initially corresponding to the empty string.
@@ -2878,7 +2880,7 @@ ServerHandler.prototype =
         throw e;
       }
 
-      function writeMore()
+      let writeMore = function ()
       {
         gThreadManager.currentThread
                       .dispatch(writeData, Ci.nsIThread.DISPATCH_NORMAL);
