@@ -56,7 +56,7 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>scriptName                          </td><td>Implemented</td></tr>
     <tr><td>version                             </td><td>Implemented. Gives the PhantomJS version which is compatible to
                                                         the SlimerJS implementation.</td></tr>
-    <tr><td>webdriverMode                       </td><td></td></tr>
+    <tr><td>webdriverMode                       </td><td>Implemented</td></tr>
 </table>
 
 ## methods

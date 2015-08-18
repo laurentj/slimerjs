@@ -22,6 +22,7 @@ New API
 - ``webpage.paperSize`` is supported (except its header and footer properties).
 - ``webpage.onLongRunningScript`` and ``webpage.stopJavascript()`` to allow to be informed of
    webpage having long running scripts (compatible with Phantomjs 2)
+- ``phantom.webdriverMode``
 
 Improvements
 ------------

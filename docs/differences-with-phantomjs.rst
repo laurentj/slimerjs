@@ -67,7 +67,7 @@ In the API
 
 - The main script is considered as a module, for more security and to be compatible with Mozilla modules. So ``this`` is not ``window`` and there is an ``exports``
   object.
-- ``webpage.sendEvent()`` for key events is more consistent. In PhantomJS, there are `several issues <http://code.google.com/p/phantomjs/issues/detail?id=1094>`_.
+- ``webpage.sendEvent()`` for key events is more consistent. In PhantomJS, there are `several issues <https://github.com/ariya/phantomjs/issues/11094>`_.
 - ``webpage.open()`` returns `a promise <https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html>`_.
   It's easier to chain things executed asynchronously
 - The call of ``webpage.open()`` (or ``openUrl()``), in PhantomJS, ends when the load is

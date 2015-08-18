@@ -170,6 +170,10 @@ var phantom = {
         return slLauncher.defaultErrorHandler;
     },
 
+    get webdriverMode () {
+        return (slConfiguration.webdriver != '');
+    },
+
     __exposedProps__ : {
         cookies: 'rw',
         cookiesEnabled: 'rw',
@@ -183,7 +187,8 @@ var phantom = {
         injectJs : 'r',
         onError : 'rw',
         defaultErrorHandler : 'r',
-        defaultPageSettings : 'r'
+        defaultPageSettings : 'r',
+        webdriverMode: 'r'
     }
 }
 
