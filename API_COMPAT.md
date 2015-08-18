@@ -31,11 +31,11 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>--ssl-protocol=[SSLv3|TLSv1|TLSv1.1|TLSv1.2|any|TLS] </td><td>Implemented. No support of sslv2. By default TLS.</td></tr>
     <tr><td>--ssl-certificates-path=/path/to/dir </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--version or -v                      </td><td>Implemented</td></tr>
-    <tr><td>--webdriver or --wd or -w            </td><td></td></tr>
-    <tr><td>--webdriver=ip:port                  </td><td></td></tr>
-    <tr><td>--webdriver-logfile=/path/to/logfile </td><td></td></tr>
-    <tr><td>--webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]</td><td></td></tr>
-    <tr><td>--webdriver-selenium-grid-hub=url    </td><td></td></tr>
+    <tr><td>--webdriver or --wd or -w            </td><td>Implemented (experimental)</td></tr>
+    <tr><td>--webdriver=ip:port                  </td><td>Implemented (experimental)</td></tr>
+    <tr><td>--webdriver-logfile=/path/to/logfile </td><td>Implemented (experimental)</td></tr>
+    <tr><td>--webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]</td><td>Implemented (experimental)</td></tr>
+    <tr><td>--webdriver-selenium-grid-hub=url    </td><td>Implemented (experimental)</td></tr>
     <tr><td>--web-security=[yes|no]              </td><td></td></tr>
     <tr><td>script path                          </td><td>Implemented</td></tr>
     <tr><td>script arguments                     </td><td>Implemented</td></tr>

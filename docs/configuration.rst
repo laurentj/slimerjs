@@ -46,11 +46,11 @@ PhantomJS options
 --ssl-protocol=[ssl protocol name]                Supported (0.9.5)    Indicates the SSL protocol to use. See notes about it below. Default is TLS.
 --ssl-certificates-path=/path/to/dir              N/A. see profiles
 --version or -v                                   Supported            Displays the version of SlimerJS
---webdriver or --wd or -w
---webdriver=ip:port
---webdriver-logfile=/path/to/logfile
---webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]
---webdriver-selenium-grid-hub=url    
+--webdriver or --wd or -w                         Supported            launch SlimerJS as a driver for Selenium (experimental)
+--webdriver=ip:port                               Supported            launch SlimerJS as a driver for Selenium, by indicating the ip and a port (experimental)
+--webdriver-logfile=/path/to/logfile              Supported            sets the log file for webdriver
+--webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]      Supported            sets the log level for webdriver
+--webdriver-selenium-grid-hub=url                 Supported            sets the url to the Selenium grid hub
 --web-security=[yes|no|true|false]              
 ================================================  ===================  ====================================================
 

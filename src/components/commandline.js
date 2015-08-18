@@ -97,8 +97,9 @@ var webDriverScriptHandler = {
             if ( pos > 0) {
                 [slConfiguration.webdriverIp, slConfiguration.webdriverPort] = val.split(":");
             }
-            else
-                slConfiguration.webdriverPort = val
+            else {
+                slConfiguration.webdriverPort = val;
+            }
             return val;
         }
         //currentOptionSpec.webdriverEngine = ['webdriver-engine', '', null, true];

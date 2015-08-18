@@ -155,7 +155,7 @@ Then launch SlimerJS like this:
 You won't see any windows. If you have any problems with xvfb, see its
 documentation.
 
-Using flash plugin or other kind plugins
+Using flash plugin or other plugins
 ----------------------------------------
 
 SlimerJS is able to load Flash content if the Flash plugin is installed,
@@ -172,7 +172,8 @@ provided by SlimerJS. This is apparently the case for Fedora for example.
 Note: plugins are not Firefox/XUL/JS extensions. Plugins and "extensions" are two
 different things in the gecko world. Extensions for Firefox are pieces of code to extends
 some features of Gecko and/or to add some UI things in the interface of Firefox. Plugins
-are black boxes that can only be loaded with the html element ``<object>``, like Flash.
+are black boxes that can only be loaded with the html element ``<object>``, like Flash,
+to show non-html content inside a web page.
 
 See `detailed definition of plugins on MDN <https://developer.mozilla.org/en-US/Add-ons/Plugins>`_ .
 

@@ -164,16 +164,16 @@ REM    echo                                      script (default is utf8)
 REM    echo   --web-security=^<bool^>            Enables web security (default is yes)
     echo   --ssl-protocol=^<version^>         Indicates the ssl protocol to use. SSLv3, TLSv1, TLSv1.0, TLSv1.1, TLSv1.2, TLS, any
     echo   --version or v                     Prints out SlimerJS version
-REM    echo   --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded
-REM    echo                                      GhostDriver) '127.0.0.1:8910'
-REM    echo   --webdriver=[^<IP^>:]^<PORT^>          Starts in 'Remote WebDriver mode' in the
-REM    echo                                      specified network interface
-REM    echo   --webdriver-logfile=^<file^>         File where to write the WebDriver's Log
-REM    echo                                      (default 'none') (NOTE: needs '--webdriver')
-REM    echo   --webdriver-loglevel=[ERROR^|WARN^|INFO^|DEBUG^|] WebDriver Logging Level
-REM    echo                                  (default is 'INFO') (NOTE: needs '--webdriver')
-REM    echo   --webdriver-selenium-grid-hub=^<url^> URL to the Selenium Grid HUB (default is
-REM    echo                                       'none') (NOTE: needs '--webdriver')
+    echo   --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded
+    echo                                      GhostDriver) '127.0.0.1:8910'
+    echo   --webdriver=[^<IP^>:]^<PORT^>          Starts in 'Remote WebDriver mode' in the
+    echo                                      specified network interface
+    echo   --webdriver-logfile=^<file^>         File where to write the WebDriver's Log
+    echo                                      (default 'none') (NOTE: needs '--webdriver')
+    echo   --webdriver-loglevel=[ERROR^|WARN^|INFO^|DEBUG^|] WebDriver Logging Level
+    echo                                  (default is 'INFO') (NOTE: needs '--webdriver')
+    echo   --webdriver-selenium-grid-hub=^<url^> URL to the Selenium Grid HUB (default is
+    echo                                       'none') (NOTE: needs '--webdriver')
     echo   --error-log-file=<file>            Log all javascript errors in a file
     echo   -jsconsole                         Open a window to view all javascript errors
     echo                                        during the execution

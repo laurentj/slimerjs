@@ -10,6 +10,11 @@ version 0.10.0
 
 Still in development
 
+New features
+------------
+
+- Experimental support of Webdriver, by using GhostDriver like phantomjs, to control SlimerJS from Selenium.
+
 New API
 -------
 
@@ -41,15 +46,12 @@ Other informations about this release
 - XulRunner 40 is bundled into packages
 
 
-Missing APIS in SlimerJS 0.10
------------------------------
+Missing features in SlimerJS 0.10
+---------------------------------
 
-Here are the PhantomJS 1.9 APIs that are missing in SlimerJS 0.10 but planed in future releases.
-
-- some few options for the command line  and settings on the webpage object
-  are not supported yet. Some of them are the possibility to deactivate
-  SSL verification and Web security (CORS etc)
-- no support of Ghost Driver (Selenium web driver)
+Some few options for the command line  and settings on the webpage object
+are not supported yet. Some of them are the possibility to deactivate
+SSL verification and Web security (CORS etc)
 
 You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_
 to know details.
@@ -62,10 +64,11 @@ Known issues
 
 - See `the github page <https://github.com/laurentj/slimerjs/issues>`_ ...
 
-Contributors
-------------
+Contributors for this release
+-----------------------------
 
 - Rémi Emonet (webpage.paperSize)
+- Dimitar Angelov (webpage.paperSize and other pdf options for webpage.render())
 
 
 Previous release notes
