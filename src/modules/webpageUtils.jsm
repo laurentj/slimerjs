@@ -477,7 +477,7 @@ var webpageUtils = {
                 margin: '0px'
             };
         }
-        if (!('width' in paperSize && 'height' in paperSize) &&
+      if (!('width' in paperSize && 'height' in paperSize) &&
             !('format' in paperSize)) {
             return null;
         }
@@ -513,16 +513,21 @@ var webpageUtils = {
         printSettings.toFileName              = file;
         printSettings.printFrameType          = Ci.nsIPrintSettings.kFramesAsIs;
         printSettings.outputFormat            = Ci.nsIPrintSettings.kOutputFormatPDF;
-        printSettings.footerStrCenter         = "";
-        printSettings.footerStrLeft           = "";
-        printSettings.footerStrRight          = "";
+        printSettings.title                   = webpage.title;
         printSettings.headerStrCenter         = "";
         printSettings.headerStrLeft           = "";
         printSettings.headerStrRight          = "";
+        printSettings.footerStrCenter         = "";
+        printSettings.footerStrLeft           = "";
+        printSettings.footerStrRight          = "";
         printSettings.marginTop               = 0;
         printSettings.marginRight             = 0;
         printSettings.marginBottom            = 0;
         printSettings.marginLeft              = 0;
+//        printSettings.edgeTop                 = 0;
+//        printSettings.edgeLeft                = 0;
+//        printSettings.edgeBottom              = 0;
+//        printSettings.edgeRight               = 0;
         printSettings.unwriteableMarginTop    = 0;
         printSettings.unwriteableMarginRight  = 0;
         printSettings.unwriteableMarginBottom = 0;
@@ -530,6 +535,7 @@ var webpageUtils = {
         printSettings.resolution              = 300;
         printSettings.paperSizeUnit           = Ci.nsIPrintSettings.kPaperSizeInches;
         printSettings.scaling                 = options.ratio;
+//        printSettings.shrinkToFit             = false;
 
         if ('width' in paperSize && 'height' in paperSize) {
             printSettings.paperSizeType =  printSettings.kPaperSizeDefined;
@@ -555,18 +561,18 @@ var webpageUtils = {
             paperSize.margin = paperSize.border;
         }
         if ("margin" in paperSize) {
-            if (typeof paperSize.marging == "object") {
+            if (typeof paperSize.margin == "object") {
                 let getMargin = function(border) {
                     if (border in paperSize.margin) {
                         return stringToInches(paperSize.margin[border]);
                     } else {
-                        return 0
+                        return 0;
                     }
                 }
-                printSettings.marginTop = getMargin('top');
-                printSettings.marginRight = getMargin('right');
-                printSettings.marginBottom = getMargin('bittom');
-                printSettings.marginLeft = getMargin('left');
+                printSettings.marginTop = getMargin("top");
+                printSettings.marginRight = getMargin("right");
+                printSettings.marginBottom = getMargin("bottom");
+                printSettings.marginLeft = getMargin("left");
             }
             else {
                 let margin = stringToInches(paperSize.margin);
@@ -576,6 +582,102 @@ var webpageUtils = {
                 printSettings.marginLeft = margin;
             }
         }
+        if ("unwriteableMargin" in paperSize) {
+            if (typeof paperSize.unwriteableMargin == "object") {
+                let getUnwriteableMargin = function(border) {
+                    if (border in paperSize.unwriteableMargin) {
+                        return stringToInches(paperSize.unwriteableMargin[border]);
+                    } else {
+                        return 0;
+                    }
+                }
+                printSettings.unwriteableMarginTop = getUnwriteableMargin("top");
+                printSettings.unwriteableMarginRight = getUnwriteableMargin("right");
+                printSettings.unwriteableMarginBottom = getUnwriteableMargin("bittom");
+                printSettings.unwriteableMarginLeft = getUnwriteableMargin("left");
+            }
+            else {
+                let unwriteableMargin = stringToInches(paperSize.unwriteableMargin);
+                printSettings.unwriteableMarginTop = unwriteableMargin;
+                printSettings.unwriteableMarginRight = unwriteableMargin;
+                printSettings.unwriteableMarginBottom = unwriteableMargin;
+                printSettings.unwriteableMarginLeft = unwriteableMargin;
+            }
+        }
+        if ("edge" in paperSize) {
+            if (typeof paperSize.edge == "object") {
+                let getEdge = function(border) {
+                    if (border in paperSize.edge) {
+                        return stringToInches(paperSize.edge[border]);
+                    } else {
+                        return 0;
+                    }
+                }
+                printSettings.edgeTop = getEdge("top");
+                printSettings.edgeRight = getEdge("right");
+                printSettings.edgeBottom = getEdge("bottom");
+                printSettings.edgeLeft = getEdge("left");
+            }
+            else {
+                let edge = stringToInches(paperSize.edge);
+                printSettings.edgeTop = edge;
+                printSettings.edgeRight = edge;
+                printSettings.edgeBottom = edge;
+                printSettings.edgeLeft = edge;
+            }
+        }
+        if ("headerStr" in paperSize) {
+            if (typeof paperSize.headerStr == "object") {
+                let getHeaderStr = function(position) {
+                    if (position in paperSize.headerStr) {
+                        return paperSize.headerStr[position];
+                    } else {
+                        return "";
+                    }
+                }
+                printSettings.headerStrLeft = getHeaderStr("left");
+                printSettings.headerStrCenter = getHeaderStr("center");
+                printSettings.headerStrRight = getHeaderStr("right");
+            }
+            else {
+                printSettings.headerStrLeft = "";
+                printSettings.headerStrCenter = paperSize.headerStr;
+                printSettings.headerStrRight = "";
+            }
+        }
+        if ("footerStr" in paperSize) {
+            if (typeof paperSize.footerStr == "object") {
+                let getFooterStr = function(position) {
+                    if (position in paperSize.footerStr) {
+                        return paperSize.footerStr[position];
+                    } else {
+                        return "";
+                    }
+                }
+                printSettings.footerStrLeft = getFooterStr("left");
+                printSettings.footerStrCenter = getFooterStr("center");
+                printSettings.footerStrRight = getFooterStr("right");
+            }
+            else {
+                printSettings.footerStrLeft = "";
+                printSettings.footerStrCenter = paperSize.footerStr;
+                printSettings.footerStrRight = "";
+            }
+        }
+        
+        //
+        if ("printBGImages" in paperSize)
+	        printSettings.printBGImages = paperSize.printBGImages;
+        if ("printBGColors" in paperSize)
+	        printSettings.printBGColors = paperSize.printBGColors;
+        if ("title" in paperSize)
+	        printSettings.title = paperSize.title;
+        if ("shrinkToFit" in paperSize)
+	        printSettings.shrinkToFit = paperSize.shrinkToFit;
+//        for (let xx in printSettings) {
+//           if (typeof printSettings[xx] != 'object' && typeof printSettings[xx] != 'function')
+//           		dump(xx+":"+printSettings[xx]+"\n");
+//		  }  
         return printSettings;
     },
     
