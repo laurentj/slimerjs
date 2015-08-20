@@ -91,6 +91,7 @@ var helloScriptHandler = {
 var webDriverScriptHandler = {
     name : 'webDriverScriptHandler',
     setOptionsSpecInto : function(currentOptionSpec) {
+        slConfiguration.baseURIStrictCommonJS.push('resource://slimerjs/ghostdriver/');
 
         function parse_webdriver(val, cmdlineOpt) {
             let pos = val.lastIndexOf(':')
@@ -121,7 +122,7 @@ var webDriverScriptHandler = {
     },
     declareScript : function(cmdLine) {
         slConfiguration.mainScriptURI = Services.io.newURI('resource://slimerjs/ghostdriver/main.js', null, null);
-        slConfiguration.scriptModulePath = 'ghostdriver/';
+        slConfiguration.scriptModulePath = '@ghostdriver/';
         slConfiguration.args.unshift(slConfiguration.mainScriptURI.spec);
 
         slConfiguration.args.push("--ip="+slConfiguration.webdriverIp);

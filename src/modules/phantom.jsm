@@ -133,8 +133,7 @@ var phantom = {
      */
     injectJs: function(filename) {
         if (slConfiguration.mainScriptURI.scheme != 'file') {
-            let uri = slConfiguration.mainScriptURI;
-            let fileUrl = uri.scheme+'://'+uri.host+'/'+slConfiguration.scriptModulePath+filename;
+            let fileUrl = slConfiguration.mainScriptURI.resolve(filename);
             let source = slUtils.readChromeFile(fileUrl);
             return slLauncher.injectJs(source, fileUrl);
         }

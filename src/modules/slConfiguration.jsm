@@ -90,6 +90,16 @@ var slConfiguration = {
     },
 
     /**
+     * embedded vendors librairies, accessible with an uri other than file://, may need to
+     * run in a strict commonJS environment.
+     * List of base URI of these libraries should be set into it (by script handlers for
+     * instance)
+     * @var string[]
+     */
+    baseURIStrictCommonJS : [
+    ],
+
+    /**
      * list of environment variable name
      */
     envs : [],

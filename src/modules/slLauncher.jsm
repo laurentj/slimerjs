@@ -496,7 +496,15 @@ function prepareLoader(scriptInfo) {
             // load them with Loader
             // we assume that it is always a javascript script
             if (module.uri.indexOf('file://') == -1) {
-                Loader.load(loader, module, sandbox);
+                if (slConfiguration.baseURIStrictCommonJS.some(function(baseUri) {
+                        return module.uri.indexOf(baseUri) != -1
+                    }) && module.uri.endsWith('.js')) {
+                    let content = slUtils.readChromeFile(module.uri);
+                    module._compile(content, module.uri);
+                }
+                else {
+                    Loader.load(loader, module, sandbox);
+                }
                 return;
             }
 
@@ -525,8 +533,9 @@ function prepareLoader(scriptInfo) {
             }
             if (!hasBeenLoaded) {
                 let err = new Error(file.path + " is not a supported type file")
-                if (module.id == "main")
+                if (module.id == "main") {
                     err.name = 'FatalError';
+                }
                 throw err;
             }
         }

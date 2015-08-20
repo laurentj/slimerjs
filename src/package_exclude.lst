@@ -1,4 +1,3 @@
 defaults/preferences/debug.js
-modules/ghostdriver/*
 modules/hello/*
 chrome/icons/*
