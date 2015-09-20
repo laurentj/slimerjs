@@ -75,7 +75,7 @@ FOR %%A IN (%*) DO (
 
 if not exist "%SLIMERJSLAUNCHER%" (
     if exist "%SLIMERDIR%\xulrunner\xulrunner.exe" (
-        SET SLIMERJSLAUNCHER="%SLIMERDIR%\xulrunner\xulrunner.exe"
+        SET "SLIMERJSLAUNCHER=%SLIMERDIR%\xulrunner\xulrunner.exe"
     )
 )
 if not exist "%SLIMERJSLAUNCHER%" (
@@ -86,8 +86,8 @@ if not exist "%SLIMERJSLAUNCHER%" (
     echo Set it with the path to Firefox or xulrunner.
     echo "The current value of SLIMERJSLAUNCHER is: %SLIMERJSLAUNCHER%"
     REM %% escapes the percent sign so it displays literally
-    echo SET SLIMERJSLAUNCHER=%%programfiles%%\Mozilla Firefox\firefox.exe
-    echo SET SLIMERJSLAUNCHER=%%programfiles%%\XULRunner\xulrunner.exe
+    echo SET "SLIMERJSLAUNCHER=%%programfiles%%\Mozilla Firefox\firefox.exe"
+    echo SET "SLIMERJSLAUNCHER=%%programfiles%%\XULRunner\xulrunner.exe"
     pause
     exit 1
 )
