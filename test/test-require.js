@@ -114,6 +114,12 @@ describe("require function", function() {
         expect(Cu).toBeDefined();
         expect(Cr).toBeDefined();
     });
+
+    it("should be able to load node modules", function() {
+        var mod = require('mynodemodule');
+        expect(mod.myname).toEqual('node module');
+        expect(mod.submodule).toEqual('sub node module');
+    });
 });
 
 describe("the loaded module requiredexample", function() {

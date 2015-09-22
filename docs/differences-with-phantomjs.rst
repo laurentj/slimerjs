@@ -91,8 +91,8 @@ In the API
      modules loaded with ``require``
    - Modules are completely impervious. They are executed in a truly javascript
      sandbox
-   - Modules must be files, not folders.  ``node_modules`` folders are not
-     searched specially (SlimerJS provides ``require.paths``).
+   - Modules must be files, not folders.
+   - SlimerJS provides ``require.paths``
 - ``phantom.exit()`` or ``slimer.exit()`` is done asynchronously. Your script may continue after
    the call of these methods. You can use ``slimer.isExiting()`` to control your processing.
 - The callback ``webpage.onNavigationRequest`` receives bad parameters.

@@ -379,6 +379,16 @@ function prepareLoader(scriptInfo) {
                 additionnalPaths.push(requirerDir);
                 //dump("additionnalPaths requirerDir "+requirerDir.path+" parent of "+requirer.uri+"\n");
             }
+            else if (requirerDir) {
+                // let's add node_modules directories
+                let dir = requirerDir;
+                while(dir) {
+                    let d = dir.clone();
+                    d.append('node_modules');
+                    additionnalPaths.push(d);
+                    dir = dir.parent;
+                }
+            }
 
             additionnalPaths.push(scriptInfo.requirePath);
 
