@@ -105,6 +105,7 @@ var slConfiguration = {
     envs : [],
 
     handleFlags : function(cmdline, scriptHandlers) {
+
         scriptHandlers.forEach(function(sh){
             sh.setOptionsSpecInto(optionsSpec);
         })

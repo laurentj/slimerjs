@@ -90,8 +90,15 @@ var helloScriptHandler = {
 // Script handler for GhostDriver
 var webDriverScriptHandler = {
     name : 'webDriverScriptHandler',
+    _getDir : function() {
+        var appDir = Services.dirsvc.get("CurProcD", Components.interfaces.nsIFile);
+        appDir.append('vendors');
+        appDir.append('ghostdriver');
+        return appDir;
+    },
     setOptionsSpecInto : function(currentOptionSpec) {
-        slConfiguration.baseURIStrictCommonJS.push('resource://slimerjs/ghostdriver/');
+
+        slConfiguration.baseURIStrictCommonJS.push(this._getDir().path);
 
         function parse_webdriver(val, cmdlineOpt) {
             let pos = val.lastIndexOf(':')
@@ -121,8 +128,9 @@ var webDriverScriptHandler = {
         return (slConfiguration.webdriver != '');
     },
     declareScript : function(cmdLine) {
-        slConfiguration.mainScriptURI = Services.io.newURI('resource://slimerjs/ghostdriver/main.js', null, null);
-        slConfiguration.scriptModulePath = '@ghostdriver/';
+        slConfiguration.scriptFile = this._getDir();
+        slConfiguration.scriptFile.append('main.js');
+        slConfiguration.mainScriptURI = Services.io.newFileURI(slConfiguration.scriptFile);
         slConfiguration.args.unshift(slConfiguration.mainScriptURI.spec);
 
         slConfiguration.args.push("--ip="+slConfiguration.webdriverIp);
