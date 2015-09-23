@@ -996,6 +996,9 @@ ignored. Some options for PDF should be set in the ``paperSize`` property.
 Note: On MacOSx, you probably have to install a "PDF driver" as a printer on your system.
 See for example `PDFWriter for mac <http://sourceforge.net/projects/pdfwriterformac/>`_.
 
+Note: On Linux, if it hangs during PDF rendering, try by unsetting the environment variable
+CUPS_SERVER before running Slimerjs.
+
 .. _webpage-renderBase64:
 
 renderBase64(format)
