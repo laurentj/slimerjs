@@ -170,6 +170,7 @@ fi
 # by Mozilla
 export __SLIMER_ARGS="$@"
 export __SLIMER_ENV="$LISTVAR"
+export __SLIMER_EXITCODEFILE=`mktemp -q /tmp/slimerjs-exit-XXXXXXXX`
 
 # launch slimerjs with firefox/xulrunner
 if [ "$HIDE_ERRORS" == "Y" ]; then
@@ -180,14 +181,16 @@ fi
 
 EXITCODE=$?
 if [ $EXITCODE == 0 ]; then
-    EXITFILE="$PROFILE_DIR/exitstatus"
-    if [ -f $EXITFILE ]; then
-        EXITCODE=`cat $EXITFILE`
+    if [ -f $__SLIMER_EXITCODEFILE ]; then
+        EXITCODE=`cat $__SLIMER_EXITCODEFILE`
     fi
 else
     if [ $EXITCODE == 1 ]; then
         echo "Gecko error: it seems $SLIMERJSLAUNCHER is not compatible with SlimerJS. See Gecko version compatibility."
     fi
+fi
+if [ -f $__SLIMER_EXITCODEFILE ]; then
+    rm -f $__SLIMER_EXITCODEFILE
 fi
 
 if [ "$PROFILE_DIR" != "" ]; then

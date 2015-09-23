@@ -179,10 +179,18 @@ slUtils.readChromeFile = function readChromeFile(url) {
  *  If they add API for user defined exit status of xulrunner, we must use it instead of this patch. 
  */
 slUtils.writeExitStatus = function (status) {
+    var envService = Cc["@mozilla.org/process/environment;1"]
+                      .getService(Ci.nsIEnvironment);
+    if (!envService.exists('__SLIMER_EXITCODEFILE')) {
+        return;
+    }
+    let filePath = envService.get('__SLIMER_EXITCODEFILE');
+    let file = Cc['@mozilla.org/file/local;1']
+                .createInstance(Ci.nsILocalFile);
+    file.initWithPath(filePath);
+
     let str = String(status);
     let foStream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(Ci.nsIFileOutputStream);
-    let file = Services.dirsvc.get("ProfD", Ci.nsIFile);
-    file.append("exitstatus");
     foStream.init(file, (0x02 | 0x08 | 0x20), parseInt("0444", 8), 0);
     try {
         foStream.write(str, str.length);

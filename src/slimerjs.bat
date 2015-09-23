@@ -6,6 +6,8 @@ SET SLIMERDIR=%~dp0
 REM %* is every argument passed to this script.
 SET __SLIMER_ARGS=%*
 SET __SLIMER_ENV=
+SET __SLIMER_EXITCODEFILE=%Temp%\slimerjs-exit-!Random!!Random!!Random!
+SET EXITCODE=0
 
 SET CREATETEMP=Y
 SET HIDE_ERRORS=Y
@@ -122,6 +124,13 @@ if ["%HIDE_ERRORS%"]==[""] (
 if ["%CREATETEMP%"]==["Y"] (
      rmdir /S /Q %PROFILEDIR%
 )
+
+IF EXIST "%__SLIMER_EXITCODEFILE%" (
+    set /p EXITCODE=< "%__SLIMER_EXITCODEFILE%"
+    del "%__SLIMER_EXITCODEFILE%"
+    EXIT %EXITCODE%
+)
+
 ENDLOCAL
 
 goto :eof
