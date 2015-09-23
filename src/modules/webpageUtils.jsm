@@ -477,6 +477,7 @@ var webpageUtils = {
                 margin: '0px'
             };
         }
+
       if (!('width' in paperSize && 'height' in paperSize) &&
             !('format' in paperSize)) {
             return null;
@@ -545,8 +546,13 @@ var webpageUtils = {
             printSettings.shrinkToFit = false;
         } else {
             // for now, we trust the printer config to have the format we want
-            printSettings.paperName = paperSize.format;
             printSettings.paperSizeType  = printSettings.kPaperSizeNativeData;
+            printSettings.paperName = paperSize.format;
+            if (paperSize.format in this.paperFormat) {
+                // it seems that paper width and height are not set automatically...
+                printSettings.paperWidth = this.paperFormat[paperSize.format][0];
+                printSettings.paperHeight = this.paperFormat[paperSize.format][1];
+            }
             if ("orientation" in paperSize) {
                 if (paperSize.orientation == "landscape") {
                     printSettings.orientation = printSettings.kLandscapeOrientation;
@@ -664,20 +670,25 @@ var webpageUtils = {
                 printSettings.footerStrRight = "";
             }
         }
-        
-        //
-        if ("printBGImages" in paperSize)
-	        printSettings.printBGImages = paperSize.printBGImages;
-        if ("printBGColors" in paperSize)
-	        printSettings.printBGColors = paperSize.printBGColors;
-        if ("title" in paperSize)
-	        printSettings.title = paperSize.title;
-        if ("shrinkToFit" in paperSize)
-	        printSettings.shrinkToFit = paperSize.shrinkToFit;
-//        for (let xx in printSettings) {
-//           if (typeof printSettings[xx] != 'object' && typeof printSettings[xx] != 'function')
-//           		dump(xx+":"+printSettings[xx]+"\n");
-//		  }  
+
+        if ("printBGImages" in paperSize) {
+            printSettings.printBGImages = paperSize.printBGImages;
+        }
+        if ("printBGColors" in paperSize) {
+            printSettings.printBGColors = paperSize.printBGColors;
+        }
+        if ("title" in paperSize) {
+            printSettings.title = paperSize.title;
+        }
+        if ("shrinkToFit" in paperSize) {
+            printSettings.shrinkToFit = paperSize.shrinkToFit;
+        }
+        /*dump("Print settings: \n");
+        for (let xx in printSettings) {
+            if (typeof printSettings[xx] != 'object' && typeof printSettings[xx] != 'function') {
+                dump(xx+":"+printSettings[xx]+"\n");
+            }
+        }*/
         return printSettings;
     },
     
@@ -726,5 +737,38 @@ var webpageUtils = {
         }
 
         return true;
+    },
+    paperFormat : {
+              // [ width, height]   in inch
+        "A0" : [33.1 , 46.8],
+        "A1" : [23.4 , 33.1],
+        "A2" : [16.5 , 23.4],
+        "A3" : [11.7 , 16.5],
+        "A4" : [8.27 , 11.7],
+        "A5" : [5.83 , 8.27],
+        "A6" : [4.13 , 5.83],
+        "A7" : [2.91 , 4.13],
+        "A8" : [2.05 , 2.91],
+        "A9" : [1.46 , 2.05],
+        "A10" : [1.02 , 1.46],
+        "B0": [39.4 , 55.7],
+        "B1": [27.8 , 39.4],
+        "B2": [19.7 , 27.8],
+        "B3": [13.9 , 19.7],
+        "B4": [9.84 , 13.9],
+        "B5": [6.93 , 9.84],
+        "B6": [4.92 , 6.93],
+        "B7": [3.46 , 4.92],
+        "B8": [2.44 , 3.46],
+        "B9": [1.73 , 2.44],
+        "B10": [1.22 , 1.73],
+        "LETTER" : [ 8.5, 11],
+        "LEGAL" : [ 8.5, 14],
+        "EXECUTIVE" : [ 7.25, 10.5],
+        "C5E" : [ 6.38, 9.02],
+        "DLE" : [ 4.3, 8.7],
+        "FOLIO" : [ 8.27, 13],
+        "LEDGER" : [ 17, 11],
+        "TABLOID" : [ 11, 17]
     }
 }
