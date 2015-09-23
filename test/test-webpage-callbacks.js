@@ -13,10 +13,13 @@ describe("webpage.onConsoleMessage", function() {
         webpage = require("webpage").create();
         webpage2 = require("webpage").create();
 
-        webpage.onConsoleMessage= function(msg, lineNum, sourceId) {
+        webpage.onConsoleMessage= function(msg, lineNum, sourceId, level, func, timestamp) {
             var m = {m:msg,
                 l:lineNum,
-                s:sourceId}
+                s:sourceId,
+                lev: level,
+                f:func,
+                t: timestamp}
             if (message) {
                 message = [ message, m ]
             }
@@ -47,6 +50,8 @@ describe("webpage.onConsoleMessage", function() {
             expect(message.m).toEqual('message from consolemessage');
             expect(message.l).toEqual(10); // phantomjs doesn't use lineNumber parameter, result is undefined
             expect(message.s).toEqual(url + "consolemessage.html"); // phantomjs doesn't use sourceId parameter, result is undefined
+            expect(message.lev).toEqual('log');
+            expect(message.f).toEqual('window.onload');
             expect(message2).toBeNull();
         })
     });

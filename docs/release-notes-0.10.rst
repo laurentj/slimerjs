@@ -29,6 +29,7 @@ Improvements
 
 - Exit code is now supported with ``slimer.exit()`` and ``phantom.exit()`` (except with slimerjs.bat)
 - ``require`` supports node modules (it searches into node_modules directories)
+- ``webpage.onConsoleMessage`` can receive additionnal parameters : level, function name and timestamp
 
 Fixed bugs
 ----------

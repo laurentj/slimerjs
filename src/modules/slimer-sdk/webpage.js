@@ -127,14 +127,14 @@ function _create(parentWebpageInfo) {
                 if (!webpage.onConsoleMessage)
                     return;
                 // aData == outer window id
-                // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/dom/base/ConsoleAPI.js#254
+                // aSubject == console event object. see http://mxr.mozilla.org/mozilla-central/source/devtools/shared/Console.jsm#526
                 var consoleEvent = aSubject.wrappedJSObject;
                 if (webpageUtils.isOurWindow(browser, aData)) {
                     var args = consoleEvent.arguments;
                     if (!Array.isArray(args)) {
                         args = Array.prototype.slice.call(args);
                     }
-                    webpage.onConsoleMessage(args.join(' '), consoleEvent.lineNumber, consoleEvent.filename);
+                    webpage.onConsoleMessage(args.join(' '), consoleEvent.lineNumber, consoleEvent.filename, consoleEvent.level, consoleEvent.functionName, consoleEvent.timeStamp);
                     return
                 }
                 return;

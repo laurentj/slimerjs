@@ -1334,11 +1334,14 @@ This callback is called when page scripts call the various console methods (cons
 console.info() etc.). This callback is ``not`` called when the Gecko engine itself outputs
 information to the console - see :ref:`onError <webpage-onError>` for those messages.
 
-The callback accepts three arguments:
+The callback accepts six arguments:
 
 - ``message``: a string containing the text of the message
 - ``line``: the line number of the statement that calls the console method
 - ``file``: the file name of the statement that calls the console method
+- ``level``: the level of the message ('log', 'debug' etc...) (SlimerJS 0.10+ only)
+- ``functionName``: the name of the function from which the message has been sent (SlimerJS 0.10+ only)
+- ``timestamp``: the date of the message (SlimerJS 0.10+ only)
 
 .. code-block:: javascript
 
