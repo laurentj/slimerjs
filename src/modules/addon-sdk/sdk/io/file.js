@@ -113,37 +113,57 @@ exports.exists = function exists(filename) {
 exports.isFile = function isFile(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isFile();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isFile();
 };
 
 exports.isDirectory = function isDirectory(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isDirectory();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isDirectory();
 };
 
 exports.isReadable = function isReadable(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isReadable();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isReadable();
 }
 
 exports.isWritable = function isWritable(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isWritable();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isWritable();
 }
 
 exports.isLink = function isLink(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isSymLink();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isSymLink();
 }
 
 exports.size = function size(filename) {
   if (!filename)
     return 0;
-  return MozFile(filename).fileSize();
+  return MozFile(filename).fileSize;
 }
 
 exports.lastModified = function lastModified(filename) {
