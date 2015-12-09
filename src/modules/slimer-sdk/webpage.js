@@ -346,10 +346,14 @@ function _create(parentWebpageInfo) {
         framePath : [],
         childWindows : [], // list of webpage of child windows
         settings: {},
-        viewportSize : { width: 400, height: 300},
+        viewportSize : {},
         staticContentLoading : false,
         paperSize : null
     }
+
+    let defaultViewportSize = slConfiguration.getDefaultViewportSize();
+    privProp.viewportSize.width = defaultViewportSize.width;
+    privProp.viewportSize.height = defaultViewportSize.height;
 
     let defaultSettings = slConfiguration.getDefaultWebpageConfig();
     for (let p in defaultSettings) {
