@@ -64,7 +64,7 @@ Options specific to SlimerJS
 -P name                                        Supported        Use the indicated profile
 -CreateProfile name                            Supported        Create a new profile
 -profile path                                  Supported        Use the given directory as a profile
---user-agent=string                            Supported        Set the default User Agent for new webpages
+--user-agent=string                            Supported        Set the default value of `webpage.settings.userAgent <api/webpage.html#settings>`_
 =============================================  ==============  ========================================================================
 
 About debug
