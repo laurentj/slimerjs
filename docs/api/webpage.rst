@@ -482,7 +482,7 @@ Changing them after the load has no effect.
 - ``password``: password to give to HTTP authentication (SlimerJS 0.9)
 - ``userAgent``: string to define the user Agent in HTTP requests. By default, it is
   something like ``"Mozilla/5.0 (X11; Linux x86_64; rv:21.0) Gecko/20100101 SlimerJS/0.7"``
-  (depending of the version of Firefox/XulRunner you use)
+  (depending of the version of Firefox/XulRunner you use), or the value set by the ``--user-agent`` command line option.
 - ``userName``: username to give to HTTP authentication (SlimerJS 0.9)
 - ``XSSAuditingEnabled``  (not supported yet)
 - ``webSecurityEnabled``  (not supported yet)

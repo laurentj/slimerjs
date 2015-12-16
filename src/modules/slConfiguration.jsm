@@ -48,7 +48,8 @@ var optionsSpec = {
     remoteDebuggerPort : ['remote-debugger-port', 'int', -1, false],
     remoteDebuggerAutorun : ['remote-debugger-autorun', 'bool', false, false],
     sslCertificatesPath : ['ssl-certificates-path', 'path', '', false],
-    sslProtocol : ['ssl-protocol', 'sslproto', -1, true]
+    sslProtocol : ['ssl-protocol', 'sslproto', -1, true],
+    userAgent : ['user-agent', 'string', defaultUA, true]
 };
 
 var slConfiguration = {
@@ -254,6 +255,10 @@ var slConfiguration = {
         throw new Error("Invalid value for '"+cmdlineOpt+"' option. It should be yes or no");
     },
 
+    parse_string : function (val, cmdlineOpt) {
+        return val;
+    },
+
     parse_file : function (val, cmdlineOpt) {
         // @TODO check if file exists ?
         return val;
@@ -388,7 +393,7 @@ var slConfiguration = {
             webSecurityEnabled: this.webSecurityEnabled,
             javascriptCanOpenWindows: this.javascriptCanOpenWindows,
             javascriptCanCloseWindows: this.javascriptCanCloseWindows,
-            userAgent: defaultUA,
+            userAgent: this.userAgent,
             userName: undefined,
             password: undefined,
             maxAuthAttempts: undefined,
@@ -443,6 +448,6 @@ var slConfiguration = {
     javascriptCanCloseWindows : true,
     sslCertificatesPath : null,
     enableCoffeeScript: true,
-    sslProtocol: -1
+    sslProtocol: -1,
+    userAgent: defaultUA
 }
-
