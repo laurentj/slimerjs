@@ -527,7 +527,8 @@ viewportSize
 -----------------------------------------
 
 This property allows to change the size of the viewport, e.g., the size of the window
-where the webpage is displayed.
+where the webpage is displayed. (default is ``{width: 400, height: 300}`` or the values
+from the ``--viewport-width`` and ``--viewport-height`` command line options.)
 
 It is useful to test the display of the web page in different size of windows.
 
