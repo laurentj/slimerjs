@@ -49,7 +49,9 @@ var optionsSpec = {
     remoteDebuggerAutorun : ['remote-debugger-autorun', 'bool', false, false],
     sslCertificatesPath : ['ssl-certificates-path', 'path', '', false],
     sslProtocol : ['ssl-protocol', 'sslproto', -1, true],
-    userAgent : ['user-agent', 'string', defaultUA, true]
+    userAgent : ['user-agent', 'string', defaultUA, true],
+    viewportWidth : ['viewport-width', 'int', 400, true],
+    viewportHeight : ['viewport-height', 'int', 300, true]
 };
 
 var slConfiguration = {
@@ -402,6 +404,13 @@ var slConfiguration = {
         })
     },
 
+    getDefaultViewportSize : function() {
+        return Object.freeze({
+            width: this.viewportWidth,
+            height: this.viewportHeight
+        })
+    },
+
     printDebugConfig : function() {
         for (let opt in optionsSpec) {
             let [ cmdlineOpt, parser, defaultValue, supported] = optionsSpec[opt];
@@ -449,5 +458,7 @@ var slConfiguration = {
     sslCertificatesPath : null,
     enableCoffeeScript: true,
     sslProtocol: -1,
-    userAgent: defaultUA
+    userAgent: defaultUA,
+    viewportWidth: 400,
+    viewportHeight: 300
 }
