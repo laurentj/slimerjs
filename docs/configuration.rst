@@ -64,6 +64,9 @@ Options specific to SlimerJS
 -P name                                        Supported        Use the indicated profile
 -CreateProfile name                            Supported        Create a new profile
 -profile path                                  Supported        Use the given directory as a profile
+--user-agent=string                            Supported        Set the default value of `webpage.settings.userAgent <api/webpage.html#settings>`_
+--viewport-width=number                        Supported        Set the default value of `webpage.viewportSize.width <api/webpage.html#viewportsize>`_
+--viewport-height=number                       Supported        Set the default value of `webpage.viewportSize.height <api/webpage.html#viewportsize>`_
 =============================================  ==============  ========================================================================
 
 About debug
