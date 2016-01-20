@@ -16,6 +16,7 @@ Manual
    differences-with-phantomjs
    manual/http-authentication
    manual/frames-manipulation
+   manual/addons
    faq
 
 API reference
