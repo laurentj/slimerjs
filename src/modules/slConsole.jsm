@@ -87,7 +87,12 @@ function formatTrace(stack) {
     return str;
 }
 
-
+function dumpArguments() {
+    for (var i = 0; i < arguments.length; i++) {
+        dump(arguments[i] + " ");
+    }
+    dump('\n');
+}
 
 function slConsole() {
     this.__exposedProps__ = {
@@ -98,11 +103,11 @@ function slConsole() {
     }
 }
 slConsole.prototype = {
-    log:function(str) { dump(str+"\n");},
-    info:function(str) { dump(str+"\n");},
-    warn:function(str) { dump(str+"\n");},
-    error:function(str) { dump(str+"\n");},
-    debug:function(str) { dump(str+"\n");},
+    log:dumpArguments,
+    info:dumpArguments,
+    warn:dumpArguments,
+    error:dumpArguments,
+    debug:dumpArguments,
     exception: function (e) {
         let [msg, stackRes] = getTraceException(e);
         let str = "An exception occurred" +(e.name ? " "+ e.name: "") +": " +
