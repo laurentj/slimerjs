@@ -37,3 +37,5 @@ pref("dom.mozTCPSocket.enabled", true);
 pref('dom.ipc.plugins.enabled', true);
 
 pref('security.tls.version.min', 1); // no SSLv3 support
+
+pref('extensions.defaultProviders.enabled', false);
