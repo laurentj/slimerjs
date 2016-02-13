@@ -46,6 +46,7 @@ Fixed PhantomJS conformance issues
 Other informations about this release
 -------------------------------------
 
+- Compatibility is no more guaranteed on Firefox having version lower than 38.
 - XulRunner 40 is bundled into packages
 
 
@@ -72,7 +73,7 @@ Contributors for this release
 
 - Rémi Emonet (webpage.paperSize)
 - Dimitar Angelov (webpage.paperSize and other pdf options for webpage.render())
-
+- 
 
 Previous release notes
 ======================
