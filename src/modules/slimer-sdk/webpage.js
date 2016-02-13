@@ -862,7 +862,6 @@ function _create(parentWebpageInfo) {
 
             let domWindowUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
                                     .getInterface(Ci.nsIDOMWindowUtils);
-            domWindowUtils. setCSSViewport(w,h);
             win.resizeTo(w,h);
             domWindowUtils.redraw(1);
         },
