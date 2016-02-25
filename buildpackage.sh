@@ -5,12 +5,12 @@ SLIMERDIR=`dirname $0`
 SLIMERDIR=`cd $SLIMERDIR;pwd`
 
 XULRUNNER_VERSION="40.0.3"
-XULRUNNER_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XULRUNNER_VERSION/runtimes/"
+XULRUNNER_DNL_URL="http://archive.mozilla.org/pub/xulrunner/releases/$XULRUNNER_VERSION/runtimes/"
 XULRUNNER_PACK_NAME="xulrunner-$XULRUNNER_VERSION.en-US"
 
 # specific version for Mac, since Xulrunner 34 to 39 does not work https://bugzilla.mozilla.org/show_bug.cgi?id=1105044
 XULRUNNER_MAC_VERSION="33.1.1"
-XULRUNNER_MAC_DNL_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XULRUNNER_MAC_VERSION/runtimes/"
+XULRUNNER_MAC_DNL_URL="http://archive.mozilla.org/pub//xulrunner/releases/$XULRUNNER_MAC_VERSION/runtimes/"
 XULRUNNER_MAC_PACK_NAME="xulrunner-$XULRUNNER_MAC_VERSION.en-US"
 
 
