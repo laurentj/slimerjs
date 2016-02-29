@@ -91,8 +91,9 @@ function _create(parentWebpageInfo) {
             // QWebFrame.evaluateJavascript() used by PhantomJS
             // always returns null when no value are returned by
             // the script.
-            if (res === undefined)
+            if (res === undefined) {
                 return null;
+            }
             return res;
         }
         catch(e) {
@@ -100,13 +101,16 @@ function _create(parentWebpageInfo) {
                 var err = getTraceException(e, '');
                 if (err[1]) {
                     err[1].forEach(function(item){
-                        if ('line' in item)
+                        if ('line' in item) {
                             item.line = parseInt(item.line);
+                        }
                         item.file = item.sourceURL;
                     })
                 }
-                else err[1] = [];
-                webpage.onError('Error: '+err[0], err[1]);
+                else {
+                    err[1] = [];
+                }
+                executePageListener(webpage, 'onError', ['Error: '+err[0], err[1]]);
                 return null;
             }
             else {
@@ -134,7 +138,13 @@ function _create(parentWebpageInfo) {
                     if (!Array.isArray(args)) {
                         args = Array.prototype.slice.call(args);
                     }
-                    webpage.onConsoleMessage(args.join(' '), consoleEvent.lineNumber, consoleEvent.filename, consoleEvent.level, consoleEvent.functionName, consoleEvent.timeStamp);
+                    executePageListener(webpage, 'onConsoleMessage', [
+                        args.join(' '),
+                        consoleEvent.lineNumber,
+                        consoleEvent.filename,
+                        consoleEvent.level,
+                        consoleEvent.functionName,
+                        consoleEvent.timeStamp]);
                     return
                 }
                 return;
@@ -1640,9 +1650,7 @@ function _create(parentWebpageInfo) {
 
         // -------------------------------- private methods to send some events
         closing:function (page) {
-            if (this.onClosing) {
-                this.onClosing(page);
-            }
+            executePageListener(this, 'onClosing', [page]);
         },
 
         initialized: function() {
@@ -1655,19 +1663,15 @@ function _create(parentWebpageInfo) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onInitialized");
             }
-
-            if (this.onInitialized)
-                this.onInitialized();
+            executePageListener(this, 'onInitialized');
         },
 
         javaScriptAlertSent: function(message) {
-            if (this.onAlert)
-                this.onAlert(message);
+            executePageListener(this, 'onAlert', [message]);
         },
 
         javaScriptConsoleMessageSent: function(message, lineNumber, fileName) {
-            if (this.onConsoleMessage)
-                onConsoleMessage(message, lineNumber, fileName);
+            executePageListener(this, 'onConsoleMessage', [message, lineNumber, fileName]);
         },
 
         loadFinished: function(status, url, isFrame) {
@@ -1676,8 +1680,7 @@ function _create(parentWebpageInfo) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onLoadFinished status:"+status+" url:"+url+" isFrame:"+isFrame);
             }
-            if (this.onLoadFinished)
-                this.onLoadFinished(status, url, isFrame);
+            executePageListener(this, 'onLoadFinished', [status, url, isFrame]);
         },
 
         loadStarted: function(url, isFrame) {
@@ -1685,8 +1688,7 @@ function _create(parentWebpageInfo) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onLoadStarted url:"+url+" isFrame:"+isFrame);
             }
-            if (this.onLoadStarted)
-                this.onLoadStarted(url, isFrame);
+            executePageListener(this, 'onLoadStarted', [url, isFrame]);
         },
 
         /**
@@ -1701,37 +1703,32 @@ function _create(parentWebpageInfo) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onNavigationRequested url:"+url+" navigationType:"+navigationType+" willNavigate:"+willNavigate+" isMainFrame:"+isMainFrame);
             }
-            if (this.onNavigationRequested)
-                this.onNavigationRequested(url, navigationType, willNavigate, isMainFrame)
+            executePageListener(this, 'onNavigationRequested', [url, navigationType, willNavigate, isMainFrame]);
         },
 
         rawPageCreated: function(page) {
-            if (this.onPageCreated)
-                this.onPageCreated(page);
+            executePageListener(this, 'onPageCreated', [page]);
         },
 
         resourceError: function(error) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onResourceError error:"+slDebugGetObject(error));
             }
-            if (this.onResourceError)
-                this.onResourceError(error);
+            executePageListener(this, 'onResourceError', [error]);
         },
 
         resourceReceived: function(request) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onResourceReceived request:"+slDebugGetObject(request, ['body']));
             }
-            if (this.onResourceReceived)
-                this.onResourceReceived(request);
+            executePageListener(this, 'onResourceReceived', [request])
         },
 
         resourceRequested: function(resource, request) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onResourceRequested resource:"+slDebugGetObject(resource));
             }
-            if (this.onResourceRequested)
-                this.onResourceRequested(resource, request);
+            executePageListener(this, 'onResourceRequested', [resource, request]);
         },
 
         urlChanged: function(url) {
@@ -1739,10 +1736,19 @@ function _create(parentWebpageInfo) {
                 slDebugLog("webpage: onUrlChanged url:"+url);
             }
             webPageSandbox = null;
-            if (this.onUrlChanged)
-                this.onUrlChanged(url);
+            executePageListener(this, 'onUrlChanged', [url]);
         }
     };
+
+    function executePageListener(page, listener, args) {
+        if (page[listener]) {
+            try {
+                page[listener].apply(page, args);
+            } catch(e) {
+                console.log("Error "+listener+": ["+e.name+"] "+e.message+" ("+e.fileName+" ; line:"+e.lineNumber+" col:"+e.columnNumber+")");
+            }
+        }
+    }
 
     // initialization
     return openBlankBrowser(false);
