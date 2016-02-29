@@ -219,7 +219,8 @@ slUtils.getBrowserFromContentWindow = function getBrowserFromContentWindow(conte
                         .getInterface(Components.interfaces.nsIDOMWindow);
 
         */
-        var docShell = contentWin.top.QueryInterface(Ci.nsIInterfaceRequestor)
+        let win = ('top' in contentWin?contentWin.top:contentWin);
+        var docShell = win.QueryInterface(Ci.nsIInterfaceRequestor)
                          .getInterface(Ci.nsIWebNavigation)
                          .QueryInterface(Ci.nsIDocShell);
         return slUtils.getBrowserFromDocShell(docShell);

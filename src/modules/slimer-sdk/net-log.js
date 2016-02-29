@@ -278,6 +278,7 @@ const TracingListener = function(index, options, request) {
 };
 TracingListener.prototype = {
     onStartRequest: function(request, context) {
+
         try {
             request.QueryInterface(Ci.nsIHttpChannel);
             this.originalListener.onStartRequest(request, context);
@@ -302,6 +303,7 @@ TracingListener.prototype = {
             this.originalRequest = null;
             return;
         }
+
         this.response = traceResponse(this.index, request);
 
         if (DEBUG_NETWORK_PROGRESS) {

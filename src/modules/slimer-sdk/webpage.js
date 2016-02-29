@@ -1648,6 +1648,11 @@ function _create(parentWebpageInfo) {
         //This callback is invoked when the URL changes, e.g. as it navigates away from the current URL.
         onUrlChanged : null,
 
+        // Callback invoked when a file is downloaded .
+        onFileDownload : null,
+
+        onFileDownloadError: null,
+
         // -------------------------------- private methods to send some events
         closing:function (page) {
             executePageListener(this, 'onClosing', [page]);
@@ -1737,13 +1742,27 @@ function _create(parentWebpageInfo) {
             }
             webPageSandbox = null;
             executePageListener(this, 'onUrlChanged', [url]);
+        },
+
+        fileDownload : function(url, responseData) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onFileDownload "+url);
+            }
+            return executePageListener(this, 'onFileDownload', [url, responseData]);
+        },
+
+        fileDownloadError : function(message) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onFileDownloadError: "+message);
+            }
+            executePageListener(this, 'onFileDownloadError', [message]);
         }
     };
 
     function executePageListener(page, listener, args) {
         if (page[listener]) {
             try {
-                page[listener].apply(page, args);
+                return page[listener].apply(page, args);
             } catch(e) {
                 console.log("Error "+listener+": ["+e.name+"] "+e.message+" ("+e.fileName+" ; line:"+e.lineNumber+" col:"+e.columnNumber+")");
             }
