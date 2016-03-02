@@ -1,4 +1,18 @@
 
+How to fill an issue
+====================
+
+When you find a bug in SlimerJS, and post an issue on github, please:
+
+- Indicate which version of SlimerJS you are using, on which operating system
+  you execute it, and if you are using Firefox with SlimerJS, which version of Firefox.
+- Saying only "it doesn't work", is not a valid report. Please describe how the issue
+  has appeared, what are the error messages, what it is displayed. etc. Execute
+  SlimerJS with `--debug=true` to see more messages.
+- Explain how to reproduce it, with the most minimal code. More your example
+  will be tiny, more there is chance that the bug will be fixed quickly.
+
+
 How to contribute to SlimerJS
 =============================
 
