@@ -44,10 +44,19 @@ unknownContentTypeDialog.prototype = {
 
     promptForSaveToFileAsync: function(aLauncher, aWindowContext, aDefaultFileName,
                                        aSuggestedFileExtension, aForcePrompt) {
-dump("------------------- >>>>>>  promptForSaveToFileAsync\n");        
+
         let webpage = slUtils.getWebpageFromContentWindow(aWindowContext);
 
         let suggestedFile = aDefaultFileName? aDefaultFileName: aLauncher.suggestedFileName;
+        if (suggestedFile == '') {
+            if (aLauncher.source.path != '/') {
+                suggestedFile = aLauncher.source.path.replace("/", "_") + "." + aSuggestedFileExtension;
+            }
+            else {
+                suggestedFile = aLauncher.source.host + "." + aSuggestedFileExtension;
+            }
+        }
+
         let responseData = {
             filename: suggestedFile,
             size : aLauncher.contentLength,
