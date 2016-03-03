@@ -153,6 +153,11 @@ const onRequestStart = function(subject, data) {
 
     if (DEBUG_NETWORK_PROGRESS) {
         slDebugLog("network: resource request #"+req.id+" started: "+req.method+" - "+req.url+" flags="+loadFlags(subject));
+        // normal document (html or unsupported file): DOCUMENT_URI, INITIAL_DOCUMENT_URI
+        // document resources (img, css, js...): nothing
+        // iframe document: DOCUMENT_URI 
+        // the url will be redirected: DOCUMENT_URI, INITIAL_DOCUMENT_URI
+        // on new url after redirection: DOCUMENT_URI, REPLACE, INITIAL_DOCUMENT_URI
     }
 
     if (typeof(options.onRequest) === "function") {
@@ -286,7 +291,13 @@ TracingListener.prototype = {
             //dump("netlog onStartRequest error: "+e+"\n")
         }
 
-        if (typeof(request.URI) === "undefined" ||!this._inWindow(request)) {
+        if (typeof(request.URI) === "undefined") {
+            return;
+        }
+
+        if (!this._inWindow(request) && ! request.loadFlags & Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI) {
+            // for request that is not in the window and that is not
+            // a download, ignore it
             return;
         }
 
@@ -308,6 +319,11 @@ TracingListener.prototype = {
 
         if (DEBUG_NETWORK_PROGRESS) {
             slDebugLog("network: resource #"+this.response.id+" response 'start': "+this.response.url+" flags="+loadFlags(request));
+            //normal document: DOCUMENT_URI, INITIAL_DOCUMENT_URI, TARGETED
+            //downloaded document: DOCUMENT_URI, RETARGETED_DOCUMENT_URI, INITIAL_DOCUMENT_URI, TARGETED
+            //document resources (img, css, js...): nothing
+            //iframe document loading: DOCUMENT_URI, TARGETED
+            //on resource after redirection: DOCUMENT_URI, REPLACE, INITIAL_DOCUMENT_URI, TARGETED
         }
 
         if (request.status) {
@@ -613,6 +629,7 @@ const traceResponse = function(id, request) {
             statusText: null,
             // Extensions
             referrer: "",
+            isFileDownloading: false,
             body: "",
             httpVersion: {
                 major: 1,
@@ -664,6 +681,7 @@ const traceResponse = function(id, request) {
 
     // Extensions
     response.referrer = request.referrer != null && request.referrer.spec || "";
+    response.isFileDownloading = !! (request.loadFlags & Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI);
     return response;
 };
 
@@ -866,8 +884,9 @@ ProgressListener.prototype = {
 
         if (!this.isFromMainWindow(loadContext)) {
             // we receive a new status for a page that is loading in a frame
-            if (DEBUG_NETWORK_PROGRESS)
+            if (DEBUG_NETWORK_PROGRESS) {
                 slDebugLog("network: frame request "+uri+ " flags:"+debugFlags(flags));
+            }
 
             if (this.isLoadRequested(flags)) {
                 if (typeof(this.options.onFrameLoadStarted) === "function") {
@@ -973,12 +992,14 @@ ProgressListener.prototype = {
                 this.redirecting = true;
                 this.mainPageURI = null;
                 request.QueryInterface(Ci.nsIHttpChannel);
-                if (DEBUG_NETWORK_PROGRESS)
+                if (DEBUG_NETWORK_PROGRESS) {
                     slDebugLog("network: main request redirect from "+request.name);
+                }
             }
         } catch(e) {
-            if (DEBUG_NETWORK_PROGRESS)
+            if (DEBUG_NETWORK_PROGRESS) {
                 slDebugLog("network: on state change error:"+e);
+            }
             console.exception(e);
         }
     },
@@ -989,7 +1010,7 @@ ProgressListener.prototype = {
             // ignore requests that are not a channel/http channel
             return
         }
-        slDebugLog("network: status change for "+aRequest.URI.spec+ " : "+aMessage);
+        slDebugLog("network: status change for "+aRequest.URI.spec+ " ("+aStatus+"): "+aMessage);
     },
     onSecurityChange : function(aWebProgress, aRequest, aState) {
         if (!DEBUG_NETWORK_PROGRESS)
