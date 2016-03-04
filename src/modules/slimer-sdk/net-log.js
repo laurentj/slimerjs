@@ -207,12 +207,10 @@ const onFileRequestResponse = function(subject, browser) {
     // Get request ID
     let index;
     let {options, requestList} = browserMap.get(browser);
-    requestList = requestList.map(function(val, i) {
+    requestList.forEach(function(val, i) {
         if (subject.name == val) {
             index = i + 1;
-            return val;
         }
-        return val;
     });
 
     let response = {
@@ -230,6 +228,7 @@ const onFileRequestResponse = function(subject, browser) {
 
         // Extensions
         referrer: "",
+        isFileDownloading : !! (subject.loadFlags & Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI),
         body: ""
     };
     if (typeof(options.onResponse) == "function") {
@@ -242,12 +241,10 @@ const onFileRequestResponseDone = function(subject, browser) {
     // Get request ID
     let index;
     let {options, requestList} = browserMap.get(browser);
-    requestList = requestList.map(function(val, i) {
+    requestList.forEach(function(val, i) {
         if (subject.name == val) {
             index = i + 1;
-            return val;
         }
-        return val;
     });
 
     let response = {
@@ -265,8 +262,10 @@ const onFileRequestResponseDone = function(subject, browser) {
 
         // Extensions
         referrer: "",
+        isFileDownloading : !! (subject.loadFlags & Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI),
         body: ""
     };
+
     if (typeof(options.onResponse) == "function") {
         options.onResponse(mix({}, response));
     }
@@ -414,14 +413,21 @@ TracingListener.prototype = {
 
         this.originalListener.onStopRequest(request, context, statusCode);
         request = request.QueryInterface(Ci.nsIHttpChannel);
-        if (typeof(request.URI) === "undefined" || !this._inWindow(request) || !this.originalRequest) {
+        let isFromWindow = this._inWindow(request);
+        let isFileDownloaded = !isFromWindow && (request.loadFlags & Ci.nsIChannel.LOAD_RETARGETED_DOCUMENT_URI);
+        if (typeof(request.URI) === "undefined" ||
+            !this.originalRequest ||
+            (!isFromWindow  && ! isFileDownloaded)
+            ) {
             this.data = [];
             return;
         }
 
         // browser could have been removed during request
+        // or for file downloading, there are no browser
         let browser = getBrowserForRequest(request);
-        if (!browserMap.has(browser)) {
+        if ((!browser || !browserMap.has(browser)) && !isFileDownloaded) {
+            slDebugLog("network: resource #"+this.response.id+" response -> NO BROWSER IN MAP");
             return;
         }
 
@@ -504,7 +510,8 @@ TracingListener.prototype = {
                 this.response.imageInfo = imageInfo(this.response, this.response.body);
             }
             if (!this._shouldCapture(request) &&
-                this._defragURL(browser.contentWindow.location) != request.URI.spec)
+                !browser ||
+                (browser && this._defragURL(browser.contentWindow.location) != request.URI.spec))
             {
                 this.response.body = "";
             }
@@ -873,7 +880,7 @@ ProgressListener.prototype = {
     onStateChange: function(progress, request, flags, status) {
 
         if (!(request instanceof Ci.nsIChannel || "URI" in request)) {
-            // ignore requests that are not a channel/http channel
+            // ignore requests that are not a channel
             //if (DEBUG_NETWORK_PROGRESS)
             //    slDebugLog("network: request not a http channel");
             return
