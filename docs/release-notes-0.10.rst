@@ -48,7 +48,9 @@ Other informations about this release
 -------------------------------------
 
 - Compatibility is no more guaranteed on Firefox having version lower than 38.
-- XulRunner 40 is bundled into packages
+- There are no anymore packages including XulRunner, the Firefox runtime, since
+  Mozilla has killed the XulRunner project. So you need to install Firefox
+  in order to run SlimerJS.
 
 
 Missing features in SlimerJS 0.10

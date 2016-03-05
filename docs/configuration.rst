@@ -54,7 +54,7 @@ PhantomJS options
 --web-security=[yes|no|true|false]              
 ================================================  ===================  ====================================================
 
-SlimerJS has some specific options. Some of them are `options of Firefox/Xulrunner <https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options>`_
+SlimerJS has some specific options. Some of them are `options of Firefox <https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options>`_
 
 =============================================  ==============  ========================================================================
 Options specific to SlimerJS
@@ -89,7 +89,7 @@ Available keywords are:
 - ``netprogress``: show internals network events
 - ``config``: show configuration values
 - ``cli``: show command line parameters for the script
-- ``errors``: show gecko errors (javascript errors ...). only for Firefox/XulRunner 25+
+- ``errors``: show gecko errors (javascript errors ...). only for Firefox 25+
 
 About proxy configuration
 -------------------------
@@ -108,7 +108,7 @@ SlimerJS supports also some specific values for ``--proxy-type``:
 About SSL protocols
 --------------------
 
-Gecko/Firefox/Xulrunner do not support SSLv2 protocol. It supports only SSLv3 to latest
+Firefox does not support SSLv2 protocol. It supports only SSLv3 to latest
 TLS version (v1.2 for Gecko 35). However, SSLv3 is deactivated because of a vulnerability
 in the SSLv3 protocol ( `POODLE <http://en.wikipedia.org/wiki/POODLE>`_ ).
 
@@ -177,7 +177,7 @@ settings are taken account by webpage objects: ``javascriptEnabled``, ``loadImag
 Profiles
 ========
 
-A profile is a directory where XulRunner/Firefox (and so SlimerJS), store many things:
+A profile is a directory where Firefox (and so SlimerJS), store many things:
 
 - preferences (Mozilla options)
 - cache files

@@ -40,19 +40,11 @@ if SLIMERJSLAUNCHER == "":
     POSSIBLE_PATH = []
 
     if sys.platform == "linux" or sys.platform == "linux2" or sys.platform == "darwin":
-        POSSIBLE_PATH.append(os.path.join(SLIMERJS_PATH, "xulrunner", "xulrunner"))
         path = which('firefox')
         if path != None:
             POSSIBLE_PATH.append(path)
-        path = which('xulrunner')
-        if path != None:
-            POSSIBLE_PATH.append(path)
     elif sys.platform == "win32":
-        POSSIBLE_PATH.append(os.path.join(SLIMERJS_PATH, "xulrunner", "xulrunner.exe"))
         path = which('firefox.exe')
-        if path != None:
-            POSSIBLE_PATH.append(path)
-        path = which('xulrunner.exe')
         if path != None:
             POSSIBLE_PATH.append(path)
         POSSIBLE_PATH.append(os.path.join(os.environ.get('programfiles'), "Mozilla Firefox", "firefox.exe"))
@@ -63,8 +55,8 @@ if SLIMERJSLAUNCHER == "":
             SLIMERJSLAUNCHER = path
             break
     if SLIMERJSLAUNCHER == "":
-        print('SLIMERJSLAUNCHER environment variable is missing and I don\'t find XulRunner or Firefox')
-        print('Set SLIMERJSLAUNCHER with the path to Firefox or XulRunner')
+        print('SLIMERJSLAUNCHER environment variable is missing and I don\'t find Firefox')
+        print('Set SLIMERJSLAUNCHER with the path to Firefox')
         sys.exit(1)
 else:
     if not os.path.exists(SLIMERJSLAUNCHER):
@@ -167,7 +159,7 @@ else:
 os.environ.data['__SLIMER_ENV'] = LISTVAR
 os.environ.data['__SLIMER_ARGS'] = string.join(SYS_ARGS,' ')
 
-# launch slimerjs with firefox/xulrunner
+# launch slimerjs with firefox
 SLCMD = [ SLIMERJSLAUNCHER ]
 SLCMD.extend(["-app", os.path.join(SLIMERJS_PATH, "application.ini"), "-no-remote"])
 if sys.platform == "win32":

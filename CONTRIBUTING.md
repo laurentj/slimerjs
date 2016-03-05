@@ -56,8 +56,8 @@ Run unit tests!
 ---------------
 
 You don't need to create package of SlimerJS to use it and to test it.
-Just call the script *src/slimerjs*. If it does not find Firefox or XulRunner, indicate
-the path of Firefox or XulRunner into a SLIMERJSLAUNCHER environment variable
+Just call the script *src/slimerjs*. If it does not find Firefox, indicate
+the path of Firefox into a SLIMERJSLAUNCHER environment variable
 (see the installation chapter in the documentation).
 
 Unit tests are scripts that tests almost all features of SlimerJS. If you make

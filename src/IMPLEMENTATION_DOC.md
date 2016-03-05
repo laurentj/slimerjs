@@ -1,19 +1,13 @@
 You want to contribute? Here is a little doc on how SlimerJS works.
 
-XULRunner and documentation
+Firefox and documentation
 ===========================
 
-SlimerJS is a XULRunner application. So it is built on top
+SlimerJS is a XUL application. So it is built on top
 Mozilla technologies like XUL, XPCom, and use Javascript as main language.
 
-XULRunner is an executable, but also the "Mozilla Framework". Firefox is built
-on top of XULRunner too. So when we talk about "XULRunner", we mean
-"Mozilla Framework".
-
-All documentation about XULRunner and XUL application development, is
-on https://developer.mozilla.org/. You may want to look at
-[the chapter of XULRunner](https://developer.mozilla.org/en-US/docs/XULRunner).
-For example, ["Getting started with XULRunner"](https://developer.mozilla.org/en-US/docs/Getting_started_with_XULRunner).
+All documentation about XUL application development, is
+on https://developer.mozilla.org/.
 
 You can also take a look at:
 
@@ -35,23 +29,23 @@ You can also take a look at:
 The application launch
 ======================
 
-When you launch the `slimer` executable, XULRunner (or Firefox) is called with the
+When you launch the `slimer` executable, Firefox is called with the
 path of the application.ini file.
 
-First, xulrunner tries to call an XPCOM component that handles the commande line.
+First, Firefox tries to call an XPCOM component that handles the commande line.
 Fortunately, SlimerJS provides one in `src/components/commandline.js`. It is registered in the
-"command-line-handler" XPCOM category in `src/chrome.manifest`, this is why XulRunner find
+"command-line-handler" XPCOM category in `src/chrome.manifest`, this is why Firefox find
 it.
 
 The `handle()` method of this component is called. It uses the module `src/modules/slConfiguration.jsm`
 to parse and store command line parameters. `slConfiguration` holds all configuration options
 and this is where you declare command line parameters.
 
-If `handle()` has no error, xulrunner open the window which is indicated into the
+If `handle()` has no error, Firefox open the window which is indicated into the
 `toolkit.defaultChromeURI` preference. Preferences of SlimerJS are stored into
 `defaults/preferences/prefs.js`.
 
-To open an application window, XULRunner calls same function as `window.open()`, with a
+To open an application window, Firefox calls same function as `window.open()`, with a
 "chrome://" URL. In a XUL application, every window has a chrome URL (type
 `chrome://browser/content/browser.xul` in Firefox ;-) ).
 

@@ -83,8 +83,8 @@ containing three properties, ``major``, ``minor``, ``patch``:
 geckoVersion
 -----------------------------------------
 
-Contain the version of Gecko, the core of Firefox and XulRunner. In fact, this is also
-the version of Firefox or XulRunner.
+Contain the version of Gecko, the core of Firefox. In fact, this is also
+the version of Firefox.
 
 This is an object containing three properties, ``major``, ``minor``, ``patch``:
 

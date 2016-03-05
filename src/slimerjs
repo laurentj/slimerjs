@@ -23,30 +23,16 @@ fi
 # retrieve the path of a gecko launcher
 if [ "$SLIMERJSLAUNCHER" == "" ]
 then
-    if [ -f "$SLIMERDIR/xulrunner/xulrunner" ]
+    SLIMERJSLAUNCHER=`command -v firefox`
+    if [ "$SLIMERJSLAUNCHER" == "" ]
     then
-        SLIMERJSLAUNCHER="$SLIMERDIR/xulrunner/xulrunner"
-    else
-        if [ -f "$SLIMERDIR/xulrunner/xulrunner.exe" ]
+        # Try the Mac OSX global default application path
+        if [ -f "/Applications/Firefox.app/Contents/MacOS/firefox" ]
         then
-            SLIMERJSLAUNCHER="$SLIMERDIR/xulrunner/xulrunner.exe"
+            SLIMERJSLAUNCHER="/Applications/Firefox.app/Contents/MacOS/firefox"
         else
-            SLIMERJSLAUNCHER=`command -v firefox`
-            if [ "$SLIMERJSLAUNCHER" == "" ]
-            then
-                SLIMERJSLAUNCHER=`command -v xulrunner`
-                if [ "$SLIMERJSLAUNCHER" == "" ]
-                then
-                    # Try the Mac OSX global default application path
-                    if [ -f "/Applications/Firefox.app/Contents/MacOS/firefox" ]
-                    then
-                        SLIMERJSLAUNCHER="/Applications/Firefox.app/Contents/MacOS/firefox"
-                    else
-                        echo "SLIMERJSLAUNCHER environment variable is missing. Set it with the path to Firefox or XulRunner"
-                        exit 1
-                    fi
-                fi
-            fi
+            echo "SLIMERJSLAUNCHER environment variable is missing. Set it with the path to Firefox"
+            exit 1
         fi
     fi
 fi
@@ -172,7 +158,7 @@ export __SLIMER_ARGS="$@"
 export __SLIMER_ENV="$LISTVAR"
 export __SLIMER_EXITCODEFILE=`mktemp -q /tmp/slimerjs-exit-XXXXXXXX`
 
-# launch slimerjs with firefox/xulrunner
+# launch slimerjs with firefox
 if [ "$HIDE_ERRORS" == "Y" ]; then
     "$SLIMERJSLAUNCHER" -app "$SLIMERDIR/application.ini" $PROFILE -no-remote "$@" 2> /dev/null
 else
