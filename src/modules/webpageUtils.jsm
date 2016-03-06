@@ -203,7 +203,7 @@ var webpageUtils = {
         browser.userTypedClear++;
 
         if (!/^[a-z]+\:/i.test(uri) ) {
-            let f = slUtils.getAbsMozFile(uri, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            let f = slUtils.getAbsMozFile(uri, slUtils.workingDirectory);
             uri = Services.io.newFileURI(f).spec;
         }
         try {

@@ -69,7 +69,7 @@ unknownContentTypeDialog.prototype = {
             aLauncher.saveDestinationAvailable(null);
             return;
         }
-        let file = slUtils.getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+        let file = slUtils.getAbsMozFile(filename, slUtils.workingDirectory);
 
         if (file.exists() && file.isDirectory()) {
             if (!file.isWritable()) {

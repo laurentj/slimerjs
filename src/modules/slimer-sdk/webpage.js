@@ -1148,7 +1148,7 @@ function _create(parentWebpageInfo) {
             if (!browser) {
                 throw new Error("WebPage not opened");
             }
-            let f = slUtils.getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            let f = slUtils.getAbsMozFile(filename, slUtils.workingDirectory);
             if (!f.exists()) {
                 // filename resolved against the libraryPath property
                 f = slUtils.getAbsMozFile(filename, libPath);
