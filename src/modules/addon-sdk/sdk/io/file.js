@@ -479,7 +479,7 @@ exports.move = function move(sourceFileName, targetFileName) {
   sourceFile.moveTo(targetFile.parent, targetFile.leafName);
 }
 
-exports.touch = function move(path, date) {
+exports.touch = function touch(path, date) {
   var file = MozFile(path);
   var d;
   if (date)

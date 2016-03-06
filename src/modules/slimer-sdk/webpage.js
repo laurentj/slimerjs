@@ -81,11 +81,13 @@ function _create(parentWebpageInfo) {
      * @param string file the file name associated to the source code
      */
     function evalInSandbox (src, file) {
-        if (!webPageSandbox)
+        if (!webPageSandbox) {
             webPageSandbox = new WeakMap();
+        }
         let win = getCurrentFrame();
-        if (!webPageSandbox.has(win))
+        if (!webPageSandbox.has(win)) {
             webPageSandbox.set(win, createSandBox(win));
+        }
         try {
             let res = Cu.evalInSandbox(src, webPageSandbox.get(win), 'ECMAv5', file, 1);
             // QWebFrame.evaluateJavascript() used by PhantomJS

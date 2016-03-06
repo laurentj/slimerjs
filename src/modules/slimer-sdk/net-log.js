@@ -171,7 +171,10 @@ const onRequestStart = function(subject, data) {
         }
 
         if (typeof(options.onError) === "function") {
-            options.onError({id: req.id, url: req.url, errorCode:code, errorString:msg});
+            options.onError({id: req.id,
+                            url: req.url,
+                            errorCode:code,
+                            errorString:msg});
         }
     }
 
@@ -330,8 +333,12 @@ TracingListener.prototype = {
             if (DEBUG_NETWORK_PROGRESS) {
                 slDebugLog("network: resource #"+this.response.id+" response in error: #"+code+" - "+msg);
             }
-            if (typeof(this.options.onError) === "function")
-                this.options.onError({id: this.response.id, url: this.response.url, errorCode:code, errorString:msg});
+            if (typeof(this.options.onError) === "function") {
+                this.options.onError({id: this.response.id,
+                                     url: this.response.url,
+                                     errorCode:code,
+                                     errorString:msg});
+            }
             this.errorAlreadyNotified = true;
         }
         else {
@@ -371,11 +378,12 @@ TracingListener.prototype = {
                     slDebugLog("network: resource #"+this.response.id+" response in error (2): #"+errorCode+" - "+errorStr);
                 }
 
-                if (typeof(this.options.onError) === "function")
+                if (typeof(this.options.onError) === "function") {
                     this.options.onError({id: this.response.id,
                                          url: this.response.url,
                                          errorCode:errorCode,
                                          errorString:errorStr});
+                }
                 this.errorAlreadyNotified = true;
             }
         }
@@ -437,10 +445,13 @@ TracingListener.prototype = {
         if (request.status) {
             let [code, msg] = getErrorCode(request.status);
             if (DEBUG_NETWORK_PROGRESS) {
-                slDebugLog("network: resource #"+this.response.id+" response in error: "+code+" - "+msg);
+                slDebugLog("network: resource #"+this.response.id+" response in error (3): "+code+" - "+msg);
             }
             if (!this.errorAlreadyNotified && typeof(this.options.onError) === "function") {
-                this.options.onError({id: this.response.id, url: this.response.url, errorCode:code, errorString:msg});
+                this.options.onError({id: this.response.id,
+                                     url: this.response.url,
+                                     errorCode:code,
+                                     errorString:msg});
             }
             this.errorAlreadyNotified = false;
         }
@@ -1071,7 +1082,7 @@ function getErrorCode(status) {
         case Cr.NS_ERROR_INSUFFICIENT_DOMAIN_LEVELS:
         case Cr.NS_ERROR_SOCKET_ADDRESS_NOT_SUPPORTED:
         case Cr.NS_ERROR_SOCKET_ADDRESS_IN_USE:
-        case Cr.NS_ERROR_INTERCEPTION_FAILED:
+        //case Cr.NS_ERROR_INTERCEPTION_FAILED:
         case Cr.NS_ERROR_SOCKET_CREATE_FAILED: errorCode=8 ;   errorString="The connection was broken due to disconnection from the network or failure to start the network"; break;
         case Cr.NS_ERROR_UNKNOWN_PROTOCOL:     errorCode= 301; errorString="The URI scheme corresponds to an unknown protocol handler"; break;
         case Cr.NS_ERROR_PORT_ACCESS_NOT_ALLOWED: errorCode= 96; errorString="Establishing a connection to an unsafe or otherwise banned port was prohibited"; break;
