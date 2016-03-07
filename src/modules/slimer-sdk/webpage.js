@@ -1563,6 +1563,9 @@ function _create(parentWebpageInfo) {
                 return true;
             }
             catch(e) {
+                if (DEBUG_WEBPAGE) {
+                    dumpex(e);
+                }
                 return false;
             }
         },
@@ -1592,6 +1595,9 @@ function _create(parentWebpageInfo) {
                 return content;
             }
             catch(e) {
+                if (DEBUG_WEBPAGE) {
+                    dumpex(e);
+                }
                 return null;
             }
         },
