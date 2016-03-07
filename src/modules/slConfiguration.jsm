@@ -13,6 +13,8 @@ Cu.import('resource://slimerjs/slErrorLogger.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/slDebug.jsm');
+// to avoid issue on navigator object, see https://github.com/laurentj/slimerjs/issues/373
+Cu.import("resource://gre/modules/Webapps.jsm"); 
 
 var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
                       .getService(Ci.nsIHttpProtocolHandler)

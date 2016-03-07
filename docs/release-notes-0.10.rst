@@ -38,6 +38,7 @@ Fixed bugs
 - Fixed configuration reading for script handlers (internal stuff)
 - Callback given to ``webpage.open()`` is now really called after the page loading:
   it allows to call ``render()`` without a delay (``setTimeout``...)
+- Fix error NS_ERROR_FACTORY_NOT_REGISTERED on navigator object (issue #373)
 
 Fixed PhantomJS conformance issues
 ----------------------------------
