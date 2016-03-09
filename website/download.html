@@ -130,6 +130,12 @@
             href="http://docs.slimerjs.org/current/installation.html#launch">the
             documentation to launch it</a>.</p>
           <p>Note: you can <a href="checksum.html">verify files you downloaded</a> by checking their checksum.</p>
+          
+          <p><strong>Warning: since XulRunner is a dead project (Mozilla had removed
+          its source code from Firefox repository, and there is no build
+          anymore of XulRunner), the standalone edition will not exists anymore
+          for next releases of SlimerJS. Only the "lightweight" edition will
+          be available, starting SlimerJS 0.10.</strong></p>
 
          <div class="row-fluid">
             <div class="span5">
@@ -235,16 +241,6 @@
 
             <div class="row-fluid">
                 <div class="span5">
-                <h2>Arch Linux</h2>
-                    <p>This Linux distribution <a href="https://aur.archlinux.org/packages/slimerjs/">proposes
-                    <span class="slm">SlimerJS</span></a> in its repository. Just type in
-                    a console:</p>
-                    <pre><code>yaourt slimerjs</code></pre>
-                    <p>It will install all needed packages. You can then read
-                    <a href="http://docs.slimerjs.org/current/installation.html#launch">the
-                    documentation to launch it</a>.</p>
-                </div>
-                <div class="span5">
                 <h2>Homebrew</h2>
                 <p><a href="http://brew.sh/">This package system for OS X</a> has a formula
                 to install SlimerJS. Type in a console:</p>
@@ -254,9 +250,6 @@
                 <a href="http://docs.slimerjs.org/current/installation.html#configuring-slimerjs">the
                 documentation to set it</a>.</p>
                 </div>
-            </div>
-            
-            <div class="row-fluid">
                 <div class="span5">
                 <h2>Npm</h2>
                     <p>This npm package <a
@@ -268,6 +261,9 @@
                     <code>./node_modules/.bin/slimerjs</code>.
                    </p>
                 </div>
+            </div>
+            
+            <div class="row-fluid">
                 <div class="span5">
                 <h2>Docker image</h2>
                     <p>A Docker image containing Ubuntu 12.04 + SlimerJS + CasperJS
@@ -276,8 +272,7 @@
                     available here</a>.
                    </p>
                 </div>
-            </div>
-            <div class="row-fluid">
+
                 <div class="span5">
                 <h2>Nuget</h2>
                     <p>For Windows user, you can use <a href="https://www.nuget.org/">Nuget</a>
@@ -287,10 +282,6 @@
                    </p>
                     <pre><code>PM> Install-Package SlimerJS </code></pre>
                 </div>
-                <!--<div class="span5">
-                <h2></h2>
-                    <p></p>
-                </div>-->
             </div>
             <hr/>
           <p>For others distributions, your contribution is welcomed ;-). Or tell us if
