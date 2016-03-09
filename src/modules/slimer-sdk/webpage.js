@@ -258,8 +258,9 @@ function _create(parentWebpageInfo) {
                 // phantomjs call onInitialized not only at the page creation
                 // but also after the content loading.. don't know why.
                 // let's imitate it. Only after a success
-                if (success)
+                if (success) {
                     webpage.initialized();
+                }
             },
             onLoadFinished: function(url, success){
                 let channel = browser.docShell.currentDocumentChannel;
@@ -329,8 +330,9 @@ function _create(parentWebpageInfo) {
             }
             [childPage, win] = _create(parentWPInfo);
 
-            if (webpage.ownsPages)
+            if (webpage.ownsPages) {
                 privProp.childWindows.push(childPage);
+            }
 
             // call the callback
             webpage.rawPageCreated(childPage);

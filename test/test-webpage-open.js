@@ -52,10 +52,13 @@ describe("WebPage.onPageCreated", function(){
             expect(webpage.pagesWindowName[0]).toEqual('plop');
 
             expect(childPage.title).toEqual("hello in frame");
+            expect(childPage.windowName).toEqual("plop");
+            // fix me, see issue https://github.com/laurentj/slimerjs/issues/383
+            //expect(childPage.evaluateJavaScript('window.name')).toEqual("plop");
             childPage.close();
-            //expect(webpage.pages.length).toEqual(0)
-            //expect(webpage.pagesWindowName.length).toEqual(0)
-            //expect(webpage.getPage('plop')).toEqual(null);
+            expect(webpage.pages.length).toEqual(0)
+            expect(webpage.pagesWindowName.length).toEqual(0)
+            expect(webpage.getPage('plop')).toEqual(null);
             webpage.close();
         });
     });
@@ -128,4 +131,3 @@ describe("WebPage.onClosing", function(){
     });
 
 });
-
