@@ -441,6 +441,37 @@ function _create(parentWebpageInfo) {
         return [webpage, win];
     }
 
+    function prepareJSEval(func, args) {
+
+        if (!(func instanceof Function
+              || typeof func === 'function'
+              || typeof func === 'string'
+              || func instanceof String)) {
+            return false;
+        }
+
+        let argsList = args.map(
+            function(arg){
+                  let type = typeof arg;
+                  switch(type) {
+                      case 'object':
+                          if (!arg || arg instanceof RegExp) {
+                              return ""+arg;
+                          }
+                      case 'array':
+                      case 'string':
+                          return JSON.stringify(arg);
+                      case "date":
+                          return "new Date(" + JSON.stringify(arg) + ")";
+                      default:
+                          return ""+arg
+                  }
+            });
+
+        return '('+func.toString()+').apply(this, [' + argsList.join(",") + ']);';
+    }
+
+
     // ----------------------------------- webpage
 
     /**
@@ -1063,6 +1094,11 @@ function _create(parentWebpageInfo) {
         // -------------------------------- Javascript evaluation
 
         /**
+         * Evaluate the given function into the context of the web page content
+         * 
+         * @param function  func    the function to evaluate
+         * @param ...               arguments for the function
+         *
          * FIXME: modifying a variable in a sandbox
          * that inherits of the context of a window,
          * does not propagate the modification into
@@ -1073,33 +1109,15 @@ function _create(parentWebpageInfo) {
          * @see a solution used for the Firefox webconsole
          * https://hg.mozilla.org/mozilla-central/rev/f5d6c95a9de9#l6.374
          */
-        evaluate: function(func) {
+        evaluate: function(func, args) {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            if (!(func instanceof Function
-                  || typeof func === 'function'
-                  || typeof func === 'string'
-                  || func instanceof String)) {
+            let argsList = Array.prototype.slice.call(arguments).slice(1)
+            let f = prepareJSEval(func, argsList);
+            if (f === false) {
                 throw new Error("Wrong use of WebPage#evaluate");
             }
-
-            let args = Array.prototype.slice.call(arguments).slice(1).map(
-                          function(arg){
-                                let type = typeof arg;
-                                switch(type) {
-                                    case 'object':
-                                        if (!arg || arg instanceof RegExp) {
-                                            return ""+arg;
-                                        }
-                                    case 'string':
-                                        return JSON.stringify(arg);
-                                    default:
-                                        return ""+arg
-                                }
-                          });
-
-            let f = '('+func.toString()+').apply(this, [' + args.join(",") + ']);';
             return evalInSandbox(f, 'phantomjs://webpage.evaluate()');
         },
 
@@ -1110,13 +1128,28 @@ function _create(parentWebpageInfo) {
             return evalInSandbox(src, 'phantomjs://webpage.evaluateJavaScript()');
         },
 
-        evaluateAsync: function(func) {
-            if (!browser)
+        /**
+         * @param function  func  the function to evaluate
+         * @param integer   timeMs  time to wait before execution
+         * @param ...               other args are arguments for the function
+         */
+        evaluateAsync: function(func, timeMs, args ) {
+            if (!browser) {
                 throw new Error("WebPage not opened");
-            let f = '('+func.toSource()+')();';
+            }
+
+            let argsList = Array.prototype.slice.call(arguments, 2);
+            let f = prepareJSEval(func, argsList);
+            if (f === false) {
+                throw new Error("Wrong use of WebPage#evaluateAsync");
+            }
+
+            if (timeMs == undefined) {
+                timeMs = 0;
+            }
             browser.contentWindow.setTimeout(function() {
                 evalInSandbox(f, 'phantomjs://webpage.evaluateAsync()');
-            }, 0)
+            }, timeMs)
         },
 
         includeJs: function(url, callback) {
