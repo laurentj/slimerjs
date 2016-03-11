@@ -45,6 +45,7 @@ Fixed PhantomJS conformance issues
 ----------------------------------
 
 - a module should be able to call the ``return`` keyword
+- support additionnals arguments on ``webpage.evaluateAsyn()``
 
 Other informations about this release
 -------------------------------------

@@ -1097,7 +1097,7 @@ function _create(parentWebpageInfo) {
          * Evaluate the given function into the context of the web page content
          * 
          * @param function  func    the function to evaluate
-         * @param ...               arguments for the function
+         * @param ...       args    arguments for the function
          *
          * FIXME: modifying a variable in a sandbox
          * that inherits of the context of a window,
@@ -1109,12 +1109,11 @@ function _create(parentWebpageInfo) {
          * @see a solution used for the Firefox webconsole
          * https://hg.mozilla.org/mozilla-central/rev/f5d6c95a9de9#l6.374
          */
-        evaluate: function(func, args) {
+        evaluate: function(func, ...args) {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            let argsList = Array.prototype.slice.call(arguments).slice(1)
-            let f = prepareJSEval(func, argsList);
+            let f = prepareJSEval(func, args);
             if (f === false) {
                 throw new Error("Wrong use of WebPage#evaluate");
             }
@@ -1131,15 +1130,14 @@ function _create(parentWebpageInfo) {
         /**
          * @param function  func  the function to evaluate
          * @param integer   timeMs  time to wait before execution
-         * @param ...               other args are arguments for the function
+         * @param ...       args    other args are arguments for the function
          */
-        evaluateAsync: function(func, timeMs, args ) {
+        evaluateAsync: function(func, timeMs, ...args) {
             if (!browser) {
                 throw new Error("WebPage not opened");
             }
 
-            let argsList = Array.prototype.slice.call(arguments, 2);
-            let f = prepareJSEval(func, argsList);
+            let f = prepareJSEval(func, args);
             if (f === false) {
                 throw new Error("Wrong use of WebPage#evaluateAsync");
             }

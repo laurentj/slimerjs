@@ -696,17 +696,16 @@ cannot call a ``toString()`` or you cannot serialize as a JSON value.
 
 .. _webpage-evaluateAsync:
 
-evaluateAsync(func)
------------------------------------------
+evaluateAsync(func, timeMs, arg1, arg2...)
+-------------------------------------------
 
 It is equivalent to ``evaluate()``, but with some differences:
 
 - the function is executed asynchronously. It means that the call of ``evaluateAsync()``
   does not wait after the execution of the given function to return. It does not
-  block your current script.
+  block your current script. The script can be executed after the given
+  number of milliseconds (timeMs).
 - you cannot return values inside the given function
-- you cannot pass parameters.
-
 
 .. _webpage-getPage:
 
