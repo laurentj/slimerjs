@@ -10,14 +10,10 @@ version 0.10.0
 
 Still in development
 
-New features
-------------
+New features and API
+---------------------
 
 - Experimental support of Webdriver, by using GhostDriver like phantomjs, to control SlimerJS from Selenium.
-
-New API
--------
-
 - ``webpage.render()`` can now generates PDF, BMP and ICO.
 - ``webpage.paperSize`` is supported (except its header and footer properties).
 - ``webpage.onLongRunningScript`` and ``webpage.stopJavascript()`` to allow to be informed of
@@ -45,11 +41,12 @@ Fixed PhantomJS conformance issues
 ----------------------------------
 
 - a module should be able to call the ``return`` keyword
-- support additionnals arguments on ``webpage.evaluateAsyn()``
+- support additionnals arguments on ``webpage.evaluateAsync()``
 
 Other informations about this release
 -------------------------------------
 
+- Compatibility with Firefox 40 to Firefox 45.
 - Compatibility is no more guaranteed on Firefox having version lower than 38.
 - There are no anymore packages including XulRunner, the Firefox runtime, since
   Mozilla has killed the XulRunner project. So you need to install Firefox
