@@ -42,7 +42,6 @@ PhantomJS options
 --proxy-type=[http|socks5|none]                   Supported (0.9)      See below other possible values
 --remote-debugger-port=number
 --remote-debugger-autorun=[yes|no|true|false]
---script-encoding=encoding
 --ssl-protocol=[ssl protocol name]                Supported (0.9.5)    Indicates the SSL protocol to use. See notes about it below. Default is TLS.
 --ssl-certificates-path=/path/to/dir              N/A. see profiles
 --version or -v                                   Supported            Displays the version of SlimerJS

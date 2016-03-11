@@ -32,7 +32,6 @@ var optionsSpec = {
     ignoreSslErrors : ['ignore-ssl-errors', 'bool', false, false],
     loadImages: ['load-images', 'bool', true, true],
     localToRemoteUrlAccessEnabled : ['local-to-remote-url-access', 'bool', false, false],
-    outputEncoding : ['output-encoding', 'encoding', 'UTF-8', false],
     proxyType : ['proxy-type', 'proxytype', 'http', true],
     proxy : ['proxy', 'proxy', null, true],
     proxyHost : ['', '', null, false],
@@ -40,7 +39,6 @@ var optionsSpec = {
     proxyAuth : ['proxy-auth', 'proxyauth', null, true],
     proxyAuthUser : ['', '', '', false],
     proxyAuthPassword : ['', '', '', false],
-    scriptEncoding : ['script-encoding', 'encoding', 'UTF-8', false],
     webSecurityEnabled : ['web-security', 'bool', true, false],
     offlineStoragePath : ['local-storage-path', 'file', '', false],
     offlineStorageDefaultQuota : ['local-storage-quota', 'int', -1, true],
@@ -265,10 +263,6 @@ var slConfiguration = {
 
     parse_file : function (val, cmdlineOpt) {
         // @TODO check if file exists ?
-        return val;
-    },
-
-    parse_encoding : function (val, cmdlineOpt) {
         return val;
     },
 
