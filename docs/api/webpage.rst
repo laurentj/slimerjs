@@ -18,62 +18,158 @@ methods. See below.
 Note: almost properties and methods are implemented, but some are not documented yet.
 Please help us to document them ;-). You can also read the PhantomJS documentation.
 
+Index of properties and methods
+--------------------------------
 
-Webpage object
-==============
+Navigation:
 
-Properties list:
+:ref:`canGoBack <webpage-canGoBack>`,
+:ref:`canGoForward <webpage-canGoForward>`,
+:ref:`navigationLocked <webpage-navigationLocked>`
 
-:ref:`clipRect <webpage-clipRect>` :ref:`canGoBack <webpage-canGoBack>` :ref:`canGoForward <webpage-canGoForward>`
-:ref:`captureContent <webpage-captureContent>`
-:ref:`content <webpage-content>` :ref:`cookies <webpage-cookies>` :ref:`customHeaders <webpage-customHeaders>`
-:ref:`event <webpage-event>` :ref:`focusedFrameName <webpage-focusedFrameName>` :ref:`frameContent <webpage-frameContent>`
-:ref:`frameName <webpage-frameName>` :ref:`framePlainText <webpage-framePlainText>` :ref:`frameTitle <webpage-frameTitle>`
-:ref:`frameUrl <webpage-frameUrl>` :ref:`framesCount <webpage-framesCount>` :ref:`framesName <webpage-framesName>`
-:ref:`libraryPath <webpage-libraryPath>` :ref:`navigationLocked <webpage-navigationLocked>`
-:ref:`offlineStoragePath <webpage-offlineStoragePath>` :ref:`offlineStorageQuota <webpage-offlineStorageQuota>`
-:ref:`ownsPages <webpage-ownsPages>` :ref:`pages <webpage-pages>` :ref:`pagesWindowName <webpage-pagesWindowName>`
-:ref:`paperSize <webpage-paperSize>` :ref:`plainText <webpage-plainText>` :ref:`scrollPosition <webpage-scrollPosition>`
-:ref:`settings <webpage-settings>` :ref:`title <webpage-title>` :ref:`url <webpage-url>`
-:ref:`viewportSize <webpage-viewportSize>` :ref:`windowName <webpage-windowName>` :ref:`zoomFactor <webpage-zoomFactor>`
+:ref:`go() <webpage-go>` ,
+:ref:`goBack() <webpage-goBack>`,
+:ref:`goForward() <webpage-goForward>`
 
-Functions list:
+:ref:`onNavigationRequested <webpage-onNavigationRequested>`
 
-:ref:`addCookie() <webpage-addCookie>` :ref:`childFramesCount() <webpage-childFramesCount>` :ref:`childFramesName() <webpage-childFramesName>` 
-:ref:`clearCookies() <webpage-clearCookies>` :ref:`close() <webpage-close>` :ref:`currentFrameName() <webpage-currentFrameName>` 
-:ref:`deleteCookie() <webpage-deleteCookie>` :ref:`evaluateJavaScript() <webpage-evaluateJavaScript>` :ref:`evaluate() <webpage-evaluate>` 
-:ref:`evaluateAsync() <webpage-evaluateAsync>` :ref:`getPage() <webpage-getPage>` :ref:`go() <webpage-go>` 
-:ref:`goBack() <webpage-goBack>` :ref:`goForward() <webpage-goForward>` :ref:`includeJs() <webpage-includeJs>` 
-:ref:`injectJs() <webpage-injectJs>` :ref:`stopJavaScript() <webpage-stopJavaScript>` :ref:`open() <webpage-open>` :ref:`openUrl() <webpage-openUrl>` 
-:ref:`release() <webpage-release>` :ref:`reload() <webpage-reload>` :ref:`render() <webpage-render>` 
-:ref:`renderBase64() <webpage-renderBase64>` :ref:`sendEvent() <webpage-sendEvent>` 
-:ref:`setContent() <webpage-setContent>` :ref:`stop() <webpage-stop>` :ref:`switchToFocusedFrame() <webpage-switchToFocusedFrame>` 
-:ref:`switchToFrame() <webpage-switchToFrame>` :ref:`switchToChildFrame() <webpage-switchToChildFrame>` 
-:ref:`switchToMainFrame() <webpage-switchToMainFrame>`
-:ref:`switchToParentFrame() <webpage-switchToParentFrame>` :ref:`uploadFile() <webpage-uploadFile>`
+Frames and windows management:
 
-Callbacks list:
+:ref:`focusedFrameName <webpage-focusedFrameName>`,
+:ref:`frameContent <webpage-frameContent>`,
+:ref:`frameName <webpage-frameName>`,
+:ref:`framePlainText <webpage-framePlainText>`,
+:ref:`frameTitle <webpage-frameTitle>`,
+:ref:`frameUrl <webpage-frameUrl>`,
+:ref:`framesCount <webpage-framesCount>`,
+:ref:`framesName <webpage-framesName>`,
+:ref:`ownsPages <webpage-ownsPages>`,
+:ref:`pages <webpage-pages>`,
+:ref:`pagesWindowName <webpage-pagesWindowName>`,
+:ref:`url <webpage-url>`,
+:ref:`windowName <webpage-windowName>`
 
-:ref:`onAlert <webpage-onAlert>` :ref:`onAuthPrompt <webpage-onAuthPrompt>`  :ref:`onCallback <webpage-onCallback>` :ref:`onClosing <webpage-onClosing>` 
-:ref:`onConfirm <webpage-onConfirm>` :ref:`onConsoleMessage <webpage-onConsoleMessage>` :ref:`onLongRunningScript <webpage-onLongRunningScript>` :ref:`onError <webpage-onError>` 
-:ref:`onFilePicker <webpage-onFilePicker>` :ref:`onInitialized <webpage-onInitialized>` :ref:`onLoadFinished <webpage-onLoadFinished>` 
-:ref:`onLoadStarted <webpage-onLoadStarted>` :ref:`onNavigationRequested <webpage-onNavigationRequested>` :ref:`onPageCreated <webpage-onPageCreated>` 
-:ref:`onPrompt <webpage-onPrompt>` :ref:`onResourceError <webpage-onResourceError>`
-:ref:`onResourceRequested <webpage-onResourceRequested>` :ref:`onResourceReceived <webpage-onResourceReceived>` 
-:ref:`onResourceTimeout <webpage-onResourceTimeout>`  :ref:`onUrlChanged <webpage-onUrlChanged>`
+:ref:`childFramesCount() <webpage-childFramesCount>`,
+:ref:`childFramesName() <webpage-childFramesName>`,
+:ref:`close() <webpage-close>`,
+:ref:`currentFrameName() <webpage-currentFrameName>`,
+:ref:`getPage() <webpage-getPage>`,
+:ref:`open() <webpage-open>`,
+:ref:`openUrl() <webpage-openUrl>`,
+:ref:`release() <webpage-release>`,
+:ref:`reload() <webpage-reload>`,
+:ref:`stop() <webpage-stop>`,
+:ref:`switchToFocusedFrame() <webpage-switchToFocusedFrame>`,
+:ref:`switchToFrame() <webpage-switchToFrame>`,
+:ref:`switchToChildFrame() <webpage-switchToChildFrame>`,
+:ref:`switchToMainFrame() <webpage-switchToMainFrame>`,
+:ref:`switchToParentFrame() <webpage-switchToParentFrame>`
+
+:ref:`onPageCreated <webpage-onPageCreated>`,
+:ref:`onClosing <webpage-onClosing>`,
+:ref:`onUrlChanged <webpage-onUrlChanged>`
+
+Offline storage:
+
+:ref:`offlineStoragePath <webpage-offlineStoragePath>`,
+:ref:`offlineStorageQuota <webpage-offlineStorageQuota>`
+
+Rendering:
+
+:ref:`clipRect <webpage-clipRect>`,
+:ref:`paperSize <webpage-paperSize>`,
+:ref:`viewportSize <webpage-viewportSize>`,
+:ref:`zoomFactor <webpage-zoomFactor>`
+
+:ref:`render() <webpage-render>`,
+:ref:`renderBase64() <webpage-renderBase64>`
+
+
+Content management:
+
+:ref:`captureContent <webpage-captureContent>`,
+:ref:`content <webpage-content>`,
+:ref:`plainText <webpage-plainText>`,
+:ref:`scrollPosition <webpage-scrollPosition>`,
+:ref:`title <webpage-title>`
+
+
+:ref:`setContent() <webpage-setContent>`,
+:ref:`uploadFile() <webpage-uploadFile>`
+
+:ref:`onAlert <webpage-onAlert>`,
+:ref:`onAuthPrompt <webpage-onAuthPrompt>`,
+:ref:`onCallback <webpage-onCallback>`,
+:ref:`onConfirm <webpage-onConfirm>`,
+:ref:`onConsoleMessage <webpage-onConsoleMessage>`,
+:ref:`onFilePicker <webpage-onFilePicker>`,
+:ref:`onPrompt <webpage-onPrompt>`
+
+Javascript execution:
+
+:ref:`evaluateJavaScript() <webpage-evaluateJavaScript>`,
+:ref:`evaluate() <webpage-evaluate>`,
+:ref:`evaluateAsync() <webpage-evaluateAsync>`,
+:ref:`includeJs() <webpage-includeJs>`,
+:ref:`injectJs() <webpage-injectJs>`,
+:ref:`stopJavaScript() <webpage-stopJavaScript>`
+
+:ref:`onLongRunningScript <webpage-onLongRunningScript>`,
+:ref:`onError <webpage-onError>` 
+
+
+
+
+Cookies management:
+
+:ref:`cookies <webpage-cookies>`,
+:ref:`addCookie() <webpage-addCookie>`
+
+:ref:`clearCookies() <webpage-clearCookies>`,
+:ref:`deleteCookie() <webpage-deleteCookie>`
+
+Network management:
+
+:ref:`customHeaders <webpage-customHeaders>`
+
+:ref:`onInitialized <webpage-onInitialized>`,
+:ref:`onLoadFinished <webpage-onLoadFinished>`,
+:ref:`onLoadStarted <webpage-onLoadStarted>`
+
+:ref:`onResourceError <webpage-onResourceError>`,
+:ref:`onResourceRequested <webpage-onResourceRequested>`,
+:ref:`onResourceReceived <webpage-onResourceReceived>`,
+:ref:`onResourceTimeout <webpage-onResourceTimeout>`
+
+Page events:
+
+:ref:`event <webpage-event>`,
+:ref:`sendEvent() <webpage-sendEvent>`
+
+Others properties:
+
+:ref:`libraryPath <webpage-libraryPath>`
+
+:ref:`settings <webpage-settings>`
 
 Internal methods to trigger callbacks:
 
-:ref:`closing() <webpage-closing>` :ref:`initialized() <webpage-initialized>` 
-:ref:`javaScriptAlertSent() <webpage-javaScriptAlertSent>`
-:ref:`javaScriptConsoleMessageSent() <webpage-javaScriptConsoleMessageSent>`
-:ref:`loadFinished() <webpage-loadFinished>` :ref:`loadStarted() <webpage-loadStarted>`
-:ref:`navigationRequested() <webpage-navigationRequested>` :ref:`rawPageCreated() <webpage-rawPageCreated>`
-:ref:`resourceError() <webpage-resourceError>`
-:ref:`resourceReceived() <webpage-resourceReceived>` :ref:`resourceRequested() <webpage-resourceRequested>`
-:ref:`urlChanged() <webpage-urlChanged>` 
+:ref:`closing() <webpage-closing>`,
+:ref:`initialized() <webpage-initialized>`,
+:ref:`javaScriptAlertSent() <webpage-javaScriptAlertSent>`,
+:ref:`javaScriptConsoleMessageSent() <webpage-javaScriptConsoleMessageSent>`,
+:ref:`loadFinished() <webpage-loadFinished>`,
+:ref:`loadStarted() <webpage-loadStarted>`,
+:ref:`navigationRequested() <webpage-navigationRequested>`,
+:ref:`rawPageCreated() <webpage-rawPageCreated>`,
+:ref:`resourceError() <webpage-resourceError>`,
+:ref:`resourceReceived() <webpage-resourceReceived>`,
+:ref:`resourceRequested() <webpage-resourceRequested>`,
+:ref:`urlChanged() <webpage-urlChanged>`
 
 
+Properties
+===========
 
 .. _webpage-clipRect:
 
@@ -569,6 +665,11 @@ So for example, if you call :ref:`render() <webpage-render>` just after setting 
 too early). After the call of ``zoomFactor``, You probably have to put the code into a
 callback given to ``window.setTimeout()``, or you can call ``slimer.wait(500)`` (which is
 not compatible with PhantomJS).
+
+
+Methods
+========
+
 
 .. _webpage-addCookie:
 
@@ -1188,6 +1289,11 @@ Note that a virtual file picker is opened when calling ``uploadFile()``, and
 so the ``onFilePicker`` callback is called. If this callback exists and
 returns a filename, the filename given to ``uploadFile()`` is ignored.
 
+
+Callbacks
+==========
+
+
 .. _webpage-onAlert:
 
 onAlert
@@ -1690,6 +1796,10 @@ Example:
     };
 
 To retrieve the old URL, use the onLoadStarted callback.
+
+
+Internal methods
+=================
 
 .. _webpage-closing:
 
