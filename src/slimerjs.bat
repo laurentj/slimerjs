@@ -185,6 +185,11 @@ REM    echo   --web-security=^<bool^>            Enables web security (default i
     echo   -profile path                      Use the profile stored in the specified
     echo                                      directory, to execute the script
     echo By default, SlimerJS use a temporary profile
+    echo
+    echo If an option does not work, try to set the option like that
+    echo    -<option> <value>
+    echo instead of
+    echo    --<option>=<value>
     echo.
 goto :eof
 

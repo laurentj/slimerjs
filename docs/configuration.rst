@@ -22,6 +22,11 @@ as PhantomJS, plus some others. Indicate them before the script filename.
 However, all options are not supported yet. And some of them won't be supported because
 they don't make sens with the existing profile system.
 
+For Windows users: if an option does not work, remove the equal sign and the first
+dash. For example, ``--proxy=localhost`` becomes ``-proxy localhost``. You should
+note also that the command line parsing is done by Firefox, not by SlimerJS.
+
+
 ================================================  ===================  ====================================================
 PhantomJS options
 ================================================  ===================  ====================================================
