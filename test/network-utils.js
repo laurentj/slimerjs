@@ -137,7 +137,9 @@ var networkUtils = {
     searchRequest : function (url, tests, min) {
         min = min || 0
         let listR = this.receivedRequest.filter(function(result, i) {
-            if (i < min || result == undefined || result == null || !('req' in result)) {
+            if (i < min || result == undefined ||
+                result == null || !('req' in result) ||
+                result.req == null) {
                 return false;
             }
             return (result.req.url == url);
@@ -170,7 +172,8 @@ var networkUtils = {
     searchMissedRequest: function(url, min) {
         min = min || 0
         let listR = this.receivedRequest.filter(function(result, i) {
-            if (i < min || result == undefined || result == null || !('req' in result)) {
+            if (i < min || result == undefined || result == null ||
+                !('req' in result) || result.req == null) {
                 return false;
             }
             return (result.req.url == url);
