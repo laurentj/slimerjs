@@ -64,6 +64,9 @@ var environment;
 // we use a Proxy object to access to environment variable
 // so we can get and set any environment variable, even those which don't exist yet
 var environmentHandler = {
+    has : function (obj, prop) {
+        return envService.exists(prop);
+    },
     get : function (obj, prop) {
         if (envService.exists(prop))
             return envService.get(prop);
@@ -73,6 +76,46 @@ var environmentHandler = {
         if (!envService.exists(prop))
             slConfiguration.envs.push(prop);
         return envService.set(prop, value);
+    },
+    ownKeys : function(obj) {
+        return slConfiguration.envs;
+    },
+    getOwnPropertyDescriptor: function(target, prop) {
+        if (!envService.exists(prop))
+            return undefined;
+        return {
+            value: envService.get(prop),
+            enumerable: true,
+            configurable: true,
+            writable: true
+        }
+    },
+    defineProperty: function(prop, { value }){
+        if (!envService.exists(prop)) {
+            slConfiguration.envs.push(prop);
+        }
+        envService.set(prop, value);
+    },
+
+    
+    // obsolete properties since Firefox 33
+
+    hasOwn : function (obj, prop) {
+        return envService.exists(prop);
+    },
+    getOwnPropertyNames : function(obj) {
+        return slConfiguration.envs;
+    },
+    keys : function(obj) {
+        return slConfiguration.envs;
+    },
+
+    // obsolete? Not defined in Proxy spec
+    getPropertyDescriptor: function(prop) {
+        return this.getOwnPropertyDescriptor(prop)
+    },
+    getPropertyNames : function(obj) {
+        return slConfiguration.envs;
     },
     enumerate : function(obj) {
         return slConfiguration.envs;
@@ -86,46 +129,9 @@ var environmentHandler = {
             }
         };
     },
-    keys : function(obj) {
-        return slConfiguration.envs;
-    },
-    has : function (obj, prop) {
-        return envService.exists(prop);
-    },
-    hasOwn : function (obj, prop) {
-        return envService.exists(prop);
-    },
-    getPropertyNames : function(obj) {
-        return slConfiguration.envs;
-    },
-    getOwnPropertyNames : function(obj) {
-        return slConfiguration.envs;
-    },
-    getPropertyDescriptor: function(prop) {
-        return this.getOwnPropertyDescriptor(prop)
-    },
-    getOwnPropertyDescriptor: function(prop) {
-        if (!envService.exists(prop))
-            return undefined;
-        return {
-            value: envService.get(prop),
-            enumerable: true,
-            configurable: true,
-            writable: true
-        }
-    },
-    defineProperty: function(prop, { value }){
-        envService.set(prop, value);
-    },
+
 }
-try {
-    // Firefox 18
-    environment = new Proxy({}, environmentHandler);
-}
-catch(e) {
-    // Firefox < 18
-    environment = Proxy.create(environmentHandler, {});
-}
+environment = new Proxy({}, environmentHandler);
 
 this.__defineGetter__('env', function(){
     return environment;
