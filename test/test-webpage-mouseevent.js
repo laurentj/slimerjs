@@ -17,6 +17,7 @@ describe("webpage.sendEvent", function() {
         
     var webpage;
     var url = "http://127.0.0.1:8083/mouseevent.html";
+    
 
     beforeEach(function() {
         if (webpage) {
@@ -532,6 +533,38 @@ describe("webpage.sendEvent", function() {
         expect(r.dblclick).toEqual(-1);
     });
 
+    var url2 = "http://127.0.0.1:8083/callbackclick.html";
+
+    it("tests click via callphantom",function() {
+        var loaded = false;
+        var html = null;
+        var receivedCallback = false;
+        runs(function() {
+            webpage.onCallback= function(data) {
+                if (data.sendEvent) {
+                    receivedCallback = true;
+                    webpage.sendEvent(data.sendEvent[0], data.sendEvent[1], data.sendEvent[2], 'left', 0);
+                }
+                else if (data.html) {
+                    html = data.html;
+                }
+            };
+            webpage.open(url2, function(success){
+                webpage.evaluate(function() {launchClick()})
+                slimer.wait(500);
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            expect(receivedCallback).toBeTruthy();
+            expect(html).toEqual('button clicked');
+            webpage.onCallback = null;
+        })
+    });
+    
+    
     it("test end",function() {
         webpage.close();
     });
