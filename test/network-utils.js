@@ -120,6 +120,9 @@ var networkUtils = {
                 this.receivedRequest[response.id] = { req:null, start:null, end:null, err:null}
             }
             this.receivedRequest[response.id].err = response;
+            if (this.traceResources) {
+                this.trace +="RES ERROR "+response.errorCode+" - "+response.url+"\n";
+            }
         };
 
         this.webpage.onLoadFinished = (status, url) => {

@@ -730,8 +730,53 @@ function _create(parentWebpageInfo) {
                 return result;
             });
 
-            var options = getNetLoggerOptions(this, deferred, this.customHeaders);
+            let options = getNetLoggerOptions(this, deferred, this.customHeaders);
 
+            let loadUri = function() {
+                netLog.registerBrowser(browser, options);
+                try {
+                    webpageUtils.browserLoadURI(browser, url, httpConf);
+                }
+                catch(e) {
+                    // we simulate PhantomJS behavior on url errors
+                    options.onLoadStarted('');
+                    options.onURLChanged('about:blank');
+                    if (e.message == 'NS_ERROR_UNKNOWN_PROTOCOL') {
+                        options.onRequest({
+                            id: 1,
+                            method: httpConf.operation,
+                            url: url,
+                            time: new Date(),
+                            headers: (('headers' in httpConf)?httpConf.headers:[])
+                            }, null
+                        );
+                        options.onError({id: 1,
+                            url: url,
+                            errorCode:301,
+                            errorString:"Protocol is unknown"
+                        });
+                        options.onResponse( {
+                            id: 1,
+                            url: url,
+                            time: new Date(),
+                            headers: [],
+                            bodySize: 0,
+                            contentType: null,
+                            contentCharset: null,
+                            redirectURL: null,
+                            stage: "end",
+                            status: null,
+                            statusText: null,
+                            // Extensions
+                            referrer: "",
+                            isFileDownloading : false,
+                            body: ""
+                        });
+                    }
+                    options.onLoadFinished(url, "fail");
+                }
+            }
+            
             if (DEBUG_WEBPAGE)
                 slDebugLog("webpage: openUrl "+url+" conf:"+slDebugGetObject(httpConf));
 
@@ -741,8 +786,7 @@ function _create(parentWebpageInfo) {
                     browserJustCreated = false;
                 }
                 // don't recreate a browser if already opened.
-                netLog.registerBrowser(browser, options);
-                webpageUtils.browserLoadURI(browser, url, httpConf);
+                loadUri();
                 return deferred.promise;
             }
 
@@ -754,8 +798,7 @@ function _create(parentWebpageInfo) {
                 me.initialized();
                 browserJustCreated = false;
                 browser.authAttempts = 0;
-                netLog.registerBrowser(browser, options);
-                webpageUtils.browserLoadURI(browser, url, httpConf);
+                loadUri();
             }, null, privProp.viewportSize);
             // to catch window.open()
             win.QueryInterface(Ci.nsIDOMChromeWindow)

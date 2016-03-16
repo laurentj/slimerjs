@@ -880,6 +880,7 @@ ProgressListener.prototype = {
     onLocationChange : function(progress, request, location, flags) {
 
         if (flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_ERROR_PAGE) {
+            slDebugLog("network: LOCATION_CHANGE_ERROR_PAGE "+location.spec+" flags:"+debugFlags(flags));
             return;
         }
         if (typeof(this.options.onURLChanged) === "function"
@@ -892,8 +893,9 @@ ProgressListener.prototype = {
 
         if (!(request instanceof Ci.nsIChannel || "URI" in request)) {
             // ignore requests that are not a channel
-            //if (DEBUG_NETWORK_PROGRESS)
-            //    slDebugLog("network: request not a http channel");
+            //if (DEBUG_NETWORK_PROGRESS) {
+            //    slDebugLog("network: request not a http channel. status: "+getMozErrorName(status)+" flags:"+debugFlags(flags));
+            //}
             return
         }
         let uri = request.URI.spec;
@@ -927,8 +929,9 @@ ProgressListener.prototype = {
         try {
             if (this.mainPageURI == null) {
                 if (this.isLoadRequested(flags)) {
-                    if (DEBUG_NETWORK_PROGRESS)
+                    if (DEBUG_NETWORK_PROGRESS) {
                         slDebugLog("network: main request starting - "+uri+ " flags:"+debugFlags(flags));
+                    }
                     this.mainPageURI = request.URI;
                     if (typeof(this.options.onLoadStarted) === "function") {
                         this.options.onLoadStarted(uri);
@@ -942,25 +945,32 @@ ProgressListener.prototype = {
                 else if (this.isRedirectionStart(flags)) {
                     this.redirecting = false;
                     this.mainPageURI = request.URI;
-                    if (DEBUG_NETWORK_PROGRESS)
+                    if (DEBUG_NETWORK_PROGRESS) {
                         slDebugLog("network: redirection starting - "+uri+ " flags:"+debugFlags(flags));
+                    }
                 }
-                else if (DEBUG_NETWORK_PROGRESS)
+                else if (DEBUG_NETWORK_PROGRESS) {
                     slDebugLog("network: request ignored. main page uri not started yet - "+uri+ " flags:"+debugFlags(flags));
+                }
                 return;
             }
 
             // ignore all request that are not the main request
             if (!this.mainPageURI.equalsExceptRef(request.URI)) {
-                if (DEBUG_NETWORK_PROGRESS)
+                if (DEBUG_NETWORK_PROGRESS) {
                     slDebugLog("network: request ignored: "+uri+ " flags:"+debugFlags(flags));
+                }
                 return;
             }
 
-            if (DEBUG_NETWORK_PROGRESS)
+            if (DEBUG_NETWORK_PROGRESS) {
                 slDebugLog("network: main request "+uri+ " flags:"+debugFlags(flags));
+            }
 
             if (this.isStart(flags)) {
+                if (DEBUG_NETWORK_PROGRESS) {
+                    slDebugLog("network: main request: transfer started");
+                }
                 if (request.URI.scheme == 'file') {
                     // for file:// protocol, we don't have http-on-* events
                     // let's call options.onResponse...
@@ -973,6 +983,10 @@ ProgressListener.prototype = {
             }
 
             if (this.isTransferDone(flags)) {
+                if (DEBUG_NETWORK_PROGRESS) {
+                    slDebugLog("network: main request: transfer done");
+                }
+
                 if (request.URI.scheme == 'file') {
                     // for file:// protocol, we don't have http-on-* events
                     // let's call options.onResponse...
@@ -985,6 +999,10 @@ ProgressListener.prototype = {
             }
 
             if (this.isLoaded(flags)) {
+                if (DEBUG_NETWORK_PROGRESS) {
+                    slDebugLog("network: main request: is loaded");
+                }
+
                 this.mainPageURI = null;
                 if (typeof(this.options.onLoadFinished) === "function") {
                     let success = "success";
@@ -1013,6 +1031,10 @@ ProgressListener.prototype = {
                 if (DEBUG_NETWORK_PROGRESS) {
                     slDebugLog("network: main request redirect from "+request.name);
                 }
+                return;
+            }
+            if (DEBUG_NETWORK_PROGRESS) {
+                slDebugLog("network: main request: ignored state");
             }
         } catch(e) {
             if (DEBUG_NETWORK_PROGRESS) {
@@ -1026,6 +1048,7 @@ ProgressListener.prototype = {
             return;
         if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
             // ignore requests that are not a channel/http channel
+            //slDebugLog("network: onStatusChange, request not a http channel. status: "+getMozErrorName(aStatus));
             return
         }
         slDebugLog("network: status change for "+aRequest.URI.spec+ " ("+aStatus+"): "+aMessage);
@@ -1035,9 +1058,10 @@ ProgressListener.prototype = {
             return;
         if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
             // ignore requests that are not a channel/http channel
+            //slDebugLog("network: onSecurityChange, request not a http channel. status: "+debugSecurityFlags(aState));
             return
         }
-        slDebugLog("network: security change for "+aRequest.URI.spec+ " : "+debugSecurityFlags(flags));
+        slDebugLog("network: security change for "+aRequest.URI.spec+ " : "+debugSecurityFlags(aState));
     },
     debug : function(aWebProgress, aRequest) {},
     onProgressChange : function (aWebProgress, aRequest,
@@ -1052,6 +1076,18 @@ ProgressListener.prototype = {
         slDebugLog("network: progress total:"+aCurTotalProgress+"/"+aMaxTotalProgress+"; uri: "+aCurSelfProgress+"/"+aCurTotalProgress+" for "+aRequest.URI.spec);
     }
 };
+
+
+function getMozErrorName(status) {
+    let statusStr = status;
+    for (let err in Cr) {
+        if (typeof Cr[err]  ==  'number' && Cr[err] == status) {
+            statusStr = err;
+            break;
+        }
+    }
+    return statusStr;
+}
 
 function getErrorCode(status) {
     let errorCode = 99;
