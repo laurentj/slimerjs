@@ -35,8 +35,8 @@ the ``phantom`` object. They will be used for every web page object.
 
 .. code-block:: javascript
     
-    phantom.settings.userName = "mylogin";
-    phantom.settings.password = "mypassword";
+    phantom.defaultPageSettings.userName = "mylogin";
+    phantom.defaultPageSettings.password = "mypassword";
 
 
 .. container:: warning
