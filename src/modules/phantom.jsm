@@ -32,6 +32,20 @@ var phantom = {
         throw new Error("phantom.page not implemented. Irrelevant for Slimerjs");
     },
 
+    /**
+     * @notimplemented
+     */
+    get outputEncoding() {
+        return 'UTF-8';
+    },
+
+    /**
+     * @notimplemented
+     */
+    set outputEncoding(val) {
+        
+    },
+
     // ------------------------  cookies
 
     /**
@@ -187,7 +201,8 @@ var phantom = {
         onError : 'rw',
         defaultErrorHandler : 'r',
         defaultPageSettings : 'r',
-        webdriverMode: 'r'
+        webdriverMode: 'r',
+        outputEncoding: 'rw'
     }
 }
 
