@@ -123,6 +123,7 @@ var phantom = {
      * @param integer code the exit code for the shell console. 0 means ok (default value)
      * @phantomcompatibilityissue
      * @internal to resolve the issue, we should provide our own patched xulrunner
+     * @fixme in "debug mode", phantomjs does not really exit
      */
     exit : function(code) {
         let c = +code || 0;
@@ -134,6 +135,10 @@ var phantom = {
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },
 
+    debugExit : function(code) {
+        this.exit(code);
+    },
+    
     /**
      * the path where injected script could be find
      * @var string
