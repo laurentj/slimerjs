@@ -30,7 +30,7 @@ This is an array containing all arguments given on the command line.
 
     var firstarg = phantom.args[0];
 
-
+This property is deprecated. Use system.args instead.
 
 .. _phantom-clearCookies:
 
@@ -185,6 +185,8 @@ scriptName
 -----------------------------------------
 
 Contains the script name given to the command line.
+
+This property is deprecated. Use ``system.args[0]`` instead.
 
 .. _phantom-version:
 

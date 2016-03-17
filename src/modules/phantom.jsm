@@ -20,10 +20,16 @@ var defaultSettings = null;
 
 var phantom = {
 
+    /**
+     * deprecated
+     */
     get args (){
         return slConfiguration.args.slice(1);
     },
 
+    /**
+     * deprecated
+     */
     get scriptName (){
         return slConfiguration.args[0];
     },
