@@ -105,7 +105,9 @@ port should be indicated with the ``--proxy=`` option: ``--proxy=host:port``
 SlimerJS supports also some specific values for ``--proxy-type``:
 
 - ``auto``: SlimerJS tries to detect automatically proxies
-- ``system``: SlimerJS uses the proxy configuration set into the operating system
+- ``system``: SlimerJS uses the proxy configuration set into the operating
+  system. Under linux, Firefox is using proxy configuration stored into Gnome
+  settings or GConf. Note that the use of the ``http_proxy`` environment variable does not work.
 - ``config-url``: SlimerJS uses the proxy configuration set into a file. The HTTP or file:// URL
    of this file should be indicated with the ``--proxy=`` option.
 
