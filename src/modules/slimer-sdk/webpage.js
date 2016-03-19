@@ -1568,7 +1568,8 @@ function _create(parentWebpageInfo) {
                 },
             }
             if (typeof(value) === "object") {
-                privProp.clipRect = validateOptions(value, requirements);
+                privProp.clipRect = heritage.mix({top:0, left:0, width:0, height:0},
+                                                 validateOptions(value, requirements));
             } else {
                 privProp.clipRect = null;
             }
