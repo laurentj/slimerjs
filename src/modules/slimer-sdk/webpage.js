@@ -936,6 +936,8 @@ function _create(parentWebpageInfo) {
             if (typeof val != "object")
                 throw new Error("Bad argument type");
 
+            val = heritage.mix({width:privProp.viewportSize.width,
+                               height:privProp.viewportSize.height}, val);
             let w = val.width || privProp.viewportSize.width;
             let h = val.height || privProp.viewportSize.height;
 
@@ -943,10 +945,11 @@ function _create(parentWebpageInfo) {
                 w = parseInt(w, 10);
             }
             if (typeof h != "number") {
-                h = parseInt(w, 10);
+                h = parseInt(h, 10);
             }
-            if (w < 0 || h < 0)
+            if (w < 0 || h < 0) {
                 return;
+            }
 
             privProp.viewportSize.width = w;
             privProp.viewportSize.height = h;
