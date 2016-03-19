@@ -67,5 +67,33 @@ An object containing values of all environment variable.
 stdout
 -----------------------------------------
 
+The standard output stream. This is an object with the same API as a file
+opened with the mode "wb" with no encoding.
+
 - ``system.stdout.write('something')``
-- ``system.stdout.writeLine('something')``
+
+.. _system-stderr:
+
+stderr
+-----------------------------------------
+
+The standard error stream. This is an object with the same API as a file
+opened with the mode "wb" with no encoding.
+
+On windows, it is the output stream.
+
+- ``system.stderr.write('something')``
+
+
+.. _system-stdin:
+
+stdin
+-----------------------------------------
+
+The standard input stream. This is an object with the same API as a file
+opened with the mode "rb" with no encoding.
+
+It is not available on Windows.
+
+``var input = system.stdin.read()``
+

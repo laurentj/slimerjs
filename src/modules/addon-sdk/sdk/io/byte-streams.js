@@ -18,6 +18,17 @@ const {Cc, Ci} = require("chrome");
 // This just controls the maximum number of bytes we read in at one time.
 const BUFFER_BYTE_LEN = 0x8000;
 
+function readSpecialFile(data, stream, read, numBytes) {
+    try {
+      while (read < numBytes) {
+        data += stream.readBytes(1);
+        read ++;
+      }
+    } catch(e) {
+    }
+  return data;
+}
+
 function ByteReader(inputStream) {
   const self = this;
 
@@ -36,7 +47,16 @@ function ByteReader(inputStream) {
     let read = 0;
     try {
       while (true) {
-        let avail = stream.available();
+        let avail = 0;
+        try {
+          avail = stream.available();
+        } catch(e) {
+          // on special file, like /dev/stdin, available() fails.
+          // let's use an other method (which may be lower)
+          data = readSpecialFile(data, stream, read, numBytes);
+          break;
+        }
+
         let toRead = Math.min(numBytes - read, avail, BUFFER_BYTE_LEN);
         if (toRead <= 0)
           break;
@@ -47,7 +67,6 @@ function ByteReader(inputStream) {
     catch (err) {
       throw new Error("Error reading from stream: " + err);
     }
-
     return data;
   };
 }

@@ -4,6 +4,8 @@
  */
 const { Cc, Ci, Cu, Cr } = require('chrome');
 
+var fs = require('fs');
+
 Cu.import('resource://slimerjs/slConfiguration.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 
@@ -184,16 +186,62 @@ Object.defineProperty(exports, 'args', {
         return slConfiguration.args;
     }
 });
+
+var stdout = null;
+var stderr = null;
+var stdin = null;
+
 Object.defineProperty(exports, 'stdout', {
     enumerable: true,
     writeable: false,
     get: function() {
-        return {
-            write: dump,
-            writeLine: function (data) {
-                dump(data + '\n');
+        if (_isWindows) {
+            return {
+                write: dump,
+                writeLine: function (data) {
+                    dump(data + '\n');
+                }
             }
         }
+        if (!stdout) {
+            stdout = fs.open('/dev/stdout', 'bw');
+        }
+        return stdout;
+    }
+});
+
+Object.defineProperty(exports, 'stderr', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        if (_isWindows) {
+            return {
+                write: dump,
+                writeLine: function (data) {
+                    dump(data + '\n');
+                }
+            }
+        }
+        if (!stderr) {
+            stderr = fs.open('/dev/stderr', 'bw');
+        }
+        return stderr;
+    }
+});
+
+
+Object.defineProperty(exports, 'stdin', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        if (_isWindows) {
+            throw Error("system.stdin is not supported on Windows")
+        }
+        if (!stdin) {
+            // it fails if we open with "rb" mode
+            stdin = fs.open('/dev/stdin', 'rb');
+        }
+        return stdin;
     }
 });
 

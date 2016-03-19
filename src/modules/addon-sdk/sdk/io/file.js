@@ -81,6 +81,8 @@ function ensureDir(file) {
 
 function ensureFile(file) {
   ensureExists(file);
+  if (file.isSpecial())
+    return;
   if (!file.isFile())
     throw new Error("path is not a file: " + file.path);
 }

@@ -88,6 +88,11 @@ var fs = require("fs");
 
 var system = require("system");
 
+console.log("\n------ you should see the output of system.stdout\noutput:")
+
+system.stdout.write("Hello");
+system.stdout.write(" World");
+system.stderr.write(" message from system.stderr");
 console.log("\n------ check yourself if following values are ok")
 
 console.log("os.architecture="+system.os.architecture);
@@ -177,7 +182,7 @@ phantom.onError = function(msg, stack) {
     assertEquals(9, stack[1].line, "line in requiredexample.js")
     assertEquals("exports.throwExcept", stack[1].function, "function in stack")
     assertNotEquals(-1, stack[2].sourceURL.indexOf('initial-tests.js'), "filename is initial-tests.js")
-    assertEquals(184, stack[2].line, "line in initial-tests.js")
+    assertEquals(189, stack[2].line, "line in initial-tests.js")
     assertEquals("", stack[2].function, "function in stack")
 }
 
