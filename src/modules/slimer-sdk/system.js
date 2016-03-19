@@ -2,16 +2,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+const { Cc, Ci, Cu, Cr } = require('chrome');
 
-var EXPORTED_SYMBOLS = ["os", "pid", "platform", "env", "stdout"];
-Components.utils.import('resource://slimerjs/slConfiguration.jsm');
-Components.utils.import("resource://gre/modules/Services.jsm");
+Cu.import('resource://slimerjs/slConfiguration.jsm');
+Cu.import("resource://gre/modules/Services.jsm");
 
-var xulRuntime = Components.classes["@mozilla.org/xre/app-info;1"]
-                 .getService(Components.interfaces.nsIXULRuntime);
+var xulRuntime = Cc["@mozilla.org/xre/app-info;1"]
+                 .getService(Ci.nsIXULRuntime);
 
-var httphandler =  Components.classes["@mozilla.org/network/protocol;1?name=http"]
-                    .getService(Components.interfaces.nsIHttpProtocolHandler);
+var httphandler =  Cc["@mozilla.org/network/protocol;1?name=http"]
+                    .getService(Ci.nsIHttpProtocolHandler);
 
 var oscpu = httphandler.oscpu;
 
@@ -22,7 +22,6 @@ var OS = {
     name: xulRuntime.OS.toLowerCase(),
     version: '',
     isWindows : function() _isWindows
-
 }
 
 if (OS.name == 'linux') {
@@ -69,19 +68,8 @@ else if (/windows/i.test(oscpu)) {
     _isWindows = true;
 }
 
-this.__defineGetter__('os', function(){ return  OS;});
-
-this.__defineGetter__('pid', function(){
-    //Components.utils.reportError("system.pid not implemented");
-    return 0;  // no Mozilla API to retrieve the PID :-/
-});
-
-this.__defineGetter__('platform', function(){
-    return "slimerjs";
-});
-
-var envService = Components.classes["@mozilla.org/process/environment;1"].
-          getService(Components.interfaces.nsIEnvironment);
+var envService = Cc["@mozilla.org/process/environment;1"].
+          getService(Ci.nsIEnvironment);
 var environment;
 
 // we use a Proxy object to access to environment variable
@@ -156,18 +144,56 @@ var environmentHandler = {
 }
 environment = new Proxy({}, environmentHandler);
 
-this.__defineGetter__('env', function(){
-    return environment;
-});
-
-this.__defineGetter__('args', function(){
-    return slConfiguration.args;
-});
-
-var stdout = {
-    write: dump,
-    writeLine: function (data) {
-        dump(data + '\n');
+Object.defineProperty(exports, 'os', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        return OS;
     }
-};
+});
+
+Object.defineProperty(exports, 'pid', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        //Cu.reportError("system.pid not implemented");
+        return 0;  // no Mozilla API to retrieve the PID :-/
+    }
+});
+
+Object.defineProperty(exports, 'platform', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        return "slimerjs";
+    }
+});
+
+Object.defineProperty(exports, 'env', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        return environment;
+    }
+});
+
+Object.defineProperty(exports, 'args', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        return slConfiguration.args;
+    }
+});
+Object.defineProperty(exports, 'stdout', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        return {
+            write: dump,
+            writeLine: function (data) {
+                dump(data + '\n');
+            }
+        }
+    }
+});
 

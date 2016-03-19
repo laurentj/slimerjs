@@ -237,7 +237,7 @@ const nativeModules = {
     'webpage': '@slimer-sdk/webpage',
     'net-log' : '@slimer-sdk/net-log',
     'webserver' : 'webserver',
-    'system' : 'system',
+    'system' : '@slimer-sdk/system',
     'chrome': 'chrome',
     'vm':'@slimer-sdk/vm',
     'path':'@slimer-sdk/path',
@@ -248,8 +248,7 @@ const nativeMapping = {
     '@slimer-sdk/': 'resource://slimerjs/slimer-sdk/',
     '@loader/': 'resource://slimerjs/@loader',
     'chrome': 'resource://slimerjs/@chrome',
-    'webserver' : 'resource://slimerjs/slimer-sdk/webserver.jsm',
-    'system' : 'resource://slimerjs/slimer-sdk/system.jsm'
+    'webserver' : 'resource://slimerjs/slimer-sdk/webserver.jsm'
 }
 
 
@@ -331,8 +330,7 @@ function prepareLoader(scriptInfo) {
             console: new slConsole()
         },
         modules: {
-          "webserver": Cu.import("resource://slimerjs/slimer-sdk/webserver.jsm", {}),
-          "system": Cu.import("resource://slimerjs/slimer-sdk/system.jsm", {}),
+          "webserver": Cu.import("resource://slimerjs/slimer-sdk/webserver.jsm", {})
         },
         // this function should return the true id of the module.
         // The returned id should be an id or an absolute path of a file
