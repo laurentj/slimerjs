@@ -47,6 +47,8 @@ Fixed PhantomJS conformance issues
 - Callback given to ``webpage.open()`` is now called when the url is invalid
 - Like in PhantomJS 2.0, ``phantom.args`` and ``phantom.scriptName`` are deprecated
 - webpage.viewportSize should accept strings as values (#313)
+- On windows, system.os.version matches now public version number, not internal
+  version number (#344)
 
 Other informations about this release
 -------------------------------------

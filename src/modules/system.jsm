@@ -43,6 +43,15 @@ else if (/windows/i.test(oscpu)) {
         OS.architecture = '64bit';
     }
     OS.version = /(\d+\.\d+)/.exec(oscpu)[1];
+    if (OS.version == "6.1") {
+        OS.version = "7"
+    }
+    else if (OS.version == "6.2") {
+        OS.version = "8"
+    }
+    else if (OS.version == "6.3") {
+        OS.version = "8.1"
+    }
     _isWindows = true;
 }
 
