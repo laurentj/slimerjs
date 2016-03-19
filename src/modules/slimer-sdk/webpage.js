@@ -232,7 +232,9 @@ function _create(parentWebpageInfo) {
             onError:  function(err) {
                 webpage.resourceError(err);
             },
-            captureTypes: webpage.captureContent,
+            getCaptureTypes: function() {
+                return webpage.captureContent;
+            },
             onLoadStarted: function(url){
                 if (wycywigReg.test(url)) {
                     return;

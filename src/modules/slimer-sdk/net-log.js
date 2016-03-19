@@ -33,7 +33,7 @@ exports.registerBrowser = function(browser, options) {
             _onRequest: null,
 
             // Mime types to capture (regexp array)
-            captureTypes: [],
+            getCaptureTypes: null,
 
 
             // --- callbacks for the main document,
@@ -399,7 +399,7 @@ TracingListener.prototype = {
                 this.dataLength += count;
                 let win = getWindowForRequest(request);
                 if (this._defragURL(win.location) == request.URI.spec ||
-                    /^image\//.test(request.contentType) ||
+                    /^image\//.test(request.contentType) || // get data for image to retrieve image information
                     this._shouldCapture(request))
                 {
                     let [data, newIS] = this._captureData(inputStream, count);
@@ -466,14 +466,19 @@ TracingListener.prototype = {
     },
 
     _shouldCapture: function(request) {
-        if (!Array.isArray(this.options.captureTypes)) {
+        if (!this.options.getCaptureTypes) {
             return false;
         }
-
-        return this.options.captureTypes.some(function(value) {
+        let captureTypes = this.options.getCaptureTypes();
+        if (!Array.isArray(captureTypes)) {
+            return false;
+        }
+        return captureTypes.some(function(value) {
             try {
-                return value.test(request.contentType);
-            } catch(e) {}
+                let r = value.test(request.contentType);
+                return r;
+            } catch(e) {
+            }
             return false;
         });
     },
@@ -510,7 +515,6 @@ TracingListener.prototype = {
         this.response.time = new Date();
         this.response.body = this.data.join("");
         this.response.bodySize = this.dataLength;
-
         if (this.response.redirectURL) {
             this.response.body = "";
             this.response.bodySize = 0;
@@ -521,9 +525,7 @@ TracingListener.prototype = {
                 this.response.imageInfo = imageInfo(this.response, this.response.body);
             }
             if (!this._shouldCapture(request) &&
-                !browser ||
-                (browser && this._defragURL(browser.contentWindow.location) != request.URI.spec))
-            {
+                !(browser && this._defragURL(browser.contentWindow.location) == request.URI.spec)) {
                 this.response.body = "";
             }
         }
@@ -880,7 +882,7 @@ ProgressListener.prototype = {
     onLocationChange : function(progress, request, location, flags) {
 
         if (flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_ERROR_PAGE) {
-            slDebugLog("network: LOCATION_CHANGE_ERROR_PAGE "+location.spec+" flags:"+debugFlags(flags));
+            //slDebugLog("network: LOCATION_CHANGE_ERROR_PAGE "+location.spec+" flags:"+debugFlags(flags));
             return;
         }
         if (typeof(this.options.onURLChanged) === "function"

@@ -553,6 +553,84 @@ describe("webpage with network listeners", function() {
         done();
     });
 
+    async.it("should open direct content",function(done) {
+        networkUtils.reset();
+
+        networkUtils.init();
+        networkUtils.traceResources = true;
+        
+        var content = "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">\n"
+            +"        <title>content #1</title>\n"
+            +"        <script type='text/javascript' src='"+domain+"nothing.js'></script></head>\n"
+            +"    <body><div>content set with setContent <img src='"+domain+"glouton-home.png'/></div></body>";
+        var url = 'http://slimerjs.org/foo.html';
+        networkUtils.webpage.captureContent =  [ /\/javascript$/ ];
+        networkUtils.webpage.setContent(content, url);
+        done();
+    });
+
+    async.it("should generate the expected trace", function(done){
+        var expectedTrace = ""
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        if (URLUtils) expectedTrace += "  loading url=http://slimerjs.org/foo.html\n";
+        expectedTrace += "URLCHANGED:http://slimerjs.org/foo.html\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/nothing.js\n";
+        expectedTrace += "INITIALIZED 0\n";
+        expectedTrace += "RES RECEIVED start - http://localhost:8083/nothing.js\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/nothing.js\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/glouton-home.png\n";
+        expectedTrace += "RES RECEIVED start - http://localhost:8083/glouton-home.png\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/glouton-home.png\n";
+        expectedTrace += "LOADFINISHED:http://slimerjs.org/foo.html - 1 success\n";
+        if (URLUtils) expectedTrace += "  loaded url=http://slimerjs.org/foo.html\n";
+        expect(networkUtils.trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should not have received foo.html", function(done){
+        networkUtils.searchMissedRequest('http://slimerjs.org/foo.html');
+        done();
+    });
+
+    async.it("should have received nothing.js with body content", function(done){
+        networkUtils.searchRequest(domain + 'nothing.js', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect(r.err).toBeNull();
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(200);
+            expect(r.start.statusText).toEqual('OK');
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual('OK');
+            expect(r.start.contentType).toEqual("text/javascript");
+            expect(r.end.contentType).toEqual("text/javascript");
+            expect(r.end.body).toEqual("function nothing() { }");
+        });
+        done();
+    });
+
+    async.it("should have received png without body content", function(done){
+        networkUtils.searchRequest(domain + 'glouton-home.png', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect(r.err).toBeNull();
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(200);
+            expect(r.start.statusText).toEqual('OK');
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual('OK');
+            expect(r.start.contentType).toEqual("image/png");
+            expect(r.end.contentType).toEqual("image/png");
+            expect(r.end.body).toEqual("");
+        });
+        done();
+    });
     async.it("test end", function(done){
         networkUtils.traceResources = false;
         networkUtils.reset();

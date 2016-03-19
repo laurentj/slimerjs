@@ -37,7 +37,7 @@ Fixed bugs
 
 - Fix error NS_ERROR_FACTORY_NOT_REGISTERED on navigator object (issue #373)
 - Fix webpage.render() on SVG document (issue #283)
-- 
+- Fix support of webpage.captureContent (issue #397) 
 
 Fixed PhantomJS conformance issues
 ----------------------------------
