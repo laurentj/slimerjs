@@ -47,6 +47,7 @@ function TextReader(inputStream, charset) {
 
   let manager = new StreamManager(this, stream);
 
+  let eof = false;
   /**
    * Reads a string from the stream.  If the stream is closed, an exception is
    * thrown.
@@ -85,11 +86,39 @@ function TextReader(inputStream, charset) {
       // number of characters encoded by the bytes in that buffer.
       chunkRead = stream.readString(toRead, chunk);
       str += chunk.value;
+      if (chunkRead == 0) {
+        eof = true;
+      }
       totalRead += chunkRead;
     }
 
     return str;
   };
+
+  this.readLine = function TextReader_readLine() {
+    manager.ensureOpened();
+    let str = "";
+    let foundLineFeed= false;
+    let chunkRead = 1;
+    while (!foundLineFeed && chunkRead) {
+      let chunk = {};
+      chunkRead = stream.readString(1, chunk);
+      if (chunkRead == 0) {
+        eof = true;
+      }
+      else if (chunk.value != "\n"){
+        str += chunk.value;
+      }
+      else {
+        foundLineFeed = true;
+      }
+    }
+    return str;
+  }
+
+  this.atEnd = function() {
+    return eof;
+  }
 }
 
 /**
@@ -155,6 +184,9 @@ function TextWriter(outputStream, charset) {
     istream.close();
   };
 
+  this.writeLine = function TextWriter_write(str) {
+    this.write(str+"\n");
+  }
   /**
    * Writes a string on a background thread.  After the write completes, the
    * backing stream's buffer is flushed, and both the stream and the backing

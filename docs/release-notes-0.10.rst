@@ -21,6 +21,7 @@ New features and API
 - ``phantom.webdriverMode``
 - Implementation of ``system.stdin`` and ``system.stderr``. And ``system.stdout``
   is now a true output stream.
+- Implementation of ``stream.atEnd`` and ``stream.readLine()``
 
 Improvements
 ------------
@@ -56,7 +57,6 @@ Fixed PhantomJS conformance issues
 Other informations about this release
 -------------------------------------
 
-- ``system.stdout`` has no more ``writeln`` method.
 - Compatibility with Firefox 40 to Firefox 45.
 - Compatibility is no more guaranteed on Firefox having version lower than 38.
 - There are no anymore packages including XulRunner, the Firefox runtime, since

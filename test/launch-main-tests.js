@@ -48,6 +48,7 @@ if (system.args.length == 2) {
 }
 else {
     phantom.injectJs("./network-utils.js");
+    phantom.injectJs("./test-fs.js");
     phantom.injectJs("./test-environment.js");
     phantom.injectJs("./test-require.js");
     phantom.injectJs("./test-system.js");
