@@ -939,6 +939,12 @@ function _create(parentWebpageInfo) {
             let w = val.width || privProp.viewportSize.width;
             let h = val.height || privProp.viewportSize.height;
 
+            if (typeof w != "number") {
+                w = parseInt(w, 10);
+            }
+            if (typeof h != "number") {
+                h = parseInt(w, 10);
+            }
             if (w < 0 || h < 0)
                 return;
 

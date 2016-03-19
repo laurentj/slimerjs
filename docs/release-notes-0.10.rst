@@ -46,6 +46,7 @@ Fixed PhantomJS conformance issues
 - support additionnals arguments on ``webpage.evaluateAsync()``
 - Callback given to ``webpage.open()`` is now called when the url is invalid
 - Like in PhantomJS 2.0, ``phantom.args`` and ``phantom.scriptName`` are deprecated
+- webpage.viewportSize should accept strings as values (#313)
 
 Other informations about this release
 -------------------------------------
