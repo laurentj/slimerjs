@@ -43,14 +43,28 @@ else if (/windows/i.test(oscpu)) {
         OS.architecture = '64bit';
     }
     OS.version = /(\d+\.\d+)/.exec(oscpu)[1];
-    if (OS.version == "6.1") {
-        OS.version = "7"
-    }
-    else if (OS.version == "6.2") {
-        OS.version = "8"
-    }
-    else if (OS.version == "6.3") {
-        OS.version = "8.1"
+
+    switch (OS.version) { // matches values in Phantomjs
+        case "4.0":
+        case "3.5":
+        case "3.51":
+            OS.version = "NT"; break;
+        case "5.0":
+            OS.version = "2000"; break;
+        case "5.1":
+            OS.version = "XP"; break;
+        case "5.2":
+            OS.version = "2003"; break;
+        case "6.0":
+            OS.version = "Vista"; break;
+        case "6.1":
+            OS.version = "7"; break;
+        case "6.2":
+            OS.version = "8"; break;
+        case "6.3":
+            OS.version = "8.1"; break;
+        case "10.0":
+            OS.version = "10"; break;
     }
     _isWindows = true;
 }
