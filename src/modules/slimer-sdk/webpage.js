@@ -701,8 +701,15 @@ function _create(parentWebpageInfo) {
          */
         openUrl: function(url, httpConf, settings, callback) {
 
-            if (settings)
+            if (settings) {
                 this.settings = settings;
+            }
+            if (this.settings.resourceTimeout) {
+                Services.prefs.setIntPref("network.http.response.timeout", privProp.settings.resourceTimeout);
+            }
+            else {
+                Services.prefs.clearUserPref("network.http.response.timeout");
+            }
 
             if (!httpConf) {
                 httpConf = {
