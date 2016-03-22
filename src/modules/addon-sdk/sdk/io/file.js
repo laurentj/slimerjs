@@ -8,7 +8,7 @@ module.metadata = {
   "stability": "experimental"
 };
 
-const {Cc,Ci,Cr} = require("chrome");
+const {Cc,Ci,Cr,Cu} = require("chrome");
 const byteStreams = require("./byte-streams");
 const textStreams = require("./text-streams");
 
@@ -22,15 +22,12 @@ const OPEN_FLAGS = {
   EXCL: parseInt("0x80")
 };
 
-var dirsvc = Cc["@mozilla.org/file/directory_service;1"]
-             .getService(Ci.nsIProperties);
-
-var currentWorkingDirectory = dirsvc.get("CurWorkD", Ci.nsIFile);
+Cu.import('resource://slimerjs/slUtils.jsm');
 
 var _separator = '/';
 var isWin = false;
 
-if (currentWorkingDirectory instanceof Ci.nsILocalFileWin) {
+if (slUtils.workingDirectory instanceof Ci.nsILocalFileWin) {
   _separator = '\\';
   isWin = true;
 }
@@ -53,7 +50,7 @@ function MozFile(path) {
     file.initWithPath(path);
   }
   else {
-    file = currentWorkingDirectory.clone();
+    file = slUtils.workingDirectory.clone();
     file.appendRelativePath(path);
   }
 
@@ -64,12 +61,11 @@ function MozFile(path) {
 // but in phantomjs, it is a property. And we want to be compatible with
 // phantomjs
 Object.defineProperty(exports, "workingDirectory", {
-    get: function() { return currentWorkingDirectory.path; }
+    get: function() { return slUtils.workingDirectory.path; }
 });
 
 exports.changeWorkingDirectory = function changeWorkingDirectory(path) {
-    currentWorkingDirectory = MozFile(path);
-    dirsvc.set("CurWorkD", currentWorkingDirectory);
+    slUtils.workingDirectory = MozFile(path);
 }
 
 function ensureReadable(file) {
@@ -113,37 +109,57 @@ exports.exists = function exists(filename) {
 exports.isFile = function isFile(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isFile();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isFile();
 };
 
 exports.isDirectory = function isDirectory(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isDirectory();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isDirectory();
 };
 
 exports.isReadable = function isReadable(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isReadable();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isReadable();
 }
 
 exports.isWritable = function isWritable(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isWritable();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isWritable();
 }
 
 exports.isLink = function isLink(filename) {
   if (!filename)
     return false;
-  return MozFile(filename).isSymLink();
+  let file = MozFile(filename);
+  if (!file.exists()) {
+    return false;
+  }
+  return file.isSymLink();
 }
 
 exports.size = function size(filename) {
   if (!filename)
     return 0;
-  return MozFile(filename).fileSize();
+  return MozFile(filename).fileSize;
 }
 
 exports.lastModified = function lastModified(filename) {
@@ -463,7 +479,7 @@ exports.move = function move(sourceFileName, targetFileName) {
   sourceFile.moveTo(targetFile.parent, targetFile.leafName);
 }
 
-exports.touch = function move(path, date) {
+exports.touch = function touch(path, date) {
   var file = MozFile(path);
   var d;
   if (date)

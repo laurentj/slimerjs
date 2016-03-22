@@ -13,6 +13,8 @@ Cu.import('resource://slimerjs/slErrorLogger.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/slDebug.jsm');
+// to avoid issue on navigator object, see https://github.com/laurentj/slimerjs/issues/373
+Cu.import("resource://gre/modules/Webapps.jsm"); 
 
 var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
                       .getService(Ci.nsIHttpProtocolHandler)
@@ -30,7 +32,6 @@ var optionsSpec = {
     ignoreSslErrors : ['ignore-ssl-errors', 'bool', false, false],
     loadImages: ['load-images', 'bool', true, true],
     localToRemoteUrlAccessEnabled : ['local-to-remote-url-access', 'bool', false, false],
-    outputEncoding : ['output-encoding', 'encoding', 'UTF-8', false],
     proxyType : ['proxy-type', 'proxytype', 'http', true],
     proxy : ['proxy', 'proxy', null, true],
     proxyHost : ['', '', null, false],
@@ -38,7 +39,6 @@ var optionsSpec = {
     proxyAuth : ['proxy-auth', 'proxyauth', null, true],
     proxyAuthUser : ['', '', '', false],
     proxyAuthPassword : ['', '', '', false],
-    scriptEncoding : ['script-encoding', 'encoding', 'UTF-8', false],
     webSecurityEnabled : ['web-security', 'bool', true, false],
     offlineStoragePath : ['local-storage-path', 'file', '', false],
     offlineStorageDefaultQuota : ['local-storage-quota', 'int', -1, true],
@@ -263,10 +263,6 @@ var slConfiguration = {
 
     parse_file : function (val, cmdlineOpt) {
         // @TODO check if file exists ?
-        return val;
-    },
-
-    parse_encoding : function (val, cmdlineOpt) {
         return val;
     },
 

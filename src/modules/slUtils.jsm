@@ -14,9 +14,22 @@ const scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"].getService(C
 
 Cu.import("resource://gre/modules/Services.jsm");
 
-var slUtils = {};
+var dirsvc = Cc["@mozilla.org/file/directory_service;1"]
+             .getService(Ci.nsIProperties);
 
-const isWin = (Services.dirsvc.get("CurWorkD", Ci.nsIFile) instanceof Ci.nsILocalFileWin);
+var currentWorkingDirectory = dirsvc.get("CurWorkD", Ci.nsIFile);
+
+
+var slUtils = {
+    get workingDirectory() {
+        return currentWorkingDirectory;
+    },
+    set workingDirectory(dir) {
+        currentWorkingDirectory = dir;
+    }
+};
+
+const isWin = (currentWorkingDirectory instanceof Ci.nsILocalFileWin);
 
 function dumpo(obj, indent) {
     if (typeof obj != 'object') {
@@ -219,7 +232,8 @@ slUtils.getBrowserFromContentWindow = function getBrowserFromContentWindow(conte
                         .getInterface(Components.interfaces.nsIDOMWindow);
 
         */
-        var docShell = contentWin.top.QueryInterface(Ci.nsIInterfaceRequestor)
+        let win = ('top' in contentWin?contentWin.top:contentWin);
+        var docShell = win.QueryInterface(Ci.nsIInterfaceRequestor)
                          .getInterface(Ci.nsIWebNavigation)
                          .QueryInterface(Ci.nsIDocShell);
         return slUtils.getBrowserFromDocShell(docShell);

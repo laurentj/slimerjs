@@ -10,14 +10,10 @@ version 0.10.0
 
 Still in development
 
-New features
-------------
+New features and API
+---------------------
 
 - Experimental support of Webdriver, by using GhostDriver like phantomjs, to control SlimerJS from Selenium.
-
-New API
--------
-
 - ``webpage.render()`` can now generates PDF, BMP and ICO.
 - ``webpage.paperSize`` is supported (except its header and footer properties).
 - ``webpage.onLongRunningScript`` and ``webpage.stopJavascript()`` to allow to be informed of
@@ -30,6 +26,7 @@ Improvements
 - Exit code is now supported with ``slimer.exit()`` and ``phantom.exit()`` (except with slimerjs.bat)
 - ``require`` supports node modules (it searches into node_modules directories)
 - ``webpage.onConsoleMessage`` can receive additionnal parameters : level, function name and timestamp
+- Improved error handling that may appear in webpage listeners
 
 Fixed bugs
 ----------
@@ -37,16 +34,23 @@ Fixed bugs
 - Fixed configuration reading for script handlers (internal stuff)
 - Callback given to ``webpage.open()`` is now really called after the page loading:
   it allows to call ``render()`` without a delay (``setTimeout``...)
+- Fix error NS_ERROR_FACTORY_NOT_REGISTERED on navigator object (issue #373)
+- Fix webpage.render() on SVG document (issue #283)
 
 Fixed PhantomJS conformance issues
 ----------------------------------
 
 - a module should be able to call the ``return`` keyword
+- support additionnals arguments on ``webpage.evaluateAsync()``
 
 Other informations about this release
 -------------------------------------
 
-- XulRunner 40 is bundled into packages
+- Compatibility with Firefox 40 to Firefox 45.
+- Compatibility is no more guaranteed on Firefox having version lower than 38.
+- There are no anymore packages including XulRunner, the Firefox runtime, since
+  Mozilla has killed the XulRunner project. So you need to install Firefox
+  in order to run SlimerJS.
 
 
 Missing features in SlimerJS 0.10
@@ -72,7 +76,7 @@ Contributors for this release
 
 - Rémi Emonet (webpage.paperSize)
 - Dimitar Angelov (webpage.paperSize and other pdf options for webpage.render())
-
+- 
 
 Previous release notes
 ======================

@@ -40,19 +40,11 @@ if SLIMERJSLAUNCHER == "":
     POSSIBLE_PATH = []
 
     if sys.platform == "linux" or sys.platform == "linux2" or sys.platform == "darwin":
-        POSSIBLE_PATH.append(os.path.join(SLIMERJS_PATH, "xulrunner", "xulrunner"))
         path = which('firefox')
         if path != None:
             POSSIBLE_PATH.append(path)
-        path = which('xulrunner')
-        if path != None:
-            POSSIBLE_PATH.append(path)
     elif sys.platform == "win32":
-        POSSIBLE_PATH.append(os.path.join(SLIMERJS_PATH, "xulrunner", "xulrunner.exe"))
         path = which('firefox.exe')
-        if path != None:
-            POSSIBLE_PATH.append(path)
-        path = which('xulrunner.exe')
         if path != None:
             POSSIBLE_PATH.append(path)
         POSSIBLE_PATH.append(os.path.join(os.environ.get('programfiles'), "Mozilla Firefox", "firefox.exe"))
@@ -63,8 +55,8 @@ if SLIMERJSLAUNCHER == "":
             SLIMERJSLAUNCHER = path
             break
     if SLIMERJSLAUNCHER == "":
-        print('SLIMERJSLAUNCHER environment variable is missing and I don\'t find XulRunner or Firefox')
-        print('Set SLIMERJSLAUNCHER with the path to Firefox or XulRunner')
+        print('SLIMERJSLAUNCHER environment variable is missing and I don\'t find Firefox')
+        print('Set SLIMERJSLAUNCHER with the path to Firefox')
         sys.exit(1)
 else:
     if not os.path.exists(SLIMERJSLAUNCHER):
@@ -87,8 +79,6 @@ def showHelp():
     #print("  --local-to-remote-url-access=<bool>   Allows local content to access remote")
     #print("                                        URL (default is no)")
     print("  --max-disk-cache-size=<number>     Limits the size of the disk cache (in KB)")
-    #print("  --output-encoding=<enc>            Sets the encoding for the terminal output")
-    #print("                                     (default is 'utf8')")
     #print("  --remote-debugger-port=<number>    Starts the script in a debug harness and")
     #print("                                     listens on the specified port")
     #print("  --remote-debugger-autorun=<bool>   Runs the script in the debugger immediately")
@@ -98,8 +88,6 @@ def showHelp():
     print("                                     proxy")
     print("  --proxy-type=[http|socks5|none|auto|system|config-url]    Specifies the proxy type (default is http)")
     print("  --ssl-protocol=[SSLv3|TLSv1|TLSv1.0|TLSv1.1|TLSv1.2|TLS|any]   Indicates the ssl protocol to use.")
-    #print("  --script-encoding=<enc>            Sets the encoding used for the starting")
-    #print("                                     script (default is utf8)")
     #print("  --web-security=<bool>              Enables web security (default is yes)")
     print("  --version or v                     Prints out SlimerJS version")
     print("  --webdriver or --wd or -w          Starts in 'Remote WebDriver mode' (embedded")
@@ -167,7 +155,7 @@ else:
 os.environ.data['__SLIMER_ENV'] = LISTVAR
 os.environ.data['__SLIMER_ARGS'] = string.join(SYS_ARGS,' ')
 
-# launch slimerjs with firefox/xulrunner
+# launch slimerjs with firefox
 SLCMD = [ SLIMERJSLAUNCHER ]
 SLCMD.extend(["-app", os.path.join(SLIMERJS_PATH, "application.ini"), "-no-remote"])
 if sys.platform == "win32":

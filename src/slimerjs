@@ -23,30 +23,16 @@ fi
 # retrieve the path of a gecko launcher
 if [ "$SLIMERJSLAUNCHER" == "" ]
 then
-    if [ -f "$SLIMERDIR/xulrunner/xulrunner" ]
+    SLIMERJSLAUNCHER=`command -v firefox`
+    if [ "$SLIMERJSLAUNCHER" == "" ]
     then
-        SLIMERJSLAUNCHER="$SLIMERDIR/xulrunner/xulrunner"
-    else
-        if [ -f "$SLIMERDIR/xulrunner/xulrunner.exe" ]
+        # Try the Mac OSX global default application path
+        if [ -f "/Applications/Firefox.app/Contents/MacOS/firefox" ]
         then
-            SLIMERJSLAUNCHER="$SLIMERDIR/xulrunner/xulrunner.exe"
+            SLIMERJSLAUNCHER="/Applications/Firefox.app/Contents/MacOS/firefox"
         else
-            SLIMERJSLAUNCHER=`command -v firefox`
-            if [ "$SLIMERJSLAUNCHER" == "" ]
-            then
-                SLIMERJSLAUNCHER=`command -v xulrunner`
-                if [ "$SLIMERJSLAUNCHER" == "" ]
-                then
-                    # Try the Mac OSX global default application path
-                    if [ -f "/Applications/Firefox.app/Contents/MacOS/firefox" ]
-                    then
-                        SLIMERJSLAUNCHER="/Applications/Firefox.app/Contents/MacOS/firefox"
-                    else
-                        echo "SLIMERJSLAUNCHER environment variable is missing. Set it with the path to Firefox or XulRunner"
-                        exit 1
-                    fi
-                fi
-            fi
+            echo "SLIMERJSLAUNCHER environment variable is missing. Set it with the path to Firefox"
+            exit 1
         fi
     fi
 fi
@@ -73,8 +59,6 @@ function showHelp() {
     #echo "  --local-to-remote-url-access=<bool>   Allows local content to access remote"
     #echo "                                        URL (default is no)"
     echo "  --max-disk-cache-size=<number>     Limits the size of the disk cache (in KB)"
-    #echo "  --output-encoding=<enc>            Sets the encoding for the terminal output"
-    #echo "                                     (default is 'utf8')"
     #echo "  --remote-debugger-port=<number>    Starts the script in a debug harness and"
     #echo "                                     listens on the specified port"
     #echo "  --remote-debugger-autorun=<bool>   Runs the script in the debugger immediately"
@@ -83,8 +67,6 @@ function showHelp() {
     echo "  --proxy-auth=<username:password>   Provides authentication information for the"
     echo "                                     proxy"
     echo "  --proxy-type=[http|socks5|none|auto|system|config-url]    Specifies the proxy type (default is http)"
-    #echo "  --script-encoding=<enc>            Sets the encoding used for the starting"
-    #echo "                                     script (default is utf8)"
     echo "  --ssl-protocol=[SSLv3|TLSv1|TLSv1.0|TLSv1.1|TLSv1.2|TLS|any]   Indicates the ssl protocol to use."
     #echo "  --web-security=<bool>              Enables web security (default is yes)"
     echo "  --version or -v                    Prints out SlimerJS version"
@@ -172,7 +154,7 @@ export __SLIMER_ARGS="$@"
 export __SLIMER_ENV="$LISTVAR"
 export __SLIMER_EXITCODEFILE=`mktemp -q /tmp/slimerjs-exit-XXXXXXXX`
 
-# launch slimerjs with firefox/xulrunner
+# launch slimerjs with firefox
 if [ "$HIDE_ERRORS" == "Y" ]; then
     "$SLIMERJSLAUNCHER" -app "$SLIMERDIR/application.ini" $PROFILE -no-remote "$@" 2> /dev/null
 else

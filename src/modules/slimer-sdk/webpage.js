@@ -81,18 +81,21 @@ function _create(parentWebpageInfo) {
      * @param string file the file name associated to the source code
      */
     function evalInSandbox (src, file) {
-        if (!webPageSandbox)
+        if (!webPageSandbox) {
             webPageSandbox = new WeakMap();
+        }
         let win = getCurrentFrame();
-        if (!webPageSandbox.has(win))
+        if (!webPageSandbox.has(win)) {
             webPageSandbox.set(win, createSandBox(win));
+        }
         try {
             let res = Cu.evalInSandbox(src, webPageSandbox.get(win), 'ECMAv5', file, 1);
             // QWebFrame.evaluateJavascript() used by PhantomJS
             // always returns null when no value are returned by
             // the script.
-            if (res === undefined)
+            if (res === undefined) {
                 return null;
+            }
             return res;
         }
         catch(e) {
@@ -100,13 +103,16 @@ function _create(parentWebpageInfo) {
                 var err = getTraceException(e, '');
                 if (err[1]) {
                     err[1].forEach(function(item){
-                        if ('line' in item)
+                        if ('line' in item) {
                             item.line = parseInt(item.line);
+                        }
                         item.file = item.sourceURL;
                     })
                 }
-                else err[1] = [];
-                webpage.onError('Error: '+err[0], err[1]);
+                else {
+                    err[1] = [];
+                }
+                executePageListener(webpage, 'onError', ['Error: '+err[0], err[1]]);
                 return null;
             }
             else {
@@ -134,7 +140,13 @@ function _create(parentWebpageInfo) {
                     if (!Array.isArray(args)) {
                         args = Array.prototype.slice.call(args);
                     }
-                    webpage.onConsoleMessage(args.join(' '), consoleEvent.lineNumber, consoleEvent.filename, consoleEvent.level, consoleEvent.functionName, consoleEvent.timeStamp);
+                    executePageListener(webpage, 'onConsoleMessage', [
+                        args.join(' '),
+                        consoleEvent.lineNumber,
+                        consoleEvent.filename,
+                        consoleEvent.level,
+                        consoleEvent.functionName,
+                        consoleEvent.timeStamp]);
                     return
                 }
                 return;
@@ -246,8 +258,9 @@ function _create(parentWebpageInfo) {
                 // phantomjs call onInitialized not only at the page creation
                 // but also after the content loading.. don't know why.
                 // let's imitate it. Only after a success
-                if (success)
+                if (success) {
                     webpage.initialized();
+                }
             },
             onLoadFinished: function(url, success){
                 let channel = browser.docShell.currentDocumentChannel;
@@ -317,8 +330,9 @@ function _create(parentWebpageInfo) {
             }
             [childPage, win] = _create(parentWPInfo);
 
-            if (webpage.ownsPages)
+            if (webpage.ownsPages) {
                 privProp.childWindows.push(childPage);
+            }
 
             // call the callback
             webpage.rawPageCreated(childPage);
@@ -426,6 +440,37 @@ function _create(parentWebpageInfo) {
 
         return [webpage, win];
     }
+
+    function prepareJSEval(func, args) {
+
+        if (!(func instanceof Function
+              || typeof func === 'function'
+              || typeof func === 'string'
+              || func instanceof String)) {
+            return false;
+        }
+
+        let argsList = args.map(
+            function(arg){
+                  let type = typeof arg;
+                  switch(type) {
+                      case 'object':
+                          if (!arg || arg instanceof RegExp) {
+                              return ""+arg;
+                          }
+                      case 'array':
+                      case 'string':
+                          return JSON.stringify(arg);
+                      case "date":
+                          return "new Date(" + JSON.stringify(arg) + ")";
+                      default:
+                          return ""+arg
+                  }
+            });
+
+        return '('+func.toString()+').apply(this, [' + argsList.join(",") + ']);';
+    }
+
 
     // ----------------------------------- webpage
 
@@ -862,8 +907,8 @@ function _create(parentWebpageInfo) {
 
             let domWindowUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
                                     .getInterface(Ci.nsIDOMWindowUtils);
-            if (domWindowUtils.setCSSViewport) {
-                domWindowUtils.setCSSViewport(w,h);
+            if ('setCSSViewport' in domWindowUtils) {
+                domWindowUtils. setCSSViewport(w,h);
             }
             win.resizeTo(w,h);
             domWindowUtils.redraw(1);
@@ -1049,6 +1094,11 @@ function _create(parentWebpageInfo) {
         // -------------------------------- Javascript evaluation
 
         /**
+         * Evaluate the given function into the context of the web page content
+         * 
+         * @param function  func    the function to evaluate
+         * @param ...       args    arguments for the function
+         *
          * FIXME: modifying a variable in a sandbox
          * that inherits of the context of a window,
          * does not propagate the modification into
@@ -1059,33 +1109,14 @@ function _create(parentWebpageInfo) {
          * @see a solution used for the Firefox webconsole
          * https://hg.mozilla.org/mozilla-central/rev/f5d6c95a9de9#l6.374
          */
-        evaluate: function(func) {
+        evaluate: function(func, ...args) {
             if (!browser)
                 throw new Error("WebPage not opened");
 
-            if (!(func instanceof Function
-                  || typeof func === 'function'
-                  || typeof func === 'string'
-                  || func instanceof String)) {
+            let f = prepareJSEval(func, args);
+            if (f === false) {
                 throw new Error("Wrong use of WebPage#evaluate");
             }
-
-            let args = Array.prototype.slice.call(arguments).slice(1).map(
-                          function(arg){
-                                let type = typeof arg;
-                                switch(type) {
-                                    case 'object':
-                                        if (!arg || arg instanceof RegExp) {
-                                            return ""+arg;
-                                        }
-                                    case 'string':
-                                        return JSON.stringify(arg);
-                                    default:
-                                        return ""+arg
-                                }
-                          });
-
-            let f = '('+func.toString()+').apply(this, [' + args.join(",") + ']);';
             return evalInSandbox(f, 'phantomjs://webpage.evaluate()');
         },
 
@@ -1096,13 +1127,27 @@ function _create(parentWebpageInfo) {
             return evalInSandbox(src, 'phantomjs://webpage.evaluateJavaScript()');
         },
 
-        evaluateAsync: function(func) {
-            if (!browser)
+        /**
+         * @param function  func  the function to evaluate
+         * @param integer   timeMs  time to wait before execution
+         * @param ...       args    other args are arguments for the function
+         */
+        evaluateAsync: function(func, timeMs, ...args) {
+            if (!browser) {
                 throw new Error("WebPage not opened");
-            let f = '('+func.toSource()+')();';
+            }
+
+            let f = prepareJSEval(func, args);
+            if (f === false) {
+                throw new Error("Wrong use of WebPage#evaluateAsync");
+            }
+
+            if (timeMs == undefined) {
+                timeMs = 0;
+            }
             browser.contentWindow.setTimeout(function() {
                 evalInSandbox(f, 'phantomjs://webpage.evaluateAsync()');
-            }, 0)
+            }, timeMs)
         },
 
         includeJs: function(url, callback) {
@@ -1138,7 +1183,7 @@ function _create(parentWebpageInfo) {
             if (!browser) {
                 throw new Error("WebPage not opened");
             }
-            let f = slUtils.getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            let f = slUtils.getAbsMozFile(filename, slUtils.workingDirectory);
             if (!f.exists()) {
                 // filename resolved against the libraryPath property
                 f = slUtils.getAbsMozFile(filename, libPath);
@@ -1551,6 +1596,9 @@ function _create(parentWebpageInfo) {
                 return true;
             }
             catch(e) {
+                if (DEBUG_WEBPAGE) {
+                    dumpex(e);
+                }
                 return false;
             }
         },
@@ -1580,6 +1628,9 @@ function _create(parentWebpageInfo) {
                 return content;
             }
             catch(e) {
+                if (DEBUG_WEBPAGE) {
+                    dumpex(e);
+                }
                 return null;
             }
         },
@@ -1638,11 +1689,14 @@ function _create(parentWebpageInfo) {
         //This callback is invoked when the URL changes, e.g. as it navigates away from the current URL.
         onUrlChanged : null,
 
+        // Callback invoked when a file is downloaded .
+        onFileDownload : null,
+
+        onFileDownloadError: null,
+
         // -------------------------------- private methods to send some events
         closing:function (page) {
-            if (this.onClosing) {
-                this.onClosing(page);
-            }
+            executePageListener(this, 'onClosing', [page]);
         },
 
         initialized: function() {
@@ -1655,19 +1709,15 @@ function _create(parentWebpageInfo) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onInitialized");
             }
-
-            if (this.onInitialized)
-                this.onInitialized();
+            executePageListener(this, 'onInitialized');
         },
 
         javaScriptAlertSent: function(message) {
-            if (this.onAlert)
-                this.onAlert(message);
+            executePageListener(this, 'onAlert', [message]);
         },
 
         javaScriptConsoleMessageSent: function(message, lineNumber, fileName) {
-            if (this.onConsoleMessage)
-                onConsoleMessage(message, lineNumber, fileName);
+            executePageListener(this, 'onConsoleMessage', [message, lineNumber, fileName]);
         },
 
         loadFinished: function(status, url, isFrame) {
@@ -1676,8 +1726,7 @@ function _create(parentWebpageInfo) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onLoadFinished status:"+status+" url:"+url+" isFrame:"+isFrame);
             }
-            if (this.onLoadFinished)
-                this.onLoadFinished(status, url, isFrame);
+            executePageListener(this, 'onLoadFinished', [status, url, isFrame]);
         },
 
         loadStarted: function(url, isFrame) {
@@ -1685,8 +1734,7 @@ function _create(parentWebpageInfo) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onLoadStarted url:"+url+" isFrame:"+isFrame);
             }
-            if (this.onLoadStarted)
-                this.onLoadStarted(url, isFrame);
+            executePageListener(this, 'onLoadStarted', [url, isFrame]);
         },
 
         /**
@@ -1701,37 +1749,32 @@ function _create(parentWebpageInfo) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onNavigationRequested url:"+url+" navigationType:"+navigationType+" willNavigate:"+willNavigate+" isMainFrame:"+isMainFrame);
             }
-            if (this.onNavigationRequested)
-                this.onNavigationRequested(url, navigationType, willNavigate, isMainFrame)
+            executePageListener(this, 'onNavigationRequested', [url, navigationType, willNavigate, isMainFrame]);
         },
 
         rawPageCreated: function(page) {
-            if (this.onPageCreated)
-                this.onPageCreated(page);
+            executePageListener(this, 'onPageCreated', [page]);
         },
 
         resourceError: function(error) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onResourceError error:"+slDebugGetObject(error));
             }
-            if (this.onResourceError)
-                this.onResourceError(error);
+            executePageListener(this, 'onResourceError', [error]);
         },
 
         resourceReceived: function(request) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onResourceReceived request:"+slDebugGetObject(request, ['body']));
             }
-            if (this.onResourceReceived)
-                this.onResourceReceived(request);
+            executePageListener(this, 'onResourceReceived', [request])
         },
 
         resourceRequested: function(resource, request) {
             if (DEBUG_WEBPAGE_LOADING) {
                 slDebugLog("webpage: onResourceRequested resource:"+slDebugGetObject(resource));
             }
-            if (this.onResourceRequested)
-                this.onResourceRequested(resource, request);
+            executePageListener(this, 'onResourceRequested', [resource, request]);
         },
 
         urlChanged: function(url) {
@@ -1739,10 +1782,33 @@ function _create(parentWebpageInfo) {
                 slDebugLog("webpage: onUrlChanged url:"+url);
             }
             webPageSandbox = null;
-            if (this.onUrlChanged)
-                this.onUrlChanged(url);
+            executePageListener(this, 'onUrlChanged', [url]);
+        },
+
+        fileDownload : function(url, responseData) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onFileDownload "+url);
+            }
+            return executePageListener(this, 'onFileDownload', [url, responseData]);
+        },
+
+        fileDownloadError : function(message) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onFileDownloadError: "+message);
+            }
+            executePageListener(this, 'onFileDownloadError', [message]);
         }
     };
+
+    function executePageListener(page, listener, args) {
+        if (page[listener]) {
+            try {
+                return page[listener].apply(page, args);
+            } catch(e) {
+                console.log("Error "+listener+": ["+e.name+"] "+e.message+" ("+e.fileName+" ; line:"+e.lineNumber+" col:"+e.columnNumber+")");
+            }
+        }
+    }
 
     // initialization
     return openBlankBrowser(false);

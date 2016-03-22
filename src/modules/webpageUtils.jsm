@@ -203,7 +203,7 @@ var webpageUtils = {
         browser.userTypedClear++;
 
         if (!/^[a-z]+\:/i.test(uri) ) {
-            let f = slUtils.getAbsMozFile(uri, Services.dirsvc.get("CurWorkD", Ci.nsIFile));
+            let f = slUtils.getAbsMozFile(uri, slUtils.workingDirectory);
             uri = Services.io.newFileURI(f).spec;
         }
         try {
@@ -389,17 +389,27 @@ var webpageUtils = {
                         height:currentViewport.height
                         }
         }
-        else
+        else {
             givenClip = webpage.clipRect;
+        }
 
         // this clip size is at zoom = 1
         let clip = {top: 0, left: 0, width: 0, height: 0};
 
         // content size is the size at ratio=1
-        let contentWidth = Math.max(b.clientWidth, b.scrollWidth, b.offsetWidth,
-                                de.clientWidth, de.scrollWidth, de.offsetWidth);
-        let contentHeight = Math.max(b.clientHeight, b.scrollHeight, b.offsetHeight,
-                                de.clientHeight, de.scrollHeight, de.offsetHeight);
+        let contentWidth = 0;
+        let contentHeight = 0;
+
+        if (b) {
+            contentWidth = Math.max(b.clientWidth, b.scrollWidth, b.offsetWidth,
+                                    de.clientWidth, de.scrollWidth, de.offsetWidth);
+            contentHeight =Math.max(b.clientHeight, b.scrollHeight, b.offsetHeight,
+                                    de.clientHeight, de.scrollHeight, de.offsetHeight);
+        }
+        else { // b is undefined for non html document like svg
+            contentWidth = Math.max(de.clientWidth, de.scrollWidth, de.offsetWidth);
+            contentHeight = Math.max(de.clientHeight, de.scrollHeight, de.offsetHeight);
+        }
 
         if ((givenClip.top == 0 && givenClip.left == 0 && givenClip.width == 0 && givenClip.height == 0)) {
             clip.top = scrollY / ratio;

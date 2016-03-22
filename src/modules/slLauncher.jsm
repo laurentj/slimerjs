@@ -97,7 +97,7 @@ var slLauncher = {
             coffeeScriptSandbox = Cu.Sandbox(contentWindow,
                                 {
                                     sandboxName: 'coffeescript',
-                                    // XULrunner 40.0 and above handles sandboxPrototype different then before
+                                    // Firefox 40.0 and above handles sandboxPrototype different then before
                                     sandboxPrototype: versionComparator.compare(appInfo.platformVersion, '40') < 0 ? {} : contentWindow,
                                     wantXrays: true
                                 });

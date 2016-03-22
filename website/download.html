@@ -72,8 +72,7 @@
     <div class="row-fluid">
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
-          <li><a href="#standalone"><i class="icon-chevron-right"></i>The Standalone Edition</a></li>
-          <li><a href="#lightweight"><i class="icon-chevron-right"></i>The Lightweight Edition</a></li>
+          <li><a href="#lightweight"><i class="icon-chevron-right"></i>The official package</a></li>
           <li><a href="#linux"><i class="icon-chevron-right"></i>From your favorite package system</a></li>
           <li><a href="#betas"><i class="icon-chevron-right"></i>Preview versions</a></li>
         </ul>
@@ -81,114 +80,50 @@
 
       <div class="span9">
         <section>
-            <p><span class="slm">SlimerJS</span> runs on any platform on which Firefox or
-            XulRunner is available. XulRunner is the core of Firefox without its user
-            interface.</p>
+            <p><span class="slm">SlimerJS</span> runs on any platform on which Firefox is available.</p>
 
             <p>This download page offers you different way to install <span class="slm">SlimerJS</span>:</p>
             <ul>
-                <li>Install a package <strong><a href="#linux">from your favorite package
-                system</a></strong>. It will install all needed files. See known
-                repositories below.</li>
-                <li>Or download the <strong><a href="#standalone">Standalone Edition</a></strong>
-                of <span class="slm">SlimerJS</span>: this is a zip/gz package containing
-                SlimerJS and XulRunner. There is a package for each operating system.</li>
-                <li>Or download the <strong><a href="#lightweight">Lightweight Edition</a></strong>
+                <li>Install a package <strong><a href="#linux">from your favorite
+                package system</a></strong>. It will install all needed files.
+                See known repositories below.</li>
+                <li>Or download the <strong><a href="#lightweight">official package</a></strong>
                 of <span class="slm">SlimerJS</span>: this is a zip package containing
-                only SlimerJS and for all operating system. You have to install Firefox or
-                XulRunner separately and probably you'll need to set an environment
-                variable. <br/>This is the prefered way if:
-                <ul>
-                    <li>Firefox or XulRunner is already installed</li>
-                    <li>or you want to use it from <acronym title="Continuous
-                    Integrations">CI</acronym> Tools like <a
-                    href="https://travis-ci.org/">Travis</a></li>
-                    <li>or you want to use it with different versions of Gecko.</li>
-                </ul>
+                SlimerJS, that you can use with all operating system. You have
+                to install Firefox separately.
                 </li>
                 <li>Or do nothing if you want to use it <strong>in <a
                 href="https://www.codeship.io/">CodeShip</a></strong>.
                 <a href="https://twitter.com/codeship/status/363295664173613057">It's
                 available</a> on this continuous deployment platform.</li>
             </ul>
-            <p>SlimerJS is released under the
-            <a href="http://mozilla.org/MPL/2.0/">Mozilla Public Licence 2.0</a>
-            which is compatible with the Gnu Public Licence. This is a free software.</p>
+            <p>SlimerJS is released under the <a href="http://mozilla.org/MPL/2.0/">Mozilla
+            Public Licence 2.0</a> which is compatible with the Gnu Public Licence.
+            This is a free software.</p>
+
+            <p>Note: a "Standalone Edition" existed with version 0.9 and lower,
+            containing SlimerJS and XulRunner, the Firefox runtime. But Mozilla
+            cease to build XulRunner (latest release was 40.0) and even removed
+            the source code from the Firefox source trees. Starting with SlimerJS
+            0.10, you have to install Firefox to use it.</p>
         </section>
-
-        <section id="standalone">
-          <div class="page-header">
-            <h1 class="install">The Standalone Edition 0.9.6</h1>
-            <div><strong>Official &amp; supported packages</strong></div>
-          </div>
-          <p class="lead">
-            Download the zip or the gz package, extract files into a directory,
-            <span class="slm">SlimerJS</span> is ready.
-            </p>
-          <p>The following packages embed all needed binaries, including XulRunner powered
-            by Gecko 38.0 (So it have all HTML5/JS/CSS features of Firefox 38). See <a
-            href="http://docs.slimerjs.org/current/installation.html#launch">the
-            documentation to launch it</a>.</p>
-          <p>Note: you can <a href="checksum.html">verify files you downloaded</a> by checking their checksum.</p>
-
-         <div class="row-fluid">
-            <div class="span5">
-            <h2>For Linux x86_64</h2>
-            <p>This is the 64 bits version for Linux. (about 22 MB)</p>
-            <p><a class="btn" href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6-linux-x86_64.tar.bz2">Download</a><br/>
-            <a href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6-linux-x86_64.tar.bz2.asc">checksum</a></p>
-            </div>
-            <div class="span5">
-            <h2>For Linux i686</h2>
-            <p>This is the 32 bits version for Linux. (about 20 MB)</p>
-            <p><a class="btn" href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6-linux-i686.tar.bz2">Download</a><br/>
-            <a href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6-linux-i686.tar.bz2.asc">checksum</a></p>
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            <div class="span5">
-            <h2>For MacOS</h2>
-              <p>If you own a mac, probably you would prefer this package: (about 37 MB)</p>
-              <p><a class="btn" href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6-mac.tar.bz2">Download</a><br/>
-              <a href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6-mac.tar.bz2.asc">checksum</a></p>
-              <p>Note: this package includes Gecko 33, not 38, as youngest version of XulRunner are broken on Mac.
-              If you want to use SlimerJS with a recent version of Gecko, use SlimerJS
-              (Lightweight edition) with Firefox 38.</p>
-            </div>
-            <div class="span5">
-            <h2>For Windows</h2>
-            <p>If you develop with windows, choose this one. The 64bits version is not
-            available but this 32bits version should work with any version of Windows
-            (vista, 7, 8). (about 22 MB)</p>
-            <p><a class="btn" href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6-win32.zip">Download</a><br/>
-            <a href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6-win32.zip.asc">checksum</a></p>
-            </div>
-        </div>
-
-       </section>
 
         <section id="lightweight">
           <div class="page-header">
-            <h1 class="install">The Lightweight Edition 0.9.6</h1>
+            <h1 class="install">SlimerJS 0.10</h1>
             <div><strong>Official &amp; supported package</strong></div>
           </div>
-          <p class="lead">If you want to use <span class="slm">SlimerJS</span> with
-          differents version of Gecko/Firefox, or if you already have Firefox and you
-          don't want to download a big file, or if you want to install SlimerJS on
-          continuous integration environments <a href="https://travis-ci.org/">like Travis</a>,
-          <em>choose this package</em>. It is compatible with Firefox from 17.0 to
-          38.0.</p>
+          <p class="lead">It is compatible with Firefox from 38.0 to 44.0.</p>
           <p>Note: you can <a href="checksum.html">verify the file</a> by checking its checksum.</p>
 
           <p><a class="btn"
-          href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6.zip">Download</a>
+          href="http://download.slimerjs.org/releases/0.10.0/slimerjs-0.10.0.zip">Download</a>
           (about 470 KB)<br/>
-            <a href="http://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6.zip.asc">checksum</a></p>
+            <a href="http://download.slimerjs.org/releases/0.10.0/slimerjs-0.10.0.zip.asc">checksum</a></p>
 
           <p>This package needs additionnal setup actions</p>
           <ul>
-                <li>You must install XulRunner or Firefox separately</li>
+                <li>You must install Firefox separately</li>
                 <li>Launching SlimerJS requires additionnal setup actions.
                 See the <a href="http://docs.slimerjs.org/current/installation.html#setup">documentation</a>.</li>
           </ul>
@@ -197,16 +132,8 @@
             <div class="span5">
             <h2>Firefox</h2>
             <p>The Famous Web Browser. <span class="slm">SlimerJS</span> needs only its
-            core engine to be executed. Prefered version: 25.0 to 38.0.</p>
+            core engine to be executed. Prefered version: 38.0 to 44.0.</p>
             <p><a class="btn" href="http://getfirefox.com">Download</a></p>
-            </div>
-            <div class="span5">
-            <h2>Xulrunner</h2>
-            <p>XulRunner is a software that contains only the core engine of
-              Firefox and which can launch an application like <span
-              class="slm">SlimerJS</span>, made with Mozilla technologies (XUL, XPCom...).
-              Prefered version: 25.0 to 38.0.</p>
-            <p><a class="btn" href="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/38.0/runtimes/">Download</a></p>
             </div>
         </div>
         </section>
@@ -221,9 +148,17 @@
           <p class="lead">This is probably the prefered way if you use a package system.
           Here are known repositories from where <span class="slm">SlimerJS</span> can be
           installed.<br>
-          <strong>Note that the version proposed in these repositories could not be the
-          latest stable one</strong>. SlimerJS's developer is not responsible of these respositories.
-          If something goes wrong with them, see first with the package owner.</p>
+
+          <p><strong style="color:red">Warnings</strong>: </p>
+          <ul>
+            <li>The version proposed in these repositories may not be the
+                latest stable one</li>
+            <li>SlimerJS's developer is <strong>not responsible</strong> of
+            these packages and their content.</li>
+            <li>If something goes wrong with these packages, <strong>contact the
+            package owner <em>first</em></strong>, not the SlimerJS's developer.</li>
+          </ul>
+          
 
             <div class="row-fluid">
                 <div class="span5">
@@ -241,7 +176,7 @@
                 <p><a href="http://brew.sh/">This package system for OS X</a> has a formula
                 to install SlimerJS. Type in a console:</p>
                 <pre><code>brew install slimerjs</code></pre>
-                <p>You have to install XulRunner or Firefox separately and set the
+                <p>You have to install Firefox separately and set the
                 SLIMERJSLAUNCHER environment variable. See
                 <a href="http://docs.slimerjs.org/current/installation.html#configuring-slimerjs">the
                 documentation to set it</a>.</p>
@@ -268,6 +203,21 @@
                     available here</a>.
                    </p>
                 </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span5">
+                <h2>Nuget</h2>
+                    <p>For Windows user, you can use <a href="https://www.nuget.org/">Nuget</a>
+                      to download and install SlimerJS. See packages
+                      <a href="https://www.nuget.org/packages/SlimerJS/">SlimerJS</a>
+                      or <a href="https://www.nuget.org/packages/NetSlimerJS/">NetSlimerJS</a>.
+                   </p>
+                    <pre><code>PM> Install-Package SlimerJS </code></pre>
+                </div>
+                <!--<div class="span5">
+                <h2></h2>
+                    <p></p>
+                </div>-->
             </div>
             <hr/>
           <p>For others distributions, your contribution is welcomed ;-). Or tell us if
@@ -314,7 +264,7 @@
               <a href="https://github.com/laurentj/slimerjs/issues"><img class="imgbtn" src="assets/img/bug_bleu.png"> Bug ? Ideas !</a>
             </li>
           </ul>
-          <p>Copyright 2013-2015 Laurent Jouanneau / Innophi - Design by <a href="http://www.3liz.com/">3Liz</a></p>
+          <p>Copyright 2013-2016 Laurent Jouanneau / <a href="http://innophi.com">Innophi</a> - Design by <a href="http://www.3liz.com/">3Liz</a></p>
       </div>
     </footer>
 

@@ -22,7 +22,7 @@ can be executed with SlimerJS!
 SlimerJS is not only a PhantomJS clone, it contains also [additional features](http://slimerjs.org/features.html).
 
 Technically, SlimerJS is a XUL/JS application that is launched with
-XULRunner (or optionaly with any recent version of Firefox).
+Firefox.
 
 # Community
 

@@ -139,7 +139,7 @@ var phantom = {
         }
 
         // resolve the filename against the current working directory
-        let f = slUtils.getAbsMozFile(filename, Services.dirsvc.get("CurWorkD", Components.interfaces.nsIFile));
+        let f = slUtils.getAbsMozFile(filename, slUtils.workingDirectory);
         if (!f.exists()) {
             // filename resolved against the libraryPath property
             f = slUtils.getAbsMozFile(filename, libPath);

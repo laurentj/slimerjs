@@ -32,21 +32,31 @@ var slimerEnv = this;
 var fs = require("fs");
 var system = require("system");
 var onlywebserver = false;
+var URLUtils = null;
+if ("slimer" in this) {
+    URLUtils = require("sdk/url");
+}
 
 if (system.args.length == 2) {
     if (system.args[1] == '--only-web-servers' || system.args[1] == '--only-web-server') {
         onlywebserver = true;
     }
-    else
+    else {
+        phantom.injectJs("./network-utils.js");
         phantom.injectJs("./test-"+system.args[1]+".js");
+    }
 }
 else {
+    phantom.injectJs("./network-utils.js");
     phantom.injectJs("./test-environment.js");
     phantom.injectJs("./test-require.js");
     phantom.injectJs("./test-system.js");
     phantom.injectJs("./test-webserver.js");
     phantom.injectJs("./test-webpage.js");
     phantom.injectJs("./test-webpage-listeners.js");
+    phantom.injectJs("./test-webpage-loading-files.js");
+    phantom.injectJs("./test-webpage-net-httpcodes.js");
+    phantom.injectJs("./test-webpage-net-redirections.js");
     phantom.injectJs("./test-webpage-keyevent.js");
     phantom.injectJs("./test-webpage-keyevent2.js");
     phantom.injectJs("./test-webpage-mouseevent.js");

@@ -1,4 +1,18 @@
 
+How to fill an issue
+====================
+
+When you find a bug in SlimerJS, and post an issue on github, please:
+
+- Indicate which version of SlimerJS you are using, on which operating system
+  you execute it, and if you are using Firefox with SlimerJS, which version of Firefox.
+- Saying only "it doesn't work", is not a valid report. Please describe how the issue
+  has appeared, what are the error messages, what it is displayed. etc. Execute
+  SlimerJS with `--debug=true` to see more messages.
+- Explain how to reproduce it, with the most minimal code. More your example
+  will be tiny, more there is chance that the bug will be fixed quickly.
+
+
 How to contribute to SlimerJS
 =============================
 
@@ -42,8 +56,8 @@ Run unit tests!
 ---------------
 
 You don't need to create package of SlimerJS to use it and to test it.
-Just call the script *src/slimerjs*. If it does not find Firefox or XulRunner, indicate
-the path of Firefox or XulRunner into a SLIMERJSLAUNCHER environment variable
+Just call the script *src/slimerjs*. If it does not find Firefox, indicate
+the path of Firefox into a SLIMERJSLAUNCHER environment variable
 (see the installation chapter in the documentation).
 
 Unit tests are scripts that tests almost all features of SlimerJS. If you make

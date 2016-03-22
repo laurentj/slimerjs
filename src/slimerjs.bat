@@ -76,20 +76,14 @@ FOR %%A IN (%*) DO (
 )
 
 if not exist "%SLIMERJSLAUNCHER%" (
-    if exist "%SLIMERDIR%\xulrunner\xulrunner.exe" (
-        SET "SLIMERJSLAUNCHER=%SLIMERDIR%\xulrunner\xulrunner.exe"
-    )
-)
-if not exist "%SLIMERJSLAUNCHER%" (
     call :findFirefox
 )
 if not exist "%SLIMERJSLAUNCHER%" (
     echo SLIMERJSLAUNCHER environment variable is missing or the path is invalid.
-    echo Set it with the path to Firefox or xulrunner.
+    echo Set it with the path to Firefox.
     echo "The current value of SLIMERJSLAUNCHER is: %SLIMERJSLAUNCHER%"
     REM %% escapes the percent sign so it displays literally
     echo SET "SLIMERJSLAUNCHER=%%programfiles%%\Mozilla Firefox\firefox.exe"
-    echo SET "SLIMERJSLAUNCHER=%%programfiles%%\XULRunner\xulrunner.exe"
     pause
     exit 1
 )
@@ -127,9 +121,9 @@ if ["%CREATETEMP%"]==["Y"] (
 
 IF EXIST "%__SLIMER_EXITCODEFILE%" (
     set /p EXITCODE=< "%__SLIMER_EXITCODEFILE%"
-    del "%__SLIMER_EXITCODEFILE%"
-    EXIT %EXITCODE%
+    del /F "%__SLIMER_EXITCODEFILE%"
 )
+EXIT %EXITCODE%
 
 ENDLOCAL
 
@@ -158,8 +152,6 @@ REM    echo   --ignore-ssl-errors=^<bool^>       Ignores SSL errors (default is 
 REM    echo   --local-to-remote-url-access=[yes^|no] Allows local content to access remote
 REM    echo                                         URL (default is no)
     echo   --max-disk-cache-size=^<number^>     Limits the size of the disk cache (in KB)
-REM    echo   --output-encoding=^<enc^>            Sets the encoding for the terminal output
-REM    echo                                      (default is 'utf8')
 REM    echo   --remote-debugger-port=^<number^>    Starts the script in a debug harness and
 REM    echo                                      listens on the specified port
 REM    echo   --remote-debugger-autorun=^<bool^> Runs the script in the debugger immediately
@@ -168,8 +160,6 @@ REM    echo                                      (default is no)
     echo   --proxy-auth=^<username:password^>   Provides authentication information for the
     echo                                      proxy
     echo   --proxy-type=[http^|socks5^|none^|auto^|system^|config-url]    Specifies the proxy type (default is http)
-REM    echo   --script-encoding=^<enc^>            Sets the encoding used for the starting
-REM    echo                                      script (default is utf8)
 REM    echo   --web-security=^<bool^>            Enables web security (default is yes)
     echo   --ssl-protocol=^<version^>         Indicates the ssl protocol to use. SSLv3, TLSv1, TLSv1.0, TLSv1.1, TLSv1.2, TLS, any
     echo   --version or v                     Prints out SlimerJS version
@@ -195,6 +185,11 @@ REM    echo   --web-security=^<bool^>            Enables web security (default i
     echo   -profile path                      Use the profile stored in the specified
     echo                                      directory, to execute the script
     echo By default, SlimerJS use a temporary profile
+    echo
+    echo If an option does not work, try to set the option like that
+    echo    -<option> <value>
+    echo instead of
+    echo    --<option>=<value>
     echo.
 goto :eof
 

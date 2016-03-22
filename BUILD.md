@@ -6,9 +6,8 @@ of your platform. This is a convenient way to develop SlimerJS.
 
 However, distributed packages should be built for releases.
 
-Call the buildpackage.sh script to build these packages. Works only on an unix system
-(Linux and probably MacOS), but build packages for all system. It download the
-xulrunner binaries and create `*.tar.gz` and `*.zip` packages.
+Call the buildpackage.sh script to build these packages. Works only on an
+unix system (Linux and probably MacOS)
 
 Experimental
 ------------

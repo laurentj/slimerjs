@@ -10,8 +10,8 @@ Go to [http://slimerjs.org] to know more and to access to the documentation
 # Install
 
 - Install [Firefox](http://getfirefox.com),
-  or [XulRunner](http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0.2/runtimes/) (both version 18 or more)
-- [Download the latest package](http://download.slimerjs.org/slimerjs-0.5RC1.zip) or
+  or [XulRunner](http://archive.mozilla.org/pub/xulrunner/releases/38.0.6/runtimes/) (both version 18 or more)
+- [Download the latest package](https://download.slimerjs.org/releases/0.9.6/slimerjs-0.9.6.zip) or
   [the source code of SlimerJS](https://github.com/laurentj/slimerjs/archive/master.zip) if you didn't it yet
 - On windows, a .bat is provided, but you can also launch slimer from a "true" console. In this case, you should install
   [Cygwin](http://www.cygwin.com/) or any other unix environment to launch slimerjs.

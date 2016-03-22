@@ -193,6 +193,40 @@ describe("WebPage.evaluate()", function(){
     });
 });
 
+describe("WebPage.evaluateAsync()", function(){
+    var webpage;
+    var url = "http://127.0.0.1:8083/inject.html";
+
+    var async = new AsyncSpec(this);
+    async.it("open a web page",function(done) {
+        webpage = require("webpage").create();
+        webpage.open(url, function(success){
+            expect(success).toEqual("success");
+            done();
+        });
+    });
+
+    async.it("launch evaluateAsync", function(done){
+        webpage.evaluateAsync(function(theVar){
+            window.pageVariable2 = theVar;
+        }, 500, "foo");
+
+        setTimeout(done, 700);
+    });
+
+    async.it("can modify a window variable", function(done){
+        var pageVariableValue2 = webpage.evaluate(function(){
+            try {
+                return getPageVariable2();
+            }catch(e) {
+                return 'not found';
+            }
+        })
+        expect(pageVariableValue2).toEqual("foo");
+        webpage.close();
+        done();
+    });
+});
 
 describe("WebPage.injectJs()", function(){
     var webpage;
