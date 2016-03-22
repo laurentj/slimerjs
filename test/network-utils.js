@@ -120,6 +120,9 @@ var networkUtils = {
                 this.receivedRequest[response.id] = { req:null, start:null, end:null, err:null}
             }
             this.receivedRequest[response.id].err = response;
+            if (this.traceResources) {
+                this.trace +="RES ERROR "+response.errorCode+" - "+response.url+"\n";
+            }
         };
 
         this.webpage.onLoadFinished = (status, url) => {
@@ -137,7 +140,9 @@ var networkUtils = {
     searchRequest : function (url, tests, min) {
         min = min || 0
         let listR = this.receivedRequest.filter(function(result, i) {
-            if (i < min || result == undefined || result == null || !('req' in result)) {
+            if (i < min || result == undefined ||
+                result == null || !('req' in result) ||
+                result.req == null) {
                 return false;
             }
             return (result.req.url == url);
@@ -170,7 +175,8 @@ var networkUtils = {
     searchMissedRequest: function(url, min) {
         min = min || 0
         let listR = this.receivedRequest.filter(function(result, i) {
-            if (i < min || result == undefined || result == null || !('req' in result)) {
+            if (i < min || result == undefined || result == null ||
+                !('req' in result) || result.req == null) {
                 return false;
             }
             return (result.req.url == url);

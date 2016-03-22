@@ -35,8 +35,8 @@ the ``phantom`` object. They will be used for every web page object.
 
 .. code-block:: javascript
     
-    phantom.settings.userName = "mylogin";
-    phantom.settings.password = "mypassword";
+    phantom.defaultPageSettings.userName = "mylogin";
+    phantom.defaultPageSettings.password = "mypassword";
 
 
 .. container:: warning
@@ -86,6 +86,27 @@ The callback accepts four arguments:
 The callback should return ``true`` if it accepts to authenticate, else
 ``false``.
 
+By http headers
+---------------
+
+Uername and password given by settings or by a callback will be used only
+after an response having an ``HTTP 401 Unauthorized`` status. If you want to avoid
+this response, according to the `http authentication <https://en.wikipedia.org/wiki/Basic_access_authentication>`_
+you can send directly the username and the password , via
+an http header you'll give to `webpage.open()`.
+
+
+.. code-block:: javascript
+    
+    var hash = window.btoa(username + ':'+ password);
+    webpage.open(url, { headers:
+                    {
+                      'Authorization': 'Basic '+hash
+                    }
+    })
+
+
+See `webpage.open() <../api/webpage.html#webpage-open>`_  documentation for details about parameters.
 
 In case of bad authentication
 -----------------------------

@@ -20,16 +20,36 @@ var defaultSettings = null;
 
 var phantom = {
 
+    /**
+     * deprecated
+     */
     get args (){
         return slConfiguration.args.slice(1);
     },
 
+    /**
+     * deprecated
+     */
     get scriptName (){
         return slConfiguration.args[0];
     },
 
     get page () {
         throw new Error("phantom.page not implemented. Irrelevant for Slimerjs");
+    },
+
+    /**
+     * @notimplemented
+     */
+    get outputEncoding() {
+        return 'UTF-8';
+    },
+
+    /**
+     * @notimplemented
+     */
+    set outputEncoding(val) {
+        
     },
 
     // ------------------------  cookies
@@ -103,6 +123,7 @@ var phantom = {
      * @param integer code the exit code for the shell console. 0 means ok (default value)
      * @phantomcompatibilityissue
      * @internal to resolve the issue, we should provide our own patched xulrunner
+     * @fixme in "debug mode", phantomjs does not really exit
      */
     exit : function(code) {
         let c = +code || 0;
@@ -114,6 +135,10 @@ var phantom = {
         Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
     },
 
+    debugExit : function(code) {
+        this.exit(code);
+    },
+    
     /**
      * the path where injected script could be find
      * @var string
@@ -187,7 +212,8 @@ var phantom = {
         onError : 'rw',
         defaultErrorHandler : 'r',
         defaultPageSettings : 'r',
-        webdriverMode: 'r'
+        webdriverMode: 'r',
+        outputEncoding: 'rw'
     }
 }
 

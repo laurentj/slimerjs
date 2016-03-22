@@ -19,6 +19,9 @@ New features and API
 - ``webpage.onLongRunningScript`` and ``webpage.stopJavascript()`` to allow to be informed of
    webpage having long running scripts (compatible with Phantomjs 2)
 - ``phantom.webdriverMode``
+- Implementation of ``system.stdin`` and ``system.stderr``. And ``system.stdout``
+  is now a true output stream.
+- Implementation of ``stream.atEnd`` and ``stream.readLine()``
 
 Improvements
 ------------
@@ -34,14 +37,22 @@ Fixed bugs
 - Fixed configuration reading for script handlers (internal stuff)
 - Callback given to ``webpage.open()`` is now really called after the page loading:
   it allows to call ``render()`` without a delay (``setTimeout``...)
+
 - Fix error NS_ERROR_FACTORY_NOT_REGISTERED on navigator object (issue #373)
 - Fix webpage.render() on SVG document (issue #283)
+- Fix support of webpage.captureContent (issue #397) 
 
 Fixed PhantomJS conformance issues
 ----------------------------------
 
 - a module should be able to call the ``return`` keyword
 - support additionnals arguments on ``webpage.evaluateAsync()``
+- Callback given to ``webpage.open()`` is now called when the url is invalid
+- Like in PhantomJS 2.0, ``phantom.args`` and ``phantom.scriptName`` are deprecated
+- webpage.viewportSize should accept strings as values (#313)
+- webpage.clipRect should accept object with missing properties (#314)
+- On windows, system.os.version matches now public version number, not internal
+  version number (#344)
 
 Other informations about this release
 -------------------------------------

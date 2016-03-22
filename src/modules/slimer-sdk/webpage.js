@@ -8,7 +8,7 @@ Cu.import('resource://slimerjs/slLauncher.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import('resource://slimerjs/slConsole.jsm');
 Cu.import('resource://slimerjs/slConfiguration.jsm');
-Cu.import('resource://slimerjs/phantom.jsm');
+Cu.import('resource://slimerjs/slimer-sdk/phantom.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import('resource://slimerjs/slPhantomJSKeyCode.jsm');
@@ -232,7 +232,9 @@ function _create(parentWebpageInfo) {
             onError:  function(err) {
                 webpage.resourceError(err);
             },
-            captureTypes: webpage.captureContent,
+            getCaptureTypes: function() {
+                return webpage.captureContent;
+            },
             onLoadStarted: function(url){
                 if (wycywigReg.test(url)) {
                     return;
@@ -699,8 +701,15 @@ function _create(parentWebpageInfo) {
          */
         openUrl: function(url, httpConf, settings, callback) {
 
-            if (settings)
+            if (settings) {
                 this.settings = settings;
+            }
+            if (this.settings.resourceTimeout) {
+                Services.prefs.setIntPref("network.http.response.timeout", privProp.settings.resourceTimeout);
+            }
+            else {
+                Services.prefs.clearUserPref("network.http.response.timeout");
+            }
 
             if (!httpConf) {
                 httpConf = {
@@ -730,8 +739,53 @@ function _create(parentWebpageInfo) {
                 return result;
             });
 
-            var options = getNetLoggerOptions(this, deferred, this.customHeaders);
+            let options = getNetLoggerOptions(this, deferred, this.customHeaders);
 
+            let loadUri = function() {
+                netLog.registerBrowser(browser, options);
+                try {
+                    webpageUtils.browserLoadURI(browser, url, httpConf);
+                }
+                catch(e) {
+                    // we simulate PhantomJS behavior on url errors
+                    options.onLoadStarted('');
+                    options.onURLChanged('about:blank');
+                    if (e.message == 'NS_ERROR_UNKNOWN_PROTOCOL') {
+                        options.onRequest({
+                            id: 1,
+                            method: httpConf.operation,
+                            url: url,
+                            time: new Date(),
+                            headers: (('headers' in httpConf)?httpConf.headers:[])
+                            }, null
+                        );
+                        options.onError({id: 1,
+                            url: url,
+                            errorCode:301,
+                            errorString:"Protocol is unknown"
+                        });
+                        options.onResponse( {
+                            id: 1,
+                            url: url,
+                            time: new Date(),
+                            headers: [],
+                            bodySize: 0,
+                            contentType: null,
+                            contentCharset: null,
+                            redirectURL: null,
+                            stage: "end",
+                            status: null,
+                            statusText: null,
+                            // Extensions
+                            referrer: "",
+                            isFileDownloading : false,
+                            body: ""
+                        });
+                    }
+                    options.onLoadFinished(url, "fail");
+                }
+            }
+            
             if (DEBUG_WEBPAGE)
                 slDebugLog("webpage: openUrl "+url+" conf:"+slDebugGetObject(httpConf));
 
@@ -741,8 +795,7 @@ function _create(parentWebpageInfo) {
                     browserJustCreated = false;
                 }
                 // don't recreate a browser if already opened.
-                netLog.registerBrowser(browser, options);
-                webpageUtils.browserLoadURI(browser, url, httpConf);
+                loadUri();
                 return deferred.promise;
             }
 
@@ -754,8 +807,7 @@ function _create(parentWebpageInfo) {
                 me.initialized();
                 browserJustCreated = false;
                 browser.authAttempts = 0;
-                netLog.registerBrowser(browser, options);
-                webpageUtils.browserLoadURI(browser, url, httpConf);
+                loadUri();
             }, null, privProp.viewportSize);
             // to catch window.open()
             win.QueryInterface(Ci.nsIDOMChromeWindow)
@@ -891,11 +943,20 @@ function _create(parentWebpageInfo) {
             if (typeof val != "object")
                 throw new Error("Bad argument type");
 
+            val = heritage.mix({width:privProp.viewportSize.width,
+                               height:privProp.viewportSize.height}, val);
             let w = val.width || privProp.viewportSize.width;
             let h = val.height || privProp.viewportSize.height;
 
-            if (w < 0 || h < 0)
+            if (typeof w != "number") {
+                w = parseInt(w, 10);
+            }
+            if (typeof h != "number") {
+                h = parseInt(h, 10);
+            }
+            if (w < 0 || h < 0) {
                 return;
+            }
 
             privProp.viewportSize.width = w;
             privProp.viewportSize.height = h;
@@ -1514,7 +1575,8 @@ function _create(parentWebpageInfo) {
                 },
             }
             if (typeof(value) === "object") {
-                privProp.clipRect = validateOptions(value, requirements);
+                privProp.clipRect = heritage.mix({top:0, left:0, width:0, height:0},
+                                                 validateOptions(value, requirements));
             } else {
                 privProp.clipRect = null;
             }

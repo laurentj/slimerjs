@@ -27,6 +27,20 @@ function ByteReader(inputStream) {
 
   let manager = new StreamManager(this, stream);
 
+  let eof = false;
+  let readSpecialFile = function (data, stream, read, numBytes) {
+      try {
+        while (read < numBytes) {
+          data += stream.readBytes(1);
+          read ++;
+        }
+      } catch(e) {
+        eof = true;
+      }
+    return data;
+  }
+
+  
   this.read = function ByteReader_read(numBytes) {
     manager.ensureOpened();
     if (typeof(numBytes) !== "number")
@@ -36,10 +50,21 @@ function ByteReader(inputStream) {
     let read = 0;
     try {
       while (true) {
-        let avail = stream.available();
-        let toRead = Math.min(numBytes - read, avail, BUFFER_BYTE_LEN);
-        if (toRead <= 0)
+        let avail = 0;
+        try {
+          avail = stream.available();
+        } catch(e) {
+          // on special file, like /dev/stdin, available() fails.
+          // let's use an other method (which may be lower)
+          data = readSpecialFile(data, stream, read, numBytes);
           break;
+        }
+
+        let toRead = Math.min(numBytes - read, avail, BUFFER_BYTE_LEN);
+        if (toRead <= 0) {
+          eof = true;
+          break;
+        }
         data += stream.readBytes(toRead);
         read += toRead;
       }
@@ -47,9 +72,12 @@ function ByteReader(inputStream) {
     catch (err) {
       throw new Error("Error reading from stream: " + err);
     }
-
     return data;
   };
+
+  this.atEnd = function() {
+    return eof;
+  }
 }
 
 function ByteWriter(outputStream) {

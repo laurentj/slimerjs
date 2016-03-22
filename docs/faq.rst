@@ -58,3 +58,15 @@ the same gecko version).
 
 You can speak with us about rendering issues, on the mailing list.
 
+PDF Rendering
+=============
+
+On linux, PDF rendering hangs SlimerJS
+---------------------------------------
+
+Verify that Cups is installed and is running. The environment variable
+CUPS_SERVER can also prevents to produce PDF. It seems that removing it
+solves the issue sometimes.
+
+
+

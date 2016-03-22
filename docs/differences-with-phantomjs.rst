@@ -61,6 +61,8 @@ Network
   SlimerJS (Gecko) create a request, then cancels it and create a second request, so
   your ``onResponseReceive`` is called for the two requests.. PhantomJS just reuse the
   same request.
+- If the url given to webpage.open() is malformed, PhantomJS calls the callback
+  with "success" whereas SlimerJS calls it with "fail"
 
 In the API
 -----------

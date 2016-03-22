@@ -213,8 +213,22 @@ var webpageUtils = {
                                      postStream,
                                      headersStream);
         }catch(e) {
-            // if content is not loaded because of navigation locked,
-            // we have an exception;
+            // we have an exception when:
+            // - the navigation locked, 0x805e0006 (<unknown>)
+            // - the uri is malformed 0x80004005 (NS_ERROR_FAILURE)
+            // - the protocol is unknown 0x804b0012 (NS_ERROR_UNKNOWN_PROTOCOL)
+            
+            let match = /nsresult: "0x([a-f0-9]+) \(([^\)]+)\)/.exec(e.toString());
+            if (match) {
+                if (match[1] != "805e0006") {
+                    let err = new Error(match[2])
+                    throw err;
+                }
+            }
+            else {
+                let err = new Error("UNKNOWN");
+                throw err;
+            }
         } finally {
             if (browser.userTypedClear)
                 browser.userTypedClear--;

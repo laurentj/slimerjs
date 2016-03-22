@@ -369,8 +369,11 @@ describe("webpage with network listeners", function() {
         expectedTrace += "INITIALIZED 1\n";
         expectedTrace += "RES REQUESTED http://localhost:8083/hello.js\n";
         expectedTrace += "RES REQUESTED http://localhost:8083/slimerjs.png\n";
+        expectedTrace += "RES ERROR 95 - http://localhost:8083/slimerjs.png\n";
         expectedTrace += "    ABORTED http://localhost:8083/slimerjs.png\n";
+        expectedTrace += "RES ERROR 99 - http://localhost:8083/slimerjs.png\n";
         expectedTrace += "RES REQUESTED http://localhost:8083/helloframe.html\n";
+        expectedTrace += "RES ERROR 99 - http://localhost:8083/slimerjs.png\n";
         expectedTrace += "RES RECEIVED end - http://localhost:8083/slimerjs.png\n";
         expectedTrace += "RES RECEIVED start - http://localhost:8083/hello.js\n";
         expectedTrace += "RES REQUESTED http://localhost:8083/hello.txt\n";
@@ -378,7 +381,10 @@ describe("webpage with network listeners", function() {
         expectedTrace += "RES RECEIVED start - http://localhost:8083/helloframe.html\n";
         expectedTrace += "RES RECEIVED end - http://localhost:8083/helloframe.html\n";
         expectedTrace += "RES REQUESTED http://localhost:8083/helloframe.css\n";
+        expectedTrace += "RES ERROR 95 - http://localhost:8083/helloframe.css\n";
         expectedTrace += "    ABORTED http://localhost:8083/helloframe.css\n";
+        expectedTrace += "RES ERROR 99 - http://localhost:8083/helloframe.css\n";
+        expectedTrace += "RES ERROR 99 - http://localhost:8083/helloframe.css\n";
         expectedTrace += "RES RECEIVED end - http://localhost:8083/helloframe.css\n";
         //expectedTrace += "RES RECEIVED start - http://localhost:8083/hello.txt\n";
         //expectedTrace += "RES RECEIVED end - http://localhost:8083/hello.txt\n";
@@ -413,7 +419,220 @@ describe("webpage with network listeners", function() {
     });
 
 
+
+    async.it("should open missingresource.html",function(done) {
+        networkUtils.reset();
+
+        networkUtils.init();
+        networkUtils.webpage.open(domain + 'missingresource.html', function(success){
+            networkUtils.trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("success");
+            done();
+        });
+    });
+
+    async.it("should generate the expected trace", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        if (URLUtils) expectedTrace += "  loading url=http://localhost:8083/missingresource.html\n";
+        expectedTrace += "URLCHANGED:http://localhost:8083/missingresource.html\n";
+        expectedTrace += "INITIALIZED 1\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/missingresource.html - 2 success\n";
+        if (URLUtils) expectedTrace += "  loaded url=http://localhost:8083/missingresource.html\n";
+        expectedTrace += "CALLBACK:success\n";
+        expect(networkUtils.trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should have received missignresource.html", function(done){
+        networkUtils.searchRequest(domain + 'missingresource.html', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect(r.err).toBeNull();
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(200);
+            expect(r.start.statusText).toEqual('OK');
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual('OK');
+            expect(r.start.contentType).toEqual("text/html");
+            expect(r.end.contentType).toEqual("text/html");
+        });
+        done();
+    });
+
+    async.it("should not have received missing.css", function(done){
+        networkUtils.searchRequest(domain + 'missing.css', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect(r.err).toNotBe(null);
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(404);
+            expect(r.start.statusText).toEqual('Not Found');
+            expect(r.end.status).toEqual(404);
+            expect(r.end.statusText).toEqual('Not Found');
+            expect(r.start.contentType).toEqual("text/html");
+            expect(r.end.contentType).toEqual("text/html");
+            expect((r.err.id == r.start.id) && (r.err.id == r.end.id)).toBeTruthy();
+            expect((r.err.url == r.start.url) && (r.err.url == r.end.url)).toBeTruthy();
+            expect(r.err.errorCode).toEqual(203);
+        });
+        done();
+    });
+
+    async.it("is opening a new page with an invalid url",function(done) {
+        networkUtils.reset();
+        networkUtils.init();
+        networkUtils.traceResources = true;
+        networkUtils.webpage.open('http://:slimerjs.org', function(success){
+            networkUtils.trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("fail");
+            done();
+        });
+    });
+    async.it("should generate the expected trace for the error page", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "URLCHANGED:about:blank\n";
+        expectedTrace += "LOADFINISHED:about:blank - 1 fail\n";
+        if (URLUtils) expectedTrace += "  loaded url=http://:slimerjs.org\n";
+        expectedTrace += "CALLBACK:fail\n";
+        expect(networkUtils.trace).toEqual(expectedTrace);
+        expect(networkUtils.receivedRequest.length).toEqual(0);
+        done();
+    });
+
+    async.it("is opening a new page with an url having a unknown protocol",function(done) {
+        networkUtils.reset();
+        networkUtils.init();
+        networkUtils.traceResources = true;
+        networkUtils.webpage.open('hsttp://slimerjs.org', function(success){
+            networkUtils.trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("fail");
+            done();
+        });
+    });
+    async.it("should generate the expected trace for the error page", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        expectedTrace += "URLCHANGED:about:blank\n";
+        expectedTrace += "RES REQUESTED hsttp://slimerjs.org\n";
+        expectedTrace += "RES ERROR 301 - hsttp://slimerjs.org\n";
+        expectedTrace += "RES RECEIVED end - hsttp://slimerjs.org\n";
+        expectedTrace += "LOADFINISHED:about:blank - 1 fail\n";
+        if (URLUtils) expectedTrace += "  loaded url=hsttp://slimerjs.org\n";
+        expectedTrace += "CALLBACK:fail\n";
+        expect(networkUtils.trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should not have received error page", function(done){
+        networkUtils.searchRequest('hsttp://slimerjs.org', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toBeNull();
+            expect(r.end).toNotBe(null);
+            expect(r.err).toNotBe(null);
+            expect(r.req.id).toEqual(r.end.id);
+            expect(r.req.id).toEqual(r.err.id);
+            expect(r.req.url).toEqual(r.end.url);
+            expect(r.req.url).toEqual(r.err.url);
+            expect(r.req.method).toEqual("get");
+            expect(r.end.status).toBeNull();
+            expect(r.end.statusText).toBeNull();
+            expect(r.end.contentType).toBeNull();
+            expect(r.err.errorCode).toEqual(301);
+        });
+        done();
+    });
+
+    async.it("should open direct content",function(done) {
+        networkUtils.reset();
+
+        networkUtils.init();
+        networkUtils.traceResources = true;
+        
+        var content = "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">\n"
+            +"        <title>content #1</title>\n"
+            +"        <script type='text/javascript' src='"+domain+"nothing.js'></script></head>\n"
+            +"    <body><div>content set with setContent <img src='"+domain+"glouton-home.png'/></div></body>";
+        var url = 'http://slimerjs.org/foo.html';
+        networkUtils.webpage.captureContent =  [ /\/javascript$/ ];
+        networkUtils.webpage.setContent(content, url);
+        done();
+    });
+
+    async.it("should generate the expected trace", function(done){
+        var expectedTrace = ""
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        if (URLUtils) expectedTrace += "  loading url=http://slimerjs.org/foo.html\n";
+        expectedTrace += "URLCHANGED:http://slimerjs.org/foo.html\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/nothing.js\n";
+        expectedTrace += "INITIALIZED 0\n";
+        expectedTrace += "RES RECEIVED start - http://localhost:8083/nothing.js\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/nothing.js\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/glouton-home.png\n";
+        expectedTrace += "RES RECEIVED start - http://localhost:8083/glouton-home.png\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/glouton-home.png\n";
+        expectedTrace += "LOADFINISHED:http://slimerjs.org/foo.html - 1 success\n";
+        if (URLUtils) expectedTrace += "  loaded url=http://slimerjs.org/foo.html\n";
+        expect(networkUtils.trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should not have received foo.html", function(done){
+        networkUtils.searchMissedRequest('http://slimerjs.org/foo.html');
+        done();
+    });
+
+    async.it("should have received nothing.js with body content", function(done){
+        networkUtils.searchRequest(domain + 'nothing.js', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect(r.err).toBeNull();
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(200);
+            expect(r.start.statusText).toEqual('OK');
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual('OK');
+            expect(r.start.contentType).toEqual("text/javascript");
+            expect(r.end.contentType).toEqual("text/javascript");
+            expect(r.end.body).toEqual("function nothing() { }");
+        });
+        done();
+    });
+
+    async.it("should have received png without body content", function(done){
+        networkUtils.searchRequest(domain + 'glouton-home.png', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect(r.err).toBeNull();
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(200);
+            expect(r.start.statusText).toEqual('OK');
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual('OK');
+            expect(r.start.contentType).toEqual("image/png");
+            expect(r.end.contentType).toEqual("image/png");
+            expect(r.end.body).toEqual("");
+        });
+        done();
+    });
     async.it("test end", function(done){
+        networkUtils.traceResources = false;
         networkUtils.reset();
         done();
     });
