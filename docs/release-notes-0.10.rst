@@ -30,6 +30,7 @@ Improvements
 - ``require`` supports node modules (it searches into node_modules directories)
 - ``webpage.onConsoleMessage`` can receive additionnal parameters : level, function name and timestamp
 - Improved error handling that may appear in webpage listeners
+- ``fs.open()`` now supports special files (/dev/std*, fifo files...) 
 
 Fixed bugs
 ----------
@@ -46,6 +47,7 @@ Fixed bugs
   the CommonJS Filesystem specification. An optional second parameter is supported:
   set it to true to returns the extension without a dot, like in previous SlimerJS
   version.
+
 
 
 Fixed PhantomJS conformance issues
