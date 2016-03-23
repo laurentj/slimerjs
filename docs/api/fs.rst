@@ -92,14 +92,14 @@ returns a Date object of the last modified time of the file.
 read(path, mode)
 -------------------
 
-Documentation needed
+Shorthand for open(path,mode).read().
 
 .. _fs-write:
 
 write(path, content, mode)
 ---------------------------
 
-Documentation needed
+Shorthand for open(path,mode).write(content).
 
 .. _fs-separator:
 
@@ -120,53 +120,52 @@ Takes a variable number of strings, joins them on the file system's path separat
 split(path)
 -------------------
 
-Documentation needed
+Returns an array of path components from a path.
 
 .. _fs-directory:
 
 directory(path)
 -------------------
 
-Documentation needed
+Returns path with the last path component removed.
 
 .. _fs-dirname:
 
 dirname(path)
 -------------------
 
-Documentation needed
+Deprecated, use directory() instead.
 
-deprecated.
 
 .. _fs-base:
 
 base(path)
 -------------------
 
-Documentation needed
+Returns the final component of a path.
 
 .. _fs-basename:
 
 basename(path)
 -------------------
 
-Documentation needed
-
-Deprecated
+Deprecated, use base() instead.
 
 .. _fs-absolute:
 
 absolute(path)
 -------------------
 
-Documentation needed
+Returns the absolute path of a given path, resolving any components 
+"." or ".." and replacing multiple separators with single separators.  
+Does not resolve Unix symbolic links.
 
 .. _fs-extension:
 
 extension(path)
 -------------------
 
-Documentation needed
+returns the extension of a file. The extension of a file is the last dot (excluding any number of initial dots) followed by one or more non-dot characters. Returns an empty string if no valid extension exists.
 
 .. _fs-list:
 
@@ -184,9 +183,9 @@ Returns a stream providing access to the contents of a file.
 
 mode is an optional string, each character of which describes a characteristic of the returned stream.
 
- * If the string contains "r", the file is opened in read-only mode.
- * "w" opens the file in write-only mode.
- * "b" opens the file in binary mode. If "b" is not present, the file is
+* If the string contains "r", the file is opened in read-only mode.
+* "w" opens the file in write-only mode.
+* "b" opens the file in binary mode. If "b" is not present, the file is
     opened in text mode, and its contents are assumed to be UTF-8.
 
 
@@ -202,16 +201,16 @@ Removes a file from the file system. To remove directories, use rmdir.
 makeDirectory(path)
 --------------------
 
-Documentation needed
+Create a single directory specified by path. If the directory cannot be 
+created for any reason an exception will be thrown. This includes if the 
+parent directories of "path" are not present. 
 
 .. _fs-mkpath:
 
 mkpath(path)
 -------------------
 
-Documentation needed
-
-Deprecated.
+Deprecated. Use makeDirectory(path)
 
 .. _fs-removeDirectory:
 
