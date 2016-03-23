@@ -40,7 +40,13 @@ Fixed bugs
 
 - Fix error NS_ERROR_FACTORY_NOT_REGISTERED on navigator object (issue #373)
 - Fix webpage.render() on SVG document (issue #283)
-- Fix support of webpage.captureContent (issue #397) 
+- Fix support of webpage.captureContent (issue #397)
+- fs.extension() did not return the extension for simple filename (#447)
+- fs.extension() did return the extension without a dot: that didn't respect
+  the CommonJS Filesystem specification. An optional second parameter is supported:
+  set it to true to returns the extension without a dot, like in previous SlimerJS
+  version.
+
 
 Fixed PhantomJS conformance issues
 ----------------------------------
