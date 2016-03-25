@@ -30,6 +30,7 @@ Improvements
 - ``require`` supports node modules (it searches into node_modules directories)
 - ``webpage.onConsoleMessage`` can receive additionnal parameters : level, function name and timestamp
 - Improved error handling that may appear in webpage listeners
+- ``fs.open()`` now supports special files (/dev/std*, fifo files...) 
 
 Fixed bugs
 ----------
@@ -40,7 +41,14 @@ Fixed bugs
 
 - Fix error NS_ERROR_FACTORY_NOT_REGISTERED on navigator object (issue #373)
 - Fix webpage.render() on SVG document (issue #283)
-- Fix support of webpage.captureContent (issue #397) 
+- Fix support of webpage.captureContent (issue #397)
+- fs.extension() did not return the extension for simple filename (#447)
+- fs.extension() did return the extension without a dot: that didn't respect
+  the CommonJS Filesystem specification. An optional second parameter is supported:
+  set it to true to returns the extension without a dot, like in previous SlimerJS
+  version.
+
+
 
 Fixed PhantomJS conformance issues
 ----------------------------------

@@ -299,11 +299,11 @@ exports.absolute = function base(path) {
     return p[0];
 }
 
-exports.extension = function extension(path) {
-  var leafName = exports.base(path);
-  var m = leafName.match(/\.([^\.]+)$/);
-  if (m)
-    return m[1];
+exports.extension = function extension(path, withoutdot) {
+  var m = path.match(/\.([^\.]+)$/);
+  if (m) {
+    return (withoutdot?m[1]:'.'+m[1]);
+  }
   return '';
 };
 

@@ -5,7 +5,7 @@ fs
 
 Documentation not complete. Please help us to fill this page :-)
 
-This module implements the file system API specified in CommonJS.
+This module implements `the file system API specified in CommonJS <http://wiki.commonjs.org/wiki/Filesystem>`_.
 
 This module is mostly copied from the `Mozilla Add-on SDK's io/file module. 
 <https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs/io_file>`_ 
@@ -28,7 +28,7 @@ This property contains the current working directory.
 It cannot be set. Use changeWorkingDirectory.
 
 Note: in CommonJS, it is defined as a method, but in phantomjs, it is a property.
-So this is a property ot be compatible with phantomjs.
+So this is a property to be compatible with phantomjs.
 
 
 .. _fs-exists:
@@ -129,20 +129,21 @@ directory(path)
 
 Returns path with the last path component removed.
 
+Not implemented in PhantomJS <=2.1 at least.
+
 .. _fs-dirname:
 
 dirname(path)
 -------------------
 
-Deprecated, use directory() instead.
-
+Deprecated, use directory() instead. Not implemented in PhantomJS
 
 .. _fs-base:
 
 base(path)
 -------------------
 
-Returns the final component of a path.
+Returns the final component of a path. Not implemented in PhantomJS <=2.1 at least.
 
 .. _fs-basename:
 
@@ -150,6 +151,7 @@ basename(path)
 -------------------
 
 Deprecated, use base() instead.
+Not implemented in PhantomJS.
 
 .. _fs-absolute:
 
@@ -162,10 +164,28 @@ Does not resolve Unix symbolic links.
 
 .. _fs-extension:
 
-extension(path)
--------------------
+extension(path, withoutdot)
+----------------------------
 
-returns the extension of a file. The extension of a file is the last dot (excluding any number of initial dots) followed by one or more non-dot characters. Returns an empty string if no valid extension exists.
+It returns a dot following by the part of the path after the last dot.
+
+The method accept a non standard second parameters, a boolean indicating
+if you want the extension without the dot character (true) or not.
+
+.. code-block:: javascript
+
+    fs.extension("file.txt"); // returns ".txt"
+    fs.extension("file.txt", true); // returns "txt"
+
+
+.. container:: warning
+
+    In SlimerJS 0.9.6 and lower, this method return always the extension without
+    the dot, which is not the result as expected by the CommonJS Filesystem
+    specification.
+
+
+Not implemented in PhantomJS <=2.1 at least.
 
 .. _fs-list:
 
@@ -205,12 +225,20 @@ Create a single directory specified by path. If the directory cannot be
 created for any reason an exception will be thrown. This includes if the 
 parent directories of "path" are not present. 
 
+.. _fs-makeTree:
+
+makeTree(path)
+--------------------
+
+Documentation needed
+
+
 .. _fs-mkpath:
 
 mkpath(path)
 -------------------
 
-Deprecated. Use makeDirectory(path)
+Deprecated. Use makeDirectory(path). Not implemented in PhantomJS.
 
 .. _fs-removeDirectory:
 
@@ -233,6 +261,8 @@ rmdir(path)
 
 Deprecated. Use removeDirectory.
 
+Not implemented in PhantomJS.
+
 .. _fs-copy:
 
 copy(source, target)
@@ -254,7 +284,9 @@ Documentation needed
 rename(path, newname)
 ---------------------
 
-Documentation needed
+Documentation needed.
+
+Not implemented in PhantomJS <=2.1 at least.
 
 
 .. _fs-move:

@@ -1622,7 +1622,7 @@ function _create(parentWebpageInfo) {
             let file = fs.absolute(filename);
 
             try {
-                let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file));
+                let finalOptions = webpageUtils.getScreenshotOptions(this, options, fs.extension(file, true));
                 if (finalOptions.format == 'pdf') {
                     let printOptions = webpageUtils.getPrintOptions(this, browser.contentWindow, file, finalOptions);
                     if (printOptions === null) {
