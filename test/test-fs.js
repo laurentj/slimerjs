@@ -26,4 +26,16 @@ describe("fs module", function() {
         s.close();
         expect(str).toEqual(content+"\n");
     });
+
+    it("can extract extension", function(){
+        var ext = fs.extension(phantom.libraryPath+'/fs/test.txt');
+        expect(ext).toEqual(".txt");
+        ext = fs.extension('test.hop');
+        expect(ext).toEqual(".hop");
+        ext = fs.extension('test.hop', true);
+        expect(ext).toEqual("hop");
+    });
+
+
+
 });

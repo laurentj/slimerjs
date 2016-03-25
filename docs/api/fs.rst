@@ -5,7 +5,7 @@ fs
 
 Documentation not complete. Please help us to fill this page :-)
 
-This module implements the file system API specified in CommonJS.
+This module implements `the file system API specified in CommonJS <http://wiki.commonjs.org/wiki/Filesystem>`_.
 
 
 .. _fs-changeWorkingDirectory:
@@ -25,7 +25,7 @@ This property contains the current working directory.
 It cannot be set. Use changeWorkingDirectory.
 
 Note: in CommonJS, it is defined as a method, but in phantomjs, it is a property.
-So this is a property ot be compatible with phantomjs.
+So this is a property to be compatible with phantomjs.
 
 
 .. _fs-exists:
@@ -126,21 +126,25 @@ directory(path)
 
 Documentation needed
 
+Not implemented in PhantomJS <=2.1 at least.
+
 .. _fs-dirname:
 
 dirname(path)
 -------------------
 
-Documentation needed
+Documentation needed.
 
-deprecated.
+deprecated. Not implemented in PhantomJS
 
 .. _fs-base:
 
 base(path)
 -------------------
 
-Documentation needed
+Documentation needed.
+
+Not implemented in PhantomJS <=2.1 at least.
 
 .. _fs-basename:
 
@@ -149,7 +153,7 @@ basename(path)
 
 Documentation needed
 
-Deprecated
+Deprecated. Not implemented in PhantomJS.
 
 .. _fs-absolute:
 
@@ -160,10 +164,28 @@ Documentation needed
 
 .. _fs-extension:
 
-extension(path)
--------------------
+extension(path, withoutdot)
+----------------------------
 
-Documentation needed
+It returns a dot following by the part of the path after the last dot.
+
+The method accept a non standard second parameters, a boolean indicating
+if you want the extension without the dot character (true) or not.
+
+.. code-block:: javascript
+
+    fs.extension("file.txt"); // returns ".txt"
+    fs.extension("file.txt", true); // returns "txt"
+
+
+.. container:: warning
+
+    In SlimerJS 0.9.6 and lower, this method return always the extension without
+    the dot, which is not the result as expected by the CommonJS Filesystem
+    specification.
+
+
+Not implemented in PhantomJS <=2.1 at least.
 
 .. _fs-list:
 
@@ -193,6 +215,14 @@ makeDirectory(path)
 
 Documentation needed
 
+.. _fs-makeTree:
+
+makeTree(path)
+--------------------
+
+Documentation needed
+
+
 .. _fs-mkpath:
 
 mkpath(path)
@@ -200,7 +230,7 @@ mkpath(path)
 
 Documentation needed
 
-Deprecated.
+Deprecated. Not implemented in PhantomJS.
 
 .. _fs-removeDirectory:
 
@@ -223,7 +253,7 @@ rmdir(path)
 
 Documentation needed
 
-Deprecated.
+Deprecated. Not implemented in PhantomJS.
 
 .. _fs-copy:
 
@@ -246,7 +276,9 @@ Documentation needed
 rename(path, newname)
 ---------------------
 
-Documentation needed
+Documentation needed.
+
+Not implemented in PhantomJS <=2.1 at least.
 
 
 .. _fs-move:
