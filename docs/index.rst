@@ -41,6 +41,7 @@ Modules
    api/system
    api/webserver
    api/fs
+   api/js-standard
 
 Indices and tables
 ==================

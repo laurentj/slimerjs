@@ -3,7 +3,7 @@
 require
 =======
 
-``require()`` is the function to load a module. See :doc:`the manuel </script-execution>` to know more about modules. 
+``require()`` is the function to load a module. See :doc:`the manual </script-execution>` to know more about modules. 
 
 You should indicate the name of a module (file name without the extension). The module
 loader tries to load the module from the directory of the main script, and from directories
