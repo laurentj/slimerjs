@@ -434,7 +434,7 @@ TracingListener.prototype = {
         // browser could have been removed during request
         // or for file downloading, there are no browser
         let browser = getBrowserForRequest(request);
-        if ((!browser || !browserMap.has(browser)) && !isFileDownloaded) {
+        if ((!browser || !browserMap.has(browser)) && !isFileDownloaded && DEBUG_NETWORK_PROGRESS) {
             slDebugLog("network: resource #"+this.response.id+" response -> NO BROWSER IN MAP");
             return;
         }
