@@ -79,9 +79,7 @@ function handle_request(request, response) {
         // Parse url.
         var targetUrl = request.url.substring(i + 4);
         // decode any special chars etc.
-        console.log("target1:" + targetUrl);
         targetUrl = decodeURIComponent(targetUrl);
-        console.log("target2:" + targetUrl);
         return make_screenshot(request, response, targetUrl);
     }
     

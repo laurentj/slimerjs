@@ -1122,7 +1122,7 @@ See the ``render()`` function.
 renderBytes(options)
 -----------------------------------------
 
-This method takes a screenshot of the web page and returns it as a binary string? containing the
+This method takes a screenshot of the web page and returns it as a "binary string" containing the
 image data in the specified format. 
 
 The options object is the same as in ``render()``.
