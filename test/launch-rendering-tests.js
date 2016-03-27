@@ -36,6 +36,7 @@ var system = require("system");
 
 phantom.injectJs("./test-webpage-render-segfault.js");
 phantom.injectJs("./test-webpage-render.js");
+phantom.injectJs("./test-webpage-render-bytes.js");
 
 phantom.injectJs("./webserver-for-tests.js");
 

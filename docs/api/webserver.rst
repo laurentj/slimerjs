@@ -294,6 +294,8 @@ setEncoding(encoding)
 
 Allows to indicate the encoding of the response content (``UTF-8`` etc).
 
+The special value "binary" allows output of binary data without corruption,
+e.g. from a binary array.
 
 .. _response-writeHead:
 

@@ -18,6 +18,8 @@ describe("WebPage.render() segmentation faults", function(){
 
         waitsFor(function(){ return loaded;}, 60000);
         runs(function() {
+            // Clipping - to avoid failure on extremely large page.
+            webpage.clipRect = { top:0, left: 0, width:1200, height:1200 };
             webpage.renderBase64("jpg");
             webpage.close();
             return true;

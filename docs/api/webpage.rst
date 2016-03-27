@@ -83,6 +83,7 @@ Rendering:
 
 :ref:`render() <webpage-render>`,
 :ref:`renderBase64() <webpage-renderBase64>`
+:ref:`renderBytes() <webpage-renderBytes>`
 
 
 Content management:
@@ -1115,6 +1116,16 @@ You can limit the area to capture by setting the ``clipRect`` property.
 
 Instead of giving the format, you can give an object containing options (SlimerJS only).
 See the ``render()`` function.
+
+.. _webpage-renderBytes:
+
+renderBytes(options)
+-----------------------------------------
+
+This method takes a screenshot of the web page and returns it as a "binary string" containing the
+image data in the specified format. 
+
+The options object is the same as in ``render()``.
 
 .. _webpage-sendEvent:
 
