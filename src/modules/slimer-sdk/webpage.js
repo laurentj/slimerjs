@@ -229,6 +229,9 @@ function _create(parentWebpageInfo) {
             onResponse:  function(res) {
                 webpage.resourceReceived(res);
             },
+            onTimeout : function(res) {
+                webpage.resourceTimeout(res);
+            },
             onError:  function(err) {
                 webpage.resourceError(err);
             },
@@ -265,7 +268,6 @@ function _create(parentWebpageInfo) {
                 }
             },
             onLoadFinished: function(url, success){
-                let channel = browser.docShell.currentDocumentChannel;
                 if (wycywigReg.test(url)) {
                     return;
                 }
@@ -506,7 +508,7 @@ function _create(parentWebpageInfo) {
             - XSSAuditingEnabled defines whether load requests should be monitored for cross-site scripting attempts (defaults to false).
             - webSecurityEnabled defines whether web security should be enabled or not (defaults to true).
             - maxAuthAttempts: integer
-            - resourceTimeout: integer
+            - resourceTimeout: integer, in milliseconds. warning, it is converted into seconds
             - javascriptCanOpenWindows
             - javascriptCanCloseWindows
             Note: The settings apply only during the initial call to the WebPage#open function. Subsequent modification of the settings object will not have any impact.
@@ -703,12 +705,6 @@ function _create(parentWebpageInfo) {
 
             if (settings) {
                 this.settings = settings;
-            }
-            if (this.settings.resourceTimeout) {
-                Services.prefs.setIntPref("network.http.response.timeout", privProp.settings.resourceTimeout);
-            }
-            else {
-                Services.prefs.clearUserPref("network.http.response.timeout");
             }
 
             if (!httpConf) {
@@ -1744,6 +1740,8 @@ function _create(parentWebpageInfo) {
 
         onResourceError : null,
 
+        onResourceTimeout : null,
+
         onResourceRequested : null,
 
         onResourceReceived : null,
@@ -1823,6 +1821,13 @@ function _create(parentWebpageInfo) {
                 slDebugLog("webpage: onResourceError error:"+slDebugGetObject(error));
             }
             executePageListener(this, 'onResourceError', [error]);
+        },
+
+        resourceTimeout: function(error) {
+            if (DEBUG_WEBPAGE_LOADING) {
+                slDebugLog("webpage: onResourceTimeout error:"+slDebugGetObject(error));
+            }
+            executePageListener(this, 'onResourceTimeout', [error]);
         },
 
         resourceReceived: function(request) {

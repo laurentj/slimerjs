@@ -18,6 +18,7 @@ New features and API
 - ``webpage.paperSize`` is supported (except its header and footer properties).
 - ``webpage.onLongRunningScript`` and ``webpage.stopJavascript()`` to allow to be informed of
    webpage having long running scripts (compatible with Phantomjs 2)
+- Support of ``webpage.onResourceTimeout`` and ``webpage.settings.resourceTimeout``
 - ``phantom.webdriverMode``
 - Implementation of ``system.stdin`` and ``system.stderr``. And ``system.stdout``
   is now a true output stream.

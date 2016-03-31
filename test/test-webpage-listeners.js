@@ -40,6 +40,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -59,6 +60,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -78,6 +80,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -97,6 +100,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -116,6 +120,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -149,6 +154,7 @@ describe("webpage with network listeners", function() {
                 expect(r.start).toNotBe(null);
                 expect(r.end).toNotBe(null);
                 expect(r.err).toBeNull();
+                expect(r.timeout).toBeNull();
                 expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
                 expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
                 expect(r.req.method).toEqual("GET");
@@ -198,6 +204,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -240,6 +247,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toNotBe(null);
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -283,6 +291,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toBeNull();
             expect(r.end).toNotBe(null);
             expect(r.err).toNotBe(null);
+            expect(r.timeout).toBeNull();
             expect(r.end.contentType).toBeNull()
             expect(r.end.redirectURL).toBeNull()
             expect(r.end.status).toBeNull()
@@ -327,6 +336,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toBeNull();
             expect(r.end).toNotBe(null);
             expect(r.err).toNotBe(null);
+            expect(r.timeout).toBeNull();
             expect(r.req.id == r.end.id).toBeTruthy();
             expect(r.end.url).toEqual("http://localhost:8083/simplehello.html");
             expect(r.req.method).toEqual("GET");
@@ -451,6 +461,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -470,6 +481,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toNotBe(null);
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -540,6 +552,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toBeNull();
             expect(r.end).toNotBe(null);
             expect(r.err).toNotBe(null);
+            expect(r.timeout).toBeNull();
             expect(r.req.id).toEqual(r.end.id);
             expect(r.req.id).toEqual(r.err.id);
             expect(r.req.url).toEqual(r.end.url);
@@ -598,6 +611,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -618,6 +632,7 @@ describe("webpage with network listeners", function() {
             expect(r.start).toNotBe(null);
             expect(r.end).toNotBe(null);
             expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
             expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
             expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
             expect(r.req.method).toEqual("GET");
@@ -631,6 +646,66 @@ describe("webpage with network listeners", function() {
         });
         done();
     });
+
+    async.it("should support resource timeout",function(done) {
+        networkUtils.reset();
+
+        networkUtils.init();
+        networkUtils.traceResources = true;
+        networkUtils.webpage.settings.resourceTimeout = 1000;
+        networkUtils.webpage.open(domain + 'timeouttest', function(success){
+            networkUtils.trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("fail");
+            done();
+        });
+    });
+    
+
+    async.it("timeout should generate the expected trace", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        if (URLUtils) expectedTrace += "  loading url=http://localhost:8083/timeouttest\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/timeouttest\n";
+        //expectedTrace += "URLCHANGED:http://localhost:8083/timeouttest\n";
+        //expectedTrace += "INITIALIZED 1\n";
+        expectedTrace += "RES ERROR 5 - http://localhost:8083/timeouttest\n";
+        expectedTrace += "RES TIMEOUT 408 - http://localhost:8083/timeouttest\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/timeouttest\n";
+        expectedTrace += "LOADFINISHED:http://localhost:8083/timeouttest - undefined fail\n";
+        if (URLUtils) expectedTrace += "  loaded url=http://localhost:8083/timeouttest\n";
+        expectedTrace += "CALLBACK:fail\n";
+        expect(networkUtils.trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should have received timeouttest in error", function(done){
+        networkUtils.searchRequest(domain + 'timeouttest', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toBeNull();
+            expect(r.end).toNotBe(null);
+            expect(r.err).toNotBe(null);
+            expect(r.timeout).toNotBe(null);
+            expect(r.req.id).toEqual(r.end.id);
+            expect(r.req.url).toEqual(r.end.url);
+            expect(r.req.method).toEqual("GET");
+            expect(r.end.status).toBeNull();
+            expect(r.end.statusText).toBeNull();
+            expect(r.end.contentType).toBeNull();
+            expect(r.err.id).toEqual(r.req.id);
+            expect(r.err.url).toEqual(r.req.url);
+            expect(r.err.errorCode).toEqual(5);
+            expect(r.err.errorString).toEqual("Operation canceled");
+            expect(r.err.status).toBeNull();
+            expect(r.err.statusText).toBeNull();
+            expect(r.timeout.id).toEqual(r.req.id);
+            expect(r.timeout.url).toEqual(r.req.url);
+            expect(r.timeout.errorCode).toEqual(408);
+            expect(r.timeout.method).toEqual("GET");
+        });
+        done();
+    });
+
     async.it("test end", function(done){
         networkUtils.traceResources = false;
         networkUtils.reset();

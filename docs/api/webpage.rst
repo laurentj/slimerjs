@@ -584,6 +584,9 @@ Changing them after the load has no effect.
 - ``webSecurityEnabled``  (not supported yet)
 - ``plainTextAllContent``: ``true`` to indicate that webpage.plainText returns everything, even
    content of ``script`` elements, invisible elements etc.. Default: ``false``. (SlimerJS only)
+- ``resourceTimeout``: the number of milliseconds that the browser should wait
+   after the loading of a resource. ``undefined`` (default value) means default
+   gecko parameters.
 
 .. code-block:: javascript
 
@@ -1778,7 +1781,18 @@ The ``networkRequest`` object has two methods:
 onResourceTimeout
 -----------------------------------------
 
-Not implemented yet.
+This callback is invoked when a resource takes too long time to load,
+when webpage.settings.resourceTimeout is set.
+
+The function receives an object containing these properties:
+
+- ``id``: the number of the requested resource
+- ``url``:  the url of the resource
+- ``time``: a Date object
+- ``headers``: the list of headers (list of objects ``{name:'', value:''}``)
+- ``method``: the http method ("get", "post"..)
+- ``errorCode``: an error code: 408
+- ``errorString`` the error message.
 
 
 .. _webpage-onUrlChanged:
