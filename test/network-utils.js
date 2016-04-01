@@ -99,7 +99,6 @@ var networkUtils = {
                 if (this.traceResources) {
                     this.trace +="    URL CHANGED to "+newUrl+"\n";
                 }
-
             }
         };
 

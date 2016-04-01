@@ -277,7 +277,7 @@ describe("webpage with network listeners", function() {
         var expectedTrace = ""
         expectedTrace += "LOADSTARTED:http://localhost:8083/plop.html\n";
         if (URLUtils) expectedTrace += "  loading url=http://qsdqsdqs.qsfdsfi/plop.html\n";
-        expectedTrace += "LOADFINISHED:http://localhost:8083/plop.html - 4 fail\n";
+        expectedTrace += "LOADFINISHED:http://qsdqsdqs.qsfdsfi/plop.html - undefined fail\n";
         if (URLUtils) expectedTrace += "  loaded url=http://qsdqsdqs.qsfdsfi/plop.html\n";
         expectedTrace += "CALLBACK:fail\n";
         expect(networkUtils.trace).toEqual(expectedTrace);
