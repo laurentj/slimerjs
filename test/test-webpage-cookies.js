@@ -42,7 +42,7 @@ describe("webpage object", function(){
         'path':     '/',
         'httponly': true,
         'secure':   false,
-        'expiry':  0
+        'expiry':  null
     }
 
     var cookiesToSet = [
@@ -56,7 +56,9 @@ describe("webpage object", function(){
     function checkCookie(c, checkDate) {
         expect(c.name in expectedCookies).toBeTruthy("cookie "+c.name+" is not expected");
         var cookie = expectedCookies[c.name];
+        expect((c.expires === null) || (typeof c.expires == 'string')).toBeTruthy();
         cookie.expires = c.expires // we don't test expires, because the format depends of system langage
+        
         if (c.name == 'UserID') {
             cookie.expiry = c.expiry
             expect(c.expiry > Math.ceil((new Date()).getTime() / 1000) +3500 ).toBeTruthy();
@@ -158,7 +160,7 @@ describe("webpage object", function(){
                     'path':     '/',
                     'httponly': true,
                     'secure':   false,
-                    'expiry':  0
+                    'expiry':  null
                 }
             }
             
@@ -204,7 +206,7 @@ describe("webpage object", function(){
                     'path':     '/',
                     'httponly': true,
                     'secure':   false,
-                    'expiry' : 0
+                    'expiry' : null
             }
         }
 
@@ -231,7 +233,7 @@ describe("webpage object", function(){
                 'path':     '/',
                 'httponly': true,
                 'secure':   false,
-                'expiry' : 0
+                'expiry' : null
             }
         }
 

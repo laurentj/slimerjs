@@ -63,6 +63,7 @@ Fixed PhantomJS conformance issues
 - webpage.clipRect should accept object with missing properties (#314)
 - On windows, system.os.version matches now public version number, not internal
   version number (#344)
+- ``cookie.expires`` is not any more an integer, but a date formated as string
 
 Other informations about this release
 -------------------------------------
