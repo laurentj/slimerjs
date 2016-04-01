@@ -44,7 +44,6 @@ unknownContentTypeDialog.prototype = {
 
     promptForSaveToFileAsync: function(aLauncher, aWindowContext, aDefaultFileName,
                                        aSuggestedFileExtension, aForcePrompt) {
-
         let webpage = slUtils.getWebpageFromContentWindow(aWindowContext);
 
         let suggestedFile = aDefaultFileName? aDefaultFileName: aLauncher.suggestedFileName;
@@ -64,7 +63,6 @@ unknownContentTypeDialog.prototype = {
         };
 
         let filename = webpage.fileDownload(aLauncher.source.spec, responseData);
-
         if (!filename) {
             aLauncher.saveDestinationAvailable(null);
             return;

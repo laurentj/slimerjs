@@ -145,6 +145,15 @@ var networkUtils = {
             }
             //console.log("LOADFINISHED:"+currentUrl);
         };
+
+        this.webpage.onFileDownload = (url, responseData) => {
+            this.trace += "FILEDOWNLOAD:"+url+" "+responseData.filename+"\n";
+            return fs.workingDirectory + '/' + responseData.filename;
+        };
+
+        this.webpage.onFileDownloadError = (message) => {
+            this.trace += "FILEDOWNLOADERROR:"+message+"\n";
+        };
     },
 
     searchRequest : function (url, tests, min) {
@@ -176,7 +185,7 @@ var networkUtils = {
             tests(r);
             ok = true;
         } catch(e) {
-            console.log("searchRequest tests error: "+e)
+            console.log("searchRequest tests error: "+e+" filename:"+e.fileName+" "+e.lineNumber)
         }
         expect(ok).toBeTruthy("all tests have not been executed");
         return ok;
