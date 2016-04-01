@@ -6,9 +6,59 @@ describe("webpage with network listeners", function() {
 
     var async = new AsyncSpec(this);
 
+    async.it("should open simple web page helloworld.html",function(done) {
+        networkUtils.reset();
+        networkUtils.traceResources = true;
+        networkUtils.init();
+        networkUtils.webpage.open(domain + 'helloworld.html', function(success){
+            networkUtils.trace += "CALLBACK:"+success+"\n";
+            expect(success).toEqual("success");
+            done();
+        });
+    });
+
+
+    async.it("should generate the expected trace for helloworld.html", function(done){
+        var expectedTrace = ""
+        expectedTrace += "INITIALIZED -1\n";
+        expectedTrace += "LOADSTARTED:about:blank\n";
+        if (URLUtils) expectedTrace += "  loading url=http://localhost:8083/helloworld.html\n";
+        expectedTrace += "RES REQUESTED http://localhost:8083/helloworld.html\n";
+        expectedTrace += "URLCHANGED:http://localhost:8083/helloworld.html\n";
+        expectedTrace += "RES RECEIVED start - http://localhost:8083/helloworld.html\n";
+        expectedTrace += "RES RECEIVED end - http://localhost:8083/helloworld.html\n";
+        expectedTrace += "INITIALIZED 1\n";
+
+        expectedTrace += "LOADFINISHED:http://localhost:8083/helloworld.html - 2 success\n";
+        if (URLUtils) expectedTrace += "  loaded url=http://localhost:8083/helloworld.html\n";
+        expectedTrace += "CALLBACK:success\n";
+        expect(networkUtils.trace).toEqual(expectedTrace);
+        done();
+    });
+
+    async.it("should have received helloworld.html", function(done){
+        networkUtils.searchRequest(domain + 'helloworld.html', function(r){
+            expect(r.req).toNotBe(null);
+            expect(r.start).toNotBe(null);
+            expect(r.end).toNotBe(null);
+            expect(r.err).toBeNull();
+            expect(r.timeout).toBeNull();
+            expect((r.req.id == r.start.id) && (r.req.id == r.end.id)).toBeTruthy();
+            expect((r.req.url == r.start.url) && (r.req.url == r.end.url)).toBeTruthy();
+            expect(r.req.method).toEqual("GET");
+            expect(r.start.status).toEqual(200);
+            expect(r.start.statusText).toEqual('OK');
+            expect(r.end.status).toEqual(200);
+            expect(r.end.statusText).toEqual('OK');
+            expect(r.start.contentType).toEqual("text/html");
+            expect(r.end.contentType).toEqual("text/html");
+        });
+        done();
+    });
+
     async.it("should open hello.html",function(done) {
         networkUtils.reset();
-
+        networkUtils.traceResources = false;
         networkUtils.init();
         networkUtils.webpage.open(domain + 'hello.html', function(success){
             networkUtils.trace += "CALLBACK:"+success+"\n";
