@@ -31,6 +31,8 @@ const debugKeywords = {
     'page':'DEBUG_WEBPAGE',
     'pageload':'DEBUG_WEBPAGE_LOADING',
     'netprogress': 'DEBUG_NETWORK_PROGRESS',
+    'network': 'DEBUG_NETWORK_PROGRESS',
+    'net': 'DEBUG_NETWORK_PROGRESS',
     'errors': 'DEBUG_ERRORS' // this value is checked only in the calling script to output gecko errors
 }
 

@@ -31,7 +31,8 @@ Improvements
 - ``require`` supports node modules (it searches into node_modules directories)
 - ``webpage.onConsoleMessage`` can receive additionnal parameters : level, function name and timestamp
 - Improved error handling that may appear in webpage listeners
-- ``fs.open()`` now supports special files (/dev/std*, fifo files...) 
+- ``fs.open()`` now supports special files (/dev/std*, fifo files...)
+- Support of ``--debug=net`` and ``--debug=network`` which are aliases for ``--debug=netprogress``
 
 Fixed bugs
 ----------
