@@ -97,9 +97,10 @@ slUtils.getAbsMozFile = function getAbsMozFile(path, basepath) {
     var file = basepath.clone();
     var pathElements = path.split(/[\\\/]/);
     var first = pathElements[0];
-    if (pathElements.length == 1) {
-        if (first)
+    if (pathElements.length == 1 && !(isWin && first.match(/\:$/))) {
+        if (first) {
             file.append(first);
+        }
         return file;
     }
 

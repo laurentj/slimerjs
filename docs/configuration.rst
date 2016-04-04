@@ -80,8 +80,6 @@ With the ``--debug`` option, SlimerJS displays many messages about what happened
 the execution of your script: network events, page loading, ``sendEvent`` calls, configuration
 values, command line parameters..
 
-In future version, it will display file opening, cookies...
-
 SlimerJS accepts a value other than true/false/yes/no for --debug. You can indicate what to display.
 
 Example: ``--debug=pageloading,netprogress``.
@@ -90,7 +88,7 @@ Available keywords are:
 
 - ``page``: show calls of some webpage API
 - ``pageloading``: show calls of webpage listeners about resource loading and page loading
-- ``netprogress``: show internals network events
+- ``netprogress`` or ``net`` or ``network``: show internals network events
 - ``config``: show configuration values
 - ``cli``: show command line parameters for the script
 - ``errors``: show gecko errors (javascript errors ...). only for Firefox 25+

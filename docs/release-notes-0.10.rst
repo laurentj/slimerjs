@@ -18,6 +18,7 @@ New features and API
 - ``webpage.paperSize`` is supported (except its header and footer properties).
 - ``webpage.onLongRunningScript`` and ``webpage.stopJavascript()`` to allow to be informed of
    webpage having long running scripts (compatible with Phantomjs 2)
+- Support of ``webpage.onResourceTimeout`` and ``webpage.settings.resourceTimeout``
 - ``phantom.webdriverMode``
 - Implementation of ``system.stdin`` and ``system.stderr``. And ``system.stdout``
   is now a true output stream.
@@ -30,7 +31,8 @@ Improvements
 - ``require`` supports node modules (it searches into node_modules directories)
 - ``webpage.onConsoleMessage`` can receive additionnal parameters : level, function name and timestamp
 - Improved error handling that may appear in webpage listeners
-- ``fs.open()`` now supports special files (/dev/std*, fifo files...) 
+- ``fs.open()`` now supports special files (/dev/std*, fifo files...)
+- Support of ``--debug=net`` and ``--debug=network`` which are aliases for ``--debug=netprogress``
 
 Fixed bugs
 ----------
@@ -40,13 +42,14 @@ Fixed bugs
   it allows to call ``render()`` without a delay (``setTimeout``...)
 
 - Fix error NS_ERROR_FACTORY_NOT_REGISTERED on navigator object (issue #373)
-- Fix webpage.render() on SVG document (issue #283)
-- Fix support of webpage.captureContent (issue #397)
-- fs.extension() did not return the extension for simple filename (#447)
-- fs.extension() did return the extension without a dot: that didn't respect
+- Fix ``webpage.render()`` on SVG document (issue #283)
+- Fix support of ``webpage.captureContent`` (issue #397)
+- ``fs.extension()`` did not return the extension for simple filename (#447)
+- ``fs.extension()`` did return the extension without a dot: that didn't respect
   the CommonJS Filesystem specification. An optional second parameter is supported:
   set it to true to returns the extension without a dot, like in previous SlimerJS
   version.
+- Fix ``fs.absolute()`` with relative path containing ".." on Windows (#347)
 
 
 
@@ -61,6 +64,7 @@ Fixed PhantomJS conformance issues
 - webpage.clipRect should accept object with missing properties (#314)
 - On windows, system.os.version matches now public version number, not internal
   version number (#344)
+- ``cookie.expires`` is not any more an integer, but a date formated as string
 
 Other informations about this release
 -------------------------------------
