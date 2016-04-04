@@ -36,11 +36,11 @@ function initCookieFromnsICookie(nsCookie) {
     c.httponly = nsCookie.isHttpOnly;
     c.secure =  nsCookie.isSecure;
     if (nsCookie.isSession) {
-        c.expires = 0;
-        c.expiry = 0;
+        c.expires = null;
+        c.expiry = null;
     }
     else {
-        c.expires = nsCookie.expires;
+        c.expires = (new Date(nsCookie.expires)).toString();
         c.expiry = nsCookie.expiry;
     }
     return c;

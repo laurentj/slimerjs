@@ -153,6 +153,9 @@ fi
 export __SLIMER_ARGS="$@"
 export __SLIMER_ENV="$LISTVAR"
 export __SLIMER_EXITCODEFILE=`mktemp -q /tmp/slimerjs-exit-XXXXXXXX`
+if [ "$IN_CYGWIN" == 1 ]; then
+    __SLIMER_EXITCODEFILE=`cygpath -w $__SLIMER_EXITCODEFILE`
+fi
 
 # launch slimerjs with firefox
 if [ "$HIDE_ERRORS" == "Y" ]; then

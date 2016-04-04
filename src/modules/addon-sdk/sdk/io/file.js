@@ -34,27 +34,7 @@ if (slUtils.workingDirectory instanceof Ci.nsILocalFileWin) {
 
 
 function MozFile(path) {
-  let isAbs = false;
-  if (isWin) {
-    path = path.replace(/\//g, "\\");
-    isAbs = (/^([a-z]:)/i.test(path));
-  }
-  else {
-    isAbs = (/^\//i.test(path));
-  }
-
-  let file;
-  if (isAbs) {
-    file = Cc['@mozilla.org/file/local;1']
-                .createInstance(Ci.nsILocalFile);
-    file.initWithPath(path);
-  }
-  else {
-    file = slUtils.workingDirectory.clone();
-    file.appendRelativePath(path);
-  }
-
-  return file;
+  return slUtils.getAbsMozFile(path, slUtils.workingDirectory);
 }
 
 // in the file system specification, it is a method

@@ -72,7 +72,7 @@ var networkUtils = {
         this.webpage.onResourceRequested = (request, ctrl)  => {
             //console.log("--- webpage.onResourceRequested "+ request.id + " " + request.url);
             if (this.receivedRequest[request.id] == undefined ) {
-                this.receivedRequest[request.id] = { req:null, start:null, end:null, err:null}
+                this.receivedRequest[request.id] = { req:null, start:null, end:null, err:null, timeout:null }
             }
             this.receivedRequest[request.id].req = request;
             if (this.traceResources) {
@@ -99,14 +99,13 @@ var networkUtils = {
                 if (this.traceResources) {
                     this.trace +="    URL CHANGED to "+newUrl+"\n";
                 }
-
             }
         };
 
         this.webpage.onResourceReceived = response => {
             //console.log("--- webpage.onResourceReceived "+ response.id + " " + response.url + " "+response.stage);
             if (this.receivedRequest[response.id] == undefined ) {
-                this.receivedRequest[response.id] = { req:null, start:null, end:null, err:null}
+                this.receivedRequest[response.id] = { req:null, start:null, end:null, err:null, timeout:null }
             }
             this.receivedRequest[response.id][response.stage] = response;
             if (this.traceResources) {
@@ -117,11 +116,22 @@ var networkUtils = {
         this.webpage.onResourceError = response => {
             //console.log("--- webpage.onResourceError "+ response.id + " " + response.url);
             if (this.receivedRequest[response.id] == undefined ) {
-                this.receivedRequest[response.id] = { req:null, start:null, end:null, err:null}
+                this.receivedRequest[response.id] = { req:null, start:null, end:null, err:null, timeout:null }
             }
             this.receivedRequest[response.id].err = response;
             if (this.traceResources) {
                 this.trace +="RES ERROR "+response.errorCode+" - "+response.url+"\n";
+            }
+        };
+
+        this.webpage.onResourceTimeout = response => {
+            //console.log("--- webpage.onResourceTimeout "+ response.id + " " + response.url);
+            if (this.receivedRequest[response.id] == undefined ) {
+                this.receivedRequest[response.id] = { req:null, start:null, end:null, err:null, timeout:null }
+            }
+            this.receivedRequest[response.id].timeout = response;
+            if (this.traceResources) {
+                this.trace +="RES TIMEOUT "+response.errorCode+" - "+response.url+"\n";
             }
         };
 
@@ -134,6 +144,15 @@ var networkUtils = {
                 this.trace +="  loaded url="+url+"\n";
             }
             //console.log("LOADFINISHED:"+currentUrl);
+        };
+
+        this.webpage.onFileDownload = (url, responseData) => {
+            this.trace += "FILEDOWNLOAD:"+url+" "+responseData.filename+"\n";
+            return fs.workingDirectory + '/' + responseData.filename;
+        };
+
+        this.webpage.onFileDownloadError = (message) => {
+            this.trace += "FILEDOWNLOADERROR:"+message+"\n";
         };
     },
 
@@ -166,7 +185,7 @@ var networkUtils = {
             tests(r);
             ok = true;
         } catch(e) {
-            console.log("searchRequest tests error: "+e)
+            console.log("searchRequest tests error: "+e+" filename:"+e.fileName+" "+e.lineNumber)
         }
         expect(ok).toBeTruthy("all tests have not been executed");
         return ok;

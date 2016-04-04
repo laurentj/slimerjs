@@ -116,6 +116,14 @@ webserverTest.listen(8083, function(request, response) {
         return;
     }
 
+    if (request.url == '/timeouttest') {
+        window.setTimeout(function () {
+            response.write('done');
+            response.close();
+        }, 10000);
+        return;
+    }
+
     if (request.url == '/posturlencodeddata') {
         response.statusCode = 200;
         response.headers = { "Content-Type": "text/plain;charset=UTF-8"}

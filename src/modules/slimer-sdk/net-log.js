@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 "use strict";
 
-const {Cc, Ci, Cr, Cu} = require("chrome");
+const {Cc, Ci, Cr, Cu, CC} = require("chrome");
 const {mix} = require("sdk/core/heritage");
 const unload = require("sdk/system/unload");
 
@@ -11,6 +11,8 @@ const observers = require("sdk/deprecated/observer-service");
 
 const imgTools = Cc["@mozilla.org/image/tools;1"].getService(Ci.imgITools);
 const ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+const { TYPE_ONE_SHOT, TYPE_REPEATING_SLACK } = Ci.nsITimer;
+const Timer = CC('@mozilla.org/timer;1', 'nsITimer');
 
 Cu.import('resource://slimerjs/slDebug.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
@@ -178,7 +180,7 @@ const onRequestStart = function(subject, data) {
         }
     }
 
-    let listener = new TracingListener(index, options, subject);
+    let listener = new TracingListener(index, options, subject, req, browser.webpage.settings.resourceTimeout);
     subject.QueryInterface(Ci.nsITraceableChannel);
     listener.originalListener = subject.setNewListener(listener);
 };
@@ -274,7 +276,7 @@ const onFileRequestResponseDone = function(subject, browser) {
     }
 };
 
-const TracingListener = function(index, options, request) {
+const TracingListener = function(index, options, request, requestJs, timeout) {
     this.index = index;
     this.options = options;
     this.response = null;
@@ -282,6 +284,24 @@ const TracingListener = function(index, options, request) {
     this.data = [];
     this.dataLength = 0;
     this.originalRequest = request;
+    this.requestJs = requestJs;
+    this.timeout = timeout;
+    this.timer = null;
+    this.timerCallback = null;
+
+    // we don't use the Necko timeout feature because setting the pref
+    // network.http.response.timeout sets the timeout for all webpage,
+    // and we want the timeout only for the corresponding webpage object.
+    if (this.timeout) {
+        this.timerCallback = () => {
+            request.cancel(Cr.NS_ERROR_NET_TIMEOUT);
+            this.timer = null;
+        };
+        this.timer = Timer();
+        this.timer.initWithCallback({
+            notify: this.timerCallback
+        }, this.timeout, TYPE_ONE_SHOT);
+    }
 };
 TracingListener.prototype = {
     onStartRequest: function(request, context) {
@@ -334,10 +354,18 @@ TracingListener.prototype = {
                 slDebugLog("network: resource #"+this.response.id+" response in error: #"+code+" - "+msg);
             }
             if (typeof(this.options.onError) === "function") {
+                if (code == 4) {
+                    // let's mimic Phantomjs for timeout
+                    code = 5;
+                    msg = "Operation canceled";
+                }
                 this.options.onError({id: this.response.id,
                                      url: this.response.url,
                                      errorCode:code,
-                                     errorString:msg});
+                                     errorString:msg,
+                                     status: this.response.status,
+                                     statusText: this.response.statusText,
+                                     });
             }
             this.errorAlreadyNotified = true;
         }
@@ -416,8 +444,23 @@ TracingListener.prototype = {
             } catch(e) {
             }
         }
+        if (this.timeout) {
+            if (this.timer) {
+                this.timer.cancel();
+            }
+            this.timer = Timer();
+            this.timer.initWithCallback({
+                notify: this.timerCallback
+            }, this.timeout, TYPE_ONE_SHOT);
+        }
     },
     onStopRequest: function(request, context, statusCode) {
+
+        if (this.timer) {
+            this.timer.cancel();
+            this.timer = null;
+            this.timerCallback = null;
+        }
 
         this.originalListener.onStopRequest(request, context, statusCode);
         request = request.QueryInterface(Ci.nsIHttpChannel);
@@ -447,7 +490,17 @@ TracingListener.prototype = {
             if (DEBUG_NETWORK_PROGRESS) {
                 slDebugLog("network: resource #"+this.response.id+" response in error (3): "+code+" - "+msg);
             }
-            if (!this.errorAlreadyNotified && typeof(this.options.onError) === "function") {
+            if (code == 4) {
+                this.options.onTimeout({id: this.response.id,
+                                        method: this.requestJs.method,
+                                        url: this.response.url,
+                                        time: this.requestJs.date,
+                                        headers: this.requestJs.headers,
+                                        errorCode:408,
+                                        errorString:"Network timeout on resource."
+                                    });
+            }
+            else if (!this.errorAlreadyNotified && typeof(this.options.onError) === "function") {
                 this.options.onError({id: this.response.id,
                                      url: this.response.url,
                                      errorCode:code,
