@@ -1130,6 +1130,8 @@ image data in the specified format.
 
 The options object is the same as in ``render()``.
 
+Not in PhantomJS.
+
 .. _webpage-sendEvent:
 
 sendEvent(eventType, arg1, arg2, button, modifier)

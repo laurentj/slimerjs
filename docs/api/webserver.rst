@@ -324,10 +324,3 @@ close()
 Indicate that the response is complete, and the connection with the browser is closed. It
 is not possible to send other data (header or content) after this method.
 
-
-Webserver limitations
-=====================
-
-The webserver is based on the Mozilla built-in "jshttp" webserver used for testing. It has the following limitations:
-
-* Only one request may be processed at once. You must call response.write() and response.close() before the next request will be processed.

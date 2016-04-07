@@ -1,14 +1,14 @@
 
-========
+============================
 Javascript standard objects
-========
+============================
 
 Most Javascript built-in objects are available and can be used as expected, for example,
 ``Date``, ``RegExp``,
 ``Math``, ``console``...
 
 XMLHttpRequest
--------
+---------------
 
 The normal XMLHttpRequest object is not very useful in SlimerJS 
 because the script is executing from the origin of "about:blank". The
