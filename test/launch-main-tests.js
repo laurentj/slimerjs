@@ -26,6 +26,7 @@
 
 phantom.injectJs("./jasmine/jasmine.js");
 phantom.injectJs("./jasmine/jasmine-console.js");
+phantom.injectJs("./jasmine/jasmine-tap.js");
 phantom.injectJs("./jasmine/jasmine.async.min.js");
 
 var slimerEnv = this;
@@ -95,6 +96,7 @@ else {
                                     },
                                     true);
     jEnv.addReporter(reporter);
+    jEnv.addReporter(new jasmine.TAPReporter("test_reports/main-tests.tap"));
     jEnv.updateInterval = 1000;
     jEnv.defaultTimeoutInterval = 15000; // for DNS check: it can be long on some systems
     jEnv.execute();
