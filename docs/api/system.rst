@@ -40,7 +40,8 @@ An object having information about the operating system. Here are its properties
 pid
 -----------------------------------------
 
-Always returns ``0`` (no Mozilla API to retrieve the PID)
+Returns the process ID, if possible, otherwise returns ``0``. 
+This should now work on Linux systems.
 
 .. _system-platform:
 

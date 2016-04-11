@@ -9,7 +9,7 @@ describe("system module", function() {
     });
     it("should have a pid property", function(){
         expect('pid' in system).toBeTruthy();
-        expect(system.pid).toEqual(0); // no way in mozilla to retrieve the PID
+        expect(system.pid).toNotEqual(0);
     });
 
     it("should have a os object", function(){
@@ -30,7 +30,7 @@ describe("system module", function() {
 
     it("should handle command line arguments", function(){
         expect('args' in system).toBeTruthy();
-        expect(system.args.length).toEqual(1);
+        expect(system.args.length).toBeGreaterThan(0);
         expect(/launch-main-tests\.js$/.test(system.args[0])).toBeTruthy();
     });
 });
