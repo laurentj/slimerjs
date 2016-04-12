@@ -1,6 +1,8 @@
 describe("fs module", function() {
     it("absolute() should support relative path", function(){
-        var wd = fs.workingDirectory.replace(/([a-zA-Z0-9\.]+)$/, 'hello.foo');
+        var wd = fs.join(
+            fs.directory(fs.workingDirectory),
+            'hello.foo');
         expect(fs.absolute('../hello.foo')).toEqual(wd);
     });
     // should be equal to the content of test.txt
