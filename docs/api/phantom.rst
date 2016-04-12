@@ -16,7 +16,7 @@ is :doc:`a Cookie object <cookie>`. The cookie can be for any domains.
 It returns true if the cookie has been really added. If cookies are
 disabled, the cookie is not added into the cookie database.
 
-Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
+Be careful about `the inconsistent behavior of the expiry property <cookie.html#expires>`_.
 
 
 .. _phantom-args:
@@ -54,7 +54,7 @@ Probably you would prefer to use the ``addCookie()`` method to modify a cookie.
 If cookies are disabled, modifying this property does nothing.
 
 
-Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
+Be careful about `the inconsistent behavior of the expiry property <cookie.html#expires>`_.
 
 .. _phantom-cookiesEnabled:
 
