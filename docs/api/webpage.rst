@@ -247,7 +247,7 @@ Probably you would prefer to use the ``addCookie()`` method to modify a cookie.
 
 If cookies are disabled, or if no page is loaded, modifying this property does nothing.
 
-Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
+Be careful about `the inconsistent behavior of the expiry property <cookie.html#expires>`_.
 
 .. _webpage-customHeaders:
 
@@ -688,7 +688,7 @@ and the path of the current url.
 It returns true if the cookie has been really added. If cookies are
 disabled, or if no page is loaded, the cookie is not added into the cookie database.
 
-Be careful about `the inconsistent behavior of the expiry property <cookies.html#expires>`_.
+Be careful about `the inconsistent behavior of the expiry property <cookie.html#expires>`_.
 
 
 .. _webpage-childFramesCount:
