@@ -92,17 +92,17 @@
     <dd>Gecko is the core engine of Firefox.</dd>
 
     <dt id="firefox-compatibility">Which version of Firefox is SlimerJS compatible with?</dt>
-    <dd>It depends of the package you downloaded. If you chose
-        a package dedicated to a specific platform, <span class="slm">SlimerJS</span>
-        embeds Gecko 38. So it is compatible with Firefox 38.<br>
-        If you chose the lightweight package, it runs with <em>your</em> Firefox, so
-        it can run with any version since Firefox 20 (probably lower versions
-        but you could have some issues; Not tested).<br>Note that officially, SlimerJS
+    <dd>It runs with Firefox 45 and some older versions.<br>Officially, SlimerJS
         is only compatible with stable versions of Firefox.
     </dd>
 
     <dt id="firefox-unstable">Can SlimerJS be executed with unstable version of Firefox?</dt>
     <dd>Yes, if you make some changes. This is explained <a href="http://docs.slimerjs.org/current/installation.html#using-unstable-version-or-very-old-versions-of-firefox-xulrunner">in the installation manual</a>.</dd>
+
+    <dt id="standalone-version">I don't find anymore the "Standalone" edition
+     like for SlimerJS 0.9-. Where is it?</dt>
+    <dd>There are no more "standalone" edition, since Mozilla has ceased to build and maintain
+    XulRunner? There is only the "lightweight" edition.</dd>
 
     <dt id="launch-casperjs">Can CasperJS be launched with <span class="slm">SlimerJS</span>?</dt>
     <dd>Yes, since SlimerJS 0.8, and with CasperJS 1.1beta1 or higher.
@@ -139,10 +139,10 @@
     </dd>
 
     <dt id="nightlies">Is there a build of SlimerJS containing the latest improvements?</dt>
-    <dd>Yes, each day a build is made from the "master" branch and the stable branch
-    of the source code.
-    This is the nightly build. Since these are development versions don't use them
-    in production.<br>
+    <dd>Yes, each time a bug fix or an improvement is made
+    <a href="https://github.com/laurentj/slimerjs">in the repository of SlimerJS</a>,
+    a build is made. This is we call "nightly build". Since these are development
+    versions don't use them in production.<br>
     Download the archive
     <a href="http://download.slimerjs.org/nightlies/latest-slimerjs-stable/">from the stable branch</a>
     (which contains only latest bug fixes) or
