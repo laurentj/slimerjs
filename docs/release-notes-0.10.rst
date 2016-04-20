@@ -50,7 +50,8 @@ Fixed bugs
   set it to true to returns the extension without a dot, like in previous SlimerJS
   version.
 - Fix ``fs.absolute()`` with relative path containing ".." on Windows (#347)
-
+- Fix support of multiple file for ``<input type=file>`` with ``webpage.uploadFile``
+  and ``webpage.onFilePicker``
 
 
 Fixed PhantomJS conformance issues

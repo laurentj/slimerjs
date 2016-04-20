@@ -61,12 +61,24 @@ filePicker.prototype = {
         this.browser = slUtils.getBrowserFromContentWindow(parent);
         this.domWindowUtils = parent.QueryInterface(Ci.nsIInterfaceRequestor)
                                     .getInterface(Ci.nsIDOMWindowUtils);
+        this._mode = mode;
         // take account of mode if multi files
         if (mode & Ci.nsIFilePicker.modeOpenMultiple) {
             this.supportsMultiple = true;
         }
-        else
+        else {
             this.supportsMultiple = false;
+        }
+    },
+
+    _mode : 0,
+
+    /**
+     * The picker's mode, as set by the 'mode' argument passed to init()
+     * (one of the modeOpen et. al. constants specified above).
+     */
+    get mode() {
+        return this._mode;
     },
 
     /**
@@ -173,11 +185,24 @@ filePicker.prototype = {
      * @readonly
      */
     get domfiles () {
-        let list = []
         let me = this;
-        this._nsfiles.forEach(function(file){
-            list.push(me.domWindowUtils.wrapDOMFile(file))
-        })
+        let list = this._nsfiles.map(function(file){
+            return me.domWindowUtils.wrapDOMFile(file);
+        });
+        return slUtils.createSimpleEnumerator(list);
+    },
+
+    get domFileOrDirectory () {
+        if (this._nsfile)
+            return this.domWindowUtils.wrapDOMFile(this._nsfile);
+        return null;
+    },
+
+    get domFileOrDirectoryEnumerator () {
+        let me = this;
+        let list = this._nsfiles.map(function(file){
+            return me.domWindowUtils.wrapDOMFile(file);
+        });
         return slUtils.createSimpleEnumerator(list);
     },
 
