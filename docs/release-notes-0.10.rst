@@ -70,7 +70,7 @@ Fixed PhantomJS conformance issues
 Other informations about this release
 -------------------------------------
 
-- Compatibility with Firefox 40 to Firefox 45.
+- Compatibility with Firefox 40 to Firefox 46.
 - Compatibility is no more guaranteed on Firefox having version lower than 38.
 - There are no anymore packages including XulRunner, the Firefox runtime, since
   Mozilla has killed the XulRunner project. So you need to install Firefox

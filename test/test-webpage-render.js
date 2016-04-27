@@ -106,8 +106,9 @@ describe("WebPage.render()", function(){
     });
 
     afterEach(function() {
-        if (currentImageFile && fs.exists(currentImageFile))
+        if (currentImageFile && fs.exists(currentImageFile)) {
             fs.remove(currentImageFile);
+        }
 
         if (webpage) {
             webpage.close();
@@ -143,7 +144,7 @@ describe("WebPage.render()", function(){
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
             currentImageFile = 'slimerjs_capture.png';
-            webpage.render(currentImageFile);
+            expect(webpage.render(currentImageFile)).toBeTruthy();
             expect(fs.exists(currentImageFile)).toBeTruthy();
         });
     });
@@ -159,7 +160,7 @@ describe("WebPage.render()", function(){
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
             currentImageFile = 'slimerjs_capture.pdf';
-            webpage.render(currentImageFile);
+            expect(webpage.render(currentImageFile)).toBeTruthy();
             expect(fs.exists(currentImageFile)).toBeTruthy();
         });
     });
