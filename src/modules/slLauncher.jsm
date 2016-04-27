@@ -304,8 +304,14 @@ function prepareLoader(scriptInfo) {
 
     function findFileExtension(id, baseFile) {
         let f = isFile(id, baseFile)
-        if (f)
-            return f;
+        if (f) {
+            if (f.isDirectory() && f.parent.leafName == 'node_modules') {
+                baseFile = f;
+            }
+            else {
+                return f;
+            }
+        }
         for(let ext in extensions) {
             f = isFile(id+ext, baseFile);
             if (f)
