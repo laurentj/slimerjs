@@ -141,7 +141,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>settings.userName                   </td><td>Implemented</td></tr>
     <tr><td>settings.password                   </td><td>Implemented</td></tr>
     <tr><td>settings.maxAuthAttempts            </td><td>Implemented</td></tr>
-    <tr><td>settings.resourceTimeout            </td><td></td></tr>
+    <tr><td>settings.resourceTimeout            </td><td>Implemented</td></tr>
     <tr><td>settings.plainTextAllContent        </td><td>Implemented (SlimerJS only)</td></tr>
     <tr><td>title                               </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
@@ -218,7 +218,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onResourceError                     </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
     <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>
-    <tr><td>onResourceTimeout                   </td><td></td></tr>
+    <tr><td>onResourceTimeout                   </td><td>Implemented</td></tr>
     <tr><td>onUrlChanged                        </td><td>Implemented</td></tr>
 </table>
 
@@ -379,11 +379,11 @@ are part of the CommonJS FileSystem specification
 # stream object
 
 <table>
-    <tr><td>atEnd()                             </td><td></td></tr>
+    <tr><td>atEnd()                             </td><td>Implemented</td></tr>
     <tr><td>read()                              </td><td>Implemented</td></tr>
-    <tr><td>readLine()                          </td><td></td></tr>
+    <tr><td>readLine()                          </td><td>Implemented</td></tr>
     <tr><td>write(data)                         </td><td>Implemented</td></tr>
-    <tr><td>writeLine(data)                     </td><td></td></tr>
+    <tr><td>writeLine(data)                     </td><td>Implemented</td></tr>
     <tr><td>flush()                             </td><td>Implemented</td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
 </table>
