@@ -77,6 +77,7 @@ Other informations about this release
 - There are no anymore packages including XulRunner, the Firefox runtime, since
   Mozilla has killed the XulRunner project. So you need to install Firefox
   in order to run SlimerJS.
+- Compatibility with CasperJS 1.1 has been fixed
 
 
 Missing features in SlimerJS 0.10

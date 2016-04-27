@@ -16,7 +16,7 @@ read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/
 to know the implementation level.
 
 The main goal of SlimerJS is to allow to execute all scripts developed for PhantomJS. So
-you could use tools like [CasperJS](http://casperjs.org). In fact, CasperJs 1.1beta and higher
+you could use tools like [CasperJS](http://casperjs.org). In fact, CasperJs 1.1 and higher
 can be executed with SlimerJS!
 
 SlimerJS is not only a PhantomJS clone, it contains also [additional features](http://slimerjs.org/features.html).
