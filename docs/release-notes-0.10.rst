@@ -52,6 +52,8 @@ Fixed bugs
 - Fix ``fs.absolute()`` with relative path containing ".." on Windows (#347)
 - Fix support of multiple file for ``<input type=file>`` with ``webpage.uploadFile``
   and ``webpage.onFilePicker``
+- ``webpage.onError`` did not receive a full stack in some case. This is not the
+  case anymore since some improvements have been made into Gecko.
 
 
 Fixed PhantomJS conformance issues

@@ -19,8 +19,8 @@ function getTraceException(e, fileURI) {
 
         let stack = e.stack;
         if ('fileName' in e && e.fileName != undefined) {
-            let lineNumber = ('lineNumber' in e?e.lineNumber:0);
-            let columnNumber = ('columnNumber' in e?e.columnNumber:0);
+            let lineNumber = ('lineNumber' in e? parseInt(e.lineNumber):0);
+            let columnNumber = ('columnNumber' in e?parseInt(e.columnNumber):0);
             if (e.fileName.indexOf('->')) {
                 stack = (e.fileName.indexOf('@')!=-1?'':'@')+e.fileName+":"+lineNumber+":"+columnNumber+"\n"+stack;
             }
@@ -29,7 +29,8 @@ function getTraceException(e, fileURI) {
                     sourceURL: e.fileName,
                     line:lineNumber,
                     column:columnNumber,
-                    'function' : null
+                    'function' : null,
+                    file: e.fileName
                 }
                 stackRes.push(line)
             }
@@ -59,6 +60,7 @@ function getTraceException(e, fileURI) {
 
             var line = {
                 "sourceURL":sourceURL,
+                "file":sourceURL,
                 "line": parseInt(lineNumber),
                 "column": parseInt(columnNumber),
                 "function": funcName
@@ -70,6 +72,7 @@ function getTraceException(e, fileURI) {
         msg = e.toString();
         var line = {
             "sourceURL":fileURI||'unknown',
+            "file":fileURI||'unknown',
             "line": 0,
             "column": 0,
             "function":null
@@ -123,7 +126,9 @@ slConsole.prototype = {
           if (frame.filename) {
             stack.unshift({
               "sourceURL": frame.filename,
+              "file": frame.filename,
               "line": frame.lineNumber,
+              "column": 0,
               "function": frame.name
             });
           }
