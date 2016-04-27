@@ -2,7 +2,7 @@
 describe("webpage.onConsoleMessage", function() {
 
     var webpage, webpage2;
-    var message, message2;
+    var message = [], message2 = [];
 
     var url = "http://127.0.0.1:8083/";
 
@@ -20,66 +20,59 @@ describe("webpage.onConsoleMessage", function() {
                 lev: level,
                 f:func,
                 t: timestamp}
-            if (message) {
-                message = [ message, m ]
-            }
-            else
-                message = m
+            message.push(m);
         }
     
         webpage2.onConsoleMessage= function(msg, lineNum, sourceId) {
             var m = {m:msg,
                 l:lineNum,
                 s:sourceId}
-            if (message2) {
-                message2 = [ message2, m ]
-            }
-            else
-                message2 = m
+            message2.push(m);
         }
     });
 
     it("should receive the message",function() {
-        message = null;
-        message2 = null;
+        message = [];
+        message2 = [];
         runs(function() {
             webpage.open(url+"consolemessage.html", function(success){});
         });
-        waitsFor(function(){ return message != null;}, 1000);
+        waitsFor(function(){ return message.length > 0;}, 1000);
         runs(function(){
-            expect(message.m).toEqual('message from consolemessage');
-            expect(message.l).toEqual(10); // phantomjs doesn't use lineNumber parameter, result is undefined
-            expect(message.s).toEqual(url + "consolemessage.html"); // phantomjs doesn't use sourceId parameter, result is undefined
-            expect(message.lev).toEqual('log');
-            expect(message.f).toEqual('window.onload');
-            expect(message2).toBeNull();
+            expect(message.length).toEqual(1);
+            expect(message[0].m).toEqual('message from consolemessage');
+            expect(message[0].l).toEqual(10); // phantomjs doesn't use lineNumber parameter, result is undefined
+            expect(message[0].s).toEqual(url + "consolemessage.html"); // phantomjs doesn't use sourceId parameter, result is undefined
+            expect(message[0].lev).toEqual('log');
+            expect(message[0].f).toEqual('window.onload');
+            expect(message2.length).toEqual(0);
         })
     });
 
     it("should receive the message form an external js script",function() {
-        message = null;
-        message2 = null;
+        message = [];
+        message2 = [];
         runs(function() {
             webpage.open(url+"consolemessagejs.html", function(success){});
         });
-        waitsFor(function(){ return message != null;}, 1000);
+        waitsFor(function(){ return message.length > 0;}, 1000);
         runs(function(){
-            expect(message.m).toEqual('message from consolemessagejs');
-            expect(message.l).toEqual(2); // phantomjs doesn't use lineNumber parameter, result is undefined
-            expect(message.s).toEqual(url+'consolemessage.js'); // phantomjs doesn't use sourceId parameter, result is undefined
-            expect(message2).toBeNull();
+            expect(message[0].m).toEqual('message from consolemessagejs');
+            expect(message[0].l).toEqual(2); // phantomjs doesn't use lineNumber parameter, result is undefined
+            expect(message[0].s).toEqual(url+'consolemessage.js'); // phantomjs doesn't use sourceId parameter, result is undefined
+            expect(message2.length).toEqual(0);
         })
     });
 
     it("should receive the message of an iframe",function() {
-        message = null;
-        message2 = null;
+        message = [];
+        message2 = [];
         runs(function() {
             webpage2.open(url+"consolemessageiframe.html", function(success){});
         });
-        waitsFor(function(){ return message2 != null;}, 1000);
+        waitsFor(function(){ return message2.length > 0;}, 1000);
         runs(function(){
-            expect(message).toBeNull()
+            expect(message.length).toEqual(0)
             expect(message2.length).toEqual(2);
             expect(message2[0].m).toEqual('message from consolemessage2');
             expect(message2[1].m).toEqual('message from consolemessageiframe');

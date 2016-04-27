@@ -211,7 +211,7 @@ describe("WebPage.render()", function(){
         });
         waitsFor(function(){ return imageResultLoaded;}, 1300);
         runs(function(){
-            resultData = expectedFixPage.evaluate(function(idx){ return compareImages(idx); }, resultNumber);
+            let resultData = expectedFixPage.evaluate(function(idx){ return compareImages(idx); }, resultNumber);
             expect(resultData[0][1]).toEqual(resultData[0][0]); // width
             expect(resultData[1][1]).toEqual(resultData[1][0]); // height
             expect(resultData[2][1]).toEqual(resultData[2][0]); // length of data

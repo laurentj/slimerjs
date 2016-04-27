@@ -34,9 +34,14 @@ var slimerEnv = this;
 var fs = require("fs");
 var system = require("system");
 
-phantom.injectJs("./test-webpage-render-segfault.js");
-phantom.injectJs("./test-webpage-render.js");
-phantom.injectJs("./test-webpage-render-bytes.js");
+if (system.args.length == 2) {
+    phantom.injectJs("./test-"+system.args[1]+".js");
+}
+else {
+    phantom.injectJs("./test-webpage-render-segfault.js");
+    phantom.injectJs("./test-webpage-render.js");
+    phantom.injectJs("./test-webpage-render-bytes.js");
+}
 
 phantom.injectJs("./webserver-for-tests.js");
 

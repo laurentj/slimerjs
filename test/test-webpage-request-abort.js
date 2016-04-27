@@ -4,7 +4,7 @@ describe("Test networkRequest.abort()", function() {
     var url = "http://www.google.com/";
     var orderArr = [];
     var resDate = null;
-    var resURL = "", starURL = "startURL", endURL = "endURL", loadStatus = "";
+    var resURL = "", startURL = "startURL", endURL = "endURL", loadStatus = "";
 
     beforeEach(function() {
         if (webpage) {
