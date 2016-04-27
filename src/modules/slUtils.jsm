@@ -186,34 +186,6 @@ slUtils.readChromeFile = function readChromeFile(url) {
     return str;
 }
 
-/**
- *  Writes exit status code in `ProfileDir/exitstatus` file.
- *  Note:
- *  We must follow the evolution of xulrunner in order to remove this patch.
- *  If they add API for user defined exit status of xulrunner, we must use it instead of this patch. 
- */
-slUtils.writeExitStatus = function (status) {
-    var envService = Cc["@mozilla.org/process/environment;1"]
-                      .getService(Ci.nsIEnvironment);
-    if (!envService.exists('__SLIMER_EXITCODEFILE')) {
-        return;
-    }
-    let filePath = envService.get('__SLIMER_EXITCODEFILE');
-    let file = Cc['@mozilla.org/file/local;1']
-                .createInstance(Ci.nsILocalFile);
-    file.initWithPath(filePath);
-
-    let str = String(status);
-    let foStream = Cc["@mozilla.org/network/file-output-stream;1"].createInstance(Ci.nsIFileOutputStream);
-    foStream.init(file, (0x02 | 0x08 | 0x20), parseInt("0444", 8), 0);
-    try {
-        foStream.write(str, str.length);
-    }
-    finally {
-        foStream.close();
-    }
-} 
-
 slUtils.getWebpageFromContentWindow = function getWebpageFromContentWindow(contentWin) {
     let browser = slUtils.getBrowserFromContentWindow(contentWin);
     if (browser) {

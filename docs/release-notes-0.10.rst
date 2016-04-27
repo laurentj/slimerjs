@@ -23,6 +23,7 @@ New features and API
 - Implementation of ``system.stdin`` and ``system.stderr``. And ``system.stdout``
   is now a true output stream.
 - Implementation of ``stream.atEnd`` and ``stream.readLine()``
+- Implementation of ``phantom.aboutToExit``
 
 Improvements
 ------------
@@ -67,7 +68,7 @@ Fixed PhantomJS conformance issues
 - webpage.clipRect should accept object with missing properties (#314)
 - On windows, system.os.version matches now public version number, not internal
   version number (#344)
-- ``cookie.expires`` is not any more an integer, but a date formated as string
+- ``cookie.expires`` is not anymore an integer, but a date formated as string
 
 Other informations about this release
 -------------------------------------

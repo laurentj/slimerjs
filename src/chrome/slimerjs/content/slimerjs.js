@@ -11,6 +11,7 @@ Services.prefs.setBoolPref('browser.dom.window.dump.enabled', true);
 Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import('resource://slimerjs/slUtils.jsm');
+Components.utils.import('resource://slimerjs/slExit.jsm');
 
 function startup() {
    document.getElementById("versionnumber").textContent =  Services.appinfo.version
@@ -21,10 +22,10 @@ function startup() {
     catch(e) {
         dumpex(e, 'Error during the script execution\n');
         dumpStack(e.stack);
-        Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+        slExit.exit(1)
     }
 }
 
 function quit() {
-    Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+   slExit.exit(0);
 }

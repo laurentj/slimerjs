@@ -9,6 +9,7 @@ Components.utils.import('resource://slimerjs/slUtils.jsm');
 Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import('resource://slimerjs/slCookiesManager.jsm');
+Components.utils.import('resource://slimerjs/slExit.jsm');
 
 
 
@@ -126,17 +127,11 @@ var phantom = {
      * @fixme in "debug mode", phantomjs does not really exit
      */
     exit : function(code) {
-        let c = +code || 0;
-        if (slLauncher.slimerExiting) {
-            return
-        }
-        slUtils.writeExitStatus(c);
-        slLauncher.slimerExiting = true;
-        Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+        slExit.exit(code);
     },
 
     debugExit : function(code) {
-        this.exit(code);
+        slExit.exit(code);
     },
     
     /**
@@ -198,6 +193,21 @@ var phantom = {
         return (slConfiguration.webdriver != '');
     },
 
+    get aboutToExit () {
+        return {
+            connect: function(callback) {
+                slExit.addCallback(callback);
+            },
+            disconnect : function(callback) {
+                slExit.removeCallback(callback);
+            },
+            __exposedProps__ : {
+                connect : 'r',
+                disconnect : 'r'
+            }
+        }
+    },
+
     __exposedProps__ : {
         cookies: 'rw',
         cookiesEnabled: 'rw',
@@ -213,7 +223,8 @@ var phantom = {
         defaultErrorHandler : 'r',
         defaultPageSettings : 'r',
         webdriverMode: 'r',
-        outputEncoding: 'rw'
+        outputEncoding: 'rw',
+        aboutToExit : 'r'
     }
 }
 

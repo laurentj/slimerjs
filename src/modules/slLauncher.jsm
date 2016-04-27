@@ -195,12 +195,7 @@ var slLauncher = {
     closeBrowser: function (browser) {
         let win = browser.ownerDocument.defaultView.top;
         win.close();
-    },
-
-    /**
-     * boolean to indicate if SlimerJS is in a closing process. Set by slimer.exit() and phantom.exit()
-     */
-    slimerExiting : false
+    }
 }
 
 /**
