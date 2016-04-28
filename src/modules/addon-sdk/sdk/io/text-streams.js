@@ -272,5 +272,5 @@ StreamManager.prototype = {
 };
 
 function checkCharset(charset) {
-  return typeof(charset) === "string" ? charset : DEFAULT_CHARSET;
+  return typeof(charset) === "string" && charset != '' ? charset : DEFAULT_CHARSET;
 }

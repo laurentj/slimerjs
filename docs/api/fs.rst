@@ -92,14 +92,14 @@ returns a Date object of the last modified time of the file.
 read(path, mode)
 -------------------
 
-Shorthand for open(path,mode).read().
+Shorthand for open(path,mode).read(). Stream is closed after reading.
 
 .. _fs-write:
 
 write(path, content, mode)
 ---------------------------
 
-Shorthand for open(path,mode).write(content).
+Shorthand for open(path,mode).write(content). Stream is closed after writing.
 
 .. _fs-separator:
 
@@ -196,17 +196,25 @@ Returns an array of file names in the given directory.
 
 .. _fs-open:
 
-open(filename, mode)
+open(filename, opts)
 ---------------------
 
 Returns a stream providing access to the contents of a file.
 
-mode is an optional string, each character of which describes a characteristic of the returned stream.
+``opts`` is optional. It can be a single string, indicating the open mode,
+or an object containing these properties:
+
+- ``mode``: the open mode
+- ``charset``: the charset code (IANA code). Charset is ignored if the mode is binary mode
+
+Mode is a string that can contain character which describes a characteristic of the returned stream.
 
 * If the string contains "r", the file is opened in read-only mode.
 * "w" opens the file in write-only mode.
 * "b" opens the file in binary mode. If "b" is not present, the file is
     opened in text mode, and its contents are assumed to be UTF-8.
+* "a" means to open as "append" mode: the file is open in write-only mode and
+  all written character are append to the file
 
 
 .. _fs-remove:

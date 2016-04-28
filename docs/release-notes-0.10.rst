@@ -69,6 +69,8 @@ Fixed PhantomJS conformance issues
 - On windows, system.os.version matches now public version number, not internal
   version number (#344)
 - ``cookie.expires`` is not anymore an integer, but a date formated as string
+- ``fs.read()``, ``fs.write()`` and ``fs.open()`` can now accept an object
+  as mode, to indicate both the mode and the charset.
 
 Other informations about this release
 -------------------------------------
