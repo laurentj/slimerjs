@@ -1,8 +1,9 @@
-SlimerJS will implement all [the API of Phantomjs](https://github.com/ariya/phantomjs/wiki/API-Reference).
+
+SlimerJS is implementing almost [the API of Phantomjs](http://phantomjs.org/api/).
 
 Here are compatibility tables and other specific API to SlimerJS.
 
-# Main differences with PhantomJS 1.9.x
+# Main differences with PhantomJS 2.1
 
 You'll found in the documentation [a list of differences](https://github.com/laurentj/slimerjs/blob/master/docs/differences-with-phantomjs.rst).
 of behaviors in the APIs implementation and in the web platform.
@@ -53,6 +54,7 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>libraryPath                         </td><td>Implemented (deprecated)</td></tr>
     <tr><td>outputEncoding                      </td><td></td></tr>
     <tr><td>page                                </td><td>Not implemented. Irrelevant for SlimerJS</td></tr>
+    <tr><td>remoteDebugPort                     </td><td></td></tr>
     <tr><td>scriptName                          </td><td>Implemented</td></tr>
     <tr><td>version                             </td><td>Implemented. Gives the PhantomJS version which is compatible to
                                                         the SlimerJS implementation.</td></tr>
@@ -67,9 +69,15 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>clearCookies()                      </td><td>Implemented</td></tr>
     <tr><td>defaultErrorHandler(message, stack) </td><td>Implemented</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
+    <tr><td>debugExit(returnValue)              </td><td>Implemented</td></tr>
     <tr><td>exit(returnValue)                   </td><td>Implemented</td></tr>
+    <tr><td>fullyDecodeUrl(url)</td><td></td></tr>
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
+    <tr><td>loadModule(moduleSource, filename)  </td><td></td></tr>
     <tr><td>onerror(msg, trace)                 </td><td>Implemented</td></tr>
+    <tr><td>proxy()</td><td></td></tr>
+    <tr><td>resolveRelativeUrl(url, base)</td><td></td></tr>
+    <tr><td>setProxy(ip, port, proxyType, user, password)</td><td></td></tr>
 </table>
 
 # slimer object
@@ -110,6 +118,7 @@ It will contain API that does not exists in PhantomJS.
                                                         property of the response object received by your <br>
                                                         onResourceReceived callback (SlimerJS only)</td></tr>
     <tr><td>cookies                             </td><td>Implemented</td></tr>
+    <tr><td>cookieJar                             </td><td></td></tr>
     <tr><td>customHeaders                       </td><td>Implemented</td></tr>
     <tr><td>event                               </td><td>Implemented</td></tr>
     <tr><td>focusedFrameName                    </td><td>Implemented</td></tr>
@@ -121,6 +130,8 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>framesCount                         </td><td>Implemented</td></tr>
     <tr><td>framesName                          </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented</td></tr>
+    <tr><td>loading                             </td><td></td></tr>
+    <tr><td>loadingProgress                     </td><td></td></tr>
     <tr><td>navigationLocked                    </td><td>Implemented</td></tr>
     <tr><td>offlineStoragePath                  </td><td>Implemented</td></tr>
     <tr><td>offlineStorageQuota                 </td><td>Implemented</td></tr>
@@ -158,6 +169,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>childFramesCount()                  </td><td>Implemented. deprecated</td></tr>
     <tr><td>childFramesName()                   </td><td>Implemented. deprecated</td></tr>
     <tr><td>clearCookies()                      </td><td>Implemented</td></tr>
+    <tr><td>clearMemoryCache()                  </td><td></td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
     <tr><td>currentFrameName()                  </td><td>Implemented. deprecated</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
@@ -186,6 +198,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td>Implemented</td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
     <tr><td>setContent(content, url)            </td><td>Implemented</td></tr>
+    <tr><td>setProxy(url)</td><td></td></tr>
     <tr><td>stop()                              </td><td>Implemented</td></tr>
     <tr><td>stopJavascript()                    </td><td>Implemented</td></tr>
     <tr><td>switchToFocusedFrame()              </td><td>Implemented</td></tr>
@@ -201,7 +214,7 @@ It will contain API that does not exists in PhantomJS.
 ## callbacks
 
 <table>
-    <tr><td>onalert                             </td><td>Implemented</td></tr>
+    <tr><td>onAlert                             </td><td>Implemented</td></tr>
     <tr><td>onAuthPrompt                        </td><td>Implemented (SlimerJS only)</td></tr>
     <tr><td>onCallback                          </td><td>Implemented</td></tr>
     <tr><td>onClosing                           </td><td>Implemented</td></tr>
@@ -216,6 +229,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onNavigationRequested               </td><td>Implemented.<br>SlimerJS issue: navigationType is always "Undefined" and isMainFrame is irrelevant</td></tr>
     <tr><td>onPageCreated                       </td><td>Implemented</td></tr>
     <tr><td>onPrompt                            </td><td>Implemented</td></tr>
+    <tr><td>onRepaintRequested                  </td><td></td></tr>
     <tr><td>onResourceError                     </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
     <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>
@@ -234,6 +248,7 @@ Methods that send signals (private methods):
     <tr><td>loadStarted()                       </td><td>Implemented</td></tr>
     <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td>Implemented</td></tr>
     <tr><td>rawPageCreated(page)                </td><td>Implemented</td></tr>
+    <tr><td>repaintRequested()                    </td><td></td></tr>
     <tr><td>resourceError(resourceError)        </td><td>Implemented</td></tr>
     <tr><td>resourceReceived(request)           </td><td>Implemented</td></tr>
     <tr><td>resourceRequested(resource)         </td><td>Implemented</td></tr>
@@ -261,6 +276,15 @@ Methods that send signals (private methods):
     <tr><td>headers                             </td><td>Implemented</td></tr>
 </table>
 
+## request controller object received by onResourceRequested
+
+<table>
+    <tr><td>abort()                                  </td><td>Implemented</td></tr>
+    <tr><td>changeUrl(url)                              </td><td>Implemented</td></tr>
+    <tr><td>setHeader(key, value, merge)   </td><td>Implemented</td></tr>
+</table>
+
+
 ## response object received by onResourceReceived
 
 <table>
@@ -281,6 +305,19 @@ Methods that send signals (private methods):
 
 </table>
 
+## cookieJar object
+
+<table>
+    <tr><td>cookies</td><td></td></tr>
+    <tr><td>addCookie(cookie)</td><td></td></tr>
+    <tr><td>addCookieFromMap(cookie, url)</td><td></td></tr>
+    <tr><td>addCookiesFromMap(cookiesList, url)</td><td></td></tr>
+    <tr><td>cookiesToMap(url)</td><td></td></tr>
+    <tr><td>cookieToMap(name, url)</td><td></td></tr>
+    <tr><td>deleteCookie(name, url)</td><td></td></tr>
+    <tr><td>clearCookies()</td><td></td></tr>
+    <tr><td>close()</td><td></td></tr>
+</table>
 
 # Module: system
 
@@ -289,12 +326,16 @@ Methods that send signals (private methods):
 ## properties
 
 <table>
+    <tr><td>args                                </td><td>Implemented</td></tr>
+    <tr><td>env                                 </td><td>Implemented</td></tr>
+    <tr><td>isSSLSupported                       </td><td></td></tr>
+    <tr><td>os                                  </td><td>Implemented. SlimerJS only: an additional method isWindows()</td></tr>
     <tr><td>pid                                 </td><td>Not Implemented. Always returns 0.
                                                     It seems Mozilla doesn't provide an API for that</td></tr>
     <tr><td>platform                            </td><td>Implemented</td></tr>
-    <tr><td>os                                  </td><td>Implemented. SlimerJS only: an additional method isWindows()</td></tr>
-    <tr><td>env                                 </td><td>Implemented</td></tr>
-    <tr><td>args                                </td><td>Implemented</td></tr>
+    <tr><td>stdout                                </td><td>Implemented</td></tr>
+    <tr><td>stdin                                </td><td>Implemented</td></tr>
+    <tr><td>stderr                                </td><td>Implemented</td></tr>
 </table>
 
 # Module: FileSystem
@@ -353,7 +394,7 @@ Methods that send signals (private methods):
     <tr><td>toNativeSeparators(path)            </td><td></td></tr>
 </table>
 
-Other additionnal methods not provided in PhantomJS 1.9, but that
+Other additionnal methods not provided in PhantomJS, but that
 are part of the CommonJS FileSystem specification
 
 <table>
@@ -387,6 +428,9 @@ are part of the CommonJS FileSystem specification
     <tr><td>writeLine(data)                     </td><td>Implemented</td></tr>
     <tr><td>flush()                             </td><td>Implemented</td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
+    <tr><td>seek(pos)                           </td><td></td></tr>
+    <tr><td>getEncoding()                       </td><td></td></tr>
+    <tr><td>setEncoding(encoding)               </td><td></td></tr>
 </table>
 
 # Module: webserver
@@ -398,6 +442,9 @@ are part of the CommonJS FileSystem specification
 # WebServer object
 
 <table>
+    <tr><td>port                        </td><td>Implemented</td></tr>
+    <tr><td>close()                        </td><td>Implemented</td></tr>
+    <tr><td>listenOnPort(port, options)                        </td><td></td></tr>
     <tr><td>listen(port, callback) </td><td>Implemented. The callback is called for every
                                             http request. Don't give it if you use one of
                                             register* methods (it calls
@@ -405,6 +452,7 @@ are part of the CommonJS FileSystem specification
                                             callback);</code>)</td></tr>
     <tr><td>listen(port, options, callback) </td><td>This form of call is recognized but
                                             options are ignored in SlimerJS</td></tr>
+    <tr><td>onNewRequest                </td><td></td></tr>
     <tr><td>registerFile(path, filePath)        </td><td>Implemented (SlimerJS only). Maps the given path to a file.</td></tr>
     <tr><td>registerDirectory(path, directoryPath)</td><td>Implemented (SlimerJS only). Maps a path to a dir (directoryPath)</td></tr>
     <tr><td>registerPathHandler(path, callback) </td><td>Implemented (SlimerJS only). Register a callback that will be called when an HTTP client request the given path.</td></tr>
@@ -438,3 +486,26 @@ are part of the CommonJS FileSystem specification
     <tr><td>closeGracefully()                   </td><td>Implemented</td></tr>
 </table>
 
+
+# Module: child_process
+
+<table>
+    <tr><td>spawn(cmd, args, opts)                  </td><td></td></tr>
+    <tr><td>exec(cmd, opts, cb)                     </td><td></td></tr>
+    <tr><td>execFile(file, args, options, callback) </td><td></td></tr>
+    <tr><td>fork(modulePath, args, options)         </td><td></td></tr>
+</table>
+
+## context object (returned by execFile and spawn)
+
+<table>
+    <tr><td>pid                  </td><td></td></tr>
+    <tr><td>kill(signal)                  </td><td></td></tr>
+    <tr><td>on(event, callback)                  </td><td></td></tr>
+    <tr><td>stdout.on(event, callback)                  </td><td></td></tr>
+    <tr><td>stderr.on(event, callback)                  </td><td></td></tr>
+    <tr><td>stdin.write(chunk, encoding)    </td><td></td></tr>
+    <tr><td>stdin.close()                  </td><td></td></tr>
+    <tr><td>stdin.end()                  </td><td></td></tr>
+
+</table>

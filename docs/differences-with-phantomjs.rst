@@ -3,9 +3,8 @@
 Differences with PhantomJS
 ==========================
 
-There are some differences between SlimerJS and PhantomJS 1.9.x
-although we tried to implement the same behaviors of
-PhantomJS APIs.
+There are some differences between SlimerJS and PhantomJS 1.9.x and 2.1
+although we tried to implement the same behaviors of PhantomJS APIs.
 
 PhantomsJS is built on top of Webkit and JavascriptCore (like Safari)
 and SlimerJS is built on top of Gecko and SpiderMonkey (like Firefox).
