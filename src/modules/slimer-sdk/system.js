@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 const { Cc, Ci, Cu, Cr } = require('chrome');
+const DEFAULT_CHARSET = 'UTF-8';
 
 var fs = require('fs');
 
@@ -206,6 +207,12 @@ Object.defineProperty(exports, 'stdout', {
         if (!stdout) {
             stdout = fs.open('/dev/stdout', 'bw');
         }
+
+        var oldWrite = stdout.write;
+        stdout.write = function (data, charset) {
+            oldWrite(data, typeof(charset) === "string" && charset != '' ? charset : DEFAULT_CHARSET);
+        };
+
         return stdout;
     }
 });
@@ -225,6 +232,12 @@ Object.defineProperty(exports, 'stderr', {
         if (!stderr) {
             stderr = fs.open('/dev/stderr', 'bw');
         }
+
+        var oldWrite = stderr.write;
+        stderr.write = function (data, charset) {
+            oldWrite(data, typeof(charset) === "string" && charset != '' ? charset : DEFAULT_CHARSET);
+        };
+
         return stderr;
     }
 });

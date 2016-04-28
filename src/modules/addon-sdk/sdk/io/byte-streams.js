@@ -89,10 +89,22 @@ function ByteWriter(outputStream) {
 
   let manager = new StreamManager(this, stream);
 
-  this.write = function ByteWriter_write(str) {
+  this.write = function ByteWriter_write(str, charset) {
     manager.ensureOpened();
     try {
-      stream.writeBytes(str, str.length);
+      if ((typeof(charset) === "string") && ('' != charset)) {
+        var converter = Cc["@mozilla.org/intl/converter-output-stream;1"].
+        createInstance(Ci.nsIConverterOutputStream);
+        converter.init(
+          stream,
+          charset,
+          0,
+          0
+        );
+        converter.writeString(String(str));
+      } else {
+        stream.writeBytes(str, str.length);
+      }
     }
     catch (err) {
       throw new Error("Error writing to stream: " + err);
