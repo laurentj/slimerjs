@@ -133,7 +133,7 @@ function TextReader(inputStream, charset) {
  *        If not given, "UTF-8" is assumed.  See nsICharsetConverterManager.idl
  *        for documentation on how to determine other valid values for this.
  */
-function TextWriter(outputStream, charset) {
+function TextWriter(outputStream, charset, nobuffer) {
   const self = this;
   charset = checkCharset(charset);
 
@@ -182,6 +182,9 @@ function TextWriter(outputStream, charset) {
       len = istream.available();
     }
     istream.close();
+    if (nobuffer) {
+        stream.flush();
+    }
   };
 
   this.writeLine = function TextWriter_write(str) {
