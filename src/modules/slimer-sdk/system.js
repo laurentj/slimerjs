@@ -204,7 +204,7 @@ Object.defineProperty(exports, 'stdout', {
             }
         }
         if (!stdout) {
-            stdout = fs.open('/dev/stdout', 'bw');
+            stdout = fs.open('/dev/stdout', { mode:'w', nobuffer:true});
         }
         return stdout;
     }
@@ -223,7 +223,7 @@ Object.defineProperty(exports, 'stderr', {
             }
         }
         if (!stderr) {
-            stderr = fs.open('/dev/stderr', 'bw');
+            stderr = fs.open('/dev/stderr', { mode:'w', nobuffer:true});
         }
         return stderr;
     }

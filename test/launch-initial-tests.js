@@ -91,7 +91,7 @@ var system = require("system");
 console.log("\n------ you should see the output of system.stdout\noutput:")
 
 system.stdout.write("Hello");
-system.stdout.write(" World");
+system.stdout.write(" World - character with accent: ąćęłńśóźż");
 system.stderr.write(" message from system.stderr");
 console.log("\n------ check yourself if following values are ok")
 
