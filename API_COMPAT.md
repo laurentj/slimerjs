@@ -22,7 +22,7 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>--local-storage-quota=number         </td><td>Implemented</td></tr>
     <tr><td>--local-to-remote-url-access=[yes|no]</td><td></td></tr>
     <tr><td>--max-disk-cache-size=size           </td><td>Implemented</td></tr>
-    <tr><td>--output-encoding=encoding           </td><td></td></tr>
+    <tr><td>--output-encoding=encoding           </td><td>Implemented</td></tr>
     <tr><td>--proxy=address:port                 </td><td>Implemented</td></tr>
     <tr><td>--proxy-auth=username:password       </td><td>Implemented</td></tr>
     <tr><td>--proxy-type=[http|socks5|none|auto|system|config-url]</td><td>Implemented</td></tr>
@@ -52,7 +52,7 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>cookiesEnabled                      </td><td>Implemented</td></tr>
     <tr><td>defaultPageSettings                 </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented (deprecated)</td></tr>
-    <tr><td>outputEncoding                      </td><td></td></tr>
+    <tr><td>outputEncoding                      </td><td>Implemented (with support of special value 'binary' for system.stdout, Slimerjs only)</td></tr>
     <tr><td>page                                </td><td>Not implemented. Irrelevant for SlimerJS</td></tr>
     <tr><td>remoteDebugPort                     </td><td></td></tr>
     <tr><td>scriptName                          </td><td>Implemented</td></tr>

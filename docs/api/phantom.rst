@@ -178,6 +178,18 @@ a message and a stack as parameters.
     }
 
 
+.. _phantom-outputEncoding:
+
+outputEncoding
+-----------------------------------------
+
+get or set the encoding for the output (system.stdout, system.stderr, console.log).
+Not supported on Windows.
+
+Special value "binary" allows to output binary content on the standard output
+with system.stdout.
+
+
 .. _phantom-scriptName:
 
 scriptName
@@ -200,9 +212,4 @@ containing three properties, ``major``, ``minor``, ``patch``:
 
     var v = phantom.version;
     console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch);
-
-
-
-
-
 

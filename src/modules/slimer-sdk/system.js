@@ -191,21 +191,41 @@ var stdout = null;
 var stderr = null;
 var stdin = null;
 
+var currentEncoding = '';
+
+function getOutput(file, stream) {
+    if (_isWindows) {
+        return {
+            write: dump,
+            writeLine: function (data) {
+                dump(data + '\n');
+            }
+        }
+    }
+    if (stream) {
+        if (currentEncoding == slConfiguration.outputEncoding) {
+            return stream;
+        }
+        stream.close();
+    }
+    currentEncoding = slConfiguration.outputEncoding;
+    if (currentEncoding == 'binary') {
+        stream = fs.open(file, { mode:'bw'});
+    }
+    else {
+        stream = fs.open(file,
+                         { mode:'w',
+                           charset:currentEncoding,
+                           nobuffer:true});
+    }
+    return stream;
+}
+
 Object.defineProperty(exports, 'stdout', {
     enumerable: true,
     writeable: false,
     get: function() {
-        if (_isWindows) {
-            return {
-                write: dump,
-                writeLine: function (data) {
-                    dump(data + '\n');
-                }
-            }
-        }
-        if (!stdout) {
-            stdout = fs.open('/dev/stdout', { mode:'w', nobuffer:true});
-        }
+        stdout = getOutput('/dev/stdout', stdout);
         return stdout;
     }
 });
@@ -214,21 +234,10 @@ Object.defineProperty(exports, 'stderr', {
     enumerable: true,
     writeable: false,
     get: function() {
-        if (_isWindows) {
-            return {
-                write: dump,
-                writeLine: function (data) {
-                    dump(data + '\n');
-                }
-            }
-        }
-        if (!stderr) {
-            stderr = fs.open('/dev/stderr', { mode:'w', nobuffer:true});
-        }
+        stderr = getOutput('/dev/stderr', stderr);
         return stderr;
     }
 });
-
 
 Object.defineProperty(exports, 'stdin', {
     enumerable: true,

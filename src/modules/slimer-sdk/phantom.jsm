@@ -40,17 +40,19 @@ var phantom = {
     },
 
     /**
-     * @notimplemented
+     * get the encoding use for the output on the terminal
      */
     get outputEncoding() {
-        return 'UTF-8';
+        return slConfiguration.outputEncoding;
     },
 
     /**
-     * @notimplemented
+     * set the encoding use for the output on the terminal.
+     * Supports the special value "binary" to output
+     * binary content on the standard output stream.
      */
     set outputEncoding(val) {
-        
+        slConfiguration.outputEncoding = val;
     },
 
     // ------------------------  cookies

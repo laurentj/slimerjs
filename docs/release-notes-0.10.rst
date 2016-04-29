@@ -21,9 +21,12 @@ New features and API
 - Support of ``webpage.onResourceTimeout`` and ``webpage.settings.resourceTimeout``
 - ``phantom.webdriverMode``
 - Implementation of ``system.stdin`` and ``system.stderr``. And ``system.stdout``
-  is now a true output stream.
+  is now a true output stream. It takes care about output encoding setting.
+- Support of command line option ``--output-encoding`` and ``phantom.outputEncoding``.
+  It supports the value 'binary' to output binary content with system.stdout.
 - Implementation of ``stream.atEnd`` and ``stream.readLine()``
 - Implementation of ``phantom.aboutToExit``
+
 
 Improvements
 ------------

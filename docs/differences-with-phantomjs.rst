@@ -101,6 +101,7 @@ In the API
   some limitations in the Gecko API).
 - Callbacks ``webpage.onLoadStarted`` and ``webpage.onLoadFinished`` receive additionnal
   parameters in SlimerJS (the url, a boolean indicated if it is in a frame...)
-
+- You can output binary content on the standard output stream (weither with
+  ``fs.open('/dev/stdout')``, ``webpage.render('/dev/stdout')`` or ``system.stdout``)
 
 

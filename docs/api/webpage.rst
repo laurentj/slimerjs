@@ -1132,6 +1132,19 @@ The options object is the same as in ``render()``.
 
 Not in PhantomJS.
 
+Note: you can use the result to output on the standard output, by setting
+``phantom.outputEncoding`` to "binary".
+
+.. code-block:: javascript
+
+    phantom.outputEncoding = 'binary';
+    // ....
+    let bytes = page.renderBytes({format:'png'})
+    if (bytes) {
+        system.stdout.write(bytes);
+    }
+
+
 .. _webpage-sendEvent:
 
 sendEvent(eventType, arg1, arg2, button, modifier)
