@@ -66,7 +66,7 @@ Fixed PhantomJS conformance issues
 - a module should be able to call the ``return`` keyword
 - support additionnals arguments on ``webpage.evaluateAsync()``
 - Callback given to ``webpage.open()`` is now called when the url is invalid
-- Like in PhantomJS 2.0, ``phantom.args`` and ``phantom.scriptName`` are deprecated
+- Like in PhantomJS 1.9 (and removed in PhantomJS 2.0), ``phantom.args`` and ``phantom.scriptName`` are deprecated
 - webpage.viewportSize should accept strings as values (#313)
 - webpage.clipRect should accept object with missing properties (#314)
 - On windows, system.os.version matches now public version number, not internal
@@ -74,6 +74,7 @@ Fixed PhantomJS conformance issues
 - ``cookie.expires`` is not anymore an integer, but a date formated as string
 - ``fs.read()``, ``fs.write()`` and ``fs.open()`` can now accept an object
   as mode, to indicate both the mode and the charset.
+- Compatible version of Phantomjs is now 1.9.8
 
 Other informations about this release
 -------------------------------------
