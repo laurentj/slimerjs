@@ -26,6 +26,7 @@ New features and API
   It supports the value 'binary' to output binary content with system.stdout.
 - Implementation of ``stream.atEnd`` and ``stream.readLine()``
 - Implementation of ``phantom.aboutToExit``
+- Implementation of ``phantom.resolveRelativeUrl(url, base)`` (compatible with Phantomjs 2.1)
 
 
 Improvements
@@ -74,7 +75,9 @@ Fixed PhantomJS conformance issues
 - ``cookie.expires`` is not anymore an integer, but a date formated as string
 - ``fs.read()``, ``fs.write()`` and ``fs.open()`` can now accept an object
   as mode, to indicate both the mode and the charset.
-- Compatible version of Phantomjs is now 1.9.8
+- Compatible version of Phantomjs is now 1.9.8 (not 2.1, too many features are still missing,
+  even if some 2.1 features are implemented)
+
 
 Other informations about this release
 -------------------------------------

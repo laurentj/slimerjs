@@ -192,6 +192,13 @@ Not supported on Windows.
 Special value "binary" allows to output binary content on the standard output
 with system.stdout.
 
+.. _phantom-resolveRelativeUrl:
+
+
+resolveRelativeUrl(url, base)
+------------------------------------------
+
+Resolve a URL relative to a base.
 
 .. _phantom-scriptName:
 

@@ -85,7 +85,7 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>loadModule(moduleSource, filename)  </td><td></td></tr>
     <tr><td>onerror(msg, trace)                 </td><td>Implemented</td></tr>
     <tr><td>proxy()                             </td><td>(phjs 2.1)</td></tr>
-    <tr><td>resolveRelativeUrl(url, base)       </td><td>(phjs 2.1)</td></tr>
+    <tr><td>resolveRelativeUrl(url, base)       </td><td>Implemented (phjs 2.1)</td></tr>
     <tr><td>setProxy(ip, port, proxyType, user, password)</td><td>(phjs 2.0)</td></tr>
 </table>
 

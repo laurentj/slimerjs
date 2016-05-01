@@ -78,6 +78,13 @@ describe("phantom object", function() {
         phantom.defaultPageSettings.userName = 'laurent';
         expect(phantom.defaultPageSettings.userName).toEqual(undefined);
     });
+
+    it("resolveRelativeUrl", function() {
+        expect(phantom.resolveRelativeUrl(
+                            "../scripts/foo.js",
+                            "http://example.com/topic/page.html"))
+            .toEqual("http://example.com/scripts/foo.js");
+    });
 });
 
 if ("slimer" in this) {
