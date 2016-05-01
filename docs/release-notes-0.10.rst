@@ -97,9 +97,17 @@ Other informations about this release
 Missing features in SlimerJS 0.10
 ---------------------------------
 
-Some few options for the command line  and settings on the webpage object
-are not supported yet. Some of them are the possibility to deactivate
-SSL verification and Web security (CORS etc)
+Comparing to PhantomJS 2.1, some few options for the command line
+and features on some object are missing. Among of them:
+
+- the possibility to deactivate SSL verification and Web security (CORS etc)
+- the possibility to set ssl client certificate
+- offline storage settings
+- some proxy methods
+- the possibility to set a specific cookieJar to each web page object
+- loading and loadingProgress booleans on webpage
+- listener of repaint events on webpage
+- the child_process module
 
 You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_
 to know details.

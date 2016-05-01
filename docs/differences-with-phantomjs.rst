@@ -21,6 +21,7 @@ We found most of them during the port of CasperJS on SlimerJS.
 Javascript Engine
 ------------------
 
+- SlimerJS' javascript engine implements most of ES6 features
 - The property ``name`` on JS functions is read only in Gecko.
 - Error message for a ``ReferenceError`` is not strictly equal between Gecko and Webkit.
 - The name of an exception for a syntax error is ``"SyntaxError"`` in gecko, and ``"SYNTAX_ERR"``
@@ -104,4 +105,5 @@ In the API
 - You can output binary content on the standard output stream (weither with
   ``fs.open('/dev/stdout')``, ``webpage.render('/dev/stdout')`` or ``system.stdout``)
 
+Some few PhantomJS features are still missing in SlimerJS. See release notes.
 
