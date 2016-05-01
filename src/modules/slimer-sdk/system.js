@@ -254,3 +254,36 @@ Object.defineProperty(exports, 'stdin', {
     }
 });
 
+Object.defineProperty(exports, 'standardout', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        stdout = getOutput('/dev/stdout', stdout);
+        return stdout;
+    }
+});
+
+Object.defineProperty(exports, 'standarderr', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        stderr = getOutput('/dev/stderr', stderr);
+        return stderr;
+    }
+});
+
+Object.defineProperty(exports, 'standardin', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        if (_isWindows) {
+            throw Error("system.standardin is not supported on Windows")
+        }
+        if (!stdin) {
+            // it fails if we open with "rb" mode
+            stdin = fs.open('/dev/stdin', 'rb');
+        }
+        return stdin;
+    }
+});
+

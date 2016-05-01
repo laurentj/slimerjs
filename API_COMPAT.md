@@ -356,12 +356,12 @@ Methods that send signals (private methods):
     <tr><td>pid                                 </td><td>Not Implemented. Always returns 0.
                                                     It seems Mozilla doesn't provide an API for that</td></tr>
     <tr><td>platform                            </td><td>Implemented</td></tr>
-    <tr><td>stdout                                </td><td>Implemented</td></tr>
+    <tr><td>stdout                               </td><td>Implemented</td></tr>
     <tr><td>stdin                                </td><td>Implemented</td></tr>
-    <tr><td>stderr                                </td><td>Implemented</td></tr>
-    <tr><td>standardout                                </td><td> (phjs 2.0)</td></tr>
-    <tr><td>standardin                                </td><td> (phjs 2.0)</td></tr>
-    <tr><td>standarderr                                </td><td> (phjs 2.0)</td></tr>
+    <tr><td>stderr                               </td><td>Implemented</td></tr>
+    <tr><td>standardout                          </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>standardin                           </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>standarderr                          </td><td>Implemented (phjs 2.0)</td></tr>
 </table>
 
 # Module: FileSystem

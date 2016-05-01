@@ -20,8 +20,10 @@ New features and API
    webpage having long running scripts (compatible with Phantomjs 2)
 - Support of ``webpage.onResourceTimeout`` and ``webpage.settings.resourceTimeout``
 - ``phantom.webdriverMode``
-- Implementation of ``system.stdin`` and ``system.stderr``. And ``system.stdout``
+- Implementation of ``system.stdin``, ``system.stderr``, and ``system.stdout``
   is now a true output stream. It takes care about output encoding setting.
+- Implementation of ``system.standardin``, ``system.standarderr``, and ``system.standardout``
+  (Aliases of stdin, stdout, stderr properties...)  (compatible with Phantomjs 2)
 - Support of command line option ``--output-encoding`` and ``phantom.outputEncoding``.
   It supports the value 'binary' to output binary content with system.stdout.
 - Implementation of ``stream.atEnd`` and ``stream.readLine()``

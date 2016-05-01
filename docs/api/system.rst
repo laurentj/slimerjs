@@ -62,6 +62,27 @@ An object containing values of all environment variable.
    var myHome = system.env['HOME'];
 
 
+.. _system-standarderr:
+
+standarderr
+-----------------------------------------
+
+Same as ``stderr``.
+
+.. _system-standardin:
+
+standardin
+-----------------------------------------
+
+Same as ``stdin``.
+
+.. _system-standardout:
+
+standardout
+-----------------------------------------
+
+Same as ``stdout``.
+
 .. _system-stdout:
 
 stdout
