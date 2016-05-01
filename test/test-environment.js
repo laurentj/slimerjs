@@ -85,6 +85,11 @@ describe("phantom object", function() {
                             "http://example.com/topic/page.html"))
             .toEqual("http://example.com/scripts/foo.js");
     });
+
+    it("fullyDecodeUrl", function() {
+        expect(phantom.fullyDecodeUrl("https://ja.wikipedia.org/wiki/%E8%87%A8%E6%B5%B7%E5%AD%A6%E6%A0%A1"))
+            .toEqual("https://ja.wikipedia.org/wiki/臨海学校");
+    });
 });
 
 if ("slimer" in this) {

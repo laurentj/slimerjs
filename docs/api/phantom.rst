@@ -130,6 +130,13 @@ It accepts an optional exit code. Default is 0.
 Note: your script may continue to be executed after the call of this method, because of
 the asynchronous behavior of this function.
 
+.. _phantom-fullyDecodeUrl:
+
+fullyDecodeUrl(url)
+------------------------------------
+
+Decode a URL to human-readable form.
+
 .. _phantom-injectJs:
 
 injectJs(filename)

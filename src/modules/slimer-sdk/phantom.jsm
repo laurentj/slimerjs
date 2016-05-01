@@ -232,6 +232,14 @@ var phantom = {
         }
     },
 
+    /**
+     * Decode a URL to human-readable form.
+     * @param url The URL to be decoded.
+     */
+    fullyDecodeUrl : function(url) {
+        return decodeURI(url);
+    },
+
     __exposedProps__ : {
         cookies: 'rw',
         cookiesEnabled: 'rw',
@@ -249,7 +257,8 @@ var phantom = {
         webdriverMode: 'r',
         outputEncoding: 'rw',
         aboutToExit : 'r',
-        resolveRelativeUrl: 'r'
+        resolveRelativeUrl: 'r',
+        fullyDecodeUrl: 'r'
     }
 }
 

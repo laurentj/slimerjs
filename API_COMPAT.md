@@ -80,7 +80,7 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
     <tr><td>debugExit(returnValue)              </td><td>Implemented</td></tr>
     <tr><td>exit(returnValue)                   </td><td>Implemented</td></tr>
-    <tr><td>fullyDecodeUrl(url)                 </td><td>(phjs 2.1)</td></tr>
+    <tr><td>fullyDecodeUrl(url)                 </td><td>Implemented (phjs 2.1)</td></tr>
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
     <tr><td>loadModule(moduleSource, filename)  </td><td></td></tr>
     <tr><td>onerror(msg, trace)                 </td><td>Implemented</td></tr>

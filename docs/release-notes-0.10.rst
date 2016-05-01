@@ -27,6 +27,7 @@ New features and API
 - Implementation of ``stream.atEnd`` and ``stream.readLine()``
 - Implementation of ``phantom.aboutToExit``
 - Implementation of ``phantom.resolveRelativeUrl(url, base)`` (compatible with Phantomjs 2.1)
+- Implementation of ``phantom.fullyDecodeUrl(url)`` (compatible with Phantomjs 2.1)
 
 
 Improvements
