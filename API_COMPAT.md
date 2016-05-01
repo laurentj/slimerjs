@@ -455,8 +455,8 @@ are part of the CommonJS FileSystem specification
     <tr><td>flush()                             </td><td>Implemented</td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
     <tr><td>seek(pos)                           </td><td></td></tr>
-    <tr><td>getEncoding()                       </td><td>(phjs 2.0)</td></tr>
-    <tr><td>setEncoding(encoding)               </td><td>(phjs 2.0)</td></tr>
+    <tr><td>getEncoding()                       </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>setEncoding(encoding)               </td><td>Implemented (phjs 2.0)</td></tr>
 </table>
 
 # Module: webserver

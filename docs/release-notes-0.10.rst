@@ -78,6 +78,7 @@ Fixed PhantomJS conformance issues
 - ``cookie.expires`` is not anymore an integer, but a date formated as string
 - ``fs.read()``, ``fs.write()`` and ``fs.open()`` can now accept an object
   as mode, to indicate both the mode and the charset.
+- added ``setEncoding(encoding)`` and ``getEncoding()`` on file stream (Compatibility with PhantomJS 2.0)
 - Compatible version of Phantomjs is now 1.9.8 (not 2.1, too many features are still missing,
   even if some 2.1 features are implemented)
 
