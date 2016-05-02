@@ -195,12 +195,7 @@ var slLauncher = {
     closeBrowser: function (browser) {
         let win = browser.ownerDocument.defaultView.top;
         win.close();
-    },
-
-    /**
-     * boolean to indicate if SlimerJS is in a closing process. Set by slimer.exit() and phantom.exit()
-     */
-    slimerExiting : false
+    }
 }
 
 /**
@@ -304,8 +299,14 @@ function prepareLoader(scriptInfo) {
 
     function findFileExtension(id, baseFile) {
         let f = isFile(id, baseFile)
-        if (f)
-            return f;
+        if (f) {
+            if (f.isDirectory() && f.parent.leafName == 'node_modules') {
+                baseFile = f;
+            }
+            else {
+                return f;
+            }
+        }
         for(let ext in extensions) {
             f = isFile(id+ext, baseFile);
             if (f)

@@ -9,6 +9,7 @@ Components.utils.import('resource://slimerjs/slUtils.jsm');
 Components.utils.import('resource://slimerjs/slLauncher.jsm');
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import('resource://slimerjs/slCookiesManager.jsm');
+Components.utils.import('resource://slimerjs/slExit.jsm');
 
 
 
@@ -39,17 +40,19 @@ var phantom = {
     },
 
     /**
-     * @notimplemented
+     * get the encoding use for the output on the terminal
      */
     get outputEncoding() {
-        return 'UTF-8';
+        return slConfiguration.outputEncoding;
     },
 
     /**
-     * @notimplemented
+     * set the encoding use for the output on the terminal.
+     * Supports the special value "binary" to output
+     * binary content on the standard output stream.
      */
     set outputEncoding(val) {
-        
+        slConfiguration.outputEncoding = val;
     },
 
     // ------------------------  cookies
@@ -110,7 +113,7 @@ var phantom = {
      * return the version of PhantomJS on which this implementation is compatible
      */
     get version() {
-        return { major: 1, minor: 9, patch: 2, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+        return { major: 1, minor: 9, patch: 8, __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
     },
 
     get defaultPageSettings () {
@@ -126,17 +129,11 @@ var phantom = {
      * @fixme in "debug mode", phantomjs does not really exit
      */
     exit : function(code) {
-        let c = +code || 0;
-        if (slLauncher.slimerExiting) {
-            return
-        }
-        slUtils.writeExitStatus(c);
-        slLauncher.slimerExiting = true;
-        Services.startup.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+        slExit.exit(code);
     },
 
     debugExit : function(code) {
-        this.exit(code);
+        slExit.exit(code);
     },
     
     /**
@@ -198,6 +195,51 @@ var phantom = {
         return (slConfiguration.webdriver != '');
     },
 
+    get aboutToExit () {
+        return {
+            connect: function(callback) {
+                slExit.addCallback(callback);
+            },
+            disconnect : function(callback) {
+                slExit.removeCallback(callback);
+            },
+            __exposedProps__ : {
+                connect : 'r',
+                disconnect : 'r'
+            }
+        }
+    },
+
+    /**
+     * resolve the given url from the base
+     *
+     * code from the addons sdk sdk/url.js
+     * @param string url
+     * @param string base
+     * 
+     */
+    resolveRelativeUrl: function(url, base) {
+        try {
+            let baseURI = base ? Services.io.newURI(base, null, null) : null;
+            return Services.io.newURI(url, null, baseURI).spec;
+        }
+        catch (e if e.result == Cr.NS_ERROR_MALFORMED_URI) {
+            throw new Error("malformed URI: " + url);
+        }
+        catch (e if (e.result == Cr.NS_ERROR_FAILURE ||
+                     e.result == Cr.NS_ERROR_ILLEGAL_VALUE)) {
+            throw new Error("invalid URI: " + url);
+        }
+    },
+
+    /**
+     * Decode a URL to human-readable form.
+     * @param url The URL to be decoded.
+     */
+    fullyDecodeUrl : function(url) {
+        return decodeURI(url);
+    },
+
     __exposedProps__ : {
         cookies: 'rw',
         cookiesEnabled: 'rw',
@@ -213,7 +255,10 @@ var phantom = {
         defaultErrorHandler : 'r',
         defaultPageSettings : 'r',
         webdriverMode: 'r',
-        outputEncoding: 'rw'
+        outputEncoding: 'rw',
+        aboutToExit : 'r',
+        resolveRelativeUrl: 'r',
+        fullyDecodeUrl: 'r'
     }
 }
 

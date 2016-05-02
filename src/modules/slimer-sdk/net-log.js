@@ -1062,6 +1062,7 @@ ProgressListener.prototype = {
                 if (typeof(this.options.onLoadFinished) === "function") {
                     let success = "success";
                     try {
+                        request.QueryInterface(Ci.nsIHttpChannel);
                         if (request.responseStatus == 204 || request.responseStatus == 205) {
                             success = 'fail';
                         }

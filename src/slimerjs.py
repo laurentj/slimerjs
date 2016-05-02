@@ -83,6 +83,8 @@ def showHelp():
     #print("                                     listens on the specified port")
     #print("  --remote-debugger-autorun=<bool>   Runs the script in the debugger immediately")
     #print("                                     (default is no)")
+    print("  --output-encoding=<enc>            Sets the encoding for the terminal output")
+    print("                                     (default is 'utf8')")
     print("  --proxy=<proxy url>                Sets the proxy server")
     print("  --proxy-auth=<username:password>   Provides authentication information for the")
     print("                                     proxy")

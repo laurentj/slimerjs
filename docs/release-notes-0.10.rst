@@ -8,7 +8,7 @@ Release Notes of SlimerJS 0.10
 version 0.10.0
 ==============
 
-Still in development
+SlimerJS 0.10.0 has been released on May 2 2016.
 
 New features and API
 ---------------------
@@ -20,9 +20,17 @@ New features and API
    webpage having long running scripts (compatible with Phantomjs 2)
 - Support of ``webpage.onResourceTimeout`` and ``webpage.settings.resourceTimeout``
 - ``phantom.webdriverMode``
-- Implementation of ``system.stdin`` and ``system.stderr``. And ``system.stdout``
-  is now a true output stream.
+- Implementation of ``system.stdin``, ``system.stderr``, and ``system.stdout``
+  is now a true output stream. It takes care about output encoding setting.
+- Implementation of ``system.standardin``, ``system.standarderr``, and ``system.standardout``
+  (Aliases of stdin, stdout, stderr properties...)  (compatible with Phantomjs 2)
+- Support of command line option ``--output-encoding`` and ``phantom.outputEncoding``.
+  It supports the value 'binary' to output binary content with system.stdout.
 - Implementation of ``stream.atEnd`` and ``stream.readLine()``
+- Implementation of ``phantom.aboutToExit``
+- Implementation of ``phantom.resolveRelativeUrl(url, base)`` (compatible with Phantomjs 2.1)
+- Implementation of ``phantom.fullyDecodeUrl(url)`` (compatible with Phantomjs 2.1)
+
 
 Improvements
 ------------
@@ -50,7 +58,10 @@ Fixed bugs
   set it to true to returns the extension without a dot, like in previous SlimerJS
   version.
 - Fix ``fs.absolute()`` with relative path containing ".." on Windows (#347)
-
+- Fix support of multiple file for ``<input type=file>`` with ``webpage.uploadFile``
+  and ``webpage.onFilePicker``
+- ``webpage.onError`` did not receive a full stack in some case. This is not the
+  case anymore since some improvements have been made into Gecko.
 
 
 Fixed PhantomJS conformance issues
@@ -59,29 +70,44 @@ Fixed PhantomJS conformance issues
 - a module should be able to call the ``return`` keyword
 - support additionnals arguments on ``webpage.evaluateAsync()``
 - Callback given to ``webpage.open()`` is now called when the url is invalid
-- Like in PhantomJS 2.0, ``phantom.args`` and ``phantom.scriptName`` are deprecated
+- Like in PhantomJS 1.9 (and removed in PhantomJS 2.0), ``phantom.args`` and ``phantom.scriptName`` are deprecated
 - webpage.viewportSize should accept strings as values (#313)
 - webpage.clipRect should accept object with missing properties (#314)
 - On windows, system.os.version matches now public version number, not internal
   version number (#344)
-- ``cookie.expires`` is not any more an integer, but a date formated as string
+- ``cookie.expires`` is not anymore an integer, but a date formated as string
+- ``fs.read()``, ``fs.write()`` and ``fs.open()`` can now accept an object
+  as mode, to indicate both the mode and the charset.
+- added ``setEncoding(encoding)`` and ``getEncoding()`` on file stream (Compatibility with PhantomJS 2.0)
+- Compatible version of Phantomjs is now 1.9.8 (not 2.1, too many features are still missing,
+  even if some 2.1 features are implemented)
+
 
 Other informations about this release
 -------------------------------------
 
-- Compatibility with Firefox 40 to Firefox 45.
+- Compatibility with Firefox 40 to Firefox 46.
 - Compatibility is no more guaranteed on Firefox having version lower than 38.
 - There are no anymore packages including XulRunner, the Firefox runtime, since
   Mozilla has killed the XulRunner project. So you need to install Firefox
   in order to run SlimerJS.
+- Compatibility with CasperJS 1.1 has been fixed
 
 
 Missing features in SlimerJS 0.10
 ---------------------------------
 
-Some few options for the command line  and settings on the webpage object
-are not supported yet. Some of them are the possibility to deactivate
-SSL verification and Web security (CORS etc)
+Comparing to PhantomJS 2.1, some few options for the command line
+and features on some object are missing. Among of them:
+
+- the possibility to deactivate SSL verification and Web security (CORS etc)
+- the possibility to set ssl client certificate
+- offline storage settings
+- some proxy methods
+- the possibility to set a specific cookieJar to each web page object
+- loading and loadingProgress booleans on webpage
+- listener of repaint events on webpage
+- the child_process module
 
 You can read the `compatibility table <https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md>`_
 to know details.
@@ -97,9 +123,17 @@ Known issues
 Contributors for this release
 -----------------------------
 
-- Rémi Emonet (webpage.paperSize)
 - Dimitar Angelov (webpage.paperSize and other pdf options for webpage.render())
-- 
+- Rémi Emonet (webpage.paperSize)
+- Will Hilton (--user-agent=string, --viewport-width and --viewport-height options)
+- Sergey Kogan (fix issues about exit code)
+- Quentin Le Calvez (Fix console.log so it can take multiple arguments)
+- Jerry Lundström (Fix support with Gecko 40.*)
+- Kevin Petit (fix slimerjs.bat about spaces in folders)
+- Delta React User (Remove call to legacy API setCSSViewport)
+- Mark Robson (Api doc, test on webpage.renderBytes, Tests generate perl-style TAP output)
+- Wojciech Skorodecki (Hiding one debug message when debug mode is turned off)
+- René Wagner (doc about addons)
 
 Previous release notes
 ======================

@@ -100,19 +100,8 @@ function _create(parentWebpageInfo) {
         }
         catch(e) {
             if (webpage.onError) {
-                var err = getTraceException(e, '');
-                if (err[1]) {
-                    err[1].forEach(function(item){
-                        if ('line' in item) {
-                            item.line = parseInt(item.line);
-                        }
-                        item.file = item.sourceURL;
-                    })
-                }
-                else {
-                    err[1] = [];
-                }
-                executePageListener(webpage, 'onError', ['Error: '+err[0], err[1]]);
+                let [msg, stackRes] = getTraceException(e, '');
+                executePageListener(webpage, 'onError', ['Error: '+msg, stackRes]);
                 return null;
             }
             else {
@@ -156,15 +145,18 @@ function _create(parentWebpageInfo) {
 
     /**
      * a listener for the console service, to track errors in the content window.
-     * Unfortunately, we don't have no way to retrieve the stack :-/
      */
     var jsErrorListener = {
         observe:function( aMessage ){
+            //dump(" ************** jsErrorListener\n");
             if (!webpage.onError)
                 return;
             try {
                 let msg = aMessage.QueryInterface(Ci.nsIScriptError);
-                //dump(" ************** jsErrorListener  on error:"+msg.message.substr(0,30)+ "("+msg.category+") f:"+msg.flags+" ow:"+msg.outerWindowID+" is:"+webpageUtils.isOurWindow(browser, msg.outerWindowID)+"\n")
+                /*dump(" on error:"+msg.errorMessage+
+                     "("+msg.category+") f:"+msg.flags
+                     +" ow:"+msg.outerWindowID
+                     +" is:"+webpageUtils.isOurWindow(browser, msg.outerWindowID)+"\n")*/
                 let frameUrl = webpageUtils.isOurWindow(browser, msg.outerWindowID);
                 if (msg instanceof Ci.nsIScriptError
                     && !(msg.flags & Ci.nsIScriptError.warningFlag)
@@ -172,19 +164,8 @@ function _create(parentWebpageInfo) {
                     && frameUrl
                     && msg.category == "content javascript"
                     ) {
-                    let col = 0;
-                    if ('columnNumber' in msg) {
-                        col = msg.columnNumber;
-                    }
-
-                    let stack = [];
-                    stack.push({
-                        file:(msg.sourceName === null? frameUrl:msg.sourceName),
-                        line: msg.lineNumber,
-                        column:col,
-                        'function':null
-                    })
-                    webpage.onError(msg.message, stack);
+                    let [m, stack] = getTraceException(msg, null);
+                    webpage.onError(msg.errorMessage, stack);
                 }
             }
             catch(e) {

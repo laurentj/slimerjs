@@ -16,6 +16,9 @@ Cu.import('resource://slimerjs/slDebug.jsm');
 // to avoid issue on navigator object, see https://github.com/laurentj/slimerjs/issues/373
 Cu.import("resource://gre/modules/Webapps.jsm"); 
 
+var httphandler =  Cc["@mozilla.org/network/protocol;1?name=http"]
+                    .getService(Ci.nsIHttpProtocolHandler);
+
 var defaultUA =  Cc["@mozilla.org/network/protocol;1?name=http"]
                       .getService(Ci.nsIHttpProtocolHandler)
                       .userAgent;
@@ -32,6 +35,7 @@ var optionsSpec = {
     ignoreSslErrors : ['ignore-ssl-errors', 'bool', false, false],
     loadImages: ['load-images', 'bool', true, true],
     localToRemoteUrlAccessEnabled : ['local-to-remote-url-access', 'bool', false, false],
+    outputEncoding : ['output-encoding', 'encoding', 'UTF-8', true],
     proxyType : ['proxy-type', 'proxytype', 'http', true],
     proxy : ['proxy', 'proxy', null, true],
     proxyHost : ['', '', null, false],
@@ -266,6 +270,10 @@ var slConfiguration = {
         return val;
     },
 
+    parse_encoding : function (val, cmdlineOpt) {
+        return val;
+    },
+
     parse_proxytype : function (val, cmdlineOpt) {
         if (val != "" && !(val in availableProxyType)) {
             throw new Error("Invalid value for '"+cmdlineOpt+"' option. It should be auto, system, http, socksv5, none or config-url");
@@ -456,5 +464,6 @@ var slConfiguration = {
     sslProtocol: -1,
     userAgent: defaultUA,
     viewportWidth: 400,
-    viewportHeight: 300
+    viewportHeight: 300,
+    isWindows: /windows/i.test(httphandler.oscpu)
 }

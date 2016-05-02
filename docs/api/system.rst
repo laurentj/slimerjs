@@ -63,23 +63,77 @@ An object containing values of all environment variable.
    var myHome = system.env['HOME'];
 
 
+.. _system-standarderr:
+
+standarderr
+-----------------------------------------
+
+Same as ``stderr``.
+
+.. _system-standardin:
+
+standardin
+-----------------------------------------
+
+Same as ``stdin``.
+
+.. _system-standardout:
+
+standardout
+-----------------------------------------
+
+Same as ``stdout``.
+
 .. _system-stdout:
 
 stdout
 -----------------------------------------
 
-The standard output stream. This is an object with the same API as a file
-opened with the mode "wb" with no encoding.
+The standard output stream.
+This is an object with the same API as a file (/dev/stdout on MacOs and Linux)
+opened with the mode "w" with encoding set by ``phantom.outputEncoding``
+(UTF-8 by default) or ``--output-encoding``.
 
 - ``system.stdout.write('something')``
+
+You can output binary content (for chained commands for example).
+
+
+.. code-block:: javascript
+
+    // myscript.js
+    
+    phantom.outputEncoding = 'binary';
+    
+    var page = require('webpage').create();
+    page.viewportSize = { width:600, height:800 };
+    page.open(url, function(success) {
+        if (success == "success") {
+            let bytes = page.renderBytes({format:'png'})
+            if (bytes) {
+                system.stdout.write(bytes);
+                phantom.exit(0);
+            }
+        }
+        phantom.exit(1);
+    })
+
+And on the command line:
+
+.. code-block:: bash
+
+    slimerjs myscripts.js > image.png
+    slimerjs myscripts.js | convert - test.jpg
+
+
+Note: binary output is not really supported on Windows.
 
 .. _system-stderr:
 
 stderr
 -----------------------------------------
 
-The standard error stream. This is an object with the same API as a file
-opened with the mode "wb" with no encoding.
+The standard error stream. Same behavior of stdout but on /dev/stderr.
 
 On windows, it is the output stream.
 

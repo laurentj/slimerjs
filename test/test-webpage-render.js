@@ -106,8 +106,9 @@ describe("WebPage.render()", function(){
     });
 
     afterEach(function() {
-        if (currentImageFile && fs.exists(currentImageFile))
+        if (currentImageFile && fs.exists(currentImageFile)) {
             fs.remove(currentImageFile);
+        }
 
         if (webpage) {
             webpage.close();
@@ -143,7 +144,7 @@ describe("WebPage.render()", function(){
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
             currentImageFile = 'slimerjs_capture.png';
-            webpage.render(currentImageFile);
+            expect(webpage.render(currentImageFile)).toBeTruthy();
             expect(fs.exists(currentImageFile)).toBeTruthy();
         });
     });
@@ -159,7 +160,7 @@ describe("WebPage.render()", function(){
         waitsFor(function(){ return loaded;}, 1000);
         runs(function(){
             currentImageFile = 'slimerjs_capture.pdf';
-            webpage.render(currentImageFile);
+            expect(webpage.render(currentImageFile)).toBeTruthy();
             expect(fs.exists(currentImageFile)).toBeTruthy();
         });
     });
@@ -210,7 +211,7 @@ describe("WebPage.render()", function(){
         });
         waitsFor(function(){ return imageResultLoaded;}, 1300);
         runs(function(){
-            resultData = expectedFixPage.evaluate(function(idx){ return compareImages(idx); }, resultNumber);
+            let resultData = expectedFixPage.evaluate(function(idx){ return compareImages(idx); }, resultNumber);
             expect(resultData[0][1]).toEqual(resultData[0][0]); // width
             expect(resultData[1][1]).toEqual(resultData[1][0]); // height
             expect(resultData[2][1]).toEqual(resultData[2][0]); // length of data

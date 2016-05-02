@@ -59,17 +59,19 @@ var webpageUtils = {
         }
         // probably the window is an iframe of the webpage. check if this is
         // the case
-        // FIXME use windowMediator.getOuterWindowWithId https://bugzilla.mozilla.org/show_bug.cgi?id=861495
-        let iframe = domWindowUtils.getOuterWindowWithId(outerWindowId);
+        let iframe = Services.wm.getOuterWindowWithId(outerWindowId);
         if (iframe) {
             let dwu = iframe.top.QueryInterface(Ci.nsIInterfaceRequestor)
                             .getInterface(Ci.nsIDOMWindowUtils);
             if (dwu.outerWindowID == domWindowUtils.outerWindowID) {
-                let frameLoader = iframe.QueryInterface(Components.interfaces.nsIFrameLoaderOwner).frameLoader;
-                if (!frameLoader) {
+                let frameLoaderOwner = null;
+                try {
+                    frameLoaderOwner = iframe.QueryInterface(Components.interfaces.nsIFrameLoaderOwner);
+                } catch(e) {}
+                if (!frameLoaderOwner || !frameLoaderOwner.frameLoader) {
                     return browser.currentURI.spec+"#from-an-unknown-iframe";
                 }
-                return frameLoader.docShell.QueryInterface(Components.interfaces.nsIWebNavigation).currentURI.spec;
+                return frameLoaderOwner.frameLoader.docShell.QueryInterface(Components.interfaces.nsIWebNavigation).currentURI.spec;
             }
         }
         return false;
@@ -560,17 +562,20 @@ var webpageUtils = {
         printSettings.resolution              = 300;
         printSettings.paperSizeUnit           = Ci.nsIPrintSettings.kPaperSizeInches;
         printSettings.scaling                 = options.ratio;
-//        printSettings.shrinkToFit             = false;
 
         if ('width' in paperSize && 'height' in paperSize) {
-            printSettings.paperSizeType =  printSettings.kPaperSizeDefined;
+            if ('paperSizeType' in printSettings) { // FX<=45
+                printSettings.paperSizeType =  Ci.nsIPrintSettings.kPaperSizeDefined;
+            }
             printSettings.paperName = 'Custom';
             printSettings.paperWidth = stringToInches(paperSize.width);
             printSettings.paperHeight = stringToInches(paperSize.height);
             printSettings.shrinkToFit = false;
         } else {
             // for now, we trust the printer config to have the format we want
-            printSettings.paperSizeType  = printSettings.kPaperSizeNativeData;
+            if ('paperSizeType' in printSettings) { // FX<=45
+                printSettings.paperSizeType  = Ci.nsIPrintSettings.kPaperSizeNativeData;
+            }
             printSettings.paperName = paperSize.format;
             if (paperSize.format in this.paperFormat) {
                 // it seems that paper width and height are not set automatically...
@@ -579,9 +584,9 @@ var webpageUtils = {
             }
             if ("orientation" in paperSize) {
                 if (paperSize.orientation == "landscape") {
-                    printSettings.orientation = printSettings.kLandscapeOrientation;
+                    printSettings.orientation = Ci.nsIPrintSettings.kLandscapeOrientation;
                 } else {
-                    printSettings.orientation = printSettings.kPortraitOrientation;
+                    printSettings.orientation = Ci.nsIPrintSettings.kPortraitOrientation;
                 }
             }
         }

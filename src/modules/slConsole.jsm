@@ -5,7 +5,10 @@
 "use strict";
 var EXPORTED_SYMBOLS = ["slConsole", "getTraceException"];
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
 Components.utils.import('resource://slimerjs/slDebug.jsm');
+Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 
 function getTraceException(e, fileURI) {
     let msg;
@@ -19,8 +22,8 @@ function getTraceException(e, fileURI) {
 
         let stack = e.stack;
         if ('fileName' in e && e.fileName != undefined) {
-            let lineNumber = ('lineNumber' in e?e.lineNumber:0);
-            let columnNumber = ('columnNumber' in e?e.columnNumber:0);
+            let lineNumber = ('lineNumber' in e? parseInt(e.lineNumber):0);
+            let columnNumber = ('columnNumber' in e?parseInt(e.columnNumber):0);
             if (e.fileName.indexOf('->')) {
                 stack = (e.fileName.indexOf('@')!=-1?'':'@')+e.fileName+":"+lineNumber+":"+columnNumber+"\n"+stack;
             }
@@ -29,7 +32,8 @@ function getTraceException(e, fileURI) {
                     sourceURL: e.fileName,
                     line:lineNumber,
                     column:columnNumber,
-                    'function' : null
+                    'function' : null,
+                    file: e.fileName
                 }
                 stackRes.push(line)
             }
@@ -59,6 +63,7 @@ function getTraceException(e, fileURI) {
 
             var line = {
                 "sourceURL":sourceURL,
+                "file":sourceURL,
                 "line": parseInt(lineNumber),
                 "column": parseInt(columnNumber),
                 "function": funcName
@@ -70,6 +75,7 @@ function getTraceException(e, fileURI) {
         msg = e.toString();
         var line = {
             "sourceURL":fileURI||'unknown',
+            "file":fileURI||'unknown',
             "line": 0,
             "column": 0,
             "function":null
@@ -87,11 +93,52 @@ function formatTrace(stack) {
     return str;
 }
 
+var outputStream = null;
+
+function outputStr(str) {
+    if (slConfiguration.isWindows || slConfiguration.outputEncoding =='UTF-8'
+        || slConfiguration.outputEncoding =='binary') {
+        dump(str);
+        return;
+    }
+    try {
+        if (outputStream) {
+            outputStream(str);
+            return;
+        }
+        var file = Cc['@mozilla.org/file/local;1']
+                  .createInstance(Ci.nsILocalFile);
+        file.initWithPath('/dev/stdout');
+        var filestream = Cc['@mozilla.org/network/file-output-stream;1'].
+                     createInstance(Ci.nsIFileOutputStream);
+        filestream.init(file, parseInt("0x12"), parseInt("0644", 8), 0);
+        var stream = Cc["@mozilla.org/network/buffered-output-stream;1"].
+                    createInstance(Ci.nsIBufferedOutputStream);
+        stream.init(filestream, 0x8000);
+        var uconv = Cc["@mozilla.org/intl/scriptableunicodeconverter"].
+                  createInstance(Ci.nsIScriptableUnicodeConverter);
+        uconv.charset =  slConfiguration.outputEncoding;
+        outputStream =  function (str) {
+            let istream = uconv.convertToInputStream(str);
+            let len = istream.available();
+            while (len > 0) {
+              stream.writeFrom(istream, len);
+              len = istream.available();
+            }
+            istream.close();
+            stream.flush();
+        }
+        outputStream(str);
+    } catch (err) {
+        dump(str);
+    }
+}
+
 function dumpArguments() {
     for (var i = 0; i < arguments.length; i++) {
-        dump(arguments[i] + " ");
+        outputStr(arguments[i] + " ");
     }
-    dump('\n');
+    outputStr('\n');
 }
 
 function slConsole() {
@@ -114,7 +161,7 @@ slConsole.prototype = {
                   (e.message ? e.message : e.toString()) + "\n" +
                   (e.fileName ? "\t"+e.fileName + " " + e.lineNumber + "\n" : "");
         str += "\n"+formatTrace(stackRes);
-        dump(str);
+        outputStr(str);
     },
     trace:function() {
         let frame = Components.stack.caller
@@ -123,14 +170,16 @@ slConsole.prototype = {
           if (frame.filename) {
             stack.unshift({
               "sourceURL": frame.filename,
+              "file": frame.filename,
               "line": frame.lineNumber,
+              "column": 0,
               "function": frame.name
             });
           }
           frame = frame.caller;
         }
-        dump("Trace:\n");
-        dump(formatTrace(stack)+"\n");
+        outputStr("Trace:\n");
+        outputStr(formatTrace(stack)+"\n");
     },
     dir: function dir() {},
     group: function group() {},
