@@ -5,12 +5,6 @@
 Release Notes of SlimerJS 0.9
 =============================
 
-version 0.9.7
-=============
-
-Not released yet. You can download `the preview version <http://download.slimerjs.org/nightlies/>`_
-
-
 version 0.9.6
 =============
 
