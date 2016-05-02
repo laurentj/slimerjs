@@ -10,7 +10,7 @@ it runs Gecko instead of Webkit, and it is not (yet) natively headless.
 However, it can be headless with the use of xvfb under Linux or MacOS.
 
 SlimerJS provides the same API of PhantomJS. The current version of SlimerJS
-is highly compatible with PhantomJS 1.9 and 2.1.
+is highly compatible with PhantomJS 1.9.
 See current release notes in docs/release-notes-*.rst, and
 read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md)
 to know the implementation level.

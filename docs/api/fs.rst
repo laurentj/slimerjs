@@ -206,6 +206,8 @@ or an object containing these properties:
 
 - ``mode``: the open mode
 - ``charset``: the charset code (IANA code). Charset is ignored if the mode is binary mode
+- ``nobuffer``: if true, for mode="w", there will be a flush each time you call
+   the ``write`` method of the stream (SlimerJS only).
 
 Mode is a string that can contain character which describes a characteristic of the returned stream.
 

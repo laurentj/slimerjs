@@ -80,7 +80,7 @@ function ByteReader(inputStream) {
   }
 }
 
-function ByteWriter(outputStream) {
+function ByteWriter(outputStream, nobuffer) {
   const self = this;
 
   let stream = Cc["@mozilla.org/binaryoutputstream;1"].
@@ -93,6 +93,9 @@ function ByteWriter(outputStream) {
     manager.ensureOpened();
     try {
       stream.writeBytes(str, str.length);
+      if (nobuffer) {
+        stream.flush();
+      }
     }
     catch (err) {
       throw new Error("Error writing to stream: " + err);

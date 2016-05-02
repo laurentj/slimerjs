@@ -156,6 +156,8 @@ REM    echo   --remote-debugger-port=^<number^>    Starts the script in a debug 
 REM    echo                                      listens on the specified port
 REM    echo   --remote-debugger-autorun=^<bool^> Runs the script in the debugger immediately
 REM    echo                                      (default is no)
+    echo   --output-encoding=^<enc^>            Sets the encoding for the terminal output
+    echo                                      (default is 'utf8')
     echo   --proxy=^<proxy url^>                Sets the proxy server
     echo   --proxy-auth=^<username:password^>   Provides authentication information for the
     echo                                      proxy

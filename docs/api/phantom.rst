@@ -30,7 +30,10 @@ This is an array containing all arguments given on the command line.
 
     var firstarg = phantom.args[0];
 
-This property is deprecated. Use system.args instead.
+.. container:: warning
+
+    This property is deprecated and will be removed in futur version.
+    Use system.args instead.
 
 .. _phantom-clearCookies:
 
@@ -127,6 +130,13 @@ It accepts an optional exit code. Default is 0.
 Note: your script may continue to be executed after the call of this method, because of
 the asynchronous behavior of this function.
 
+.. _phantom-fullyDecodeUrl:
+
+fullyDecodeUrl(url)
+------------------------------------
+
+Decode a URL to human-readable form.
+
 .. _phantom-injectJs:
 
 injectJs(filename)
@@ -178,6 +188,25 @@ a message and a stack as parameters.
     }
 
 
+.. _phantom-outputEncoding:
+
+outputEncoding
+-----------------------------------------
+
+get or set the encoding for the output (system.stdout, system.stderr, console.log).
+Not supported on Windows.
+
+Special value "binary" allows to output binary content on the standard output
+with system.stdout.
+
+.. _phantom-resolveRelativeUrl:
+
+
+resolveRelativeUrl(url, base)
+------------------------------------------
+
+Resolve a URL relative to a base.
+
 .. _phantom-scriptName:
 
 scriptName
@@ -185,7 +214,11 @@ scriptName
 
 Contains the script name given to the command line.
 
-This property is deprecated. Use ``system.args[0]`` instead.
+
+.. container:: warning
+
+    This property is deprecated and will be removed in futur version.
+    Use ``system.args[0]`` instead.
 
 .. _phantom-version:
 
@@ -200,9 +233,4 @@ containing three properties, ``major``, ``minor``, ``patch``:
 
     var v = phantom.version;
     console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch);
-
-
-
-
-
 

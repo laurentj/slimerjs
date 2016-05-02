@@ -191,21 +191,41 @@ var stdout = null;
 var stderr = null;
 var stdin = null;
 
+var currentEncoding = '';
+
+function getOutput(file, stream) {
+    if (_isWindows) {
+        return {
+            write: dump,
+            writeLine: function (data) {
+                dump(data + '\n');
+            }
+        }
+    }
+    if (stream) {
+        if (currentEncoding == slConfiguration.outputEncoding) {
+            return stream;
+        }
+        stream.close();
+    }
+    currentEncoding = slConfiguration.outputEncoding;
+    if (currentEncoding == 'binary') {
+        stream = fs.open(file, { mode:'bw'});
+    }
+    else {
+        stream = fs.open(file,
+                         { mode:'w',
+                           charset:currentEncoding,
+                           nobuffer:true});
+    }
+    return stream;
+}
+
 Object.defineProperty(exports, 'stdout', {
     enumerable: true,
     writeable: false,
     get: function() {
-        if (_isWindows) {
-            return {
-                write: dump,
-                writeLine: function (data) {
-                    dump(data + '\n');
-                }
-            }
-        }
-        if (!stdout) {
-            stdout = fs.open('/dev/stdout', 'bw');
-        }
+        stdout = getOutput('/dev/stdout', stdout);
         return stdout;
     }
 });
@@ -214,21 +234,10 @@ Object.defineProperty(exports, 'stderr', {
     enumerable: true,
     writeable: false,
     get: function() {
-        if (_isWindows) {
-            return {
-                write: dump,
-                writeLine: function (data) {
-                    dump(data + '\n');
-                }
-            }
-        }
-        if (!stderr) {
-            stderr = fs.open('/dev/stderr', 'bw');
-        }
+        stderr = getOutput('/dev/stderr', stderr);
         return stderr;
     }
 });
-
 
 Object.defineProperty(exports, 'stdin', {
     enumerable: true,
@@ -236,6 +245,39 @@ Object.defineProperty(exports, 'stdin', {
     get: function() {
         if (_isWindows) {
             throw Error("system.stdin is not supported on Windows")
+        }
+        if (!stdin) {
+            // it fails if we open with "rb" mode
+            stdin = fs.open('/dev/stdin', 'rb');
+        }
+        return stdin;
+    }
+});
+
+Object.defineProperty(exports, 'standardout', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        stdout = getOutput('/dev/stdout', stdout);
+        return stdout;
+    }
+});
+
+Object.defineProperty(exports, 'standarderr', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        stderr = getOutput('/dev/stderr', stderr);
+        return stderr;
+    }
+});
+
+Object.defineProperty(exports, 'standardin', {
+    enumerable: true,
+    writeable: false,
+    get: function() {
+        if (_isWindows) {
+            throw Error("system.standardin is not supported on Windows")
         }
         if (!stdin) {
             // it fails if we open with "rb" mode

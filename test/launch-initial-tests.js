@@ -51,7 +51,7 @@ else
     console.warn("==> No slimer object!")
 assertEquals("1", phantom.version.major, "phantom has the good major version");
 assertEquals("9", phantom.version.minor, "phantom has the good minor version");
-assertEquals("2", phantom.version.patch, "phantom has the good patch version");
+assertEquals("8", phantom.version.patch, "phantom has the good patch version");
 
 assertEquals(true, "require" in this, "there is a require object");
 assertEquals("function", typeof require, "require is a function");
@@ -91,7 +91,7 @@ var system = require("system");
 console.log("\n------ you should see the output of system.stdout\noutput:")
 
 system.stdout.write("Hello");
-system.stdout.write(" World");
+system.stdout.write(" World - character with accent: ąćęłńśóźż");
 system.stderr.write(" message from system.stderr");
 console.log("\n------ check yourself if following values are ok")
 

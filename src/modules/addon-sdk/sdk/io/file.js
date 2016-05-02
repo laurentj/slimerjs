@@ -84,7 +84,7 @@ function friendlyError(errOrResult, filename) {
 
 function readOpts(modeOrOpts) {
   if (typeof(modeOrOpts) == 'string') {
-    return { mode : modeOrOpts, charset:null}
+    return { mode : modeOrOpts, charset:null, nobuffer:false}
   }
   else if (typeof(modeOrOpts) == 'object') {
     if (!('mode' in modeOrOpts)) {
@@ -99,9 +99,12 @@ function readOpts(modeOrOpts) {
     else if (typeof(modeOrOpts.charset) != 'string' || modeOrOpts.charset == '') {
       modeOrOpts.charset = null;
     }
+    if (!('nobuffer' in modeOrOpts)) {
+      modeOrOpts.nobuffer = false;
+    }
     return modeOrOpts;
   }
-  return { mode : '', charset:null}
+  return { mode : '', charset:null, nobuffer:false}
 }
 
 exports.exists = function exists(filename) {
@@ -354,8 +357,8 @@ exports.open = function open(filename, mode) {
       throw friendlyError(err, filename);
     }
     return /b/.test(mode) ?
-           new byteStreams.ByteWriter(stream) :
-           new textStreams.TextWriter(stream, opts.charset);
+           new byteStreams.ByteWriter(stream, opts.nobuffer) :
+           new textStreams.TextWriter(stream, opts.charset, opts.nobuffer);
   }
 
   // File opened for read only, the default.

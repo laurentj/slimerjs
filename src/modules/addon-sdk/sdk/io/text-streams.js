@@ -46,6 +46,7 @@ function TextReader(inputStream, charset) {
               Ci.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER);
 
   let manager = new StreamManager(this, stream);
+  let readHasStarted = false;
 
   let eof = false;
   /**
@@ -91,7 +92,7 @@ function TextReader(inputStream, charset) {
       }
       totalRead += chunkRead;
     }
-
+    readHasStarted = true;
     return str;
   };
 
@@ -113,11 +114,28 @@ function TextReader(inputStream, charset) {
         foundLineFeed = true;
       }
     }
+    readHasStarted = true;
     return str;
   }
 
   this.atEnd = function() {
     return eof;
+  }
+
+  this.getEncoding = function() {
+    return charset;
+  }
+
+  this.setEncoding = function(encoding) {
+    if (!readHasStarted) {
+        // we can change the encoding only if we didn't read yet the stream
+        charset = encoding;
+        stream = Cc["@mozilla.org/intl/converter-input-stream;1"].
+                   createInstance(Ci.nsIConverterInputStream);
+        stream.init(inputStream, encoding, BUFFER_BYTE_LEN,
+              Ci.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER);
+
+    }
   }
 }
 
@@ -133,7 +151,7 @@ function TextReader(inputStream, charset) {
  *        If not given, "UTF-8" is assumed.  See nsICharsetConverterManager.idl
  *        for documentation on how to determine other valid values for this.
  */
-function TextWriter(outputStream, charset) {
+function TextWriter(outputStream, charset, nobuffer) {
   const self = this;
   charset = checkCharset(charset);
 
@@ -182,6 +200,9 @@ function TextWriter(outputStream, charset) {
       len = istream.available();
     }
     istream.close();
+    if (nobuffer) {
+        stream.flush();
+    }
   };
 
   this.writeLine = function TextWriter_write(str) {
@@ -222,6 +243,14 @@ function TextWriter(outputStream, charset) {
       }
     });
   };
+
+  this.getEncoding = function() {
+    return charset;
+  }
+
+  this.setEncoding = function(encoding) {
+    uconv.charset = charset = encoding;
+  }
 }
 
 // This manages the lifetime of stream, a TextReader or TextWriter.  It defines

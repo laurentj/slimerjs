@@ -15,22 +15,31 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>--cookies-file=/path/to/cookies.txt  </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--debug=[yes|no]                     </td><td>Implemented, but not everything is displayed. With SlimerJS, it accepts also name of what to debug</td></tr>
     <tr><td>--disk-cache=[yes|no]                </td><td>Implemented</td></tr>
+    <tr><td>--disk-cache-path                    </td><td>(phjs 2.1)</td></tr>
     <tr><td>--help or -h                         </td><td>Implemented</td></tr>
     <tr><td>--ignore-ssl-errors=[yes|no]         </td><td></td></tr>
     <tr><td>--load-images=[yes|no]               </td><td>Implemented</td></tr>
     <tr><td>--local-storage-path=/path/to/file   </td><td>not applicable. Use profiles instead.</td></tr>
     <tr><td>--local-storage-quota=number         </td><td>Implemented</td></tr>
     <tr><td>--local-to-remote-url-access=[yes|no]</td><td></td></tr>
+    <tr><td>--local-url-access                    </td><td>(phjs 2.0)</td></tr>
     <tr><td>--max-disk-cache-size=size           </td><td>Implemented</td></tr>
-    <tr><td>--output-encoding=encoding           </td><td></td></tr>
+    <tr><td>--offline-storage-path               </td><td>not applicable. Use profiles instead.(phjs 2.1)</td></tr>
+    <tr><td>--offline-storage-quota              </td><td>(phjs 2.1)</td></tr>
+    <tr><td>--output-encoding=encoding           </td><td>Implemented</td></tr>
     <tr><td>--proxy=address:port                 </td><td>Implemented</td></tr>
     <tr><td>--proxy-auth=username:password       </td><td>Implemented</td></tr>
     <tr><td>--proxy-type=[http|socks5|none|auto|system|config-url]</td><td>Implemented</td></tr>
     <tr><td>--remote-debugger-port=number        </td><td></td></tr>
     <tr><td>--remote-debugger-autorun=[yes|no]   </td><td></td></tr>
     <tr><td>--script-encoding=encoding           </td><td></td></tr>
+    <tr><td>--script-language=[language]         </td><td>(phjs 2.0)</td></tr>
     <tr><td>--ssl-protocol=[SSLv3|TLSv1|TLSv1.1|TLSv1.2|any|TLS] </td><td>Implemented. No support of sslv2. By default TLS.</td></tr>
     <tr><td>--ssl-certificates-path=/path/to/dir </td><td>not applicable. Use profiles instead.</td></tr>
+    <tr><td>--ssl-ciphers                         </td><td>(phjs 2.0)</td></tr>
+    <tr><td>--ssl-client-certificate-file        </td><td>(phjs 2.1)</td></tr>
+    <tr><td>--ssl-client-key-file                </td><td>(phjs 2.1)</td></tr>
+    <tr><td>--ssl-client-key-passphrase          </td><td>(phjs 2.1)</td></tr>    
     <tr><td>--version or -v                      </td><td>Implemented</td></tr>
     <tr><td>--webdriver or --wd or -w            </td><td>Implemented (experimental)</td></tr>
     <tr><td>--webdriver=ip:port                  </td><td>Implemented (experimental)</td></tr>
@@ -47,15 +56,15 @@ of behaviors in the APIs implementation and in the web platform.
 ## properties
 
 <table>
-    <tr><td>args                                </td><td>Implemented (deprecated)</td></tr>
+    <tr><td>args                                </td><td>Implemented (deprecated, removed in phjs 2.0)</td></tr>
     <tr><td>cookies                             </td><td>Implemented</td></tr>
     <tr><td>cookiesEnabled                      </td><td>Implemented</td></tr>
     <tr><td>defaultPageSettings                 </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented (deprecated)</td></tr>
-    <tr><td>outputEncoding                      </td><td></td></tr>
+    <tr><td>outputEncoding                      </td><td>Implemented (with support of special value 'binary' for system.stdout, Slimerjs only)</td></tr>
     <tr><td>page                                </td><td>Not implemented. Irrelevant for SlimerJS</td></tr>
-    <tr><td>remoteDebugPort                     </td><td></td></tr>
-    <tr><td>scriptName                          </td><td>Implemented</td></tr>
+    <tr><td>remoteDebugPort                     </td><td>(phjs 2.1)</td></tr>
+    <tr><td>scriptName                          </td><td>Implemented (deprecated, removed in phjs 2.0)</td></tr>
     <tr><td>version                             </td><td>Implemented. Gives the PhantomJS version which is compatible to
                                                         the SlimerJS implementation.</td></tr>
     <tr><td>webdriverMode                       </td><td>Implemented</td></tr>
@@ -71,13 +80,13 @@ of behaviors in the APIs implementation and in the web platform.
     <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
     <tr><td>debugExit(returnValue)              </td><td>Implemented</td></tr>
     <tr><td>exit(returnValue)                   </td><td>Implemented</td></tr>
-    <tr><td>fullyDecodeUrl(url)</td><td></td></tr>
+    <tr><td>fullyDecodeUrl(url)                 </td><td>Implemented (phjs 2.1)</td></tr>
     <tr><td>injectJs(filename)                  </td><td>Implemented</td></tr>
     <tr><td>loadModule(moduleSource, filename)  </td><td></td></tr>
     <tr><td>onerror(msg, trace)                 </td><td>Implemented</td></tr>
-    <tr><td>proxy()</td><td></td></tr>
-    <tr><td>resolveRelativeUrl(url, base)</td><td></td></tr>
-    <tr><td>setProxy(ip, port, proxyType, user, password)</td><td></td></tr>
+    <tr><td>proxy()                             </td><td>(phjs 2.1)</td></tr>
+    <tr><td>resolveRelativeUrl(url, base)       </td><td>Implemented (phjs 2.1)</td></tr>
+    <tr><td>setProxy(ip, port, proxyType, user, password)</td><td>(phjs 2.0)</td></tr>
 </table>
 
 # slimer object
@@ -117,8 +126,8 @@ It will contain API that does not exists in PhantomJS.
                                                         the content. The content is then set on the body <br>
                                                         property of the response object received by your <br>
                                                         onResourceReceived callback (SlimerJS only)</td></tr>
-    <tr><td>cookies                             </td><td>Implemented</td></tr>
-    <tr><td>cookieJar                             </td><td></td></tr>
+    <tr><td>cookies                             </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>cookieJar                             </td><td>(phjs 2.0)</td></tr>
     <tr><td>customHeaders                       </td><td>Implemented</td></tr>
     <tr><td>event                               </td><td>Implemented</td></tr>
     <tr><td>focusedFrameName                    </td><td>Implemented</td></tr>
@@ -152,6 +161,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>settings.userAgent                  </td><td>Implemented</td></tr>
     <tr><td>settings.userName                   </td><td>Implemented</td></tr>
     <tr><td>settings.password                   </td><td>Implemented</td></tr>
+    <tr><td>settings.proxy                      </td><td>(phjs 2.1)</td></tr>
     <tr><td>settings.maxAuthAttempts            </td><td>Implemented</td></tr>
     <tr><td>settings.resourceTimeout            </td><td>Implemented</td></tr>
     <tr><td>settings.plainTextAllContent        </td><td>Implemented (SlimerJS only)</td></tr>
@@ -169,7 +179,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>childFramesCount()                  </td><td>Implemented. deprecated</td></tr>
     <tr><td>childFramesName()                   </td><td>Implemented. deprecated</td></tr>
     <tr><td>clearCookies()                      </td><td>Implemented</td></tr>
-    <tr><td>clearMemoryCache()                  </td><td></td></tr>
+    <tr><td>clearMemoryCache()                  </td><td>(phjs 2.0)</td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
     <tr><td>currentFrameName()                  </td><td>Implemented. deprecated</td></tr>
     <tr><td>deleteCookie(cookieName)            </td><td>Implemented</td></tr>
@@ -198,9 +208,12 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>sendEvent(mouseEventType, mouseX, mouseY, button='left')</td><td>Implemented</td></tr>
     <tr><td>sendEvent(keyboardEventType, keyOrKeys)</td><td>Implemented</td></tr>
     <tr><td>setContent(content, url)            </td><td>Implemented</td></tr>
-    <tr><td>setProxy(url)</td><td></td></tr>
+
+    <tr><td>setCookieJar(cookieJar)            </td><td>(phjs 2.0)</td></tr>
+    <tr><td>setCookieJarFromQObject(Qobject)   </td><td>not implemented, irrelevant (phjs 2.0)</td></tr>
+    <tr><td>setProxy(url)                       </td><td>(phjs 2.1)</td></tr>
     <tr><td>stop()                              </td><td>Implemented</td></tr>
-    <tr><td>stopJavascript()                    </td><td>Implemented</td></tr>
+    <tr><td>stopJavascript()                    </td><td>Implemented (phjs 2.0)</td></tr>
     <tr><td>switchToFocusedFrame()              </td><td>Implemented</td></tr>
     <tr><td>switchToFrame(frameName)            </td><td>Implemented</td></tr>
     <tr><td>switchToFrame(framePosition)        </td><td>Implemented</td></tr>
@@ -225,11 +238,11 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented<br>SlimerJS only: the callback receives 3 parameters: the status ("success" or "fail"), the url and true if this is a frame that is loaded</td></tr>
     <tr><td>onLoadStarted                       </td><td>Implemented<br>SlimerJS only: the callback receives 2 parameters: the url and true if this is a frame that is loaded</td></tr>
-    <tr><td>onLongRunningScript                 </td><td>Implemented</td></tr>
+    <tr><td>onLongRunningScript                 </td><td>Implemented (phjs 2.0)</td></tr>
     <tr><td>onNavigationRequested               </td><td>Implemented.<br>SlimerJS issue: navigationType is always "Undefined" and isMainFrame is irrelevant</td></tr>
     <tr><td>onPageCreated                       </td><td>Implemented</td></tr>
     <tr><td>onPrompt                            </td><td>Implemented</td></tr>
-    <tr><td>onRepaintRequested                  </td><td></td></tr>
+    <tr><td>onRepaintRequested                  </td><td>(phjs 2.0)</td></tr>
     <tr><td>onResourceError                     </td><td>Implemented</td></tr>
     <tr><td>onResourceRequested                 </td><td>Implemented</td></tr>
     <tr><td>onResourceReceived                  </td><td>Implemented</td></tr>
@@ -248,7 +261,7 @@ Methods that send signals (private methods):
     <tr><td>loadStarted()                       </td><td>Implemented</td></tr>
     <tr><td>navigationRequested(url, navigationType, navigationLocked, isMainFrame)</td><td>Implemented</td></tr>
     <tr><td>rawPageCreated(page)                </td><td>Implemented</td></tr>
-    <tr><td>repaintRequested()                    </td><td></td></tr>
+    <tr><td>repaintRequested()                    </td><td>(phjs 2.0)</td></tr>
     <tr><td>resourceError(resourceError)        </td><td>Implemented</td></tr>
     <tr><td>resourceReceived(request)           </td><td>Implemented</td></tr>
     <tr><td>resourceRequested(resource)         </td><td>Implemented</td></tr>
@@ -259,10 +272,13 @@ Methods that send signals (private methods):
 ## resourceError object received by onResourceError
 
 <table>
-    <tr><td>id                                  </td><td>Implemented</td></tr>
+    <tr><td>id                                  </td><td>Implemented (phjs 2.0)</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>errorCode                           </td><td>Implemented</td></tr>
     <tr><td>errorString                         </td><td>Implemented</td></tr>
+    <tr><td>status                              </td><td>(phjs 2.0)</td></tr>
+    <tr><td>statusText                          </td><td>(phjs 2.0)</td></tr>
+
 </table>
 
 
@@ -281,7 +297,7 @@ Methods that send signals (private methods):
 <table>
     <tr><td>abort()                                  </td><td>Implemented</td></tr>
     <tr><td>changeUrl(url)                              </td><td>Implemented</td></tr>
-    <tr><td>setHeader(key, value, merge)   </td><td>Implemented</td></tr>
+    <tr><td>setHeader(key, value, merge)              </td><td>Implemented (phjs 2.0)</td></tr>
 </table>
 
 
@@ -290,7 +306,7 @@ Methods that send signals (private methods):
 <table>
     <tr><td>id                                  </td><td>Implemented</td></tr>
     <tr><td>headers                             </td><td>Implemented</td></tr>
-    <tr><td>body                                </td><td>Implemented (SlimerJS only. see webpage.captureContent)</td></tr>
+    <tr><td>body                                </td><td>Implemented (SlimerJS only, see webpage.captureContent)</td></tr>
     <tr><td>bodySize                            </td><td>Implemented</td></tr>
     <tr><td>contentType                         </td><td>Implemented</td></tr>
     <tr><td>contentCharset                      </td><td>Implemented (SlimerJS only)</td></tr>
@@ -305,19 +321,26 @@ Methods that send signals (private methods):
 
 </table>
 
-## cookieJar object
+## cookieJar object 
 
 <table>
-    <tr><td>cookies</td><td></td></tr>
-    <tr><td>addCookie(cookie)</td><td></td></tr>
-    <tr><td>addCookieFromMap(cookie, url)</td><td></td></tr>
-    <tr><td>addCookiesFromMap(cookiesList, url)</td><td></td></tr>
-    <tr><td>cookiesToMap(url)</td><td></td></tr>
-    <tr><td>cookieToMap(name, url)</td><td></td></tr>
-    <tr><td>deleteCookie(name, url)</td><td></td></tr>
-    <tr><td>clearCookies()</td><td></td></tr>
-    <tr><td>close()</td><td></td></tr>
+    <tr><td>cookies                         </td><td>(phjs 2.0)</td></tr>
+    <tr><td>addCookie(cookie)               </td><td>(phjs 2.0)</td></tr>
+    <tr><td>addCookieFromMap(cookie, url)   </td><td>(phjs 2.0)</td></tr>
+    <tr><td>addCookiesFromMap(cookiesList, url)</td><td>(phjs 2.0)</td></tr>
+    <tr><td>cookiesToMap(url)               </td><td>(phjs 2.0)</td></tr>
+    <tr><td>cookieToMap(name, url)          </td><td>(phjs 2.0)</td></tr>
+    <tr><td>deleteCookie(name, url)         </td><td>(phjs 2.0)</td></tr>
+    <tr><td>clearCookies()                  </td><td>(phjs 2.0)</td></tr>
+    <tr><td>close()                         </td><td>(phjs 2.0)</td></tr>
 </table>
+
+# Module: CookieJar
+
+<table>
+    <tr><td>create(path) -> cookieJar         </td><td>(phjs 2.0)</td></tr>
+</table>
+
 
 # Module: system
 
@@ -333,9 +356,12 @@ Methods that send signals (private methods):
     <tr><td>pid                                 </td><td>Not Implemented. Always returns 0.
                                                     It seems Mozilla doesn't provide an API for that</td></tr>
     <tr><td>platform                            </td><td>Implemented</td></tr>
-    <tr><td>stdout                                </td><td>Implemented</td></tr>
+    <tr><td>stdout                               </td><td>Implemented</td></tr>
     <tr><td>stdin                                </td><td>Implemented</td></tr>
-    <tr><td>stderr                                </td><td>Implemented</td></tr>
+    <tr><td>stderr                               </td><td>Implemented</td></tr>
+    <tr><td>standardout                          </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>standardin                           </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>standarderr                          </td><td>Implemented (phjs 2.0)</td></tr>
 </table>
 
 # Module: FileSystem
@@ -429,8 +455,8 @@ are part of the CommonJS FileSystem specification
     <tr><td>flush()                             </td><td>Implemented</td></tr>
     <tr><td>close()                             </td><td>Implemented</td></tr>
     <tr><td>seek(pos)                           </td><td></td></tr>
-    <tr><td>getEncoding()                       </td><td></td></tr>
-    <tr><td>setEncoding(encoding)               </td><td></td></tr>
+    <tr><td>getEncoding()                       </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>setEncoding(encoding)               </td><td>Implemented (phjs 2.0)</td></tr>
 </table>
 
 # Module: webserver
@@ -491,21 +517,21 @@ are part of the CommonJS FileSystem specification
 
 <table>
     <tr><td>spawn(cmd, args, opts)                  </td><td></td></tr>
-    <tr><td>exec(cmd, opts, cb)                     </td><td></td></tr>
+    <tr><td>exec(cmd, opts, cb)                     </td><td>(not implemented in PhantomJS)</td></tr>
     <tr><td>execFile(file, args, options, callback) </td><td></td></tr>
-    <tr><td>fork(modulePath, args, options)         </td><td></td></tr>
+    <tr><td>fork(modulePath, args, options)         </td><td>(not implemented in PhantomJS)</td></tr>
 </table>
 
 ## context object (returned by execFile and spawn)
 
 <table>
-    <tr><td>pid                  </td><td></td></tr>
-    <tr><td>kill(signal)                  </td><td></td></tr>
-    <tr><td>on(event, callback)                  </td><td></td></tr>
-    <tr><td>stdout.on(event, callback)                  </td><td></td></tr>
-    <tr><td>stderr.on(event, callback)                  </td><td></td></tr>
+    <tr><td>pid                             </td><td></td></tr>
+    <tr><td>kill(signal)                    </td><td></td></tr>
+    <tr><td>on(event, callback)             </td><td></td></tr>
+    <tr><td>stdout.on(event, callback)      </td><td></td></tr>
+    <tr><td>stderr.on(event, callback)      </td><td></td></tr>
     <tr><td>stdin.write(chunk, encoding)    </td><td></td></tr>
-    <tr><td>stdin.close()                  </td><td></td></tr>
-    <tr><td>stdin.end()                  </td><td></td></tr>
+    <tr><td>stdin.close()                   </td><td></td></tr>
+    <tr><td>stdin.end()                     </td><td></td></tr>
 
 </table>
