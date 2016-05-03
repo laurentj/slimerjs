@@ -82,8 +82,11 @@ exports.registerBrowser = function(browser, options) {
             // Receives the URI, "success" or "fail", the associated window object, and a
             // boolean indicating if it is during the load of the main document (true) or
             // not.
-            onFrameLoadFinished: null
+            onFrameLoadFinished: null,
 
+            // called during loading progress
+            // Receives the URI, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress
+            onProgressChange: null
         }, options || {}),
         requestList: [],
         progressListener: null
@@ -1133,12 +1136,16 @@ ProgressListener.prototype = {
     onProgressChange : function (aWebProgress, aRequest,
             aCurSelfProgress, aMaxSelfProgress,
             aCurTotalProgress, aMaxTotalProgress) {
-        if (!DEBUG_NETWORK_PROGRESS)
-            return;
         if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
             // ignore requests that are not a channel/http channel
             return
         }
+        if (typeof(this.options.onProgressChange) === "function") {
+            this.options.onProgressChange(aRequest.URI.spec, aCurSelfProgress, aMaxSelfProgress,
+                                          aCurTotalProgress, aMaxTotalProgress);
+        }
+        if (!DEBUG_NETWORK_PROGRESS)
+            return;
         slDebugLog("network: progress total:"+aCurTotalProgress+"/"+aMaxTotalProgress+"; uri: "+aCurSelfProgress+"/"+aCurTotalProgress+" for "+aRequest.URI.spec);
     }
 };

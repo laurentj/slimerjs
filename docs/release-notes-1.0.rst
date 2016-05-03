@@ -13,6 +13,9 @@ Not released yet.
 New features and API
 ---------------------
 
+- ``loading`` and ``loadingProgress`` properties on webpage
+- ``onResourceError`` parameter contains now always ``status`` and ``statusText`` properties
+
 Improvements
 ------------
 
@@ -23,7 +26,6 @@ Fixed bugs
 Fixed PhantomJS conformance issues
 ----------------------------------
 
-- ``onResourceError`` parameter contains now always ``status`` and ``statusText`` properties
 
 
 Other informations about this release
@@ -41,7 +43,6 @@ and features on some object are missing. Among of them:
 - offline storage settings
 - some proxy methods
 - the possibility to set a specific cookieJar to each web page object
-- loading and loadingProgress booleans on webpage
 - listener of repaint events on webpage
 - the child_process module
 

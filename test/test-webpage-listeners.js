@@ -13,6 +13,8 @@ describe("webpage with network listeners", function() {
         networkUtils.webpage.open(domain + 'helloworld.html', function(success){
             networkUtils.trace += "CALLBACK:"+success+"\n";
             expect(success).toEqual("success");
+            expect(networkUtils.webpage.loading).toEqual(false);
+            expect(networkUtils.webpage.loadingProgress).toEqual(100);
             done();
         });
     });

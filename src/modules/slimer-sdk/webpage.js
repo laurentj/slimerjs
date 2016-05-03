@@ -223,6 +223,7 @@ function _create(parentWebpageInfo) {
                 if (wycywigReg.test(url)) {
                     return;
                 }
+                privProp.loadingProgress = 0;
                 webpage.loadStarted(url, false);
             },
             onURLChanged: function(url){
@@ -272,6 +273,12 @@ function _create(parentWebpageInfo) {
                 }
                 if (!duringMainLoad)
                     webpage.loadFinished(success, url, true);
+            },
+            onProgressChange : function(url, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {
+                if (wycywigReg.test(url)) {
+                    return;
+                }
+                privProp.loadingProgress = Math.round(aCurTotalProgress/aMaxTotalProgress)*100;
             }
         }
     }
@@ -347,7 +354,8 @@ function _create(parentWebpageInfo) {
         settings: {},
         viewportSize : {},
         staticContentLoading : false,
-        paperSize : null
+        paperSize : null,
+        loadingProgress : 0
     }
 
     let defaultViewportSize = slConfiguration.getDefaultViewportSize();
@@ -792,6 +800,14 @@ function _create(parentWebpageInfo) {
             win.QueryInterface(Ci.nsIDOMChromeWindow)
                .browserDOMWindow= slBrowserDOMWindow;
             return deferred.promise;
+        },
+
+        get loading () {
+            return (privProp.loadingProgress > 0 &&   privProp.loadingProgress < 100);
+        },
+
+        get loadingProgress () {
+            return privProp.loadingProgress;
         },
 
         /**
