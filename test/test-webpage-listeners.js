@@ -310,6 +310,8 @@ describe("webpage with network listeners", function() {
             expect(r.err.url).toEqual(r.req.url);
             expect(r.err.errorCode).toEqual(203);
             expect(r.err.errorString).toNotEqual('');
+            expect(r.err.status).toEqual(404);
+            expect(r.err.statusText).toEqual('Not Found');
         });
         done();
     });
@@ -351,6 +353,8 @@ describe("webpage with network listeners", function() {
             expect(r.err.url).toEqual(r.req.url);
             expect(r.err.errorCode).toEqual(3);
             expect(r.err.errorString).toNotEqual('');
+            expect(r.err.status).toBeNull()
+            expect(r.err.statusText).toBeNull()
         });
         done();
     });
@@ -544,6 +548,8 @@ describe("webpage with network listeners", function() {
             expect((r.err.id == r.start.id) && (r.err.id == r.end.id)).toBeTruthy();
             expect((r.err.url == r.start.url) && (r.err.url == r.end.url)).toBeTruthy();
             expect(r.err.errorCode).toEqual(203);
+            expect(r.err.status).toEqual(404);
+            expect(r.err.statusText).toEqual('Not Found');
         });
         done();
     });
@@ -612,6 +618,8 @@ describe("webpage with network listeners", function() {
             expect(r.end.statusText).toBeNull();
             expect(r.end.contentType).toBeNull();
             expect(r.err.errorCode).toEqual(301);
+            expect(r.err.status).toBeNull();
+            expect(r.err.statusText).toBeNull();
         });
         done();
     });

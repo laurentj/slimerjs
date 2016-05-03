@@ -23,6 +23,7 @@ Fixed bugs
 Fixed PhantomJS conformance issues
 ----------------------------------
 
+- ``onResourceError`` parameter contains now always ``status`` and ``statusText`` properties
 
 
 Other informations about this release

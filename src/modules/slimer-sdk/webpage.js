@@ -739,7 +739,9 @@ function _create(parentWebpageInfo) {
                         options.onError({id: 1,
                             url: url,
                             errorCode:301,
-                            errorString:"Protocol is unknown"
+                            errorString:"Protocol is unknown",
+                            status:null,
+                            statusText:null
                         });
                         options.onResponse( {
                             id: 1,

@@ -176,7 +176,9 @@ const onRequestStart = function(subject, data) {
             options.onError({id: req.id,
                             url: req.url,
                             errorCode:code,
-                            errorString:msg});
+                            errorString:msg,
+                            status: null,
+                            statusText: null});
         }
     }
 
@@ -410,7 +412,10 @@ TracingListener.prototype = {
                     this.options.onError({id: this.response.id,
                                          url: this.response.url,
                                          errorCode:errorCode,
-                                         errorString:errorStr});
+                                         errorString:errorStr,
+                                         status: this.response.status,
+                                         statusText: this.response.statusText
+                                     });
                 }
                 this.errorAlreadyNotified = true;
             }
@@ -504,7 +509,10 @@ TracingListener.prototype = {
                 this.options.onError({id: this.response.id,
                                      url: this.response.url,
                                      errorCode:code,
-                                     errorString:msg});
+                                     errorString:msg,
+                                     status: this.response.status,
+                                     statusText: this.response.statusText,
+                                     });
             }
             this.errorAlreadyNotified = false;
         }
@@ -612,7 +620,9 @@ const requestController = function(request, index, options, requestPhantom) {
                         id: index,
                         url: request.URI.spec,
                         errorCode: 95,
-                        errorString: "Resource loading aborted"
+                        errorString: "Resource loading aborted",
+                        status: null,
+                        statusText: null
                     });
             }
         },

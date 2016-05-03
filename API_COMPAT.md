@@ -276,8 +276,8 @@ Methods that send signals (private methods):
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>errorCode                           </td><td>Implemented</td></tr>
     <tr><td>errorString                         </td><td>Implemented</td></tr>
-    <tr><td>status                              </td><td>(phjs 2.0)</td></tr>
-    <tr><td>statusText                          </td><td>(phjs 2.0)</td></tr>
+    <tr><td>status                              </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>statusText                          </td><td>Implemented (phjs 2.0)</td></tr>
 
 </table>
 
