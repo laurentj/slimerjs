@@ -30,7 +30,10 @@ var server = require("webserver").create(), //< webserver
     _log;                                   //< logger for "main.js"
 
 // "ghostdriver" global namespace
+//<SLIMERJSPATCH>
+//ghostdriver = {
 var ghostdriver = {
+//</SLIMERJSPATCH>
     system  : require("system"),
     hub     : require("./hub_register.js"),
     logger  : require("./logger.js"),
@@ -66,7 +69,10 @@ try {
     router = new ghostdriver.RouterReqHand();
 
     // Start the server
+    //<SLIMERJSPATCH>
+    //if (server.listen(ghostdriver.config.port, { "keepAlive" : true }, router.handle)) {
     if (server.listen(ghostdriver.config.ip+":"+ghostdriver.config.port, { "keepAlive" : true }, router.handle)) {
+    //</SLIMERJSPATCH>
         _log.info("Main", "running on port " + server.port);
 
         // If a Selenium Grid HUB was provided, register to it!
