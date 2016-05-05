@@ -127,8 +127,7 @@ ghostdriver.WebElementLocator = function(session) {
 
     _locateElements = function(locator, rootElement) {
         var findElementsRes = _find("elements", locator, rootElement),
-            elements = [],
-            i, ilen;
+            elements = [];
 
         _log.debug("_locateElements.locator", JSON.stringify(locator));
         _log.debug("_locateElements.findElementsResult", JSON.stringify(findElementsRes));
@@ -191,7 +190,7 @@ ghostdriver.WebElementLocator = function(session) {
 
         // If a "locatorMethod" was not provided, default to "locateElement"
         if(typeof(locatorMethod) !== "function") {
-            locatorMethod = this.locateElement;
+            locatorMethod = _locateElement;
         }
 
         // Some language bindings can send a null instead of an empty
