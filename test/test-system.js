@@ -9,7 +9,7 @@ describe("system module", function() {
     });
     it("should have a pid property", function(){
         expect('pid' in system).toBeTruthy();
-        expect(system.pid).toEqual(0); // no way in mozilla to retrieve the PID
+        expect(system.pid).toBeGreaterThan(0);
     });
 
     it("should have a os object", function(){
