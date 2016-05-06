@@ -158,8 +158,7 @@ Object.defineProperty(exports, 'pid', {
     enumerable: true,
     writeable: false,
     get: function() {
-        //Cu.reportError("system.pid not implemented");
-        return 0;  // no Mozilla API to retrieve the PID :-/
+        return xulRuntime.processID;
     }
 });
 
