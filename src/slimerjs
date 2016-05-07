@@ -173,7 +173,9 @@ if [ $EXITCODE == 0 ]; then
     fi
 else
     if [ $EXITCODE == 1 ]; then
-        echo "Gecko error: it seems $SLIMERJSLAUNCHER is not compatible with SlimerJS. See Gecko version compatibility."
+        echo "Gecko error: it seems $SLIMERJSLAUNCHER is not compatible with SlimerJS."
+        echo "See Gecko version compatibility. If version is correct, launch slimerjs"
+        echo "with --debug=true to see Firefox error message"
     fi
 fi
 if [ -f $__SLIMER_EXITCODEFILE ]; then
