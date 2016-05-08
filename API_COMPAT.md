@@ -352,9 +352,8 @@ Methods that send signals (private methods):
     <tr><td>args                                </td><td>Implemented</td></tr>
     <tr><td>env                                 </td><td>Implemented</td></tr>
     <tr><td>isSSLSupported                       </td><td></td></tr>
-    <tr><td>os                                  </td><td>Implemented. SlimerJS only: an additional method isWindows()</td></tr>
-    <tr><td>pid                                 </td><td>Not Implemented. Always returns 0.
-                                                    It seems Mozilla doesn't provide an API for that</td></tr>
+    <tr><td>os                                  </td><td>Implemented. SlimerJS only: an additional method on this object: isWindows()</td></tr>
+    <tr><td>pid                                 </td><td>Implemented</td></tr>
     <tr><td>platform                            </td><td>Implemented</td></tr>
     <tr><td>stdout                               </td><td>Implemented</td></tr>
     <tr><td>stdin                                </td><td>Implemented</td></tr>

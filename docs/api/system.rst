@@ -33,14 +33,14 @@ An object having information about the operating system. Here are its properties
 - ``system.os.name``: the name of the operating system
 - ``system.os.architecture``: its architecture : ``32bit``, ``64bit``...
 - ``system.os.version``: its version
-- ``system.os.isWindows``: boolean indicating if it is windows (SlimerJS only)
+- ``system.os.isWindows()``: a function returning a boolean indicating if it is windows (SlimerJS only)
 
 .. _system-pid:
 
 pid
 -----------------------------------------
 
-Always returns ``0`` (no Mozilla API to retrieve the PID)
+Contains the id of the Gecko system process.
 
 .. _system-platform:
 

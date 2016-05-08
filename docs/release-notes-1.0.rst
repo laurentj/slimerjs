@@ -19,6 +19,8 @@ New features and API
 Improvements
 ------------
 
+* implements ``system.pid`` (#473)
+
 Fixed bugs
 ----------
 
@@ -59,6 +61,8 @@ Known issues
 
 Contributors for this release
 -----------------------------
+
+- Wojciech Skorodecki
 
 
 Previous release notes
