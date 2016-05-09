@@ -1693,7 +1693,9 @@ informations:
 - ``id``: the number of the requested resource
 - ``url``:  the url of the resource
 - ``errorCode``: an error code (see possible values below)
-- ``errorString`` the error message.
+- ``errorString``: the error message.
+- ``status``: the response status if there is a response
+- ``statusText``: the response status text if there is a response
 
 List of supported error codes: (see `QNetworkReply codes in QT <http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkreply.html#NetworkError-enum>`_)
 

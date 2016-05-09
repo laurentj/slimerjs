@@ -82,8 +82,11 @@ exports.registerBrowser = function(browser, options) {
             // Receives the URI, "success" or "fail", the associated window object, and a
             // boolean indicating if it is during the load of the main document (true) or
             // not.
-            onFrameLoadFinished: null
+            onFrameLoadFinished: null,
 
+            // called during loading progress
+            // Receives the URI, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress
+            onProgressChange: null
         }, options || {}),
         requestList: [],
         progressListener: null
@@ -176,7 +179,9 @@ const onRequestStart = function(subject, data) {
             options.onError({id: req.id,
                             url: req.url,
                             errorCode:code,
-                            errorString:msg});
+                            errorString:msg,
+                            status: null,
+                            statusText: null});
         }
     }
 
@@ -410,7 +415,10 @@ TracingListener.prototype = {
                     this.options.onError({id: this.response.id,
                                          url: this.response.url,
                                          errorCode:errorCode,
-                                         errorString:errorStr});
+                                         errorString:errorStr,
+                                         status: this.response.status,
+                                         statusText: this.response.statusText
+                                     });
                 }
                 this.errorAlreadyNotified = true;
             }
@@ -504,7 +512,10 @@ TracingListener.prototype = {
                 this.options.onError({id: this.response.id,
                                      url: this.response.url,
                                      errorCode:code,
-                                     errorString:msg});
+                                     errorString:msg,
+                                     status: this.response.status,
+                                     statusText: this.response.statusText,
+                                     });
             }
             this.errorAlreadyNotified = false;
         }
@@ -612,7 +623,9 @@ const requestController = function(request, index, options, requestPhantom) {
                         id: index,
                         url: request.URI.spec,
                         errorCode: 95,
-                        errorString: "Resource loading aborted"
+                        errorString: "Resource loading aborted",
+                        status: null,
+                        statusText: null
                     });
             }
         },
@@ -1123,12 +1136,16 @@ ProgressListener.prototype = {
     onProgressChange : function (aWebProgress, aRequest,
             aCurSelfProgress, aMaxSelfProgress,
             aCurTotalProgress, aMaxTotalProgress) {
-        if (!DEBUG_NETWORK_PROGRESS)
-            return;
         if (!(aRequest instanceof Ci.nsIChannel || "URI" in aRequest)) {
             // ignore requests that are not a channel/http channel
             return
         }
+        if (typeof(this.options.onProgressChange) === "function") {
+            this.options.onProgressChange(aRequest.URI.spec, aCurSelfProgress, aMaxSelfProgress,
+                                          aCurTotalProgress, aMaxTotalProgress);
+        }
+        if (!DEBUG_NETWORK_PROGRESS)
+            return;
         slDebugLog("network: progress total:"+aCurTotalProgress+"/"+aMaxTotalProgress+"; uri: "+aCurSelfProgress+"/"+aCurTotalProgress+" for "+aRequest.URI.spec);
     }
 };

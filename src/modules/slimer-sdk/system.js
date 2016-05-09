@@ -154,35 +154,11 @@ Object.defineProperty(exports, 'os', {
     }
 });
 
-/*
- * CTYPES: load the ctypes library, example here:
- * https://developer.mozilla.org/en-US/docs/Mozilla/js-ctypes/Using_js-ctypes
- */
-var {ctypes} = Cu.import("resource://gre/modules/ctypes.jsm", null);
-/* Open the library */
-var libc = null;
-// Try several libc names:
-for (var libc_name of ["libc.so.6", "libc.so"]) {
-    try {
-        libc = ctypes.open(libc_name);
-        break;
-    } catch (e) {
-        // No library with this name.
-    }
-}
-
-// Use the libc getpid() function.
-// On Windows we could do something similar with kernel32.dll.
-var getpid = function() { return 0; } // not supported
-if (libc) {
-    getpid = libc.declare("getpid", ctypes.default_abi, ctypes.int);
-}
-
 Object.defineProperty(exports, 'pid', {
     enumerable: true,
     writeable: false,
     get: function() {
-        return getpid();  // use ctypes call to get pid, if available.
+        return xulRuntime.processID;
     }
 });
 

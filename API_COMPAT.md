@@ -139,8 +139,8 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>framesCount                         </td><td>Implemented</td></tr>
     <tr><td>framesName                          </td><td>Implemented</td></tr>
     <tr><td>libraryPath                         </td><td>Implemented</td></tr>
-    <tr><td>loading                             </td><td></td></tr>
-    <tr><td>loadingProgress                     </td><td></td></tr>
+    <tr><td>loading                             </td><td>Implemented</td></tr>
+    <tr><td>loadingProgress                     </td><td>Implemented</td></tr>
     <tr><td>navigationLocked                    </td><td>Implemented</td></tr>
     <tr><td>offlineStoragePath                  </td><td>Implemented</td></tr>
     <tr><td>offlineStorageQuota                 </td><td>Implemented</td></tr>
@@ -276,8 +276,8 @@ Methods that send signals (private methods):
     <tr><td>url                                 </td><td>Implemented</td></tr>
     <tr><td>errorCode                           </td><td>Implemented</td></tr>
     <tr><td>errorString                         </td><td>Implemented</td></tr>
-    <tr><td>status                              </td><td>(phjs 2.0)</td></tr>
-    <tr><td>statusText                          </td><td>(phjs 2.0)</td></tr>
+    <tr><td>status                              </td><td>Implemented (phjs 2.0)</td></tr>
+    <tr><td>statusText                          </td><td>Implemented (phjs 2.0)</td></tr>
 
 </table>
 
@@ -352,9 +352,8 @@ Methods that send signals (private methods):
     <tr><td>args                                </td><td>Implemented</td></tr>
     <tr><td>env                                 </td><td>Implemented</td></tr>
     <tr><td>isSSLSupported                       </td><td></td></tr>
-    <tr><td>os                                  </td><td>Implemented. SlimerJS only: an additional method isWindows()</td></tr>
-    <tr><td>pid                                 </td><td>Not Implemented. Always returns 0.
-                                                    It seems Mozilla doesn't provide an API for that</td></tr>
+    <tr><td>os                                  </td><td>Implemented. SlimerJS only: an additional method on this object: isWindows()</td></tr>
+    <tr><td>pid                                 </td><td>Implemented</td></tr>
     <tr><td>platform                            </td><td>Implemented</td></tr>
     <tr><td>stdout                               </td><td>Implemented</td></tr>
     <tr><td>stdin                                </td><td>Implemented</td></tr>

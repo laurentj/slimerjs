@@ -9,7 +9,7 @@ describe("system module", function() {
     });
     it("should have a pid property", function(){
         expect('pid' in system).toBeTruthy();
-        expect(system.pid).toNotEqual(0);
+        expect(system.pid).toBeGreaterThan(0);
     });
 
     it("should have a os object", function(){
