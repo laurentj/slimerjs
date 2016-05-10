@@ -2,11 +2,18 @@
 pref("toolkit.defaultChromeURI", "chrome://slimerjs/content/slimerjs.xul");
 pref("browser.dom.window.dump.enabled", true);
 pref("javascript.options.strict", true);
-pref("browser.cache.disk.enable", false);
-pref("app.update.enabled", false);
-pref("extensions.update.enabled", false);
 pref("dom.report_all_js_exceptions", true);
 
+pref("browser.cache.disk.enable", false);
+pref("app.update.enabled", false);
+pref("app.update.auto", false);
+pref("toolkit.telemetry.enabled", false);
+pref("toolkit.telemetry.prompted", false);
+pref("extensions.blocklist.enabled", false);
+pref("privacy.trackingprotection.enabled", false);
+pref("extensions.update.enabled", false);
+pref("lightweightThemes.update.enabled", false);
+pref("browser.selfsupport.url", false);
 pref("browser.fixup.alternate.enabled", false);
 
 // enable long running script callback on pages
@@ -39,3 +46,5 @@ pref('dom.ipc.plugins.enabled', true);
 pref('security.tls.version.min', 1); // no SSLv3 support
 
 pref('extensions.defaultProviders.enabled', false);
+
+
