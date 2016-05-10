@@ -24,6 +24,8 @@ Improvements
 Fixed bugs
 ----------
 
+* Fix error "ReferenceError: reference to undefined property this._stopCallback"
+
 
 Fixed PhantomJS conformance issues
 ----------------------------------

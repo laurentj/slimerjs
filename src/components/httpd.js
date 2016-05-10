@@ -396,6 +396,7 @@ function nsHttpServer()
   this._connections = {};
 
   this.wrappedJSObject = this;
+
 }
 nsHttpServer.prototype =
 {
@@ -793,11 +794,13 @@ nsHttpServer.prototype =
   /** Calls the server-stopped callback provided when stop() was called. */
   _notifyStopped: function()
   {
+    if (!('_stopCallback' in this)) {
+        return;
+    }
+
     NS_ASSERT(this._stopCallback !== null, "double-notifying?");
     NS_ASSERT(!this._hasOpenConnections(), "should be done serving by now");
 
-    if (this._stopCallback === undefined)
-        return;
     //
     // NB: We have to grab this now, null out the member, *then* call the
     //     callback here, or otherwise the callback could (indirectly) futz with
