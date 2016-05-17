@@ -37,7 +37,7 @@ Improvements
 
 - Exit code is now supported with ``slimer.exit()`` and ``phantom.exit()`` (except with slimerjs.bat)
 - ``require`` supports node modules (it searches into node_modules directories)
-- ``webpage.onConsoleMessage`` can receive additionnal parameters : level, function name and timestamp
+- ``webpage.onConsoleMessage`` can receive additional parameters : level, function name and timestamp
 - Improved error handling that may appear in webpage listeners
 - ``fs.open()`` now supports special files (/dev/std*, fifo files...)
 - Support of ``--debug=net`` and ``--debug=network`` which are aliases for ``--debug=netprogress``
@@ -68,7 +68,7 @@ Fixed PhantomJS conformance issues
 ----------------------------------
 
 - a module should be able to call the ``return`` keyword
-- support additionnals arguments on ``webpage.evaluateAsync()``
+- support additionals arguments on ``webpage.evaluateAsync()``
 - Callback given to ``webpage.open()`` is now called when the url is invalid
 - Like in PhantomJS 1.9 (and removed in PhantomJS 2.0), ``phantom.args`` and ``phantom.scriptName`` are deprecated
 - webpage.viewportSize should accept strings as values (#313)

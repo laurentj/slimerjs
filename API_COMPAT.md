@@ -420,7 +420,7 @@ Methods that send signals (private methods):
     <tr><td>toNativeSeparators(path)            </td><td></td></tr>
 </table>
 
-Other additionnal methods not provided in PhantomJS, but that
+Other additional methods not provided in PhantomJS, but that
 are part of the CommonJS FileSystem specification
 
 <table>

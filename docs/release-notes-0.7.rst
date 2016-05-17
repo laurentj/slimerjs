@@ -22,7 +22,7 @@ New API
 - Implementation of ``require.extensions``, to declare specific loaders corresponding to some file extensions
 - Implementation of ``phantom.defaultPageSettings``. Note that settings are not supported
   yet by the webpage module.
-- callbacks ``webpage.onLoadStarted`` and  ``webpage.onLoadFinished`` receive two additionnal
+- callbacks ``webpage.onLoadStarted`` and  ``webpage.onLoadFinished`` receive two additional
   parameters: the url that is loaded, and a boolean true if the loaded page is in a frame.
 - Support of ``webpage.onCallback`` and ``window.callPhantom()``
 - Support of ``webpage.onError``

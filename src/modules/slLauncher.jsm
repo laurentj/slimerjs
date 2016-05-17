@@ -283,7 +283,7 @@ function prepareLoader(scriptInfo) {
     }
 
     // path where to search each time require() is called. Filled during resolution of the module name
-    var additionnalPaths = [];
+    var additionalPaths = [];
 
     // list of extensions and their compiler
     var extensions = {
@@ -336,7 +336,7 @@ function prepareLoader(scriptInfo) {
         // this function should return the true id of the module.
         // The returned id should be an id or an absolute path of a file
         resolve: function(id, requirer) {
-            additionnalPaths = [];
+            additionalPaths = [];
             let relativeId = false;
             if (id[0] == '.') {
                 relativeId = id;
@@ -365,8 +365,8 @@ function prepareLoader(scriptInfo) {
             //dump("resolve: "+id+ " relativeId:" +relativeId+"\n");
             if (relativeId === false && slUtils.isAbsolutePath(id)) {
                 // id is an absolute path
-                additionnalPaths.push(id);
-                //dump("additionnalPaths "+id+"\n");
+                additionalPaths.push(id);
+                //dump("additionalPaths "+id+"\n");
                 return id;
             }
 
@@ -375,8 +375,8 @@ function prepareLoader(scriptInfo) {
 
             if (relativeId !== false) {
                 // id is a relative path
-                additionnalPaths.push(requirerDir);
-                //dump("additionnalPaths requirerDir "+requirerDir.path+" parent of "+requirer.uri+"\n");
+                additionalPaths.push(requirerDir);
+                //dump("additionalPaths requirerDir "+requirerDir.path+" parent of "+requirer.uri+"\n");
             }
             else if (requirerDir) {
                 // let's add node_modules directories
@@ -384,12 +384,12 @@ function prepareLoader(scriptInfo) {
                 while(dir) {
                     let d = dir.clone();
                     d.append('node_modules');
-                    additionnalPaths.push(d);
+                    additionalPaths.push(d);
                     dir = dir.parent;
                 }
             }
 
-            additionnalPaths.push(scriptInfo.requirePath);
+            additionalPaths.push(scriptInfo.requirePath);
 
             // id is not an absolute path or relative path (ex: foo or foo/bar)
             // let's add all path of requirePaths to search inside them
@@ -399,10 +399,10 @@ function prepareLoader(scriptInfo) {
                 let path = requirePaths[i];
                 let dir;
                 if (path[0] == '.' || !slUtils.isAbsolutePath(path)) {
-                    additionnalPaths.push(slUtils.getAbsMozFile(path, requirerDir));
+                    additionalPaths.push(slUtils.getAbsMozFile(path, requirerDir));
                 }
                 else {
-                    additionnalPaths.push(slUtils.getMozFile(path));
+                    additionalPaths.push(slUtils.getMozFile(path));
                 }
             }
             if (relativeId) {
@@ -417,8 +417,8 @@ function prepareLoader(scriptInfo) {
                 return uri;
             }
 
-            for(let i=0; i < additionnalPaths.length; i++) {
-                let path = additionnalPaths[i];
+            for(let i=0; i < additionalPaths.length; i++) {
+                let path = additionalPaths[i];
                 if (typeof path == 'string') {
                     if (id === path) {
                         // id is an absolute path
