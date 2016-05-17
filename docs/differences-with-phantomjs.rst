@@ -100,7 +100,7 @@ In the API
 - The callback ``webpage.onNavigationRequest`` receives bad parameters.
   Don't rely on the ``navigationType`` and the ``isMainFrame`` values (because of
   some limitations in the Gecko API).
-- Callbacks ``webpage.onLoadStarted`` and ``webpage.onLoadFinished`` receive additionnal
+- Callbacks ``webpage.onLoadStarted`` and ``webpage.onLoadFinished`` receive additional
   parameters in SlimerJS (the url, a boolean indicated if it is in a frame...)
 - You can output binary content on the standard output stream (weither with
   ``fs.open('/dev/stdout')``, ``webpage.render('/dev/stdout')`` or ``system.stdout``)

@@ -256,7 +256,7 @@ customHeaders
 
 .. index:: customHeaders
 
-This property is an object defining additionnal HTTP headers that will be send
+This property is an object defining additional HTTP headers that will be send
 with each HTTP request, both for pages and resources.
 
 Example:
@@ -784,7 +784,7 @@ to the loaded page, not to your script. In other terms, you cannot use closures.
         slimer.exit()
     });
 
-You can give additionnal parameters to ``evaluate()``. This will be the parameters
+You can give additional parameters to ``evaluate()``. This will be the parameters
 for the function. For example, here the function will receive "#aDiv" as parameter:
 
 .. code-block:: javascript
@@ -1032,7 +1032,7 @@ and the type of arguments.
 - ``httpConf.operation``: the http method. Allowed values: ``'get'`` or ``'post'`` (other methods are not supported in SlimerJS)
 - ``httpConf.data``: the body. Useful only for ``'post'`` method
 - ``httpConf.headers``: the headers to send. An object like :ref:`webpage.customHeaders <webpage-customHeaders>`, but it
-  doesn't replace ``webpage.customHeaders``. It allows you to specify additionnal headers
+  doesn't replace ``webpage.customHeaders``. It allows you to specify additional headers
   for this specific load.
 
 ``httpConf`` is optional and you can give ``null`` instead of an object.
@@ -1568,7 +1568,7 @@ example.
         // Do other things here...
     };
 
-In SlimerJS, you can receive additionnal arguments (that you don't have in PhantomJS):
+In SlimerJS, you can receive additional arguments (that you don't have in PhantomJS):
 
 - the URL of the content that is loaded
 - a boolean indicating if it is a frame (true) or the main content (false)
