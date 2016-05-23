@@ -1,6 +1,8 @@
 # SlimerJS
 http://slimerjs.org/
 
+[![NPM](https://nodei.co/npm/slimerjs.png?downloads=true)](https://npmjs.org/package/slimerjs)
+
 SlimerJS is a scriptable browser. It allows you to manipulate a web page
 with an external Javascript script: opening a webpage, clicking on links, modifying the content...
 It is useful to do functional tests, page automation, network monitoring, screen capture etc.
