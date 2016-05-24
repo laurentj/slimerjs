@@ -15,7 +15,7 @@ on [http://docs.slimerjs.org].
 
 - Install [Firefox](http://getfirefox.com) (version 38 or more)
 - [Download the latest package](https://download.slimerjs.org/releases/0.10.0/slimerjs-0.10.0.zip) or
-  [the source code of SlimerJS](https://github.com/laurentj/slimerjs/archive/master.zip) if you didn't it yet
+  [the source code of SlimerJS](https://github.com/laurentj/slimerjs/archive/master.zip) if you havn't already.
 - On windows, a .bat is provided, but you can also launch slimer from a "true" console. In this case, you should install
   [Cygwin](http://www.cygwin.com/) or any other unix environment to launch slimerjs.
 - SlimerJS needs to know where Firefox is stored. It tries to discover
