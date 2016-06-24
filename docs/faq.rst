@@ -58,6 +58,31 @@ the same gecko version).
 
 You can speak with us about rendering issues, on the mailing list.
 
+
+I don't see flash content when I take a screenshot with render()
+----------------------------------------------------------------
+
+This is because of `a bug in Gecko <https://bugzilla.mozilla.org/show_bug.cgi?id=650418>`_
+(which was resolved as WONTFIX). However it can work in some cases, when the
+``<object>`` element contains ``<param name="wmode" value="transparent">``.
+
+When I take a screenshot, the SlimerJS logo appears
+---------------------------------------------------
+
+First, you can try to give the focus to the window you want to capture :
+
+
+.. code-block:: javascript
+
+    page.evaluate(function () {
+        window.focus();
+    });
+
+It may not work, especially when you use xvfb and there is no window manager.
+So a solution is to execute xvfb with a script that launches a window manager
+(like fluxbox for example), then that launches Slimerjs.
+
+
 PDF Rendering
 =============
 
