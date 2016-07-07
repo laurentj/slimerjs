@@ -47,4 +47,8 @@ pref('security.tls.version.min', 1); // no SSLv3 support
 
 pref('extensions.defaultProviders.enabled', false);
 
-
+// Disable Telemetry.
+pref("datareporting.healthreport.service.enabled", false);
+pref("datareporting.healthreport.uploadEnabled", false);
+pref("datareporting.policy.dataSubmissionEnabled", false);
+pref("toolkit.telemetry.unified", false);
