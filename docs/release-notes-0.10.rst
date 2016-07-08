@@ -5,6 +5,20 @@
 Release Notes of SlimerJS 0.10
 ==============================
 
+
+version 0.10.1
+==============
+
+Not released yet.
+
+Improvements
+------------
+
+- Improve message about version incompatibility
+- Mozilla telemetry disabled (by Wojciech Skorodecki)
+- Fixed various typo in the documentation and web site (by Brian Donovan, Thomas Grainger, Avindra Goolcharan, Alexander Tsirel)
+- Compatibility with Firefox 47
+
 version 0.10.0
 ==============
 
