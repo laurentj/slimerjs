@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 CURRENTDIR=`pwd`
 SLIMERDIR=`dirname $0`

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #retrieve full path of the current script
 # symlinks are resolved, so application.ini could be found
