@@ -21,8 +21,8 @@ const { uuid } = require('../util/uuid');
 const Unknown = new function() {
   function hasInterface(component, iid) {
     return component && component.interfaces &&
-      ( component.interfaces.some(function(id) iid.equals(Ci[id])) ||
-        component.implements.some(function($) hasInterface($, iid)) ||
+      ( component.interfaces.some((id) => iid.equals(Ci[id])) ||
+        component.implements.some(($) => hasInterface($, iid)) ||
         hasInterface(Object.getPrototypeOf(component), iid));
   }
 
@@ -85,7 +85,7 @@ const Factory = Class({
    * This method is required by `nsIFactory` interfaces, but as in most
    * implementations it does nothing interesting.
    */
-  lockFactory: function lockFactory(lock) undefined,
+  lockFactory: (lock) => undefined,
   /**
    * If property is `true` XPCOM service / factory will be registered
    * automatically on creation.
@@ -131,7 +131,7 @@ const Factory = Class({
       throw error instanceof Ci.nsIException ? error : Cr.NS_ERROR_FAILURE;
     }
   },
-  create: function create() this.Component()
+  create: () => this.Component()
 });
 exports.Factory = Factory;
 
@@ -148,11 +148,11 @@ const Service = Class({
   /**
    * Creates an instance of the class associated with this factory.
    */
-  create: function create() this.component
+  create: () => this.component
 });
 exports.Service = Service;
 
-function isRegistered({ id }) isCIDRegistered(id)
+var isRegistered = ({ id }) => isCIDRegistered(id);
 exports.isRegistered = isRegistered;
 
 /**
@@ -216,7 +216,7 @@ exports.autoRegister = autoRegister;
 /**
  * Returns registered factory that has a given `id` or `null` if not found.
  */
-function factoryByID(id) classesByID[id] || null
+var factoryByID = (id) => classesByID[id] || null;
 exports.factoryByID = factoryByID;
 
 /**
@@ -225,5 +225,5 @@ exports.factoryByID = factoryByID;
  * with a given `contract` this will return a factory currently associated
  * with a `contract`.
  */
-function factoryByContract(contract) factoryByID(Cm.contractIDToCID(contract))
+var factoryByContract = (contract) => factoryByID(Cm.contractIDToCID(contract));
 exports.factoryByContract = factoryByContract;

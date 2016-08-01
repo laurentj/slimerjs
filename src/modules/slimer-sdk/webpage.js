@@ -1532,22 +1532,22 @@ function _create(parentWebpageInfo) {
             let requirements = {
                 top: {
                     is: ["undefined", "number"],
-                    ok: function(val)  val === undefined || val >= 0,
+                    ok: (val) => val === undefined || val >= 0,
                     msg: "clipRect.top should be a positive integer"
                 },
                 left: {
                     is: ["undefined", "number"],
-                    ok: function(val)  val === undefined || val >= 0,
+                    ok: (val) => val === undefined || val >= 0,
                     msg: "clipRect.left should be a positive integer"
                 },
                 width: {
                     is: ["undefined", "number"],
-                    ok: function(val) val === undefined || val >= 0,
+                    ok: (val) => val === undefined || val >= 0,
                     msg: "clipRect.width should be a positive integer"
                 },
                 height: {
                     is: ["undefined", "number"],
-                    ok: function(val) val === undefined || val >= 0,
+                    ok: (val) => val === undefined || val >= 0,
                     msg: "clipRect.height should be a positive integer"
                 },
             }
