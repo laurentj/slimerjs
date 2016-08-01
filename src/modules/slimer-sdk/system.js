@@ -23,8 +23,8 @@ var OS = {
     architecture: '32bit',
     name: xulRuntime.OS.toLowerCase(),
     version: '',
-    isWindows : function() _isWindows
-}
+    isWindows : () => _isWindows
+};
 
 if (OS.name == 'linux') {
     if (oscpu.indexOf('64') != -1) {
