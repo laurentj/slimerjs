@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "A scriptable browser like PhantomJS, based on Firefox",
   "bin": {
-    "slimerjs-firefox": "./bin/slimerjs-core"
+    "slimerjs": "./bin/slimerjs"
   },
-  "main": "./lib/slimerjs-core.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/laurentj/slimerjs.git"
