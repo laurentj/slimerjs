@@ -10,19 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/laurentj/slimerjs.git"
   },
-  "scripts": {
-    "install": "node install.js"
-  },
   "author": "",
   "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/laurentj/slimerjs/issues"
   },
   "homepage": "https://github.com/laurentj/slimerjs#readme",
-  "dependencies": {
-    "fs-extra": "^0.30.0",
-    "kew": "^0.7.0",
-    "request-progress": "^2.0.1",
-    "which": "^1.2.10"
-  }
+  "dependencies": {}
 }

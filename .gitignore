@@ -6,4 +6,3 @@ misc/
 website/*.gpg
 test_reports/
 node_modules
-lib/location.js

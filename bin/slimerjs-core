@@ -13,7 +13,7 @@
 var path = require('path')
 var spawn = require('child_process').spawn
 
-var binPath = require(path.join(__dirname, '..', 'lib', 'slimerjs-core')).path
+var binPath = path.join(__dirname, '..', 'src', 'slimerjs')
 
 var args = process.argv.slice(2)
 
