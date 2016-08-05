@@ -88,7 +88,7 @@ the ``minVersion``) in the ``application.ini`` of SlimerJS. But remember you do 
 **at your own risk**.
 
 If you found issues with unsupported versions of Firefox, please discuss about
-it in the mailing-list, especially if it is about unstable version fo Firefox.
+it in the mailing-list, especially if it is about an unstable version of Firefox.
 
 .. _launch:
 
