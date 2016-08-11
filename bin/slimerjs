@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Script that will execute firefox.  stdio are
+ * Script that will execute SlimerJS.  stdio are
  * forwarded to and from the child process.
- *
- * The following is for an ugly hack to avoid a problem where the installer
- * finds the bin script npm creates during global installation.
- *
- * {NPM_INSTALL_MARKER}
- */
+  */
 
 var path = require('path')
 var spawn = require('child_process').spawn
