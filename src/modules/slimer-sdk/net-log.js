@@ -315,6 +315,7 @@ TracingListener.prototype = {
             request.QueryInterface(Ci.nsIHttpChannel);
             this.originalListener.onStartRequest(request, context);
         } catch(e) {
+            request.cancel(e.result);
             //dump("netlog onStartRequest error: "+e+"\n")
         }
 
