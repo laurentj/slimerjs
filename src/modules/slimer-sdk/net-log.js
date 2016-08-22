@@ -138,11 +138,12 @@ exports.stopTracer = stopTracer;
  * @param string data
  */
 const onRequestStart = function(subject, data) {
-
     let browser = getBrowserForRequest(subject);
     if (!browser || !browserMap.has(browser)) {
         return;
     }
+
+    let resourceTimeout = browser.webpage.settings.resourceTimeout;
     let {options, requestList} = browserMap.get(browser);
     requestList.push(subject.name);
     let index = requestList.length;
@@ -180,7 +181,7 @@ const onRequestStart = function(subject, data) {
         }
     }
 
-    let listener = new TracingListener(index, options, subject, req, browser.webpage.settings.resourceTimeout);
+    let listener = new TracingListener(index, options, subject, req, resourceTimeout);
     subject.QueryInterface(Ci.nsITraceableChannel);
     listener.originalListener = subject.setNewListener(listener);
 };
