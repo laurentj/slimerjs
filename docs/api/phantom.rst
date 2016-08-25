@@ -201,6 +201,11 @@ with system.stdout.
 
 .. _phantom-resolveRelativeUrl:
 
+proxy()
+-----------------------------------------
+
+Returns proxy host / IP address and port separated by ":".
+It may return proxy auto-config URL (PAC) if set. (SlimerJS only).
 
 resolveRelativeUrl(url, base)
 ------------------------------------------
@@ -221,6 +226,32 @@ Contains the script name given to the command line.
     Use ``system.args[0]`` instead.
 
 .. _phantom-version:
+
+setProxy(host, port, proxyType, user, password)
+-----------------------------------------
+
+Use it if you want to change proxy configuration at runtime.
+The first parameter may be a:
+- hostname
+- IP address
+- auto-config URL (PAC; SlimerJS only)
+
+Any value which evaluates to false (null, undefined, false etc.) will disable the proxy.
+
+Proxy types:
+- "system": Use system proxy settings
+- "auto": Auto-detect proxy settings
+- "config-url": Automatic proxy configuration URL
+- "socks"
+- "socks5"
+- "http" / null / undefined
+
+Any other value will disable the proxy.
+
+More info:
+https://developer.mozilla.org/en-US/docs/Mozilla/Preferences/Mozilla_networking_preferences
+http://kb.mozillazine.org/Network.proxy.type
+
 
 version
 -----------------------------------------

@@ -15,11 +15,13 @@ New features and API
 
 - ``loading`` and ``loadingProgress`` properties on webpage
 - ``onResourceError`` parameter contains now always ``status`` and ``statusText`` properties
+- ``proxy()`` and ``setProxy()`` methods
 
 Improvements
 ------------
 
 * implements ``system.pid`` (#473)
+* implements ``phantom.proxy()`` and ``phantom.setProxy()`` methods (#436, #444, #445)
 
 Fixed bugs
 ----------
@@ -45,7 +47,6 @@ and features on some object are missing. Among of them:
 - the possibility to deactivate SSL verification and Web security (CORS etc)
 - the possibility to set ssl client certificate
 - offline storage settings
-- some proxy methods
 - the possibility to set a specific cookieJar to each web page object
 - listener of repaint events on webpage
 - the child_process module
