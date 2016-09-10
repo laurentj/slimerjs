@@ -117,7 +117,7 @@ You can indicate several options on the command line. See the "configuration" ch
 Having a headless SlimerJS
 --------------------------
 
-There is a tool called xvfb, available on Linux and MacOS. It allows to launch
+There is a tool called xvfb, available on Linux. It allows to launch
 any "graphical" programs without the need of an X-Windows environment. Windows of
 the application won't be shown and will be drawn only in memory.
 
@@ -131,6 +131,9 @@ Then launch SlimerJS like this:
 
 You won't see any windows. If you have any problems with xvfb, see its
 documentation.
+
+Note: xvfb is also available on MacOS, however Firefox for MacOs does not using
+X11 backend so it does not work.
 
 Using flash plugin or other plugins
 ----------------------------------------

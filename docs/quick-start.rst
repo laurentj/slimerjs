@@ -32,13 +32,11 @@ Store this script into a ``hello.js`` file and execute it:
 
 You'll see a little window opening and the "hello" message in the terminal. And that's all.
 Contrary to PhantomJS, SlimerJS is not (yet) headless, this is why you see this window.
-But on Linux or MacOS, you can use the tool xvfb to hide all windows opened by your script.
+But on Linux, you can use the tool xvfb to hide all windows opened by your script.
 
 You see that you have to close the window by yourself. To close it automatically, call
 ``slimer.exit()`` (or ``phantom.exit()`` to be compatible with PhantomJS), at the end
-of your script
-
-
+of your script.
 
 .. code-block:: javascript
 
@@ -54,7 +52,7 @@ Loading a module
 All components and libraries provided by SlimerJS are stored in modules. A module is
 a javascript file that "exports" a number of functions to the caller script. To "import"
 this functions in your scripts, you have to use the ``require()`` function. It accepts
-the module name in parameter, and returns an object
+the module name in parameter, and returns an object.
 
 .. code-block:: javascript
 
