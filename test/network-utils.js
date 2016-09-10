@@ -33,9 +33,9 @@ var networkUtils = {
         }
         this.webpage = require("webpage").create();
 
-        this.webpage.onConsoleMessage= function(msg, lineNum, sourceId) {
+        this.webpage.onConsoleMessage = function(msg, lineNum, sourceId) {
             console.log(msg);
-        }
+        };
 
         this.webpage.onLoadStarted = url => {
             let currentUrl = this.webpage.evaluate(function(c) {
@@ -136,6 +136,9 @@ var networkUtils = {
         };
 
         this.webpage.onLoadFinished = (status, url) => {
+            // FIXME: it seems the value of window.location.href
+            // is set asynchronously by Gecko, so currentUrl may not
+            // be the expected value
             let currentUrl = this.webpage.evaluate(function() {
                 return window.location.href + " - "+ window.initializedCounter;
             });
