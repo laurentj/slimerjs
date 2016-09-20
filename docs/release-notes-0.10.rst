@@ -24,9 +24,9 @@ Fixed bugs
 
 - Fixed "TypeError: browser.webpage is null" when closing a page while capturing a request (by Wojciech Skorodecki).
 - Source code: replaced found Expression closures to Arrow functions (by Wojciech Skorodecki)
+- Fixed wrong encoding of request.body in onResourceReceived() callback. (by Wojciech Skorodecki)
 - Fixed various typo in the documentation and web site (by Brian Donovan, Thomas Grainger, Avindra Goolcharan, Alexander Tsirel, Eric White)
 - Documentation: remove claim about xvfb support on Mac (by Matt McClure & Laurent)
-
 
 version 0.10.0
 ==============

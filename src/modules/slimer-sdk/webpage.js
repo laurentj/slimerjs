@@ -17,7 +17,7 @@ Cu.import('resource://slimerjs/webpageUtils.jsm');
 Cu.import('resource://slimerjs/slCookiesManager.jsm');
 Cu.import('resource://slimerjs/slDebug.jsm');
 
-const NS_ERROR_UCONV_NOCONV = 0x80500001;
+
 
 const de = Ci.nsIDocumentEncoder
 const {validateOptions} = require("sdk/deprecated/api-utils");
@@ -352,8 +352,6 @@ function _create(parentWebpageInfo) {
         paperSize : null
     }
 
-    var unicodeConverter = null;
-
     let defaultViewportSize = slConfiguration.getDefaultViewportSize();
     privProp.viewportSize.width = defaultViewportSize.width;
     privProp.viewportSize.height = defaultViewportSize.height;
@@ -459,20 +457,6 @@ function _create(parentWebpageInfo) {
 
         return '('+func.toString()+').apply(this, [' + argsList.join(",") + ']);';
     }
-
-    function convertToUnicode (text, charset) {
-        if (null === unicodeConverter) {
-            unicodeConverter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].
-            createInstance(Ci.nsIScriptableUnicodeConverter);
-        }
-
-        if (charset) {
-            unicodeConverter.charset = charset;
-        }
-
-        return unicodeConverter.ConvertToUnicode(text);
-    }
-
 
     // ----------------------------------- webpage
 
@@ -1828,28 +1812,12 @@ function _create(parentWebpageInfo) {
             executePageListener(this, 'onResourceTimeout', [error]);
         },
 
-        resourceReceived: function(request) {
+        resourceReceived: function(resource) {
             if (DEBUG_WEBPAGE_LOADING) {
-                slDebugLog("webpage: onResourceReceived request:"+slDebugGetObject(request, ['body']));
+                slDebugLog("webpage: onResourceReceived resource:"+slDebugGetObject(resource, ['body']));
             }
 
-            if (request && request.body && request.contentCharset) {
-                try {
-                    request.body = convertToUnicode(request.body, request.contentCharset);
-                } catch (e) {
-                    if (DEBUG_WEBPAGE_LOADING) {
-                        var errorMessage = String(('object' === typeof e) ? e.message : e);
-
-                        if (e.message.indexOf('0x80500001') !== -1) {
-                            errorMessage = errorMessage.replace('0x80500001', '0x80500001 (NS_ERROR_UCONV_NOCONV)');
-                        }
-
-                        slDebugLog(errorMessage);
-                    }
-                }
-            }
-
-            executePageListener(this, 'onResourceReceived', [request])
+            executePageListener(this, 'onResourceReceived', [resource])
         },
 
         resourceRequested: function(resource, request) {
