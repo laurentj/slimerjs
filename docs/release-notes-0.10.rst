@@ -16,7 +16,7 @@ Improvements
 
 - Improve message about version incompatibility
 - Mozilla telemetry disabled (by Wojciech Skorodecki)
-- Compatibility with Firefox 47 and 48
+- Compatibility with Firefox 47, 48, 49
 - Bash scripts: Use portable bash paths (by James Alastair McLaughlin)
 
 Fixed bugs
