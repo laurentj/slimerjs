@@ -9,7 +9,7 @@ Release Notes of SlimerJS 0.10
 version 0.10.1
 ==============
 
-Not released yet.
+SlimerJS 0.10.1 has been released on September 21, 2016.
 
 Improvements
 ------------
