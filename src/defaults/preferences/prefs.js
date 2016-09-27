@@ -56,4 +56,3 @@ pref("toolkit.telemetry.unified", false);
 // places.sqlite will grow by 500KB, previously 10MB by default.
 // This will reduce the profile directory size from 12MB to <3MB.
 pref('places.database.growthIncrementKiB', 500);
-

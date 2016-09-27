@@ -5,6 +5,29 @@
 Release Notes of SlimerJS 0.10
 ==============================
 
+
+version 0.10.1
+==============
+
+SlimerJS 0.10.1 has been released on September 21, 2016.
+
+Improvements
+------------
+
+- Improve message about version incompatibility
+- Mozilla telemetry disabled (by Wojciech Skorodecki)
+- Compatibility with Firefox 47, 48, 49
+- Bash scripts: Use portable bash paths (by James Alastair McLaughlin)
+
+Fixed bugs
+----------
+
+- Fixed "TypeError: browser.webpage is null" when closing a page while capturing a request (by Wojciech Skorodecki).
+- Source code: replaced found Expression closures to Arrow functions (by Wojciech Skorodecki)
+- Fixed wrong encoding of request.body in onResourceReceived() callback. (by Wojciech Skorodecki)
+- Fixed various typo in the documentation and web site (by Brian Donovan, Thomas Grainger, Avindra Goolcharan, Alexander Tsirel, Eric White)
+- Documentation: remove claim about xvfb support on Mac (by Matt McClure & Laurent)
+
 version 0.10.0
 ==============
 

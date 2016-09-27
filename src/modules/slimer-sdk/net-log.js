@@ -19,6 +19,24 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 let browserMap = new WeakMap();
 
+const NS_ERROR_UCONV_NOCONV = 0x80500001;
+
+var unicodeConverter = null;
+
+function convertToUnicode (text, charset) {
+    if (null === unicodeConverter) {
+        unicodeConverter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                            .createInstance(Ci.nsIScriptableUnicodeConverter);
+    }
+
+    if (charset) {
+        unicodeConverter.charset = charset;
+    }
+
+    return unicodeConverter.ConvertToUnicode(text);
+}
+
+
 /**
  * Register network callbacks on the given browser
  * @param XULElement browser
@@ -594,6 +612,23 @@ TracingListener.prototype = {
                 this.response.body = "";
             }
         }
+
+        if (this.response.body && this.response.contentCharset) {
+            try {
+                this.response.body = convertToUnicode(this.response.body, this.response.contentCharset);
+            } catch (e) {
+                if (DEBUG_NETWORK_PROGRESS) {
+                    var errorMessage = String(('object' === typeof e) ? e.message : e);
+
+                    if (e.message.indexOf('0x80500001') !== -1) {
+                        errorMessage = errorMessage.replace('0x80500001', '0x80500001 (NS_ERROR_UCONV_NOCONV)');
+                    }
+
+                    slDebugLog(errorMessage);
+                }
+            }
+        }
+
         this.data = [];
         this.options.onResponse(mix({}, this.response));
     },
