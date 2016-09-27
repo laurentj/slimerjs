@@ -152,6 +152,7 @@ Values of some options are available through the ``phantom`` object and the ``we
 .. code-block:: javascript
 
         {
+            allowMedia: true,                       // value of --allow-media
             javascriptEnabled: true,
             loadImages: true,                       // value of --load-images
             localToRemoteUrlAccessEnabled: false,   // value of --local-to-remote-url-access

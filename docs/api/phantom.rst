@@ -87,6 +87,7 @@ This is an object that contains this following properties:
 .. code-block:: javascript
 
         {
+            allowMedia: true,                       // value of --allow-media
             javascriptEnabled: true,
             loadImages: true,                       // value of --load-images
             localToRemoteUrlAccessEnabled: false,   // value of --local-to-remote-url-access

@@ -53,6 +53,7 @@ describe("phantom object", function() {
     });
 
     it("should have a defaultPageSettings property", function() {
+        expect(phantom.defaultPageSettings.allowMedia).toBeTruthy();
         expect(phantom.defaultPageSettings.javascriptEnabled).toBeTruthy();
         expect(phantom.defaultPageSettings.loadImages).toBeTruthy();
         expect(phantom.defaultPageSettings.localToRemoteUrlAccessEnabled).toBeFalsy();
