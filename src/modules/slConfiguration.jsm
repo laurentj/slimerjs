@@ -13,8 +13,16 @@ Cu.import('resource://slimerjs/slErrorLogger.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/slDebug.jsm');
-// to avoid issue on navigator object, see https://github.com/laurentj/slimerjs/issues/373
-Cu.import("resource://gre/modules/Webapps.jsm"); 
+
+try {
+    // Importing Webapps module to avoid issue on navigator object.
+    // See: https://github.com/laurentj/slimerjs/issues/373
+
+    Cu.import('resource://gre/modules/Webapps.jsm');
+} catch (e) {
+    // At this moment the "--debug" option has not been parsed yet so the error will be silently suppressed to allow
+    // running SlimerJS under control of Light: https://sourceforge.net/projects/lightfirefox/
+}
 
 var httphandler =  Cc["@mozilla.org/network/protocol;1?name=http"]
                     .getService(Ci.nsIHttpProtocolHandler);
