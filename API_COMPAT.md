@@ -151,6 +151,7 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>plainText                           </td><td>Implemented</td></tr>
     <tr><td>scrollPosition                      </td><td>Implemented</td></tr>
     <tr><td>settings                            </td><td>Implemented</td></tr>
+    <tr><td>settings.allowMedia                 </td><td>Implemented. SlimerJS only. Attribute stating whether or not media (audio / video) should be loaded.</td></tr>
     <tr><td>settings.javascriptEnabled          </td><td>Implemented</td></tr>
     <tr><td>settings.loadImages                 </td><td>Implemented</td></tr>
     <tr><td>settings.localToRemoteUrlAccessEnabled</td><td></td></tr>

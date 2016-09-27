@@ -28,6 +28,7 @@ var availableProxyType = { 'auto':true, 'system':true, 'http':true, 'socks5':tru
 
 var optionsSpec = {
     // name: [ 'cmdline option name', 'parser function name', 'default value',  supported],
+    allowMedia: ['allow-media', 'bool', true, true],
     errorLogFile: ['error-log-file', 'file', '', true],
     cookiesFile : ['cookies-file', 'file', '', false],
     diskCacheEnabled : ['disk-cache', 'bool', true, true],
@@ -390,8 +391,8 @@ var slConfiguration = {
     },
 
     getDefaultWebpageConfig : function() {
-        
         return Object.freeze({
+            allowMedia: this.allowMedia,
             javascriptEnabled: true,
             loadImages: this.loadImages,
             localToRemoteUrlAccessEnabled: this.localToRemoteUrlAccessEnabled,
@@ -437,6 +438,7 @@ var slConfiguration = {
             slDebugLog('Configuration: workingDirectory=unknown??');
     },
 
+    allowMedia: true,
     errorLogFile : '',
     cookiesFile : '',
     diskCacheEnabled : true,

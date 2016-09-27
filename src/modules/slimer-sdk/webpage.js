@@ -505,6 +505,7 @@ function _create(parentWebpageInfo) {
         /**
           Object containing various settings of the web page
 
+            - allowMedia: false to not load media (audio / video). Defaults to true. SlimerJS only.
             - javascriptEnabled: false if scripts of the page should not be executed (defaults to true).
             - loadImages: false to not load images (defaults to true).
             - localToRemoteUrlAccessEnabled: defines whether local resource (e.g. from file) can access remote URLs or not (defaults to false).
@@ -1779,6 +1780,7 @@ function _create(parentWebpageInfo) {
             webPageSandbox = null;
             if (browser) {
                 let ds = browser.docShell;
+                ds.allowMedia = privProp.settings.allowMedia;
                 ds.allowImages = privProp.settings.loadImages;
                 ds.allowJavascript = privProp.settings.javascriptEnabled;
             }

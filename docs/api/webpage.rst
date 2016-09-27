@@ -570,6 +570,7 @@ settings
 This property allows to set some options for the load of a page.
 Changing them after the load has no effect.
 
+- ``allowMedia``: ``false`` to deactivate the loading of media (audio / video). Default: ``true``. (SlimerJS only)
 - ``javascriptEnabled``: ``false`` to deactivate javascript in web pages (default is ``true``)
 - ``javascriptCanCloseWindows``  (not supported yet)
 - ``javascriptCanOpenWindows``  (not supported yet)
