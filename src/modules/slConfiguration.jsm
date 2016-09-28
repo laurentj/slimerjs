@@ -8,6 +8,7 @@ var EXPORTED_SYMBOLS = ["slConfiguration"];
 const Cu = Components.utils;
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
 
 Cu.import('resource://slimerjs/slErrorLogger.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
@@ -171,6 +172,17 @@ var slConfiguration = {
             }
             else
                 this[opt] = defaultValue;
+        }
+
+        let jsConsole = cmdline.handleFlag("jsconsole", false);
+        if (jsConsole) {
+            var appInfo = require("resource://slimerjs/addon-sdk/sdk/system/xul-app");
+            if (appInfo.satisfiesVersion(appInfo.platformVersion, '>=50.0')) {
+                dump(
+                    'Warning: jsconsole parameter does not work when using Firefox 50+ because the Error Console has ' +
+                    'been removed from the Firefox toolkit package so it is no longer available for XUL apps.' + "\n"
+                );
+            }
         }
 
         let configFile = cmdline.handleFlagWithParam("config", false);
