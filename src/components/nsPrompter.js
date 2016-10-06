@@ -843,22 +843,86 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
     },
 
     _slimerPromptUsernameAndPassword : function (url, authInfo, credentials, realm) {
+        let browser = null;
+        let webpage = null;
+
         if (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY) {
-            if (slConfiguration.proxyType == 'http' || slConfiguration.proxyType == 'socks5'
-                || slConfiguration.proxyType == 'socks') {
-//FIXME : check number of attempts
+            if (slConfiguration.proxyType == 'http' || slConfiguration.proxyType == 'socks5' ||
+                slConfiguration.proxyType == 'socks'
+            ) {
                 credentials.username = slConfiguration.proxyAuthUser;
                 credentials.password = slConfiguration.proxyAuthPassword;
+
+                if (authInfo.flags & Ci.nsIAuthInformation.PREVIOUS_FAILED) {
+                    let errorMessage = 'Proxy authentication failed: the credentials you supplied were not correct.';
+
+                    webpage = this._findWebPage();
+                    if (webpage) {
+                        webpage.resourceError({
+                            id: null,
+                            url: url,
+                            errorCode: 105, // QNetworkReply::ProxyAuthenticationRequiredError
+                            errorString: errorMessage
+                        });
+                    } else {
+                        throw new Error(errorMessage);
+                    }
+
+                    return false;
+                }
+
+                let usernameProvided =
+                    ('undefined' !== typeof credentials.username) &&
+                    (null !== credentials.username) &&
+                    ('' !== credentials.username);
+                let passwordProvided =
+                    ('undefined' !== typeof credentials.password) &&
+                    (null !== credentials.password) &&
+                    ('' !== credentials.password);
+                let onlyPassword = (authInfo.flags & Ci.nsIAuthInformation.ONLY_PASSWORD);
+                let credentialsProvided =
+                    onlyPassword
+                        ? passwordProvided
+                        : usernameProvided && passwordProvided;
+
+                if (!credentialsProvided) {
+                    let errorMessage =
+                        onlyPassword
+                            ? 'Missing password required by proxy!'
+                            : 'Missing username or password required by proxy!';
+
+                    webpage = this._findWebPage();
+                    if (webpage) {
+                        webpage.resourceError({
+                            id: null,
+                            url: url,
+                            errorCode: 105, // QNetworkReply::ProxyAuthenticationRequiredError
+                            errorString: errorMessage
+                        });
+                    } else {
+                        throw new Error(errorMessage);
+                    }
+
+                    return false;
+                }
+
                 return true;
             }
+
             return false;
         }
-        let webpage;
-        let browser = slUtils.getBrowserFromContentWindow(this.domWin);
-        if (browser)
-            webpage = browser.webpage;
-        if (!webpage)
+
+        if (!browser) {
+            browser = slUtils.getBrowserFromContentWindow(this.domWin);
+
+            if (browser) {
+                webpage = browser.webpage;
+            }
+        }
+
+        if (!webpage) {
             return false;
+        }
 
         let onlyPassword = (authInfo.flags & Ci.nsIAuthInformation.ONLY_PASSWORD);
         if (authInfo.flags & Ci.nsIAuthInformation.PREVIOUS_FAILED) {

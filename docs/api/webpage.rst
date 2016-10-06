@@ -1698,6 +1698,8 @@ informations:
 - ``status``: the response status if there is a response
 - ``statusText``: the response status text if there is a response
 
+Note that ``id`` will be null if the error code is ``105``.
+
 List of supported error codes: (see `QNetworkReply codes in QT <http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkreply.html#NetworkError-enum>`_)
 
 - ``1``: the remote server refused the connection (the server is not accepting requests)
@@ -1713,6 +1715,7 @@ List of supported error codes: (see `QNetworkReply codes in QT <http://qt-projec
 - ``99``: an unknown network-related error was detected
 - ``101``: the connection to the proxy server was refused (the proxy server is not accepting requests)
 - ``103``: the proxy host name was not found (invalid proxy hostname)
+- ``105``: the proxy requires authentication in order to honour the request but did not accept any credentials offered (if any)
 - ``201``: the access to the remote content was denied (similar to HTTP error 401)
 - ``203``: the remote content was not found at the server (similar to HTTP error 404)
 - ``204``: the remote server requires authentication to serve the content but the
