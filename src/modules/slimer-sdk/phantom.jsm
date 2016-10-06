@@ -11,7 +11,15 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import('resource://slimerjs/slCookiesManager.jsm');
 Components.utils.import('resource://slimerjs/slExit.jsm');
 
+const PROXY_TYPE_DIRECT = 0;
+const PROXY_TYPE_MANUAL = 1;
+const PROXY_TYPE_AUTO_CONFIG = 2;
 
+// Note that "3" is mapped to 0.
+// More info here: https://developer.mozilla.org/en-US/docs/Mozilla/Preferences/Mozilla_networking_preferences
+
+const PROXY_TYPE_AUTO_DETECT = 4;
+const PROXY_TYPE_SYSTEM = 5;
 
 var libPath = (slConfiguration.scriptFile ? slConfiguration.scriptFile.parent.clone(): null);
 
@@ -20,7 +28,6 @@ var errorHandler;
 var defaultSettings = null;
 
 var phantom = {
-
     /**
      * deprecated
      */
@@ -238,6 +245,89 @@ var phantom = {
      */
     fullyDecodeUrl : function(url) {
         return decodeURI(url);
+    },
+
+    proxy: function () {
+        var type = Services.prefs.getIntPref('network.proxy.type');
+
+        if (PROXY_TYPE_AUTO_CONFIG == type) {
+            return String(Services.prefs.getCharPref('network.proxy.autoconfig_url'));
+        }
+
+        if (PROXY_TYPE_MANUAL != type) {
+            return null;
+        }
+
+        var host = String(Services.prefs.getCharPref('network.proxy.http')).trim();
+        var port = String(Services.prefs.getIntPref('network.proxy.http_port')).trim();
+        if (!host.length || !port.length) {
+            host = String(Services.prefs.getCharPref('network.proxy.socks')).trim();
+            port = String(Services.prefs.getIntPref('network.proxy.socks_port')).trim();
+        }
+        if (!host.length || !port.length) {
+            return null;
+        }
+
+        return host + ':' + port;
+    },
+
+    setProxy: function (hostOrAutoConfigUrl, port, proxyType, user, password) {
+        hostOrAutoConfigUrl = hostOrAutoConfigUrl ? String(hostOrAutoConfigUrl).trim() : '';
+
+        if (!hostOrAutoConfigUrl.length) {
+            Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_DIRECT);
+        }
+
+        slConfiguration.proxyAuthUser = user;
+        slConfiguration.proxyAuthPassword = password;
+
+        switch (proxyType) {
+            case 'system':
+                Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_SYSTEM);
+                break;
+            case 'auto':
+                Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_AUTO_DETECT);
+                break;
+            case 'config-url':
+                var autoConfigUrl = hostOrAutoConfigUrl;
+
+                if (autoConfigUrl.startsWith('http://') || autoConfigUrl.startsWith('file://')) {
+                    Services.prefs.setCharPref('network.proxy.autoconfig_url', autoConfigUrl);
+                    Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_AUTO_CONFIG);
+                }
+                break;
+            case 'socks5':
+            case 'socks':
+                var host = hostOrAutoConfigUrl;
+
+                Services.prefs.setCharPref('network.proxy.socks', host);
+                Services.prefs.setIntPref('network.proxy.socks_port', port);
+                Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_MANUAL);
+
+                // Reset http proxy:
+
+                Services.prefs.setCharPref('network.proxy.http', '');
+                Services.prefs.setIntPref('network.proxy.http_port', null);
+                break;
+            case 'http':
+            case null:
+            case undefined:
+                var host = hostOrAutoConfigUrl;
+
+                Services.prefs.setCharPref('network.proxy.http', host);
+                Services.prefs.setIntPref('network.proxy.http_port', port);
+                Services.prefs.setCharPref('network.proxy.ssl', host);
+                Services.prefs.setIntPref('network.proxy.ssl_port', port);
+                Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_MANUAL);
+
+                // Reset socks proxy:
+
+                Services.prefs.setCharPref('network.proxy.socks', '');
+                Services.prefs.setIntPref('network.proxy.socks_port', null);
+                break;
+            default:
+                Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_DIRECT);
+        }
     },
 
     __exposedProps__ : {

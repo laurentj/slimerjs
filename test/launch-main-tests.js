@@ -54,6 +54,7 @@ else {
     phantom.injectJs("./test-require.js");
     phantom.injectJs("./test-system.js");
     phantom.injectJs("./test-webserver.js");
+    phantom.injectJs("./test-proxy.js");
     phantom.injectJs("./test-webpage.js");
     phantom.injectJs("./test-webpage-listeners.js");
     phantom.injectJs("./test-webpage-loading-files.js");
