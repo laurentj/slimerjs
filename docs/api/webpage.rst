@@ -276,7 +276,7 @@ To define user agent, prefer to use ``webpage.settings.userAgent``
    username/password, cookies etc! It can be a security issue!
    Remember that all custom headers are sent with **every requests** made during
    the load of the web page.
-   And as you may know, a web page can load ressources from everywhere. If you set
+   And as you may know, a web page can load resources from everywhere. If you set
    http authentication username/password into headers, and if the web page loaded
    from the web site A, contains an iframe that loads a page from another web site B,
    this website will receive all custom headers, and then **the username and password**,
@@ -473,7 +473,7 @@ ownsPages was true.
 paperSize
 -----------------------------------------
 
-Contains an object specifiying some dimensions for the PDF rendering.
+Contains an object specifying some dimensions for the PDF rendering.
 If null, the PDF size will be the viewport size of the webpage.
 
 It can be either:
@@ -904,7 +904,7 @@ Since this operation is asynchronous, you cannot do something on
 the page after the call of ``open()``. You should provide a callback
 or you should use the returned promise_ (not compatible with PhantomJS),
 to do something on the loaded page. The callback or the promise receives
-a string "success" if the loading has been succeded.
+a string "success" if the loading was successful.
 
 Example with a callback function:
 
@@ -1156,7 +1156,7 @@ browser window, like a user does when he types on a keyboard or
 uses his mouse. Then the browser engine (Gecko) translates these events
 into DOM events into the web page.
 
-So this method does not synthetize directly DOM events. This is why
+So this method does not directly synthesize DOM events. This is why
 you cannot indicate a DOM element as target.
 
 With this method, you can generate keyboard events and mouse events.
@@ -1555,7 +1555,7 @@ This callback is called when the loading of the page is finished (including its 
 like images etc). It is called also after each the loading of a frame is finished.
 
 It receives a string as argument. Its value is `"success"` if the loading is a success
-else it receives `"fail"` if a network error occured.
+else it receives `"fail"` if a network error occurred.
 
 The loading is considered as a success when a correct HTTP response is received, with a
 status code etc. It means that it receives `"success"` even in case of a 404 http error for
@@ -1686,10 +1686,10 @@ In the web page:
 
 onResourceError
 -----------------------------------------
-This callback is invoked when the browser received a netword error about a resource.
+This callback is invoked when the browser received a network error about a resource.
 
-The unique parameter received by the callback is an object containing these
-informations:
+The unique parameter received by the callback is an object containing this
+information:
  
 - ``id``: the number of the requested resource
 - ``url``:  the url of the resource
@@ -1732,8 +1732,8 @@ be called several times with multiple chunk of data, during the load of this res
 A resource can be the web page itself, or any other resources like
 images, frames, css files etc.
 
-The unique parameter received by the callback is an object containing these
-informations:
+The unique parameter received by the callback is an object containing this
+information:
  
 - ``id``: the number of the requested resource
 - ``url``:  the url of the resource
@@ -1777,7 +1777,7 @@ images, frames, css files etc.
 
 The callback may accept two parameters :
 
-- ``requestData``, a metadata object containing informations about the resource
+- ``requestData``, a metadata object containing information about the resource
 - ``networkRequest``, an object to manipulate the network request.
 
 .. code-block:: javascript
