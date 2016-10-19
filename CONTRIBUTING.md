@@ -2,15 +2,16 @@
 How to fill an issue
 ====================
 
-When you find a bug in SlimerJS, and post an issue on github, please:
+When you find a bug in SlimerJS, or you have a problem with Slimerjs, first search in the 
+[issues tracker](https://github.com/laurentj/slimerjs/issues) if a ticket was not already filled about your problem. Please do not add a comment on a closed issue, open a new one.
 
 - Indicate which version of SlimerJS you are using, on which operating system
   you execute it, and if you are using Firefox with SlimerJS, which version of Firefox.
-- Saying only "it doesn't work", is not a valid report. Please describe how the issue
+- Saying only something like "it doesn't work", is not a valid report. Please describe how the issue
   has appeared, what are the error messages, what it is displayed. etc. Execute
   SlimerJS with `--debug=true` to see more messages.
 - Explain how to reproduce it, with the most minimal code. More your example
-  will be tiny, more there is chance that the bug will be fixed quickly.
+  will be tiny, more there is a chance that the bug will be fixed quickly.
 
 
 How to contribute to SlimerJS
@@ -70,3 +71,5 @@ To run tests, just launch
     src/slimerjs  test/launch-rendering-tests.js
 
 We use the test framework [Jasmine](http://pivotal.github.io/jasmine/).
+
+
