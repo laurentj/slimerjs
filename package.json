@@ -3,7 +3,7 @@
   "version": "0.11.0",
   "description": "A scriptable browser like PhantomJS, based on Firefox",
   "bin": {
-    "slimerjs": "./bin/slimerjs"
+    "slimerjs": "./src/slimerjs-node"
   },
   "repository": {
     "type": "git",
