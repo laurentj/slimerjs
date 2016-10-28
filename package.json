@@ -1,0 +1,19 @@
+{
+  "name": "slimerjs-core",
+  "version": "0.10.1",
+  "description": "A scriptable browser like PhantomJS, based on Firefox",
+  "bin": {
+    "slimerjs": "./src/slimerjs-node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laurentj/slimerjs.git"
+  },
+  "author": "",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/laurentj/slimerjs/issues"
+  },
+  "homepage": "https://github.com/laurentj/slimerjs#readme",
+  "dependencies": {}
+}

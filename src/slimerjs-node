@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+
+/**
+ * Script that will execute SlimerJS.  stdio are
+ * forwarded to and from the child process.
+  */
+
+var path = require('path');
+var spawn = require('child_process').spawn;
+
+var binPath = path.join(__dirname, 'slimerjs');
+
+var args = process.argv.slice(2);
+
+// For Node 0.6 compatibility, pipe the streams manually, instead of using
+// `{ stdio: 'inherit' }`.
+var cp = spawn(binPath, args);
+cp.stdout.pipe(process.stdout);
+cp.stderr.pipe(process.stderr);
+process.stdin.pipe(cp.stdin);
+
+cp.on('error', function (err) {
+  console.error('Error executing firefox at', binPath);
+  console.error(err.stack);
+});
+
+cp.on('exit', function(code){
+  // Wait few ms for error to be printed.
+  setTimeout(function(){
+    process.exit(code);
+  }, 20)
+});
+
+process.on('SIGTERM', function() {
+  cp.kill('SIGTERM');
+  process.exit(1);
+});
