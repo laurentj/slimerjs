@@ -9,11 +9,35 @@ Components.utils.import('resource://slimerjs/slUtils.jsm');
 Components.utils.import('resource://slimerjs/slConfiguration.jsm');
 Components.utils.import('resource://slimerjs/slExit.jsm');
 
-var [major, minor, patch] = Services.appinfo.version.split('.');
-var _version = { major: checkInt(major), minor: checkInt(minor), patch: checkInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+var [version, prerelease ] = Services.appinfo.version.split('-');
+var [major, minor, patch] = version.split('.');
+var _version = {
+    major: checkInt(major),
+    minor: checkInt(minor),
+    patch: checkInt(patch),
+    prerelease: (prerelease == undefined?"":prerelease),
+    __exposedProps__ : {
+        major:'r',
+        minor:'r',
+        patch:'r',
+        prerelease:'r'
+    }
+};
 
-[major, minor, patch] = Services.appinfo.platformVersion.split('.');
-var _geckoVersion = { major: checkInt(major), minor: checkInt(minor), patch: checkInt(patch), __exposedProps__ : {major:'r', minor:'r', patch:'r'}};
+[version, prerelease ] = Services.appinfo.platformVersion.split('-');
+[major, minor, patch] = version.split('.');
+var _geckoVersion = {
+    major: checkInt(major),
+    minor: checkInt(minor),
+    patch: checkInt(patch),
+    prerelease: (prerelease == undefined?"":prerelease),
+    __exposedProps__ : {
+        major:'r',
+        minor:'r',
+        patch:'r',
+        prerelease:'r'
+    }
+};
 
 function checkInt(val) {
     let v = parseInt(val)

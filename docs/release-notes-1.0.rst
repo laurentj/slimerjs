@@ -16,6 +16,7 @@ New features and API
 - ``loading`` and ``loadingProgress`` properties on webpage
 - ``onResourceError`` parameter contains now always ``status`` and ``statusText`` properties
 - ``proxy()`` and ``setProxy()`` methods
+- ``slimer.version`` and ``slimer.geckoVersion`` have a new ``prerelease`` property.
 
 Improvements
 ------------

@@ -46,9 +46,16 @@ if ("slimer" in this) {
     assertEquals("1", slimer.version.major, "slimer has the good major version");
     assertEquals("0", slimer.version.minor, "slimer has the good minor version");
     assertEquals("0", slimer.version.patch, "slimer has the good patch version");
+    assertEquals("alpha.1", slimer.version.prerelease, "slimer has the good prerelease version");
+    assertExists(slimer.version, "has slimer.version object? ");
+    assertNotEquals(undefined, slimer.geckoVersion.major, "slimer has major gecko version: "+ slimer.geckoVersion.major);
+    assertNotEquals(undefined, slimer.geckoVersion.minor, "slimer has minor gecko version: "+ slimer.geckoVersion.minor);
+    assertNotEquals(undefined, slimer.geckoVersion.patch, "slimer has patch gecko version: "+ slimer.geckoVersion.patch);
+    assertNotEquals(undefined, slimer.version.prerelease, "slimer has prerelease gecko version: "+ slimer.geckoVersion.prerelease);
 }
-else
-    console.warn("==> No slimer object!")
+else {
+    console.warn("==> No slimer object!");
+}
 assertEquals("1", phantom.version.major, "phantom has the good major version");
 assertEquals("9", phantom.version.minor, "phantom has the good minor version");
 assertEquals("8", phantom.version.patch, "phantom has the good patch version");

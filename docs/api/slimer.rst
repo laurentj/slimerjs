@@ -70,12 +70,15 @@ version
 -----------------------------------------
 
 Contain the version of SlimerJS (read-only). This is an object
-containing three properties, ``major``, ``minor``, ``patch``:
+containing four properties, ``major``, ``minor``, ``patch`` and ``prerelease``:
 
 .. code-block:: javascript
 
     var v = slimer.version;
-    console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch);
+    if (v.prerelease)
+        console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch + '-' + v.prerelease);
+    else
+        console.log('version: ' + v.major + '.' + v.minor + '.' + v.patch);
 
 
 .. _slimer-geckoversion:
@@ -86,7 +89,7 @@ geckoVersion
 Contain the version of Gecko, the core of Firefox. In fact, this is also
 the version of Firefox.
 
-This is an object containing three properties, ``major``, ``minor``, ``patch``:
+This is an object containing four properties, ``major``, ``minor``, ``patch`` and ``prerelease``:
 
 .. code-block:: javascript
 
