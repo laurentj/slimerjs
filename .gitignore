@@ -6,3 +6,4 @@ docs/_build/
 misc/
 website/*.gpg
 test_reports/
+node_modules
