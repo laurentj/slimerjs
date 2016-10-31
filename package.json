@@ -1,5 +1,5 @@
 {
-  "name": "slimerjs-core",
+  "name": "slimerjs",
   "version": "0.10.1",
   "description": "A scriptable browser like PhantomJS, based on Firefox",
   "bin": {
