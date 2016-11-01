@@ -1,0 +1,9 @@
+docs/
+test/
+test-modules/
+test_reports/
+website/
+.github
+BUILD.md
+buildpackage.sh
+
