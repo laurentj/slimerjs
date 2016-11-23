@@ -7,7 +7,7 @@ It is useful to do functional tests, page automation, network monitoring, screen
 
 It is a tool like [PhantomJs](http://phantomjs.org/), except that
 it runs Gecko instead of Webkit, and it is not (yet) natively headless.
-However, it can be headless with the use of xvfb under Linux or MacOS.
+However, it can be headless with the use of xvfb under Linux (but not on MacOS).
 
 SlimerJS provides the same API of PhantomJS. The current version of SlimerJS
 is highly compatible with PhantomJS 1.9.
