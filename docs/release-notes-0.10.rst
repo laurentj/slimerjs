@@ -11,7 +11,7 @@ version 0.10.2
 Not released yet
 
 - Compatibility with Firefox 50 (fix support of HTTP auth)
-
+- Fix slimerjs.bat: it should not close cmd.exe when exiting 
 
 version 0.10.1
 ==============
