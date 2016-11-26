@@ -5,6 +5,13 @@
 Release Notes of SlimerJS 0.10
 ==============================
 
+version 0.10.2
+==============
+
+Not released yet
+
+- Compatibility with Firefox 50 (fix support of HTTP auth)
+
 
 version 0.10.1
 ==============
