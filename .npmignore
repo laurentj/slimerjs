@@ -6,4 +6,7 @@ website/
 .github
 BUILD.md
 buildpackage.sh
+.idea
+_dist
+test_reports/
 

@@ -8,10 +8,11 @@ Release Notes of SlimerJS 0.10
 version 0.10.2
 ==============
 
-Not released yet
+SlimerJS 0.10.2 has been released on November 27, 2016.
 
 - Compatibility with Firefox 50 (fix support of HTTP auth)
 - Fix slimerjs.bat: it should not close cmd.exe when exiting 
+- Official npm package
 
 version 0.10.1
 ==============
