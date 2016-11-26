@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+"use strict";
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -12,6 +13,8 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://slimerjs/slUtils.jsm");
 Cu.import("resource://slimerjs/slConfiguration.jsm");
+
+var geckoVersion = Services.appinfo.platformVersion.split('.')[0];
 
 function Prompter() {
     // Note that EmbedPrompter clones this implementation.
@@ -121,8 +124,7 @@ let PromptUtils = {
     getLocalizedString : function (key, formatArgs) {
         if (formatArgs)
             return this.strBundle.formatStringFromName(key, formatArgs, formatArgs.length);
-        else
-            return this.strBundle.GetStringFromName(key);
+        return this.strBundle.GetStringFromName(key);
     },
 
     confirmExHelper : function (flags, button0, button1, button2) {
@@ -290,15 +292,47 @@ let PromptUtils = {
         }
 
         let text;
-        if (isProxy)
-            text = PromptUtils.getLocalizedString("EnterLoginForProxy", [realm, displayHost]);
-        else if (isPassOnly)
-            text = PromptUtils.getLocalizedString("EnterPasswordFor", [username, displayHost]);
-        else if (!realm)
-            text = PromptUtils.getLocalizedString("EnterUserPasswordFor", [displayHost]);
-        else
-            text = PromptUtils.getLocalizedString("EnterLoginForRealm", [realm, displayHost]);
-
+        if (geckoVersion < 50) {
+            if (isProxy) {
+                text = PromptUtils.getLocalizedString("EnterLoginForProxy", [realm, displayHost]);
+            } else if (isPassOnly) {
+                text = PromptUtils.getLocalizedString("EnterPasswordFor", [username, displayHost]);
+            } else if (!realm) {
+                text = PromptUtils.getLocalizedString("EnterUserPasswordFor", [displayHost]);
+            } else {
+                text = PromptUtils.getLocalizedString("EnterLoginForRealm", [realm, displayHost]);
+            }
+        }
+        else if (geckoVersion == 50) {
+            let isCrossOrig = (authInfo.flags &
+                               Ci.nsIAuthInformation.CROSS_ORIGIN_SUB_RESOURCE);
+            if (isProxy) {
+                text = PromptUtils.getLocalizedString("EnterLoginForProxy2", [realm, displayHost]);
+            } else if (isPassOnly) {
+                text = PromptUtils.getLocalizedString("EnterPasswordFor", [username, displayHost]);
+            } else if (isCrossOrig) {
+                text = PromptUtils.getLocalizedString("EnterUserPasswordForCrossOrigin", [displayHost]);
+            } else if (!realm) {
+                text = PromptUtils.getLocalizedString("EnterUserPasswordFor2", [displayHost]);
+            } else {
+                text = PromptUtils.getLocalizedString("EnterLoginForRealm2", [realm, displayHost]);
+            }
+        }
+        else {
+            let isCrossOrig = (authInfo.flags &
+                               Ci.nsIAuthInformation.CROSS_ORIGIN_SUB_RESOURCE);
+            if (isProxy) {
+                text = PromptUtils.getLocalizedString("EnterLoginForProxy3", [realm, displayHost]);
+            } else if (isPassOnly) {
+                text = PromptUtils.getLocalizedString("EnterPasswordFor", [username, displayHost]);
+            } else if (isCrossOrig) {
+                text = PromptUtils.getLocalizedString("EnterUserPasswordForCrossOrigin2", [displayHost]);
+            } else if (!realm) {
+                text = PromptUtils.getLocalizedString("EnterUserPasswordFor2", [displayHost]);
+            } else {
+                text = PromptUtils.getLocalizedString("EnterLoginForRealm3", [realm, displayHost]);
+            }
+        }
         return text;
     },
 
@@ -355,13 +389,29 @@ XPCOMUtils.defineLazyGetter(PromptUtils, "ellipsis", function () {
 
 
 function openModalWindow(domWin, uri, args) {
-    // XXX Investigate supressing modal state when we're called without a
-    // window? Seems odd to affect whatever window happens to be active.
-    if (!domWin)
+    // There's an implied contract that says modal prompts should still work
+    // when no "parent" window is passed for the dialog (eg, the "Master
+    // Password" dialog does this).  These prompts must be shown even if there
+    // are *no* visible windows at all.
+    // There's also a requirement for prompts to be blocked if a window is
+    // passed and that window is hidden (eg, auth prompts are supressed if the
+    // passed window is the hidden window).
+    // See bug 875157 comment 30 for more...
+    if (domWin) {
+        // a domWin was passed, so we can apply the check for it being hidden.
+        let winUtils = domWin.QueryInterface(Ci.nsIInterfaceRequestor)
+            .getInterface(Ci.nsIDOMWindowUtils);
+
+        if (winUtils && !winUtils.isParentWindowMainWidgetVisible) {
+            throw Components.Exception("Cannot call openModalWindow on a hidden window",
+                Cr.NS_ERROR_NOT_AVAILABLE);
+        }
+    } else {
+        // We try and find a window to use as the parent, but don't consider
+        // if that is visible before showing the prompt.
         domWin = Services.ww.activeWindow;
-
-    // domWin may still be null here if there are _no_ windows open.
-
+        // domWin may still be null here if there are _no_ windows open.
+    }
     // Note that we don't need to fire DOMWillOpenModalDialog and
     // DOMModalDialogClosed events here, wwatcher's OpenWindowInternal
     // will do that. Similarly for enterModalState / leaveModalState.
@@ -469,24 +519,21 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         // also, the nsIPrompt flavor has 5 args instead of 6.
         if (typeof arguments[2] == "object")
             return this.nsIPrompt_prompt.apply(this, arguments);
-        else
-            return this.nsIAuthPrompt_prompt.apply(this, arguments);
+        return this.nsIAuthPrompt_prompt.apply(this, arguments);
     },
 
     promptUsernameAndPassword : function() {
         // Both have 6 args, so use types.
         if (typeof arguments[2] == "object")
             return this.nsIPrompt_promptUsernameAndPassword.apply(this, arguments);
-        else
-            return this.nsIAuthPrompt_promptUsernameAndPassword.apply(this, arguments);
+        return this.nsIAuthPrompt_promptUsernameAndPassword.apply(this, arguments);
     },
 
     promptPassword : function() {
         // Both have 5 args, so use types.
         if (typeof arguments[2] == "object")
             return this.nsIPrompt_promptPassword.apply(this, arguments);
-        else
-            return this.nsIAuthPrompt_promptPassword.apply(this, arguments);
+        return this.nsIAuthPrompt_promptPassword.apply(this, arguments);
     },
 
 
@@ -816,7 +863,6 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
 
     promptAuth : function (channel, level, authInfo, checkLabel, checkValue) {
         let message = PromptUtils.makeAuthMessage(channel, authInfo);
-
         let [username, password] = PromptUtils.getAuthInfo(authInfo);
         let [host, realm]  = PromptUtils.getAuthTarget(channel, authInfo);
         let credentials = {
@@ -855,10 +901,12 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         }
         let webpage;
         let browser = slUtils.getBrowserFromContentWindow(this.domWin);
-        if (browser)
+        if (browser) {
             webpage = browser.webpage;
-        if (!webpage)
+        }
+        if (!webpage) {
             return false;
+        }
 
         let onlyPassword = (authInfo.flags & Ci.nsIAuthInformation.ONLY_PASSWORD);
         if (authInfo.flags & Ci.nsIAuthInformation.PREVIOUS_FAILED) {
@@ -886,7 +934,7 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
             credentials.username = webpage.settings.userName;
             credentials.password = webpage.settings.password;
         }
-        else if (webpage.onAuthPrompt) { 
+        else if (webpage.onAuthPrompt) {
             let type = (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY? 'proxy': 'http');
             return webpage.onAuthPrompt(type, url, realm, credentials);
         }
