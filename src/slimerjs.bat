@@ -85,7 +85,7 @@ if not exist "%SLIMERJSLAUNCHER%" (
     REM %% escapes the percent sign so it displays literally
     echo SET "SLIMERJSLAUNCHER=%%programfiles%%\Mozilla Firefox\firefox.exe"
     pause
-    exit 1
+    exit /B 1
 )
 
 
@@ -123,7 +123,7 @@ IF EXIST "%__SLIMER_EXITCODEFILE%" (
     set /p EXITCODE=< "%__SLIMER_EXITCODEFILE%"
     del /F "%__SLIMER_EXITCODEFILE%"
 )
-EXIT %EXITCODE%
+EXIT /B %EXITCODE%
 
 ENDLOCAL
 

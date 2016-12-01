@@ -111,26 +111,34 @@
 
         <section id="lightweight">
           <div class="page-header">
-            <h1 class="install">SlimerJS 0.10.1</h1>
+            <h1 class="install">SlimerJS 0.10.2</h1>
             <div><strong>Official &amp; supported package</strong></div>
           </div>
-          <p class="lead">It is compatible with Firefox from 38.0 to 49.0.</p>
-          <p>Note: you can <a href="checksum.html">verify the file</a> by checking its checksum.</p>
+          <p class="lead">It is compatible with Firefox from 38.0 to 50.0.</p>
 
-          <p><a class="btn"
-          href="http://download.slimerjs.org/releases/0.10.1/slimerjs-0.10.1.zip">Download</a>
-          (about 1.2 MB)<br/>
-            <a href="http://download.slimerjs.org/releases/0.10.1/slimerjs-0.10.1.zip.asc">checksum</a></p>
-          <div>
-            <h2>npm</h2>
-            <p>This npm package <a href="https://www.npmjs.org/package/slimerjs">
-              provides<span class="slm">SlimerJS</span>
-            </a>. Just type in a console:</p>
-            <pre><code>npm install slimerjs</code></pre>
-            <code>./node_modules/.bin/slimerjs</code>.
-         </div>
-
-          <p>This package needs additional setup actions</p>
+            <div class="row-fluid">
+                <div class="span5">
+                    <h2>Zip package</h2>
+                    <p>Official zip package, from download.slimerjs.org</p>
+                    <p><a class="btn"
+                          href="http://download.slimerjs.org/releases/0.10.2/slimerjs-0.10.2.zip">Download</a>
+                        (about 1.2 MB)<br/>
+                        <a href="http://download.slimerjs.org/releases/0.10.2/slimerjs-0.10.2.zip.asc">checksum</a></p>
+                    <p>Note: see <a href="checksum.html">the page about checksum</a> to know how to verify the downloaded file.</p>
+                </div>
+                <div class="span5">
+                    <h2>Npm</h2>
+                    <p>New official Npm package since 0.10.2!
+                        This npm package <a
+                            href="https://www.npmjs.org/package/slimerjs">provides <span
+                            class="slm">SlimerJS</span></a>. Just type in a console:</p>
+                    <pre><code>npm install slimerjs</code></pre>
+                    <p>You can then launch slimerjs with
+                        <code>./node_modules/.bin/slimerjs</code>.
+                    </p>
+                </div>
+            </div>
+          <p>These packages need additional setup actions</p>
           <ul>
                 <li>You must install Firefox separately</li>
                 <li>Launching SlimerJS requires additional setup actions.
@@ -141,7 +149,7 @@
             <div class="span5">
             <h2>Firefox</h2>
             <p>The Famous Web Browser. <span class="slm">SlimerJS</span> needs only its
-            core engine to be executed. Prefered version: 38.0 to 49.0.</p>
+            core engine to be executed. Prefered version: 38.0 to 50.0.</p>
             <p><a class="btn" href="http://getfirefox.com">Download</a></p>
             </div>
         </div>
@@ -180,26 +188,25 @@
                 <a href="http://docs.slimerjs.org/current/installation.html#configuring-slimerjs">the
                 documentation to set it</a>.</p>
                 </div>
+
+                <div class="span5">
+                    <h2>Nuget</h2>
+                    <p>For Windows user, you can use <a href="https://www.nuget.org/">Nuget</a>
+                        to download and install SlimerJS. See packages
+                        <a href="https://www.nuget.org/packages/SlimerJS/">SlimerJS</a>
+                        or <a href="https://www.nuget.org/packages/NetSlimerJS/">NetSlimerJS</a>.
+                    </p>
+                    <pre><code>PM> Install-Package SlimerJS </code></pre>
+                </div>
             </div>
             
             <div class="row-fluid">
                 <div class="span5">
-                <h2>Docker image</h2>
-                    <p>A Docker image containing Ubuntu 12.04 + SlimerJS + CasperJS
-                    1.1.0-beta3
-                    <a href="https://registry.hub.docker.com/u/cmfatih/slimerjs/">is
-                    available here</a>.
-                   </p>
-                </div>
-
-                <div class="span5">
-                <h2>Nuget</h2>
-                    <p>For Windows user, you can use <a href="https://www.nuget.org/">Nuget</a>
-                      to download and install SlimerJS. See packages
-                      <a href="https://www.nuget.org/packages/SlimerJS/">SlimerJS</a>
-                      or <a href="https://www.nuget.org/packages/NetSlimerJS/">NetSlimerJS</a>.
-                   </p>
-                    <pre><code>PM> Install-Package SlimerJS </code></pre>
+                    <h2>Docker image</h2>
+                    <p>A Docker image containing Ubuntu + SlimerJS + CasperJS
+                        <a href="https://registry.hub.docker.com/u/cmfatih/slimerjs/">is
+                            available here</a>.
+                    </p>
                 </div>
             </div>
             <hr/>
@@ -218,7 +225,8 @@
           Of course, it is <strong>not recommended</strong> to use them in production.</p>
           <ul>
             <li><a href="http://download.slimerjs.org/nightlies/latest-slimerjs-stable/">The 0.10.x
-            version</a> with  <a href="http://docs.slimerjs.org/current/release-notes.html">latest bug fixes and improvements</a> but not released yet.</li>
+            version</a> with  <a href="http://docs.slimerjs.org/current/release-notes-0.10.html">latest bug fixes and improvements</a>
+                but not released yet.</li>
             <li><a href="http://download.slimerjs.org/nightlies/latest-slimerjs-master/">The future 1.0 version</a>
                with <a href="http://docs.slimerjs.org/master/release-notes-1.0.html">some improvements</a>.</li>
           </ul>
