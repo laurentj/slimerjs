@@ -5,6 +5,7 @@
   "bin": {
     "slimerjs": "./src/slimerjs-node"
   },
+  "main": "./src/phantom-protocol.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/laurentj/slimerjs.git"
