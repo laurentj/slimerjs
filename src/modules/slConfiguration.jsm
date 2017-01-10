@@ -284,19 +284,22 @@ var slConfiguration = {
     },
 
     parse_proxyauth : function (val, cmdlineOpt) {
-        let pos = val.lastIndexOf(':')
+        let pos = val.indexOf(':');
         if ( pos > 0) {
-            [this.proxyAuthUser, this.proxyAuthPassword] = val.split(":");
+            this.proxyAuthUser = val.substring(0, pos);
+            this.proxyAuthPassword = val.substring(pos+1);
         }
-        else
-            this.proxyAuthUser = val
+        else {
+            this.proxyAuthUser = val;
+        }
         return val;
     },
 
     parse_proxy : function (val, cmdlineOpt) {
         let pos = val.lastIndexOf(':')
         if ( pos > 0) {
-            [this.proxyHost, this.proxyPort] = val.split(":");
+            this.proxyHost = val.substring(0, pos);
+            this.proxyPort = val.substring(pos+1);
         }
         else {
             this.proxyHost = val;

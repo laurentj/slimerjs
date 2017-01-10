@@ -32,10 +32,13 @@ function create() {
             // to avoid 400 error. See httpd.js:1609 -> var scheme = identity.getScheme(host, port);
             // and added an identity with host=0.0.0.0 does not work: many errors in httpd
             // during a request.
-            if (typeof port === "string" && port.indexOf(':') != -1){
-                [host, port] = port.split(':');
-                port = parseInt(port);
-                server.identity.add('http', host, port);
+            if (typeof port === "string") {
+                let pos = port.lastIndexOf(':');
+                if (pos != -1){
+                    host = port.substring(0, pos);
+                    port = parseInt(port.substring(pos+1));
+                    server.identity.add('http', host, port);
+                }
             }
             server.wrappedJSObject._start(port, host);
             return true;

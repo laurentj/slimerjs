@@ -5,6 +5,14 @@
 Release Notes of SlimerJS 0.10
 ==============================
 
+version 0.10.3
+==============
+
+Not released yet
+
+- Fix support of IPV6 notation in the ``--proxy`` and ``--webdriver`` command line parameters.
+
+
 version 0.10.2
 ==============
 

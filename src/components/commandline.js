@@ -101,9 +101,10 @@ var webDriverScriptHandler = {
         slConfiguration.baseURIStrictCommonJS.push(this._getDir().path);
 
         function parse_webdriver(val, cmdlineOpt) {
-            let pos = val.lastIndexOf(':')
+            let pos = val.lastIndexOf(':');
             if ( pos > 0) {
-                [slConfiguration.webdriverIp, slConfiguration.webdriverPort] = val.split(":");
+                slConfiguration.webdriverIp = val.substring(0, pos);
+                slConfiguration.webdriverPort = val.substring(pos+1);
             }
             else {
                 slConfiguration.webdriverPort = val;
