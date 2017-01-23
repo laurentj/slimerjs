@@ -8,6 +8,7 @@ pref("browser.cache.disk.enable", false);
 pref("app.update.enabled", false);
 pref("app.update.auto", false);
 pref("toolkit.telemetry.enabled", false);
+pref("datareporting.healthreport.uploadEnabled", false);
 pref("toolkit.telemetry.prompted", false);
 pref("extensions.blocklist.enabled", false);
 pref("privacy.trackingprotection.enabled", false);
