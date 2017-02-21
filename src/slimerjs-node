@@ -8,7 +8,9 @@
 var path = require('path');
 var spawn = require('child_process').spawn;
 
-var binPath = path.join(__dirname, 'slimerjs');
+var suffix = process.platform === 'win32' ? '.bat' : '';
+
+var binPath = path.join(__dirname, 'slimerjs' + suffix);
 
 var args = process.argv.slice(2);
 
