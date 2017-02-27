@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+./src/slimerjs test/launch-main-tests.js
+./src/slimerjs test/launch-rendering-tests.js
