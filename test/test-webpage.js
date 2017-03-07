@@ -801,3 +801,36 @@ describe("WebPage.offline*", function(){
     });
 });
 
+
+describe("WebPage (misc)", function(){
+    var webpage;
+    var url = "http://127.0.0.1:8083/navigator.html";
+
+    beforeEach(function() {
+        if (webpage) {
+            return;
+        }
+        webpage = require("webpage").create();
+    });
+
+    it("html can use navigator",function() {
+        var loaded = false;
+        runs(function() {
+            webpage.open(url, function(success){
+                loaded = true;
+            });
+        });
+
+        waitsFor(function(){ return loaded;}, 1000);
+        runs(function(){
+            var navError = webpage.evaluate(function(){
+                return navigatorIterationError
+            });
+            expect(navError).toEqual("")
+        });
+    });
+
+    it("test end", function(){
+        webpage.close();
+    })
+});
