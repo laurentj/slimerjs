@@ -164,7 +164,7 @@ Contributors for this release
 
 - Dimitar Angelov (webpage.paperSize and other pdf options for webpage.render())
 - Rémi Emonet (webpage.paperSize)
-- Will Hilton (--user-agent=string, --viewport-width and --viewport-height options)
+- Will Hilton (``--user-agent=string``, ``--viewport-width`` and ``--viewport-height`` options)
 - Sergey Kogan (fix issues about exit code)
 - Quentin Le Calvez (Fix console.log so it can take multiple arguments)
 - Jerry Lundström (Fix support with Gecko 40.*)
