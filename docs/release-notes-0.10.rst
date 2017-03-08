@@ -12,6 +12,9 @@ Not released yet
 
 - Fix support of IPV6 notation in the ``--proxy`` and ``--webdriver`` command line parameters.
 - Compatibility with Firefox 51 and 52
+- Fix fs.copyTree() (Wojciech Skorodecki)
+- Fix slimerjs-node under Windows (Charlie Hulcher)
+- tar.bz2 packages are available
 
 version 0.10.2
 ==============
