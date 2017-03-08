@@ -448,6 +448,7 @@ exports.copy = function copy(sourceFileName, targetFileName) {
 
 
 function copyDir(sourceDir, targetDir) {
+    targetDir.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755", 8));
     let enumDir = sourceDir.directoryEntries;
     while(enumDir.hasMoreElements()) {
         let file = enumDir.getNext().QueryInterface(Ci.nsIFile);
