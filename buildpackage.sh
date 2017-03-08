@@ -27,6 +27,9 @@ cp slimerjs.bat $TARGETDIR
 cp slimerjs.py $TARGETDIR
 cp LICENSE $TARGETDIR
 cp README.md $TARGETDIR
+cp slimerjs-node $TARGETDIR
+cp phantom-protocol.js $TARGETDIR
+
 
 mkdir -p $TARGETDIR/chrome/
 cp -a chrome/icons $TARGETDIR/chrome/
