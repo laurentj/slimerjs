@@ -8,7 +8,7 @@ Release Notes of SlimerJS 0.10
 version 0.10.3
 ==============
 
-Not released yet
+SlimerJS 0.10.3 has been released on March 9, 2017.
 
 - Fix support of IPV6 notation in the ``--proxy`` and ``--webdriver`` command line parameters.
 - Compatibility with Firefox 51 and 52
