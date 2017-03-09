@@ -118,13 +118,27 @@
 
             <div class="row-fluid">
                 <div class="span5">
-                    <h2>Zip package</h2>
-                    <p>Official zip package, from download.slimerjs.org</p>
+                    <h2>Zip/bz2 packages</h2>
+                    <h4>From github</h4>
                     <p><a class="btn"
-                          href="http://download.slimerjs.org/releases/0.10.3/slimerjs-0.10.3.zip">Download</a>
-                        (about 1.2 MB)<br/>
-                        <a href="http://download.slimerjs.org/releases/0.10.3/slimerjs-0.10.3.zip.asc">checksum</a></p>
-                    <p>Note: see <a href="checksum.html">the page about checksum</a> to know how to verify the downloaded file.</p>
+                          href="https://github.com/laurentj/slimerjs/releases/download/0.10.3/slimerjs-0.10.3.zip">zip</a>
+                        <a class="btn"
+                           href="https://github.com/laurentj/slimerjs/releases/download/0.10.3/slimerjs-0.10.3.tar.bz2">tar.bz2</a>
+                    </p>
+                    <h4>From download.slimerjs.org</h4>
+
+                    <p><a class="btn"
+                          href="https://download.slimerjs.org/releases/0.10.3/slimerjs-0.10.3.zip">zip</a>
+                        <a class="btn"
+                           href="https://download.slimerjs.org/releases/0.10.3/slimerjs-0.10.3.tar.bz2">tar.bz2</a>
+                    </p>
+
+                    <ul>
+                        <li><a href="http://download.slimerjs.org/releases/0.10.3/slimerjs-0.10.3.zip.asc">checksum file for zip package</a></li>
+                        <li><a href="https://download.slimerjs.org/releases/0.10.3/slimerjs-0.10.3.tar.bz2.asc">checksum file for tar.bz2 package</a></li>
+                    </ul>
+                    <p>See <a href="checksum.html">the page about checksum</a> to know how to verify the packages.</p>
+
                 </div>
                 <div class="span5">
                     <h2>Npm</h2>
@@ -137,19 +151,23 @@
                         <code>./node_modules/.bin/slimerjs</code>.
                     </p>
                 </div>
+                <div class="span5">
+                    <h2></h2>
+                    <p></p>
+                </div>
             </div>
-          <p>These packages need additional setup actions</p>
-          <ul>
-                <li>You must install Firefox separately</li>
-                <li>Launching SlimerJS requires additional setup actions.
-                See the <a href="http://docs.slimerjs.org/current/installation.html#setup">documentation</a>.</li>
-          </ul>
+
 
          <div class="row-fluid">
             <div class="span5">
             <h2>Firefox</h2>
-            <p>The Famous Web Browser. <span class="slm">SlimerJS</span> needs only its
-            core engine to be executed. Prefered version: 38.0 to 52.0.</p>
+                <p>The Famous Web Browser.</p>
+
+                <span class="slm">SlimerJS</span> needs it to
+                open webpage and executes your script. It uses in fact the core of Firefox.
+            Prefered version: 38.0 to 52.0.</p>
+                <p>Launching SlimerJS requires additional setup actions.
+                    See the <a href="http://docs.slimerjs.org/current/installation.html#setup">documentation</a>.</p>
             <p><a class="btn" href="http://getfirefox.com">Download</a></p>
             </div>
         </div>
@@ -158,13 +176,12 @@
 
         <section id="linux">
           <div class="page-header">
-            <h1 class="install">From your favorite package system</h1>
+            <h1 class="install">From other package repositories</h1>
             <div><strong>unofficial &amp; unsupported packages</strong></div>
           </div>
           
-          <p class="lead">This is probably the prefered way if you use a package system.
-          Here are known repositories from where <span class="slm">SlimerJS</span> can be
-          installed.<br>
+          <p class="lead">Here are known repositories from where <span
+          class="slm">SlimerJS</span> can be installed.<br>
 
           <p><strong style="color:red">Warnings</strong>: </p>
           <ul>
@@ -209,8 +226,7 @@
                 </div>
             </div>
             <hr/>
-          <p>For others distributions, your contribution is welcomed ;-). Or tell us if
-          you found SlimerJS somewhere else!</p>
+          <p>If you created or found packages of Slimerjs into some others package repositories, please tell us!</p>
         </section>
 
         
