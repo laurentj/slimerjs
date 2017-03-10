@@ -27,50 +27,50 @@ dash. For example, ``--proxy=localhost`` becomes ``-proxy localhost``. You shoul
 note also that the command line parsing is done by Firefox, not by SlimerJS.
 
 
-================================================  ===================  ====================================================
+====================================================  ===================  ====================================================
 PhantomJS options
-================================================  ===================  ====================================================
---config=/path/to/config.json                     Supported (0.9)      indicate a config file
---cookies-file=/path/to/cookies.txt               N/A. see profiles
---debug=[yes|no|true|false]                       supported            Displays debug messages. Supports also other values
---disk-cache=[yes|no|true|false]                  Supported (0.9)      Enable the disk cache or not. By default: disabled
---help or -h                                      Supported            Displays help about options
---ignore-ssl-errors=[yes|no|true|false]
---load-images=[yes|no|true|false]                 Supported           
---local-storage-path=/path/to/file                N/A. see profiles
---local-storage-quota=number                      Supported            number in Bytes
---local-to-remote-url-access=[yes|no|true|false]
---max-disk-cache-size=size                        Supported (0.9)      Limits the size of the disk cache (in KB)
---output-encoding=encoding
---proxy=[address:port|url]                        Supported (0.9)      See below for possible values
---proxy-auth=username:password                    Supported (0.9)     
---proxy-type=[http|socks5|none]                   Supported (0.9)      See below other possible values
---remote-debugger-port=number
---remote-debugger-autorun=[yes|no|true|false]
---ssl-protocol=[ssl protocol name]                Supported (0.9.5)    Indicates the SSL protocol to use. See notes about it below. Default is TLS.
---ssl-certificates-path=/path/to/dir              N/A. see profiles
---version or -v                                   Supported            Displays the version of SlimerJS
---webdriver or --wd or -w                         Supported            launch SlimerJS as a driver for Selenium (experimental)
---webdriver=ip:port                               Supported            launch SlimerJS as a driver for Selenium, by indicating the ip and a port (experimental)
---webdriver-logfile=/path/to/logfile              Supported            sets the log file for webdriver
---webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]      Supported            sets the log level for webdriver
---webdriver-selenium-grid-hub=url                 Supported            sets the url to the Selenium grid hub
---web-security=[yes|no|true|false]              
-================================================  ===================  ====================================================
+====================================================  ===================  ====================================================
+``--config=/path/to/config.json``                     Supported (0.9)      indicate a config file
+``--cookies-file=/path/to/cookies.txt``               N/A. see profiles
+``--debug=[yes|no|true|false]``                       supported            Displays debug messages. Supports also other values
+``--disk-cache=[yes|no|true|false]``                  Supported (0.9)      Enable the disk cache or not. By default: disabled
+``--help`` or ``-h``                                  Supported            Displays help about options
+``--ignore-ssl-errors=[yes|no|true|false]``
+``--load-images=[yes|no|true|false]``                 Supported
+``--local-storage-path=/path/to/file``                N/A. see profiles
+``--local-storage-quota=number``                      Supported            number in Bytes
+``--local-to-remote-url-access=[yes|no|true|false]``
+``--max-disk-cache-size=size``                        Supported (0.9)      Limits the size of the disk cache (in KB)
+``--output-encoding=encoding``
+``--proxy=[address:port|url]``                        Supported (0.9)      See below for possible values
+``--proxy-auth=username:password``                    Supported (0.9)
+``--proxy-type=[http|socks5|none]``                   Supported (0.9)      See below other possible values
+``--remote-debugger-port=number``
+``--remote-debugger-autorun=[yes|no|true|false]``
+``--ssl-protocol=[ssl protocol name]``                Supported (0.9.5)    Indicates the SSL protocol to use. See notes about it below. Default is TLS.
+``--ssl-certificates-path=/path/to/dir``              N/A. see profiles
+``--version`` or ``-v``                               Supported            Displays the version of SlimerJS
+``--webdriver`` or ``--wd`` or ``-w``                 Supported            launch SlimerJS as a driver for Selenium (experimental)
+``--webdriver=ip:port``                               Supported            launch SlimerJS as a driver for Selenium, by indicating the ip and a port (experimental)
+``--webdriver-logfile=/path/to/logfile``              Supported            sets the log file for webdriver
+``--webdriver-loglevel=[ERROR|WARN|INFO|DEBUG]``      Supported            sets the log level for webdriver
+``--webdriver-selenium-grid-hub=url``                 Supported            sets the url to the Selenium grid hub
+``--web-security=[yes|no|true|false]``
+====================================================  ===================  ====================================================
 
 SlimerJS has some specific options. Some of them are `options of Firefox <https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options>`_
 
 =============================================  ==============  ========================================================================
 Options specific to SlimerJS
 =============================================  ==============  ========================================================================
---error-log-file=file                          Supported        stores all JS errors in the given log file
--jsconsole                                     Supported        Open `the error console <https://developer.mozilla.org/en-US/docs/Error_Console>`_ that displays all javascript errors, warning, notices...
--P name                                        Supported        Use the indicated profile
--CreateProfile name                            Supported        Create a new profile
--profile path                                  Supported        Use the given directory as a profile
---user-agent=string                            Supported        Set the default value of `webpage.settings.userAgent <api/webpage.html#settings>`_
---viewport-width=number                        Supported        Set the default value of `webpage.viewportSize.width <api/webpage.html#viewportsize>`_
---viewport-height=number                       Supported        Set the default value of `webpage.viewportSize.height <api/webpage.html#viewportsize>`_
+``--error-log-file=file``                       Supported        stores all JS errors in the given log file
+``-jsconsole``                                  Supported        Open `the error console <https://developer.mozilla.org/en-US/docs/Error_Console>`_ that displays all javascript errors, warning, notices...
+``-P name``                                     Supported        Use the indicated profile
+``-CreateProfile name``                         Supported        Create a new profile
+``-profile path``                               Supported        Use the given directory as a profile
+``--user-agent=string``                         Supported        Set the default value of `webpage.settings.userAgent <api/webpage.html#settings>`_
+``--viewport-width=number``                     Supported        Set the default value of `webpage.viewportSize.width <api/webpage.html#viewportsize>`_
+``--viewport-height=number``                    Supported        Set the default value of `webpage.viewportSize.height <api/webpage.html#viewportsize>`_
 =============================================  ==============  ========================================================================
 
 About debug
@@ -80,7 +80,7 @@ With the ``--debug`` option, SlimerJS displays many messages about what happened
 the execution of your script: network events, page loading, ``sendEvent`` calls, configuration
 values, command line parameters..
 
-SlimerJS accepts a value other than true/false/yes/no for --debug. You can indicate what to display.
+SlimerJS accepts a value other than true/false/yes/no for ``--debug``. You can indicate what to display.
 
 Example: ``--debug=pageloading,netprogress``.
 
@@ -140,7 +140,7 @@ a configuration parameter with a de-dashed and camel-cased name.
     }
 
 Some options are not supported in the configuration file, since they are processed before
-the execution of the core of SlimerJS: ``--help``, ``--version``, ``-jsconsole``, ``-P``, ``CreateProfile``, ``-profile``,
+the execution of the core of SlimerJS: ``--help``, ``--version``, ``-jsconsole``, ``-P``, ``-CreateProfile``, ``-profile``,
 
 Options in your script
 ======================

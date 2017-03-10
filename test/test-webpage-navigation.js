@@ -84,9 +84,13 @@ describe("WebPage.onNavigationRequested", function(){
         waitsFor(function(){ return loaded;}, 1000);
 
         runs(function(){
-            //expect(navCall.length).toEqual(7);
-            //FIXME don't know why, (nsIContentPolicy) Navigation.shouldLoad is called twice for consolemessage.html
-            expect(navCall.length).toEqual(8);
+            if (slimer.geckoVersion.major >= 52) {
+                expect(navCall.length).toEqual(7);
+            }
+            else {
+                //in fx 51-, don't know why, (nsIContentPolicy) Navigation.shouldLoad is called twice for consolemessage.html
+                expect(navCall.length).toEqual(8);
+            }
             var nav = navCall[0] // 1
             expect(nav[0]).toEqual("http://127.0.0.1:8083/frame_main.html");
             //expect(nav[1]).toEqual("Other")

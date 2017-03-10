@@ -86,7 +86,8 @@ var slLauncher = {
         mainWindow = contentWindow;
 
         let principal = contentWindow.document.nodePrincipal;
-        if (Services.appinfo.platformVersion.split('.')[0] > 20) {
+        let geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
+        if ( geckoMajorVersion > 20 && geckoMajorVersion < 50) {
             // autorize the main script to use navigator.mozTCPSocket  https://developer.mozilla.org/en-US/docs/WebAPI/TCP_Socket
             Services.perms.addFromPrincipal(principal, "tcp-socket", Ci.nsIPermissionManager.ALLOW_ACTION);
             // FIXME: do other authorization: video, audio, geoloc...?
