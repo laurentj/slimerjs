@@ -1,0 +1,6 @@
+services:
+  - docker
+
+script:
+  - docker build . -t slimerjs-test
+  - docker run -t slimerjs-test
