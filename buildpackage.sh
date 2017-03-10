@@ -27,6 +27,9 @@ cp slimerjs.bat $TARGETDIR
 cp slimerjs.py $TARGETDIR
 cp LICENSE $TARGETDIR
 cp README.md $TARGETDIR
+cp slimerjs-node $TARGETDIR
+cp phantom-protocol.js $TARGETDIR
+
 
 mkdir -p $TARGETDIR/chrome/
 cp -a chrome/icons $TARGETDIR/chrome/
@@ -43,8 +46,8 @@ sed -i -e "s/BuildID=.*/BuildID=$BUILDDATE/g" application.ini
 # create the final package
 cd $SLIMERDIR/_dist
 zip -r "slimerjs-$VERSION.zip" "slimerjs-$VERSION"
-
+tar cjf "slimerjs-$VERSION.tar.bz2" "slimerjs-$VERSION"
 cd $CURRENTDIR
 echo ""
-echo "slimerjs-$VERSION.zip is in $SLIMERDIR/_dist/"
+echo "slimerjs-$VERSION.zip and slimerjs-$VERSION.tar.bz2 are in $SLIMERDIR/_dist/"
 

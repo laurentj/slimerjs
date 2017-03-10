@@ -194,7 +194,7 @@ New API
 - New callback ``webpage.onAuthPrompt`` (not compatible with PhantomJS)
 - New method ``slimer.clearHttpAuth()`` to clear http authentication from the network cache.
 - Support of `navigator.mozTCPSocket <https://developer.mozilla.org/en-US/docs/WebAPI/TCP_Socket>`_ is enabled
-  for the main script. It needs at least XulRunner/Firefox 25 to use this API.
+  for the main script. Experimental feature that needs XulRunner/Firefox from 25 to 49. Support has gone since Firefox 50.
 - New property ``slimer.geckoVersion``
 - Compatible with Firefox/XulRunner 25.0
 - Key shortcut ctrl+w on windows to quit SlimerJS (main window) or just close the window.

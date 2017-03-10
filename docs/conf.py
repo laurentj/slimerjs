@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'SlimerJS'
-copyright = '2014-2016 Innophi and Laurent Jouanneau'
+copyright = '2014-2017 Innophi and Laurent Jouanneau'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

@@ -16,11 +16,13 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/slDebug.jsm');
 
 try {
-    // Importing Webapps module to avoid issue on navigator object.
-    // See: https://github.com/laurentj/slimerjs/issues/373
+    // to avoid issue on navigator object, see https://github.com/laurentj/slimerjs/issues/373
+    // until Gecko 52
 
     Cu.import('resource://gre/modules/Webapps.jsm');
 } catch (e) {
+    // Webapps.jsm does not exists since Gecko 52
+
     // At this moment the "--debug" option has not been parsed yet so the error will be silently suppressed to allow
     // running SlimerJS under control of Light: https://sourceforge.net/projects/lightfirefox/
 }
@@ -305,19 +307,22 @@ var slConfiguration = {
     },
 
     parse_proxyauth : function (val, cmdlineOpt) {
-        let pos = val.lastIndexOf(':')
+        let pos = val.indexOf(':');
         if ( pos > 0) {
-            [this.proxyAuthUser, this.proxyAuthPassword] = val.split(":");
+            this.proxyAuthUser = val.substring(0, pos);
+            this.proxyAuthPassword = val.substring(pos+1);
         }
-        else
-            this.proxyAuthUser = val
+        else {
+            this.proxyAuthUser = val;
+        }
         return val;
     },
 
     parse_proxy : function (val, cmdlineOpt) {
         let pos = val.lastIndexOf(':')
         if ( pos > 0) {
-            [this.proxyHost, this.proxyPort] = val.split(":");
+            this.proxyHost = val.substring(0, pos);
+            this.proxyPort = val.substring(pos+1);
         }
         else {
             this.proxyHost = val;

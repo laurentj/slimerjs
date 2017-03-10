@@ -1,6 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+// copy of toolkit/components/prompts/src/nsPrompter.js
 
 "use strict";
 
@@ -868,11 +869,13 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         let credentials = {
             username:       username,
             password:       password
-        }
+        };
 
         let ok = this._slimerPromptUsernameAndPassword(channel.URI.spec, authInfo, credentials, realm);
         if (ok) {
-            checkValue.value = false;
+            if (checkValue) {
+                checkValue.value = false;
+            }
             PromptUtils.setAuthInfo(authInfo, credentials.username, credentials.password);
         }
         return ok;
@@ -996,7 +999,6 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
             let type = (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY? 'proxy': 'http');
             return webpage.onAuthPrompt(type, url, realm, credentials);
         }
-
         return true;
     },
 

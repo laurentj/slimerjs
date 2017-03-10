@@ -36,7 +36,7 @@ pref("browser.link.open_external", 1);
 
 pref("dom.allow_scripts_to_close_windows", true);
 
-
+// deprecated since Gecko 50
 pref("dom.mozTCPSocket.enabled", true);
 
 //Enable plugin crash protection
