@@ -26,12 +26,17 @@ On Linux, if you don't have an X environment, and if you want to install Firefox
 from binaries provided directly by Mozilla, you need to know that Firefox
 needs these libraries: libpthread.so, libdl.so, libstdc++.so,
 libm.so, libgcc_s.so, libc.so, ld-linux-x86-64.so, libXrender1.so, libasound.so.2,
-libgtk-x11-2.0.so.0. (this list may not be complete, depending of your distribution
- and the version of Firefox). On Ubuntu/Debian, you can install/verify it by doing:
+libgtk-x11-2.0.so.0, libdbus-glib-1.so.2. This list may not be complete, depending of your distribution
+ and the version of Firefox. On Ubuntu/Debian, you can install/verify it by doing:
 
 .. code-block:: bash
 
-    sudo apt-get install libc6 libstdc++6 libgcc1 libgtk2.0-0 libasound2 libxrender1
+    sudo apt-get install libc6 libstdc++6 libgcc1 libgtk2.0-0 libasound2 libxrender1 libdbus-glib-1-2
+
+If Firefox or SlimerJS does not work, add ``--debug=true`` to the command line
+of Slimerjs, to see if there is no errors about libraries missing. If so, install
+packages that provide missing libraries. Search missing files in `the debian repository <https://packages.debian.org/>`_
+or the `the ubuntu repository <http://packages.ubuntu.com/>`_.
 
 Probably the best thing is to install the package of Firefox provided by your
 distribution : it will install all dependencies. And next, you can install and
