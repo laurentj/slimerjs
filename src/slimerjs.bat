@@ -2,7 +2,9 @@
 SETLOCAL EnableDelayedExpansion
 REM % ~ d[rive] p[ath] 0[script name] is the absolute path to this bat file, without quotes, always.
 REM ~ strips quotes from the argument
-SET SLIMERDIR=%~dp0
+IF NOT EXIST "%SLIMERDIR%" (
+    SET SLIMERDIR=%~dp0
+)
 REM %* is every argument passed to this script.
 SET __SLIMER_ARGS=%*
 SET __SLIMER_ENV=
