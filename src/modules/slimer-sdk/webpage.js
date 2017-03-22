@@ -36,6 +36,7 @@ netLog.startTracer();
  */
 function create() {
     let [webpage, win] = _create(null);
+    webpage.xulWindow = win;
     return webpage;
 }
 exports.create = create;
@@ -322,6 +323,7 @@ function _create(parentWebpageInfo) {
                 }
             }
             [childPage, win] = _create(parentWPInfo);
+            childPage.xulWindow = win;
 
             if (webpage.ownsPages) {
                 privProp.childWindows.push(childPage);
