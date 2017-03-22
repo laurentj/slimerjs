@@ -52,12 +52,12 @@ Navigation.prototype = {
             return result;
 
         // call the navigationRequest callback
-        webpage.navigationRequested(aContentLocation.spec, navtype, !webpage.navigationLocked,
+        var blockNavigation = webpage.navigationRequested(aContentLocation.spec, navtype, !webpage.navigationLocked,
                                     (Ci.nsIContentPolicy.TYPE_DOCUMENT == aContentType));
 
 
         // if the navigation request is blocked, refuse the content
-        if (webpage.navigationLocked) {
+        if (webpage.navigationLocked || blockNavigation) {
             result = Ci.nsIContentPolicy.REJECT_REQUEST;
         }
         return result;
