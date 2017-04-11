@@ -14,6 +14,7 @@ const de = Ci.nsIDocumentEncoder;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import('resource://slimerjs/httpUtils.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
+Cu.import("resource://gre/modules/NetUtil.jsm");
 
 var webpageUtils = {
 
@@ -301,7 +302,13 @@ var webpageUtils = {
         streamChannel.setURI(uri);
         streamChannel.contentStream = stringStream;
 
+        var netChannel = NetUtil.newChannel({
+          uri: uri,
+          loadUsingSystemPrincipal: true,
+        });
+
         var channel = streamChannel.QueryInterface(Ci.nsIChannel);
+        channel.loadInfo = netChannel.loadInfo;
         channel.contentCharset = "UTF-8"
 
         var loadFlags = channel.LOAD_DOCUMENT_URI |
