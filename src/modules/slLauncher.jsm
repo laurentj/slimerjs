@@ -374,6 +374,25 @@ function prepareLoader(scriptInfo) {
             let requirerUri = Services.io.newURI(requirer.uri, null, null);
             let requirerDir = requirerUri.QueryInterface(Ci.nsIFileURL).file.parent;
 
+            additionalPaths.push(scriptInfo.requirePath);
+
+            // id is not an absolute path or relative path (ex: foo or foo/bar)
+            // let's add all path of requirePaths to search inside them
+            for (let i=0; i < requirePaths.length;i++) {
+                // if path is a relative path, it should be
+                // resolve against the current module path;
+                let path = requirePaths[i];
+                let dir;
+                if (path[0] == '.' || !slUtils.isAbsolutePath(path)) {
+                    const pathToAdd = slUtils.getAbsMozFile(path, requirerDir);
+                    additionalPaths.push(pathToAdd);
+                }
+                else {
+                    const pathToAdd = slUtils.getMozFile(path);
+                    additionalPaths.push(pathToAdd);
+                }
+            }
+
             if (relativeId !== false) {
                 // id is a relative path
                 additionalPaths.push(requirerDir);
@@ -390,22 +409,6 @@ function prepareLoader(scriptInfo) {
                 }
             }
 
-            additionalPaths.push(scriptInfo.requirePath);
-
-            // id is not an absolute path or relative path (ex: foo or foo/bar)
-            // let's add all path of requirePaths to search inside them
-            for (let i=0; i < requirePaths.length;i++) {
-                // if path is a relative path, it should be
-                // resolve against the current module path;
-                let path = requirePaths[i];
-                let dir;
-                if (path[0] == '.' || !slUtils.isAbsolutePath(path)) {
-                    additionalPaths.push(slUtils.getAbsMozFile(path, requirerDir));
-                }
-                else {
-                    additionalPaths.push(slUtils.getMozFile(path));
-                }
-            }
             if (relativeId) {
                 return relativeId;
             }
