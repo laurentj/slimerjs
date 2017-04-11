@@ -120,6 +120,34 @@ describe("require function", function() {
         expect(mod.myname).toEqual('node module');
         expect(mod.submodule).toEqual('sub node module');
     });
+
+    it("should prioritise main script directory over node modules", function() {
+        // Module 'g' exists in both the main test script directory and 'node_modules'.
+        // The resolveURI algorithm should prioritise the main script directory over 'node_modules'
+        var ok = false;
+        try {
+            var g = require('g');
+            ok = true;
+            expect(g.directory).toEqual("test");
+        } catch(e) {
+            ok = false;
+        }
+
+        expect(ok).toBeTruthy();
+
+        var g = require('./g');
+        expect(g.directory).toEqual("test");
+    });
+
+    it("should prioritise require.paths over node modules", function() {
+        // Module 'h' exists in both '../test-modules' and 'node_modules'.
+        // The resolveURI algorithm should prioritise 'require.paths' over 'node_modules'
+        var path = '../test-modules/';
+        require.paths.push (path);
+        var mod = require('h');
+        expect(mod.directory).toEqual('test-modules');
+        require.paths.pop();
+    });
 });
 
 describe("the loaded module requiredexample", function() {
