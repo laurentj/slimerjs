@@ -303,7 +303,6 @@ function _create(parentWebpageInfo) {
             // create the webpage object for this child window
             let opener = (webpage.ownsPages?aOpener:null);
             let parentWPInfo = null;
-            let childPage, win;
             if (webpage.ownsPages) {
                 parentWPInfo = {
                     window: opener,
@@ -315,8 +314,7 @@ function _create(parentWebpageInfo) {
                     }
                 }
             }
-            [childPage, win] = _create(parentWPInfo);
-
+            let [childPage, win] = _create(parentWPInfo);
             if (webpage.ownsPages) {
                 privProp.childWindows.push(childPage);
             }
@@ -327,6 +325,8 @@ function _create(parentWebpageInfo) {
             // returns the contentWindow of the browser element
             // nsContentTreeOwner::ProvideWindow and other will
             // load the expected URI into it.
+            // FIXME issue 607: win.content is null in Firefox 53+
+            // we could return win.browser.contentWindow but it crashes
             return win.content;
         },
 
@@ -336,8 +336,13 @@ function _create(parentWebpageInfo) {
 
         isTabContentWindow : function(aWindow) {
             return false;
+        },
+
+        canClose : function() {
+            let {BrowserUtils} = Cu.import("resource://gre/modules/BrowserUtils.jsm", {});
+            return BrowserUtils.canCloseWindow(browser.ownerDocument.defaultView);
         }
-    }
+    };
 
     /**
      * some private parameters
