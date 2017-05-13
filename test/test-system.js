@@ -30,7 +30,7 @@ describe("system module", function() {
 
     it("should handle command line arguments", function(){
         expect('args' in system).toBeTruthy();
-        expect(system.args.length).toEqual(1);
+        expect(system.args.length).toBeGreaterThan(0);
         expect(/launch-main-tests\.js$/.test(system.args[0])).toBeTruthy();
     });
 });
