@@ -107,7 +107,7 @@ slUtils.getAbsMozFile = function getAbsMozFile(path, basepath) {
     if ( (isWin && first.match(/\:$/)) || (!isWin && first == '')) {
         // this is an absolute path
         file = Cc['@mozilla.org/file/local;1']
-                  .createInstance(Ci.nsILocalFile);
+                  .createInstance(Ci.nsIFile);
         if (isWin) {
             file.initWithPath(path.replace(/\//g, "\\"));
         }
@@ -150,7 +150,7 @@ slUtils.getMozFile = function getMozFile(path) {
     }
 
     let file = Cc['@mozilla.org/file/local;1']
-              .createInstance(Ci.nsILocalFile);
+              .createInstance(Ci.nsIFile);
     file.initWithPath(path);
     return file;
 }

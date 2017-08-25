@@ -32,7 +32,7 @@ filePicker.prototype = {
         list.forEach(function(file){
             try {
                 let selectedFile = Cc['@mozilla.org/file/local;1']
-                                .createInstance(Ci.nsILocalFile);
+                                .createInstance(Ci.nsIFile);
                 selectedFile.initWithPath(file);
                 if (selectedFile.exists()) {
                     finalList.push(selectedFile);
