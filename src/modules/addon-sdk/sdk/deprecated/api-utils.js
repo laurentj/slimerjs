@@ -121,7 +121,7 @@ exports.validateOptions = function validateOptions(options, requirements) {
 };
 
 exports.addIterator = function addIterator(obj, keysValsGenerator) {
-  obj.__iterator__ = function(keysOnly, keysVals) {
+  obj.__iterator__ = function*(keysOnly, keysVals) {
     let keysValsIterator = keysValsGenerator.call(this);
 
     // "for (.. in ..)" gets only keys, "for each (.. in ..)" gets values,
