@@ -243,6 +243,8 @@ It will contain API that does not exists in PhantomJS.
     <tr><td>onError                             </td><td>Implemented (SlimerJS issue: For errors from the webpage directly, the stack is not available..)</td></tr>
     <tr><td>onFilePicker                        </td><td>Implemented</td></tr>
     <tr><td>onInitialized                       </td><td>Implemented</td></tr>
+    <tr><td>onFileDownload                      </td><td>Implemented<br>SlimerJS only</td></tr>
+    <tr><td>onFileDownloadError                 </td><td>Implemented<br>SlimerJS only</td></tr>
     <tr><td>onLoadFinished                      </td><td>Implemented<br>SlimerJS only: the callback receives 3 parameters: the status ("success" or "fail"), the url and true if this is a frame that is loaded</td></tr>
     <tr><td>onLoadStarted                       </td><td>Implemented<br>SlimerJS only: the callback receives 2 parameters: the url and true if this is a frame that is loaded</td></tr>
     <tr><td>onLongRunningScript                 </td><td>Implemented (phjs 2.0)</td></tr>
@@ -275,6 +277,13 @@ Methods that send signals (private methods):
     <tr><td>urlChanged(url)                     </td><td>Implemented</td></tr>
 </table>
 
+## Data object received by onFileDownload
+
+<table>
+    <tr><td>filename                            </td><td>Implemented </td></tr>
+    <tr><td>size                                </td><td>Implemented</td></tr>
+    <tr><td>contentType                         </td><td>Implemented</td></tr>
+</table>
 
 ## resourceError object received by onResourceError
 
@@ -325,6 +334,8 @@ Methods that send signals (private methods):
     <tr><td>statusText                          </td><td>Implemented</td></tr>
     <tr><td>time                                </td><td>Implemented</td></tr>
     <tr><td>url                                 </td><td>Implemented</td></tr>
+    <tr><td>httpVersion                         </td><td>Implemented (SlimerJS only)</td></tr>
+    <tr><td>isFileDownloading                   </td><td>Implemented (SlimerJS only)</td></tr>
 
 </table>
 

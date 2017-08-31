@@ -104,6 +104,8 @@ Content management:
 :ref:`onConfirm <webpage-onConfirm>`,
 :ref:`onConsoleMessage <webpage-onConsoleMessage>`,
 :ref:`onFilePicker <webpage-onFilePicker>`,
+:ref:`onFileDownload <webpage-onFileDownload>`,
+:ref:`onFileDownloadError <webpage-onFileDownloadError>`,
 :ref:`onPrompt <webpage-onPrompt>`
 
 Javascript execution:
@@ -1518,6 +1520,25 @@ the error message and the stack trace (an array of objects indicating the file, 
         
     };
 
+.. _webpage-onFileDownload:
+
+onFileDownload
+-----------------------------------------
+
+This callback is called when the browser askes to download a file.
+
+The callback receives the url and data and should return
+the path of the new created file.
+
+.. _webpage-onFileDownloadError:
+
+onFileDownloadError
+-----------------------------------------
+
+This function is called when an error appears when downloading file.
+It receives the error message.
+
+
 .. _webpage-onFilePicker:
 
 onFilePicker
@@ -1750,6 +1771,7 @@ information:
 - ``body``: the content, it may change during multiple call for the same request (slimerjs only).
 - ``httpVersion.major``: the major part of the HTTP protocol version.
 - ``httpVersion.minor``: the minor part of the HTTP protocol version.
+- ``isFileDownloading``: the value is true when file is downloading (slimerjs only).
 
 
 .. code-block:: javascript
