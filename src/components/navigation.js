@@ -28,7 +28,7 @@ Navigation.prototype = {
     // short shouldLoad(in unsigned long aContentType, in nsIURI aContentLocation,
     //                  in nsIURI aRequestOrigin, in nsISupports aContext,
     //                  in ACString aMimeTypeGuess, in nsISupports aExtra, in nsIPrincipal aRequestPrincipal);
-    shouldLoad : function(aContentType, aContentLocation, aRequestOrigin, aContext, aMimeTypeGuess, aExtra) {
+    shouldLoad : function(aContentType, aContentLocation, aRequestOrigin, aContext, aMimeTypeGuess, aExtra, aRequestPrincipal) {
         let result = Ci.nsIContentPolicy.ACCEPT;
 
         // ignore content that is not a document
@@ -48,12 +48,17 @@ Navigation.prototype = {
 
         //------ retrieve the corresponding webpage object
         let [webpage, navtype] = this._findWebpage(aContext);
-        if (!webpage)
+        if (!webpage) {
             return result;
+        }
 
         // call the navigationRequest callback
-        webpage.navigationRequested(aContentLocation.spec, navtype, !webpage.navigationLocked,
-                                    (Ci.nsIContentPolicy.TYPE_DOCUMENT == aContentType));
+        if (!aMimeTypeGuess) {
+            // since Gecko 53, shouldLoad is called twice for each url, but with
+            // and without aMimeTypeGuess. So let's call it only for one.
+            webpage.navigationRequested(aContentLocation.spec, navtype, !webpage.navigationLocked,
+                (Ci.nsIContentPolicy.TYPE_DOCUMENT == aContentType));
+        }
 
 
         // if the navigation request is blocked, refuse the content

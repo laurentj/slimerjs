@@ -27,6 +27,11 @@ const appInfo = Cc["@mozilla.org/xre/app-info;1"]
 const versionComparator = Cc["@mozilla.org/xpcom/version-comparator;1"]
                           .getService(Ci.nsIVersionComparator);
 
+// to avoid Reference Error when running long time Script. Fx52. see issue #590
+let debugService = Cc["@mozilla.org/dom/slow-script-debug;1"]
+    .getService(Ci.nsISlowScriptDebug);
+debugService.activationHandler = null;
+
 /**
  * this function retrieves various informations
  * about the main script. These informations will
