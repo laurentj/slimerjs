@@ -46,14 +46,14 @@ function create() {
 
         registerFile: function(path, filePath) {
             var file = Components.classes['@mozilla.org/file/local;1']
-                            .createInstance(Components.interfaces.nsILocalFile);
+                            .createInstance(Components.interfaces.nsIFile);
             file.initWithPath(filePath);
             return server.registerFile(path, file);
         },
 
         registerDirectory : function(path, directoryPath) {
             var file = Components.classes['@mozilla.org/file/local;1']
-                            .createInstance(Components.interfaces.nsILocalFile);
+                            .createInstance(Components.interfaces.nsIFile);
             file.initWithPath(directoryPath);
             return server.registerDirectory(path, file);
         },

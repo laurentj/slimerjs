@@ -107,7 +107,7 @@ function outputStr(str) {
             return;
         }
         var file = Cc['@mozilla.org/file/local;1']
-                  .createInstance(Ci.nsILocalFile);
+                  .createInstance(Ci.nsIFile);
         file.initWithPath('/dev/stdout');
         var filestream = Cc['@mozilla.org/network/file-output-stream;1'].
                      createInstance(Ci.nsIFileOutputStream);

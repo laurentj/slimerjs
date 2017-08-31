@@ -18,7 +18,7 @@ function writeExitStatus (status) {
     }
     let filePath = envService.get('__SLIMER_EXITCODEFILE');
     let file = Cc['@mozilla.org/file/local;1']
-                .createInstance(Ci.nsILocalFile);
+                .createInstance(Ci.nsIFile);
     file.initWithPath(filePath);
 
     let str = String(status);
