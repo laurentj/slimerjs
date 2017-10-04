@@ -7,8 +7,16 @@ pref("dom.report_all_js_exceptions", true);
 pref("browser.cache.disk.enable", false);
 pref("app.update.enabled", false);
 pref("app.update.auto", false);
+pref("toolkit.telemetry.unified", false);
 pref("toolkit.telemetry.enabled", false);
 pref("toolkit.telemetry.prompted", false);
+pref("toolkit.telemetry.archive.enabled", false);
+pref("toolkit.telemetry.newProfilePing.enabled", false);
+pref("toolkit.telemetry.shutdownPingSender.enabled", false);
+pref("toolkit.telemetry.updatePing.enabled", false);
+
+
+
 pref("extensions.blocklist.enabled", false);
 pref("privacy.trackingprotection.enabled", false);
 pref("extensions.update.enabled", false);
