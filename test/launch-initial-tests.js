@@ -46,7 +46,7 @@ if ("slimer" in this) {
     assertEquals("1", slimer.version.major, "slimer has the good major version");
     assertEquals("0", slimer.version.minor, "slimer has the good minor version");
     assertEquals("0", slimer.version.patch, "slimer has the good patch version");
-    assertEquals("prealpha.2", slimer.version.prerelease, "slimer has the good prerelease version");
+    assertEquals("alpha.2", slimer.version.prerelease, "slimer has the good prerelease version");
     assertExists(slimer.version, "has slimer.version object? ");
     assertNotEquals(undefined, slimer.geckoVersion.major, "slimer has major gecko version: "+ slimer.geckoVersion.major);
     assertNotEquals(undefined, slimer.geckoVersion.minor, "slimer has minor gecko version: "+ slimer.geckoVersion.minor);
@@ -189,7 +189,7 @@ phantom.onError = function(msg, stack) {
     assertEquals(9, stack[1].line, "line in requiredexample.js")
     assertEquals("exports.throwExcept", stack[1].function, "function in stack")
     assertNotEquals(-1, stack[2].sourceURL.indexOf('initial-tests.js'), "filename is initial-tests.js")
-    assertEquals(189, stack[2].line, "line in initial-tests.js")
+    assertEquals(196, stack[2].line, "line in initial-tests.js")
     assertEquals("", stack[2].function, "function in stack")
 }
 
