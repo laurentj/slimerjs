@@ -1308,7 +1308,11 @@ function _create(parentWebpageInfo) {
                 throw new Error("WebPage not opened");
 
             eventType = eventType.toLowerCase();
-            browser.contentWindow.focus();
+
+            if (!browser.contentDocument.hasFocus()) {
+                // only set focus if needed, else it can break focus (Gecko 54+) and some keys don't work in inputs
+                browser.contentWindow.focus();
+            }
             let domWindowUtils = browser.contentWindow
                                         .QueryInterface(Ci.nsIInterfaceRequestor)
                                         .getInterface(Ci.nsIDOMWindowUtils);
