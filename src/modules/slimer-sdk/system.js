@@ -193,13 +193,14 @@ var stdin = null;
 var currentEncoding = '';
 
 function getOutput(file, stream) {
-    if (_isWindows) {
-        return {
-            write: dump,
-            writeLine: function (data) {
-                dump(data + '\n');
-            }
+    var fallback = {
+        write: dump,
+        writeLine: function (data) {
+            dump(data + '\n');
         }
+    }
+    if (_isWindows) {
+        return fallback;
     }
     if (stream) {
         if (currentEncoding == slConfiguration.outputEncoding) {
@@ -208,14 +209,18 @@ function getOutput(file, stream) {
         stream.close();
     }
     currentEncoding = slConfiguration.outputEncoding;
-    if (currentEncoding == 'binary') {
-        stream = fs.open(file, { mode:'bw'});
-    }
-    else {
-        stream = fs.open(file,
-                         { mode:'w',
-                           charset:currentEncoding,
-                           nobuffer:true});
+    try {
+        if (currentEncoding == 'binary') {
+            stream = fs.open(file, { mode:'bw'});
+        }
+        else {
+            stream = fs.open(file,
+                             { mode:'w',
+                               charset:currentEncoding,
+                               nobuffer:true});
+        }
+    } catch (e) {
+        return fallback;
     }
     return stream;
 }
