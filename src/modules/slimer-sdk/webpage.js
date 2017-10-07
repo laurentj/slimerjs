@@ -30,6 +30,8 @@ const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
 const netLog = require('net-log');
 netLog.startTracer();
 
+const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
+
 /**
  * create a webpage object
  * @module webpage
@@ -296,16 +298,25 @@ function _create(parentWebpageInfo) {
             throw Cr.NS_NOINTERFACE;
         },
 
+        createContentWindow(aURI, aOpener, aWhere, aFlags, aTriggeringPrincipal) {
+            return this._openWindow(null, aOpener, aWhere, aFlags,
+                aTriggeringPrincipal);
+        },
+
         /**
          * called by nsContentTreeOwner::ProvideWindow
          * when a window should be opened (window.open is invoked by a web page)
-         * @param aURI in our case, it is always null
-         * @param aWhere nsIBDW.OPEN_DEFAULTWINDOW, OPEN_CURRENTWINDOW OPEN_NEWWINDOW OPEN_NEWTAB OPEN_SWITCHTAB
-         * @param aContext nsIBDW.OPEN_EXTERNAL (external app which ask to open the url), OPEN_NEW
-         * @return the nsIDOMWindow object where to load the URI
+         * @param {nsIURI}  aURI in our case, it is always null
+         * @param {nsIDOMWindow} aOpener
+         * @param {int} aWhere nsIBDW.OPEN_DEFAULTWINDOW, OPEN_CURRENTWINDOW OPEN_NEWWINDOW OPEN_NEWTAB OPEN_SWITCHTAB
+         * @param {int} aContext nsIBDW.OPEN_EXTERNAL (external app which ask to open the url), OPEN_NEW
+         * @return {nsIDOMWindow} the  object where to load the URI
          */
-        openURI : function(aURI, aOpener, aWhere, aContext)
-        {
+        openURI : function(aURI, aOpener, aWhere, aFlags, aTriggeringPrincipal) {
+            return this._openWindow(aURI, aOpener, aWhere, aFlags, aTriggeringPrincipal);
+        },
+
+        _openWindow: function(aURI, aOpener, aWhere, aFlags, aTriggeringPrincipal) {
             // create the webpage object for this child window
             let opener = (webpage.ownsPages?aOpener:null);
             let parentWPInfo = null;
@@ -331,17 +342,31 @@ function _create(parentWebpageInfo) {
             // returns the contentWindow of the browser element
             // nsContentTreeOwner::ProvideWindow and other will
             // load the expected URI into it.
-            // FIXME issue 607: win.content is null in Firefox 53+
-            // we could return win.browser.contentWindow but it crashes
-            return win.content;
+            if (geckoMajorVersion < 53) {
+                return win.content
+            }
+            return win.browser.contentWindow;
         },
 
-        openURIInFrame : function(aURI, aOpener, aWhere, aContext) {
+        /**
+         *
+         * @param {nsIURI} aURI
+         * @param {nsIOpenURIInFrameParams} aParams
+         * @param {int} aWhere
+         * @param {int} aFlags
+         * @param {int} aNextTabParentId
+         * @param {string} aName
+         * @return {nsIFrameLoaderOwner}
+         */
+        openURIInFrame : function(aURI, aParams, aWhere, aFlags, aNextTabParentId, aName) {
             return null;
         },
 
         isTabContentWindow : function(aWindow) {
             return false;
+        },
+        createContentWindowInFrame: function (aURI, aParams, aWhere, aFlags, aNextTabParentId, aName) {
+            return null;
         },
 
         canClose : function() {
