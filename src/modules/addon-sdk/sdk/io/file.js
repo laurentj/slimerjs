@@ -123,6 +123,16 @@ exports.isFile = function isFile(filename) {
   return file.isFile();
 };
 
+exports.isSpecial = function isSpecial(filename) {
+    if (!filename)
+        return false;
+    let file = MozFile(filename);
+    if (!file.exists()) {
+        return false;
+    }
+    return file.isSpecial();
+};
+
 exports.isDirectory = function isDirectory(filename) {
   if (!filename)
     return false;
@@ -160,7 +170,7 @@ exports.isLink = function isLink(filename) {
   if (!file.exists()) {
     return false;
   }
-  return file.isSymLink();
+  return file.isSymlink();
 }
 
 exports.size = function size(filename) {
@@ -512,7 +522,7 @@ exports.readLink = function readLink(path) {
     if (!file.exists()) {
         throw new Error("File does not exists");
     }
-    if (!file.isSymLink()) {
+    if (!file.isSymlink()) {
         throw new Error("The given path is not a symbolic link");
     }
     return file.target;
