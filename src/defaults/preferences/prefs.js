@@ -16,10 +16,10 @@ pref("toolkit.telemetry.shutdownPingSender.enabled", false);
 pref("toolkit.telemetry.updatePing.enabled", false);
 
 
-
 pref("extensions.blocklist.enabled", false);
-pref("privacy.trackingprotection.enabled", false);
+pref("extensions.screenshots.disabled", true);
 pref("extensions.update.enabled", false);
+pref("privacy.trackingprotection.enabled", false);
 pref("lightweightThemes.update.enabled", false);
 pref("browser.selfsupport.url", false);
 pref("browser.fixup.alternate.enabled", false);
