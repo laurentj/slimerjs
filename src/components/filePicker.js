@@ -8,6 +8,13 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://slimerjs/slUtils.jsm");
 
+const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
+
+if (geckoMajorVersion >= 54) {
+    Cu.importGlobalProperties(['File']);
+}
+
+
 /**
  * implements a file picker that replaces the default filepicker
  * of mozilla. This file picker does not show a dialog
@@ -15,11 +22,16 @@ Cu.import("resource://slimerjs/slUtils.jsm");
  */
 function filePicker() {
     this.fileName = null;
-    this._nsfile = null;
+    /**
+     * @type {nsIFile[]}
+     * @private
+     */
     this._nsfiles = [];
+    this._nsDOMFiles = [];
     this.browser = null;
     this.supportsMultiple = false;
     this.domWindowUtils = null;
+    this.parentWindow = null;
 }
 
 filePicker.prototype = {
@@ -57,6 +69,7 @@ filePicker.prototype = {
      *
      */
     init : function (parent, title, mode) {
+        this.parentWindow = parent;
         // retrieve the webpage object corresponding to the parent
         this.browser = slUtils.getBrowserFromContentWindow(parent);
         this.domWindowUtils = parent.QueryInterface(Ci.nsIInterfaceRequestor)
@@ -69,6 +82,7 @@ filePicker.prototype = {
         else {
             this.supportsMultiple = false;
         }
+
     },
 
     _mode : 0,
@@ -132,6 +146,13 @@ filePicker.prototype = {
      */
     displayDirectory : null,
 
+
+    /**
+     * Set the directory that the file open/save dialog initially displays
+     * using one of the special name as such as 'Desk', 'TmpD', and so on.
+     */
+    displaySpecialDirectory: '',
+
     /**
      * Get the nsIFile for the file or directory.
      *
@@ -139,7 +160,7 @@ filePicker.prototype = {
      * @readonly
      */
     get file () {
-        return this._nsfile;
+        return (this._nsfiles.length?this._nsfiles[0]:null);
     },
 
     /**
@@ -149,8 +170,8 @@ filePicker.prototype = {
      * @readonly
      */
     get fileURL () {
-        if (this._nsfile)
-            return Services.io.newFileURI(this._nsfile);
+        if (this._nsfiles.length)
+            return Services.io.newFileURI(this._nsfile[0]);
         return null;
     },
 
@@ -170,11 +191,10 @@ filePicker.prototype = {
      *
      * @return nsIDOMFile Returns the file currently selected as DOMFile
      * @readonly
+     * @deprecated GECKO 46
      */
     get domfile () {
-        if (this._nsfile)
-            return this.domWindowUtils.wrapDOMFile(this._nsfile);
-        return null;
+        return this.domFileOrDirectory;
     },
 
     /**
@@ -183,27 +203,33 @@ filePicker.prototype = {
      *
      * @return nsISimpleEnumerator Returns the files currently selected as DOMFiles
      * @readonly
+     * @deprecated GECKO 46
      */
     get domfiles () {
-        let me = this;
-        let list = this._nsfiles.map(function(file){
-            return me.domWindowUtils.wrapDOMFile(file);
-        });
-        return slUtils.createSimpleEnumerator(list);
+        return this.domFileOrDirectoryEnumerator;
     },
 
+    /**
+     * Get the nsIDOMFile for the file.
+     *
+     * @return nsIDOMFile Returns the file currently selected as DOMFile
+     * @readonly
+     * @since GECKO 46
+     */
     get domFileOrDirectory () {
-        if (this._nsfile)
-            return this.domWindowUtils.wrapDOMFile(this._nsfile);
-        return null;
+        return (this._nsDOMFiles.length?this._nsDOMFiles[0]:null);
     },
 
+    /**
+     * Get the enumerator for the selected files
+     * only works in the modeOpenMultiple mode
+     *
+     * @return nsISimpleEnumerator Returns the files currently selected as DOMFiles
+     * @readonly
+     * @since GECKO 46
+     */
     get domFileOrDirectoryEnumerator () {
-        let me = this;
-        let list = this._nsfiles.map(function(file){
-            return me.domWindowUtils.wrapDOMFile(file);
-        });
-        return slUtils.createSimpleEnumerator(list);
+        return slUtils.createSimpleEnumerator(this._nsDOMFiles);
     },
 
     /**
@@ -217,8 +243,9 @@ filePicker.prototype = {
     /**
      * Show File Dialog. The dialog is displayed modally.
      *
-     * @return short returnOK if the user selects OK, returnCancel if the user selects cancel
      *
+     * @return short returnOK if the user selects OK, returnCancel if the user selects cancel
+     * @deprecated GECKO 57
      */
     show : function () {
         if (!this.browser || !this.browser.webpage) {
@@ -226,7 +253,7 @@ filePicker.prototype = {
         }
 
         let oldFile = '';
-        if (this.defaultString != '' && this.displayDirectory) {
+        if (this.defaultString !== '' && this.displayDirectory) {
             let f = this.displayDirectory.clone();
             f.append(this.defaultString);
             oldFile = f.path;
@@ -250,12 +277,11 @@ filePicker.prototype = {
         // if no file is given, take the file set by webpage.uploadFile()
         if (!selectedFiles.length
             && 'uploadFiles' in this.browser
-            && this.browser.uploadFiles.length != 0) {
+            && this.browser.uploadFiles.length !== 0) {
             selectedFiles = this.browser.uploadFiles;
         }
         this._nsfiles = selectedFiles;
         if (selectedFiles.length) {
-            this._nsfile = selectedFiles[0];
             if (!this.supportsMultiple) {
                 this._nsfiles = [selectedFiles[0]];
             }
@@ -263,7 +289,6 @@ filePicker.prototype = {
             return Ci.nsIFilePicker.returnOK;
         }
         else {
-            this._nsfile = null;
             this.browser.uploadFilesReaded = true;
             return Ci.nsIFilePicker.returnCancel;
         }
@@ -272,12 +297,48 @@ filePicker.prototype = {
     /**
      * Opens the file dialog asynchrounously.
      * The passed in object's done method will be called upon completion.
-     * @param nsIFilePickerShownCallback aFilePickerShownCallback
+     * @param {nsIFilePickerShownCallback} aFilePickerShownCallback
      */
     open : function (aFilePickerShownCallback) {
-        let res = this.show();
-        aFilePickerShownCallback.done(res);
-    }
-}
+        let tm = Cc["@mozilla.org/thread-manager;1"].getService(Ci.nsIThreadManager);
+        tm.mainThread.dispatch(() => {
+            let result = Ci.nsIFilePicker.returnCancel;
+            try {
+                result = this.show();
+            } catch (ex) {
+            }
+            let promises = [];
+            if (this._nsfiles.length) {
+                for (let i = 0; i < this._nsfiles.length; ++i) {
+                    if (this._nsfiles[i].exists()) {
+                        if (geckoMajorVersion < 54) {
+                            this.domWindowUtils.wrapDOMFile(this._nsfiles[i]);
+                        }
+                        else {
+                            let promise =
+                                this.parentWindow.File.createFromNsIFile(this._nsfiles[i])
+                                    .then(file => { this._nsDOMFiles.push(file);});
+                            promises.push(promise);
+                        }
+                    }
+                }
+            }
+            if (promises.length) {
+                Promise.all(promises).then(() => {
+                    if (aFilePickerShownCallback) {
+                        aFilePickerShownCallback.done(result);
+                    }
+                });
+            }
+            else {
+                if (aFilePickerShownCallback) {
+                    aFilePickerShownCallback.done(result);
+                }
+            }
+        }, Ci.nsIThread.DISPATCH_NORMAL);
+    },
+
+    okButtonLabel : ''
+};
 
 this.NSGetFactory = XPCOMUtils.generateNSGetFactory([filePicker]);
