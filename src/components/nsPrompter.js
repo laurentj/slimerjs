@@ -895,8 +895,12 @@ Ci.nsIAuthPrompt2, Ci.nsIWritablePropertyBag2]),
         let webpage = null;
 
         if (authInfo.flags & Ci.nsIAuthInformation.AUTH_PROXY) {
-            if (slConfiguration.proxyType == 'http' || slConfiguration.proxyType == 'socks5' ||
-                slConfiguration.proxyType == 'socks'
+            if (slConfiguration.proxyType === 'http' ||
+                slConfiguration.proxyType === 'socks5' ||
+                slConfiguration.proxyType === 'socks' ||
+                (slConfiguration.proxyType === 'config-url' &&
+                    slConfiguration.proxy &&
+                    slConfiguration.proxy.startsWith('http'))
             ) {
                 credentials.username = slConfiguration.proxyAuthUser;
                 credentials.password = slConfiguration.proxyAuthPassword;
