@@ -289,9 +289,12 @@ var phantom = {
                 Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_AUTO_DETECT);
                 break;
             case 'config-url':
-                var autoConfigUrl = hostOrAutoConfigUrl;
+                let autoConfigUrl = hostOrAutoConfigUrl;
 
-                if (autoConfigUrl.startsWith('http://') || autoConfigUrl.startsWith('file://')) {
+                if (autoConfigUrl.startsWith('http://') ||
+                    autoConfigUrl.startsWith('https://') ||
+                    autoConfigUrl.startsWith('file://')
+                ) {
                     Services.prefs.setCharPref('network.proxy.autoconfig_url', autoConfigUrl);
                     Services.prefs.setIntPref('network.proxy.type', PROXY_TYPE_AUTO_CONFIG);
                 }

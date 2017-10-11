@@ -251,9 +251,12 @@ var slConfiguration = {
                 }
                 break;
             case 'config-url':
-                if (this.proxy.startsWith('http://') || this.proxy.startsWith('file://')) {
+                if (this.proxy.startsWith('http://') ||
+                    this.proxy.startsWith('https://') ||
+                    this.proxy.startsWith('file://')
+                ) {
                     Services.prefs.setIntPref('network.proxy.type',2);
-                    Services.prefs.setCharPref('network.proxy.autoconfig_url', this.proxy)
+                    Services.prefs.setCharPref('network.proxy.autoconfig_url', this.proxy);
                 }
                 break;
             case '':
