@@ -342,8 +342,10 @@ function _create(parentWebpageInfo) {
             // returns the contentWindow of the browser element
             // nsContentTreeOwner::ProvideWindow and other will
             // load the expected URI into it.
-            if (geckoMajorVersion < 53) {
-                return win.content
+            if (geckoMajorVersion <= 53) {
+                // win.content is null in Firefox 53+
+                // we could return win.browser.contentWindow but it crashes in Fx53.
+                return win.content;
             }
             return win.browser.contentWindow;
         },
