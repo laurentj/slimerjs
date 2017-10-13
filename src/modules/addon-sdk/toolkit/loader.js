@@ -23,7 +23,7 @@
     define(factory);
   } else if (typeof(require) === 'function') { // CommonJS
     factory.call(this, require, exports, module);
-  } else if (~String(this).indexOf('BackstagePass')) { // JSM
+  } else { // JSM
     this[factory.name] = {};
     factory(function require(uri) {
       var imports = {};
@@ -31,13 +31,6 @@
       return imports;
     }, this[factory.name], { uri: __URI__, id: id });
     this.EXPORTED_SYMBOLS = [factory.name];
-  } else if (~String(this).indexOf('Sandbox')) { // Sandbox
-    factory(function require(uri) {}, this, { uri: __URI__, id: id });
-  } else {  // Browser or alike
-    var globals = this
-    factory(function require(id) {
-      return globals[id];
-    }, (globals[id] = {}), { uri: document.location.href + '#' + id, id: id });
   }
 }).call(this, 'loader', function Loader(require, exports, module) {
 
