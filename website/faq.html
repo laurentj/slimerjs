@@ -80,19 +80,20 @@
 <dl id="faq">
     <dt id="why-not-headless">Why is it not natively headless?</dt>
     <dd>You see windows during the execution of your script? It's normal.
-        Gecko, the rendering engine of Firefox, cannot render web content without a
-        graphical window.<br />
-        You can launch <span class="slm">SlimerJS</span> with xvfb if you are under
-        Linux, to have a headless <span class="slm">SlimerJS</span>.<br/>
-        <a href="https://github.com/laurentj/slimerjs/issues/80">There is a hope</a>
-        for future release of SlimerJS, with latest improvements made in Gecko.
+        Until Firefox 56, Gecko, the rendering engine of Firefox, couldn't render web
+        content without a graphical window.<br />
+        With Firefox 56+, you can launch a headless <span class="slm">SlimerJS</span> by adding a
+        <code>--headless</code> flag on the command line. For older Firefox,
+        and only on Linux, you can launch <span class="slm">SlimerJS</span>
+        with xvfb. See <a href="https://docs.slimerjs.org/current/installation.html#having-a-headless-slimerjs">the
+            documentation about the headless mode</a>.
     </dd>
 
     <dt id="gecko">What is Gecko?</dt>
     <dd>Gecko is the core engine of Firefox.</dd>
 
     <dt id="firefox-compatibility">Which version of Firefox is SlimerJS compatible with?</dt>
-    <dd>It runs with Firefox 50 and some older versions.<br>Officially, SlimerJS
+    <dd>It runs with Firefox 52 and higher versions.<br>Officially, SlimerJS
         is only compatible with stable versions of Firefox.
     </dd>
 

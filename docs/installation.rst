@@ -137,8 +137,25 @@ You can indicate several options on the command line. See the "configuration" ch
 Having a headless SlimerJS
 --------------------------
 
-There is a tool called xvfb, available on Linux. It allows to launch
-any "graphical" programs without the need of an X-Windows environment. Windows of
+Starting with Firefox 56, (and 55 on linux), you can add the command line option
+``--headless``, so you don't need a graphical environment, even on Linux. See
+`the Mozilla documentation about it <https://developer.mozilla.org/en-US/Firefox/Headless_mode>`_.
+
+.. code-block:: bash
+
+    ./slimerjs --headless myscript.js
+
+Instead of using this ``--headless`` flag, you can set an environment variable MOZ_HEADLESS to 1.
+
+.. code-block:: bash
+
+    MOZ_HEADLESS=1
+    ./slimerjs myscript.js
+
+
+If you are using Firefox 54 and lower, the only solution to have an "headless"
+SlimerJS, is to use xvfb and it works only on Linux. Xvfb allows to launch any
+"graphical" programs without the need of an X-Windows environment. Windows of
 the application won't be shown and will be drawn only in memory.
 
 Install it from your prefered repository (``sudo apt-get install xvfb`` with debian/ubuntu).
@@ -158,12 +175,15 @@ X11 backend so it does not work.
 Using flash plugin or other plugins
 ----------------------------------------
 
-SlimerJS is able to load Flash content if the Flash plugin is installed,
-and is able to load any other plugins.
+The possibility to use Flash and other NPAPI plugins depends to the version
+of Firefox you are using.
 
-In fact, every NPAPI plugins that work with any browser can be used by SlimerJS.
-Just install them as indicated by the vendor, and it will be theorically recognized
-by SlimerJS. See `details on MDN <https://developer.mozilla.org/en-US/Add-ons/Plugins/Gecko_Plugin_API_Reference/Plug-in_Development_Overview#Installing_Plug-ins>`_ .
+Firefox 52+ is not be able any more to load NPAPI plugins. And future version
+may not be able to load Flash.
+
+So SlimerJS can load Flash content or other NPAPI plugins if Firefox can.
+In this case, just install them as indicated by the vendor, and it will be
+theorically recognized by SlimerJS. See `details on MDN <https://developer.mozilla.org/en-US/Add-ons/Plugins/Gecko_Plugin_API_Reference/Plug-in_Development_Overview#Installing_Plug-ins>`_ .
 
 For example, on linux, install the corresponding package.
 
@@ -180,4 +200,5 @@ Creating extensions?
 
 Theorically, you can create XUL/JS addons for SlimerJS like you do for Firefox,
 It is not easy but it is possible. See :doc:`the dedicated chapter <manual/addons>`.
+It is not possible any more if you are using Firefox 57+.
 

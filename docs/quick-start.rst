@@ -31,8 +31,10 @@ Store this script into a ``hello.js`` file and execute it:
    slimerjs hello.js
 
 You'll see a little window opening and the "hello" message in the terminal. And that's all.
-Contrary to PhantomJS, SlimerJS is not (yet) headless, this is why you see this window.
-But on Linux, you can use the tool xvfb to hide all windows opened by your script.
+Contrary to PhantomJS, SlimerJS is not headless by default, this is why you see this window.
+But if you are using Firefox 56 or higher, you can add ``--headless`` on the command
+line to not see windows. Or with older Firefoxes, on Linux, you can use the tool xvfb
+to hide all windows opened by your script. See `the documentation about it <installation.html#having-a-headless-slimerjs>`_.
 
 You see that you have to close the window by yourself. To close it automatically, call
 ``slimer.exit()`` (or ``phantom.exit()`` to be compatible with PhantomJS), at the end
@@ -49,8 +51,9 @@ Loading a module
 
 .. index:: module, require
 
-All components and libraries provided by SlimerJS are stored in modules. A module is
-a javascript file that "exports" a number of functions to the caller script. To "import"
+All components and libraries provided by SlimerJS are stored in modules. It follows
+the CommonJS module standard. (No support of ES6 module yet). A module is a
+javascript file that "exports" a number of functions to the caller script. To "import"
 this functions in your scripts, you have to use the ``require()`` function. It accepts
 the module name in parameter, and returns an object.
 

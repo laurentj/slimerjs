@@ -102,7 +102,7 @@
             <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference">Javascript features</a>
             implemented in Firefox, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">including
             ECMAScript 6 features</a>: iterators, generators, destructured assignement, Map and WeakMap,
-            "let" keyword, arrow functions, promises etc.</li>
+            "let" keyword, arrow functions, promises etc. (except ES6 modules)</li>
 
             <h2>A modern browser with latest HTML5/JS/CSS enhancements</h2>
 
@@ -111,7 +111,7 @@
             including things like audio, video, WebGL etc.</p>
             
             <p>In fact, SlimerJS is not really stuck to a specific version of Gecko:
-            it can use any recent version of Firefox 38+.</p>
+            it can use any recent version of Firefox 52+.</p>
 
             <p>The web page rendering in SlimerJS is <strong>strictly identical</strong>
             to the rendering in Firefox.</p>
@@ -129,11 +129,11 @@
             <h2>And more...</h2>
  
             <ul>
-                <li>Many modules of the <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/">Mozilla Add-on SDK</a>
-                    are available and you can import them into your code in the same way as <strong>CommonJS</strong> modules.</li>               
+                <li>Many modules of the <a href="https://developer.mozilla.org/en-US/Add-ons/SDK">Mozilla Add-on SDK</a>
+                    are available and you can import them into your code in the same way as <strong>CommonJS</strong> modules (until Firefox 56).</li>
                 <li><span class="slm">SlimerJS</span> is able to load Flash content if the Flash plugin is installed
                     (though the plugin's rendering cannot be seen when taking screenshots).</li>
-                <li>You can use <a href="https://addons.mozilla.org/en-US/developers/docs/sdk/latest/modules/sdk/core/promise.html">Promises</a>
+                <li>You can use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promises</a>
                     when opening a web page with <code>webpage.open()</code>!</li>
             </ul>
 
@@ -152,12 +152,13 @@
 
             <p>However, most of scripts for PhantomJS run perfectly well right now with SlimerJS!</p>
 
-            <p>Contrary to PhantomJS, SlimerJS is not headless: you see windows
-            and it needs a graphical environment. You can use a tool like
-            <code>xvfb</code> on a Linux/MacOS system to have this headless
+            <p>Contrary to PhantomJS, SlimerJS is not headless by default: you see windows
+            and it then needs a graphical environment. Except if you are using
+              Firefox 56+, by adding an <code>--headless</code> flag, or for
+              older version of Firefox on linux, you can use a tool like
+            <code>xvfb</code> to have this headless
             feature and to execute SlimerJS on Linux boxes that do not have xorg
-            installed.</p>
-
+              installed. See <a href="https://docs.slimerjs.org/current/installation.html#having-a-headless-slimerjs">the documentation about the headless mode</a>.</p>
         </section>
       </div>
     </div>

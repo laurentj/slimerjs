@@ -5,7 +5,11 @@ Creating addons for SlimerJS
 ================================
 
 Since SlimerJS is using Firefox's framework, it is theorically possible to
-create and install addons for SlimerJS. But it's not so easy:
+create and install XUL addons for SlimerJS. But it works only if you are using Firefox 56
+or lower. The support of XUL addons has been removed in Firefox 57+. And the support
+of WebExtensions has not been yet tested with SlimerJS.
+
+With Firefox 56-, even it is possible, it's not so easy to install XUL addons:
 
 - Their installation is not easy since their are no user interface to install them.
 - An addon made for Firefox may not work with SlimerJS because :
@@ -19,7 +23,7 @@ create and install addons for SlimerJS. But it's not so easy:
 However, this is not impossible. Here are some tips.
 
 Warning: to understand following instructions, you need to learn how to create
-addons for Firefox first. See `documentation on MDN <https://developer.mozilla.org/en-US/Add-ons>`_.
+addons for Firefox first. See `documentation on MDN <https://developer.mozilla.org/en-US/Add-ons/Legacy_add_ons>`_.
 
 
 Steps to install extensions:

@@ -229,7 +229,7 @@ Contains the script name given to the command line.
 .. _phantom-version:
 
 setProxy(host, port, proxyType, user, password)
------------------------------------------
+------------------------------------------------
 
 Use it if you want to change proxy configuration at runtime.
 The first parameter may be a:
