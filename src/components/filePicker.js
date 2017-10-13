@@ -312,7 +312,7 @@ filePicker.prototype = {
                 for (let i = 0; i < this._nsfiles.length; ++i) {
                     if (this._nsfiles[i].exists()) {
                         if (geckoMajorVersion < 54) {
-                            this.domWindowUtils.wrapDOMFile(this._nsfiles[i]);
+                            this._nsDOMFiles.push(this.domWindowUtils.wrapDOMFile(this._nsfiles[i]));
                         }
                         else {
                             let promise =
