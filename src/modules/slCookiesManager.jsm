@@ -14,6 +14,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 var nsCookieManager = Cc["@mozilla.org/cookiemanager;1"]
                     .getService(Ci.nsICookieManager2);
 
+const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
 
 /**
  * cookie object for http requests
@@ -88,13 +89,15 @@ var slCookiesManager = {
      */
     getCookiesForUri: function (uri) {
         let cookiesList = [];
-        if (uri.scheme != 'http' && uri.scheme != 'https')
+        if (uri.scheme !== 'http' && uri.scheme !== 'https') {
             return cookiesList;
+        }
+        let uriPath = (geckoMajorVersion >= 57 ? uri.pathQueryRef: uri.path);
         let cookiesEnum = nsCookieManager.getCookiesFromHost(uri.host);
         while (cookiesEnum.hasMoreElements()) {
             let cookie = cookiesEnum.getNext()
                                     .QueryInterface(Ci.nsICookie2);
-            if (uri.path.indexOf(cookie.path) !== 0)
+            if (uriPath.indexOf(cookie.path) !== 0)
                 continue;
             if (cookie.isSecure && uri.scheme !== 'https' )
                 continue;
@@ -157,7 +160,7 @@ var slCookiesManager = {
         else if ("expiry" in cookie && cookie.expiry !== null) {
             expires = cookie.expiry;
         }
-        if (typeof(expires) == "string") {
+        if (typeof(expires) === "string") {
             expires = Math.ceil(Date.parse(expires) / 1000);
         }
         else if (expires > 2983305600){ // if date > 2200, let's assume that this is in milliseconds
@@ -174,12 +177,13 @@ var slCookiesManager = {
         let path = '/';
         if (uri) {
             domain = uri.host;
-            path = uri.path;
+            path = (geckoMajorVersion >= 57 ? uri.pathQueryRef: uri.path);
         }
         else {
             domain = "domain" in cookie ? cookie.domain:'';
-            if (domain == '')
+            if (domain === '') {
                 return false;
+            }
             path = "path" in cookie ? cookie.path:'/';
         }
 
@@ -226,42 +230,44 @@ var slCookiesManager = {
     /**
      * delete all cookies that have the given name
      * If an url is given, only delete cookies attached to
-     * @param string cookieName  the cookie name
-     * @param nsIURI uri (optional)
+     * @param {string} cookieName  the cookie name
+     * @param {nsIURI} uri (optional)
      * @return boolean true if deletion is ok
      */
     deleteCookie: function (cookieName, uri) {
         if (!this.isCookiesEnabled())
             return false;
 
-        if (cookieName == '') {
+        if (cookieName === '') {
             // matches phantomjs behavior
             nsCookieManager.removeAll();
             return true;
         }
-        let cookiesEnum;
-        if (uri)
+        let cookiesEnum, uriPath;
+        if (uri) {
             cookiesEnum = nsCookieManager.getCookiesFromHost(uri.host);
-        else
+            uriPath = (geckoMajorVersion >= 57 ? uri.pathQueryRef: uri.path);
+        }
+        else {
             cookiesEnum = nsCookieManager.enumerator;
+        }
         let hasBeenDeleted = false;
+
         while(cookiesEnum.hasMoreElements()) {
             let cookie = cookiesEnum.getNext()
                                     .QueryInterface(Ci.nsICookie2);
             if (uri) {
-                if (uri.path.indexOf(cookie.path) !== 0)
+                if (uriPath.indexOf(cookie.path) !== 0)
                     continue;
                 if (cookie.isSecure && uri.scheme !== 'https' )
                     continue;
             }
 
-            if (cookie.name == cookieName) {
+            if (cookie.name === cookieName) {
                 nsCookieManager.remove(cookie.host, cookie.name, cookie.path, false);
                 hasBeenDeleted = true;
             }
         }
         return hasBeenDeleted;
     }
-}
-
-
+};

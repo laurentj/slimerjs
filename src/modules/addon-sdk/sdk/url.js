@@ -8,7 +8,7 @@ module.metadata = {
   "stability": "experimental"
 };
 
-const { Cc, Ci, Cr } = require("chrome");
+const { Cc, Ci, Cr, Cu } = require("chrome");
 
 const { Class } = require("./core/heritage");
 const base64 = require("./base64");
@@ -18,6 +18,9 @@ var ios = Cc['@mozilla.org/network/io-service;1']
 
 var resProt = ios.getProtocolHandler("resource")
               .QueryInterface(Ci.nsIResProtocolHandler);
+
+Cu.import("resource://gre/modules/Services.jsm");
+const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
 
 function newURI(uriStr, base) {
   try {
@@ -92,11 +95,13 @@ function URL(url, base) {
     port = uri.port == -1 ? null : uri.port;
   } catch (e if e.result == Cr.NS_ERROR_FAILURE) {}
 
-  this.__defineGetter__("scheme", function() uri.scheme);
-  this.__defineGetter__("userPass", function() userPass);
-  this.__defineGetter__("host", function() host);
-  this.__defineGetter__("port", function() port);
-  this.__defineGetter__("path", function() uri.path);
+  let uriPath = (geckoMajorVersion >= 57 ? uri.pathQueryRef: uri.path);
+
+  this.__defineGetter__("scheme", () => uri.scheme);
+  this.__defineGetter__("userPass", () => userPass);
+  this.__defineGetter__("host", () => host);
+  this.__defineGetter__("port", () => port);
+  this.__defineGetter__("path", () => uriPath);
 
   Object.defineProperties(this, {
     toString: {
