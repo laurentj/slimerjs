@@ -27,6 +27,14 @@ their authors under the licenses listed alongside.
     http://mxr.mozilla.org/mozilla-central/source/toolkit/components/prompts/src/nsPrompter.js
     http://mxr.mozilla.org/mozilla-central/source/dom/base/SiteSpecificUserAgent.js
 
+* components/DisableAddonManager.js
+    is released under the Apache license http://www.apache.org/licenses/LICENSE-2.0
+    This file comes originally from https://github.com/mozilla/qbrt
+* components/DisableTelemetryStartup.js
+    is released under the Mozilla Public License, v. 2.0
+    This file comes originally from https://github.com/mozilla/qbrt
+
+
 * modules/slimer-sdk/net-log.js
     is released under the Mozilla Public License, v. 2.0
     see http://mozilla.org/MPL/2.0/

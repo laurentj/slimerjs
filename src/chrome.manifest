@@ -31,6 +31,14 @@ contract @mozilla.org/filepicker;1 {4d447d76-5205-4685-9237-9a35c7349adf}
 component {04c5992d-c6a5-4138-9b75-b03ead2be0f1} components/helperAppDialog.js
 contract @mozilla.org/helperapplauncherdialog;1 {04c5992d-c6a5-4138-9b75-b03ead2be0f1}
 
+# Disable addons. Not activated yet...
+#component {ed6e7c79-fcd3-4285-881e-f0cbb0d8ada0} components/DisabledAddonManager.js
+#contract @mozilla.org/addons/integration;1 {ed6e7c79-fcd3-4285-881e-f0cbb0d8ada0}
+
+# Disable telemetry.
+component {b0836913-f33f-4935-96af-235891cd5815} components/DisabledTelemetryStartup.js
+contract @mozilla.org/base/telemetry-startup;1 {b0836913-f33f-4935-96af-235891cd5815}
+
 manifest components/httpd.manifest
 manifest components/SiteSpecificUserAgent.manifest
 
