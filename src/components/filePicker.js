@@ -308,6 +308,7 @@ filePicker.prototype = {
             } catch (ex) {
             }
             let promises = [];
+            this._nsDOMFiles = [];
             if (this._nsfiles.length) {
                 for (let i = 0; i < this._nsfiles.length; ++i) {
                     if (this._nsfiles[i].exists()) {
