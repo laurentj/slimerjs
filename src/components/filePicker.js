@@ -8,8 +8,6 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://slimerjs/slUtils.jsm");
 
-const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
-
 if (geckoMajorVersion >= 54) {
     Cu.importGlobalProperties(['File']);
 }

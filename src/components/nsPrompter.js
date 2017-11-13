@@ -15,8 +15,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://slimerjs/slUtils.jsm");
 Cu.import("resource://slimerjs/slConfiguration.jsm");
 
-var geckoVersion = Services.appinfo.platformVersion.split('.')[0];
-
 function Prompter() {
     // Note that EmbedPrompter clones this implementation.
 }
@@ -293,7 +291,7 @@ let PromptUtils = {
         }
 
         let text;
-        if (geckoVersion < 50) {
+        if (geckoMajorVersion < 50) {
             if (isProxy) {
                 text = PromptUtils.getLocalizedString("EnterLoginForProxy", [realm, displayHost]);
             } else if (isPassOnly) {
@@ -304,7 +302,7 @@ let PromptUtils = {
                 text = PromptUtils.getLocalizedString("EnterLoginForRealm", [realm, displayHost]);
             }
         }
-        else if (geckoVersion == 50) {
+        else if (geckoMajorVersion == 50) {
             let isCrossOrig = (authInfo.flags &
                                Ci.nsIAuthInformation.CROSS_ORIGIN_SUB_RESOURCE);
             if (isProxy) {

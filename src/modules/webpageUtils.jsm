@@ -16,8 +16,6 @@ Cu.import('resource://slimerjs/httpUtils.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import("resource://gre/modules/NetUtil.jsm");
 
-const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
-
 var webpageUtils = {
 
     /**

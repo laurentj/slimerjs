@@ -10,11 +10,10 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Cu.import("resource://gre/modules/Services.jsm");
+Cu.import("resource://slimerjs/slUtils.jsm");
 
 var nsCookieManager = Cc["@mozilla.org/cookiemanager;1"]
                     .getService(Ci.nsICookieManager2);
-
-const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
 
 /**
  * cookie object for http requests

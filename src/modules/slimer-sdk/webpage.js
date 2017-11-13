@@ -30,8 +30,6 @@ const systemPrincipal = Cc['@mozilla.org/systemprincipal;1']
 const netLog = require('net-log');
 netLog.startTracer();
 
-const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
-
 /**
  * create a webpage object
  * @module webpage

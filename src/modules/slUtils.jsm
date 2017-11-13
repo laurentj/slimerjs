@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 "use strict";
-var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "dumpo", "slUtils"];
+var EXPORTED_SYMBOLS = ["dumpex", "dumpStack", "dumpo", "slUtils", "geckoMajorVersion"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -19,6 +19,7 @@ var dirsvc = Cc["@mozilla.org/file/directory_service;1"]
 
 var currentWorkingDirectory = dirsvc.get("CurWorkD", Ci.nsIFile);
 
+const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
 
 var slUtils = {
     get workingDirectory() {
