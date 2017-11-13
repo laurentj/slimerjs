@@ -16,6 +16,8 @@ Cu.import('resource://slimerjs/httpUtils.jsm');
 Cu.import('resource://slimerjs/slUtils.jsm');
 Cu.import("resource://gre/modules/NetUtil.jsm");
 
+const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
+
 var webpageUtils = {
 
     /**
@@ -149,7 +151,6 @@ var webpageUtils = {
      * @see webpage.open
      */
     browserLoadURI: function (browser, uri, httpConf) {
-
         let hasDataToPost = ('data' in httpConf && httpConf.data)
 
         // prepare headers
@@ -193,12 +194,15 @@ var webpageUtils = {
 
             postStream = Cc["@mozilla.org/network/mime-input-stream;1"].
                             createInstance(Ci.nsIMIMEInputStream);
-            if (contentType)
+            if (contentType) {
                 postStream.addHeader("Content-Type", contentType);
-            else
+            }
+            else {
                 postStream.addHeader("Content-Type", "application/x-www-form-urlencoded");
-            if (!hasContentLength)
+            }
+            if (!hasContentLength && geckoMajorVersion < 57) {
                 postStream.addContentLength = true;
+            }
             postStream.setData(dataStream);
         }
 
@@ -214,7 +218,8 @@ var webpageUtils = {
                                      0,
                                      null,
                                      postStream,
-                                     headersStream);
+                                     headersStream,
+              null);
         }catch(e) {
             // we have an exception when:
             // - the navigation locked, 0x805e0006 (<unknown>)
