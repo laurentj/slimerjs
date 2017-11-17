@@ -8,7 +8,7 @@ IF NOT EXIST "%SLIMERDIR%" (
 REM %* is every argument passed to this script.
 SET __SLIMER_ARGS=%*
 SET __SLIMER_ENV=
-SET __SLIMER_EXITCODEFILE=%Temp%\slimerjs-exit-!Random!!Random!!Random!-%TIME:~6,5%
+SET __SLIMER_EXITCODEFILE=%Temp%\slimerjs-exit-!Random!!Random!!Random!-!TIME:~6,2!-!TIME:~9,2!
 SET EXITCODE=0
 
 SET CREATETEMP=Y
@@ -102,7 +102,7 @@ if ["%CREATETEMP%"]==[""] (
    goto callexec
 )
 :createdirname
-SET PROFILEDIR=%Temp%\slimerjs-!Random!!Random!!Random!
+SET PROFILEDIR=%Temp%\slimerjs-!Random!!Random!!Random!-!TIME:~6,2!-!TIME:~9,2!
 IF EXIST "%PROFILEDIR%" (
     GOTO createdirname
 )
