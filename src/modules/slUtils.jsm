@@ -19,7 +19,7 @@ var dirsvc = Cc["@mozilla.org/file/directory_service;1"]
 
 var currentWorkingDirectory = dirsvc.get("CurWorkD", Ci.nsIFile);
 
-const geckoMajorVersion = Services.appinfo.platformVersion.split('.')[0];
+const geckoMajorVersion = parseInt(Services.appinfo.platformVersion.split('.')[0],10);
 
 var slUtils = {
     get workingDirectory() {
