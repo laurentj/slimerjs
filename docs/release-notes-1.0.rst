@@ -17,18 +17,25 @@ New features and API
 - ``onResourceError`` parameter contains now always ``status`` and ``statusText`` properties
 - ``proxy()`` and ``setProxy()`` methods
 - ``slimer.version`` and ``slimer.geckoVersion`` have a new ``prerelease`` property.
+- With Firefox 56 and more, SlimerJS can be trully headless by adding the --headless option on the command line
+- Proxy config: support https URI for pac
+- new ``fs.isSpecial()``
 
 Improvements
 ------------
 
 * implements ``system.pid`` (#473)
 * implements ``phantom.proxy()`` and ``phantom.setProxy()`` methods (#436, #444, #445)
+* Compatibility with Firefox 53 to 57
 
 Fixed bugs
 ----------
 
 * Fix error "ReferenceError: reference to undefined property this._stopCallback"
-
+* On Windows: instances launched at the same time don't share anymore the same profile
+* On Windows: fix exit code file name
+* Remove the error message about "NS_BINDING_ABORTED"
+* fix bug in ``fs.isLink()`` and ``fs.readLink()``
 
 Fixed PhantomJS conformance issues
 ----------------------------------
@@ -66,8 +73,12 @@ Known issues
 Contributors for this release
 -----------------------------
 
-- Wojciech Skorodecki
-
+- Brian Birtles
+- Brendan Dahl
+- Nagy Attila Gabor
+- Justin Klemm
+- Shannon Little
+- Wojciech Skorodecki (Proxy API)
 
 Previous release notes
 ======================
