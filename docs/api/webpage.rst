@@ -1620,13 +1620,11 @@ or when a form is submitted, for example). It receives these arguments:
 - ``url``: The target URL of this navigation event
 - ``type``: indicate where the event comes from. Theorically, possible values are:
     'Undefined', 'LinkClicked', 'FormSubmitted', 'BackOrForward', 'Reload',
-    'FormResubmitted', 'Other'
+    'FormResubmitted', 'Other'. Because of lack of information in some API of Firefox,
+    SlimerJS cannot give you the ``type``. It is always ``'Undefined'``.
 - ``willNavigate``: true if navigation will happen, false if it is locked (by :ref:`navigationLocked <webpage-navigationLocked>`)
-- ``main``: Theorically, true if this event comes from the main frame, false if it comes from an
+- ``main``: true if this event comes from the main frame, false if it comes from an
    iframe of some other sub-frame.
-
-Because of lack of information in some API of Firefox, SlimerJS cannot give you
-the ``type`` and the ``main`` value. They are always respectively ``'Undefined'`` and ``true``
 
 Example:
 
