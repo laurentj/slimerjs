@@ -573,6 +573,8 @@ function openRemotePrompt(domWin, args, tabPrompt) {
 }
 
 function ModalPrompter(domWin) {
+    // Before Fx57, this is the content window. Since Fx57, this is the XUL
+    // window.
     this.domWin = domWin;
 }
 ModalPrompter.prototype = {

@@ -207,9 +207,10 @@ slUtils.getBrowserFromContentWindow = function getBrowserFromContentWindow(conte
 
         */
         let win = ('top' in contentWin?contentWin.top:contentWin);
-        var docShell = win.QueryInterface(Ci.nsIInterfaceRequestor)
+        let docShell = win.QueryInterface(Ci.nsIInterfaceRequestor)
                          .getInterface(Ci.nsIWebNavigation)
                          .QueryInterface(Ci.nsIDocShell);
+
         return slUtils.getBrowserFromDocShell(docShell);
     }
     catch(e) {
@@ -218,7 +219,7 @@ slUtils.getBrowserFromContentWindow = function getBrowserFromContentWindow(conte
 }
 
 slUtils.getWebpageFromDocShell = function getWebpageFromDocShell(docShell) {
-    let browser = slUtils.getBrowserFromDocShell(docShell)
+    let browser = slUtils.getBrowserFromDocShell(docShell);
     if (browser)
         return browser.webpage;
     return null;
@@ -226,15 +227,20 @@ slUtils.getWebpageFromDocShell = function getWebpageFromDocShell(docShell) {
 
 slUtils.getBrowserFromDocShell = function getBrowserFromDocShell(docShell) {
     try {
-        var browser= docShell.chromeEventHandler;
+        // given docShell may be the xul window's one
+        if (docShell.currentURI.spec === "chrome://slimerjs/content/webpage.xul") {
+            return docShell.contentViewer.DOMDocument.getElementById('webpage');
+        }
+
+        let browser= docShell.chromeEventHandler;
         if (!browser) {
             return null;
         }
-        if (browser.getAttribute('id') != 'webpage') {
+        if (browser.getAttribute('id') !== 'webpage') {
             return null;
         }
 
-        if (browser.ownerDocument.documentElement.getAttribute("windowtype") != 'slimerpage') {
+        if (browser.ownerDocument.documentElement.getAttribute("windowtype") !== 'slimerpage') {
             return null;
         }
         return browser;
