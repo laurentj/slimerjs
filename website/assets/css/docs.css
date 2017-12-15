@@ -790,3 +790,6 @@ dt {
     padding-top:4em;
 }
 
+#betas:target .beta-highlight {
+  border:2px solid #ff7b00;
+}
