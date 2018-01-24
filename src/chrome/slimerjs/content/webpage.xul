@@ -15,7 +15,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     <script type="application/javascript" src="webpage.js" />
 
     <browser id="webpage" flex="1"
-        type="content-primary" autoscroll="true" disablesecurity="false"/>
+        type="content" primary="true" autoscroll="true" disablesecurity="false"/>
 
     <keyset>
         <key id="key_quit" key="w" oncommand="window.close()" modifiers="control"/>
