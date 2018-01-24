@@ -199,7 +199,6 @@ goto :eof
 
 
 :findFirefox
-echo %programfiles%
 if exist "%programfiles%\Mozilla Firefox\firefox.exe" (
     SET "SLIMERJSLAUNCHER=%programfiles%\Mozilla Firefox\firefox.exe"
 )
