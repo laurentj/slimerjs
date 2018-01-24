@@ -1815,7 +1815,7 @@ Properties of ``requestData`` are:
 - ``url``: the url of the resource
 - ``time``: a Date object
 - ``headers``: the list of headers (list of objects ``{name:'', value:''}``)
-- ``postData``: a string containing the body of the request, when method is "post" or "put" (SlimerJS 0.9)
+- ``postData``: a string containing the body of the request, when method is "post" or "put" (SlimerJS 0.9) or "patch" (SlimerJS 1.0)
 
 The ``networkRequest`` object has two methods:
 

@@ -710,7 +710,7 @@ const traceRequest = function(id, request) {
     };
 
     let stream = request.QueryInterface(Ci.nsIUploadChannel).uploadStream;
-    if (stream && (request.requestMethod == 'POST' || request.requestMethod == 'PUT')) {
+    if (stream && (request.requestMethod == 'POST' || request.requestMethod == 'PUT' || request.requestMethod == 'PATCH')) {
         try {
             // QueryInterface throw an exception if stream is not a seekable stream
             stream.QueryInterface(Ci.nsISeekableStream);

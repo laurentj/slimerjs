@@ -20,13 +20,14 @@ New features and API
 - With Firefox 56 and more, SlimerJS can be trully headless by adding the --headless option on the command line
 - Proxy config: support https URI for pac
 - new ``fs.isSpecial()``
+- onResourceRequested: support of requestData.postData when http method is "patch"
 
 Improvements
 ------------
 
 * implements ``system.pid`` (#473)
 * implements ``phantom.proxy()`` and ``phantom.setProxy()`` methods (#436, #444, #445)
-* Compatibility with Firefox 53 to 57
+* Compatibility with Firefox 53 to 58
 
 Fixed bugs
 ----------
@@ -36,6 +37,8 @@ Fixed bugs
 * On Windows: fix exit code file name
 * Remove the error message about "NS_BINDING_ABORTED"
 * fix bug in ``fs.isLink()`` and ``fs.readLink()``
+* fix exit code on errors like "script is missing"
+
 
 Fixed PhantomJS conformance issues
 ----------------------------------
