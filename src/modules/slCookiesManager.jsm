@@ -13,7 +13,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://slimerjs/slUtils.jsm");
 
 var nsCookieManager = Cc["@mozilla.org/cookiemanager;1"]
-                    .getService(Ci.nsICookieManager2);
+                    .getService((geckoMajorVersion >= 58 ? Ci.nsICookieManager: Ci.nsICookieManager2));
 
 /**
  * cookie object for http requests
