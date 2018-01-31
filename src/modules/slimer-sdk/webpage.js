@@ -1910,7 +1910,11 @@ function _create(parentWebpageInfo) {
             try {
                 return page[listener].apply(page, args);
             } catch(e) {
-                console.log("Error "+listener+": ["+e.name+"] "+e.message+" ("+e.fileName+" ; line:"+e.lineNumber+" col:"+e.columnNumber+")");
+                if (listener !== "onError" && page["onError"]) {
+                    executePageListener(page, "onError", getTraceException(e, ''));
+                } else {
+                    console.log("Error "+listener+": ["+e.name+"] "+e.message+" ("+e.fileName+" ; line:"+e.lineNumber+" col:"+e.columnNumber+")");
+                }
             }
         }
     }
