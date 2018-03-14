@@ -230,12 +230,15 @@ var phantom = {
             let baseURI = base ? Services.io.newURI(base, null, null) : null;
             return Services.io.newURI(url, null, baseURI).spec;
         }
-        catch (e if e.result == Cr.NS_ERROR_MALFORMED_URI) {
-            throw new Error("malformed URI: " + url);
-        }
-        catch (e if (e.result == Cr.NS_ERROR_FAILURE ||
-                     e.result == Cr.NS_ERROR_ILLEGAL_VALUE)) {
-            throw new Error("invalid URI: " + url);
+        catch (e) {
+            if (e.result == Cr.NS_ERROR_MALFORMED_URI) {
+                throw new Error("malformed URI: " + url);
+            } else if (e.result == Cr.NS_ERROR_FAILURE ||
+                       e.result == Cr.NS_ERROR_ILLEGAL_VALUE) {
+                throw new Error("invalid URI: " + url);
+            } else {
+                throw e;
+            }
         }
     },
 
