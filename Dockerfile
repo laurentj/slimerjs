@@ -9,7 +9,7 @@ echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositorie
 RUN \
 # Install Firefox
 apk update && apk upgrade && \
-apk add firefox=51.0-r1 xvfb bash dbus ttf-freefont fontconfig && \
+apk add firefox xvfb bash dbus ttf-freefont fontconfig && \
 rm -rf /var/cache/apk/*
 
 RUN \
