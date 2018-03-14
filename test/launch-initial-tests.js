@@ -46,7 +46,7 @@ if ("slimer" in this) {
     assertEquals("1", slimer.version.major, "slimer has the good major version");
     assertEquals("0", slimer.version.minor, "slimer has the good minor version");
     assertEquals("0", slimer.version.patch, "slimer has the good patch version");
-    assertEquals("alpha.2", slimer.version.prerelease, "slimer has the good prerelease version");
+    assertEquals("rc.1", slimer.version.prerelease, "slimer has the good prerelease version");
     assertExists(slimer.version, "has slimer.version object? ");
     assertNotEquals(undefined, slimer.geckoVersion.major, "slimer has major gecko version: "+ slimer.geckoVersion.major);
     assertNotEquals(undefined, slimer.geckoVersion.minor, "slimer has minor gecko version: "+ slimer.geckoVersion.minor);
