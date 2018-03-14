@@ -27,12 +27,15 @@ function newURI(uriStr, base) {
     let baseURI = base ? ios.newURI(base, null, null) : null;
     return ios.newURI(uriStr, null, baseURI);
   }
-  catch (e if e.result == Cr.NS_ERROR_MALFORMED_URI) {
-    throw new Error("malformed URI: " + uriStr);
-  }
-  catch (e if (e.result == Cr.NS_ERROR_FAILURE ||
-               e.result == Cr.NS_ERROR_ILLEGAL_VALUE)) {
-    throw new Error("invalid URI: " + uriStr);
+  catch (e) {
+    if (e.result == Cr.NS_ERROR_MALFORMED_URI) {
+      throw new Error("malformed URI: " + uriStr);
+    } else if (e.result == Cr.NS_ERROR_FAILURE ||
+               e.result == Cr.NS_ERROR_ILLEGAL_VALUE) {
+      throw new Error("invalid URI: " + uriStr);
+    } else {
+      throw e;
+    }
   }
 }
 
@@ -40,8 +43,12 @@ function resolveResourceURI(uri) {
   var resolved;
   try {
     resolved = resProt.resolveURI(uri);
-  } catch (e if e.result == Cr.NS_ERROR_NOT_AVAILABLE) {
-    throw new Error("resource does not exist: " + uri.spec);
+  } catch (e) {
+    if (e.result == Cr.NS_ERROR_NOT_AVAILABLE) {
+      throw new Error("resource does not exist: " + uri.spec);
+    } else {
+      throw e;
+    }
   };
   return resolved;
 }
@@ -62,8 +69,12 @@ let toFilename = exports.toFilename = function toFilename(url) {
     try {
       channel = channel.QueryInterface(Ci.nsIFileChannel);
       return channel.file.path;
-    } catch (e if e.result == Cr.NS_NOINTERFACE) {
-      throw new Error("chrome url isn't on filesystem: " + url);
+    } catch (e) {
+      if (e.result == Cr.NS_NOINTERFACE) {
+        throw new Error("chrome url isn't on filesystem: " + url);
+      } else {
+        throw e;
+      }
     }
   }
   if (uri.scheme == "file") {
@@ -83,17 +94,29 @@ function URL(url, base) {
   var userPass = null;
   try {
     userPass = uri.userPass ? uri.userPass : null;
-  } catch (e if e.result == Cr.NS_ERROR_FAILURE) {}
+  } catch (e) {
+    if (e.result != Cr.NS_ERROR_FAILURE) {
+      throw e;
+    }
+  }
 
   var host = null;
   try {
     host = uri.host;
-  } catch (e if e.result == Cr.NS_ERROR_FAILURE) {}
+  } catch (e) {
+    if (e.result != Cr.NS_ERROR_FAILURE) {
+      throw e;
+    }
+  }
 
   var port = null;
   try {
     port = uri.port == -1 ? null : uri.port;
-  } catch (e if e.result == Cr.NS_ERROR_FAILURE) {}
+  } catch (e) {
+    if (e.result != Cr.NS_ERROR_FAILURE) {
+      throw e;
+    }
+  }
 
   let uriPath = (geckoMajorVersion >= 57 ? uri.pathQueryRef: uri.path);
 

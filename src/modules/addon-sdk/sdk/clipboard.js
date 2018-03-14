@@ -79,8 +79,11 @@ exports.set = function(aData, aDataType) {
       options.datatype = dataURL.mimeType;
       options.data = dataURL.data;
     }
-    catch (e if e.name === "URIError") {
+    catch (e) {
       // Not a valid Data URL
+      if (e.name !== "URIError") {
+        throw e;
+      }
     }
   }
 
