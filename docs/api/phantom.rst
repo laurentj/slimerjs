@@ -32,7 +32,7 @@ This is an array containing all arguments given on the command line.
 
 .. container:: warning
 
-    This property is deprecated and will be removed in futur version.
+    This property is deprecated and will be removed in a future version.
     Use system.args instead.
 
 .. _phantom-clearCookies:
