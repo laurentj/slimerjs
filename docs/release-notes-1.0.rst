@@ -6,7 +6,7 @@ Release Notes of SlimerJS 1.0
 ==============================
 
 version 1.0
-==============
+===========
 
 Not released yet.
 
@@ -17,17 +17,17 @@ New features and API
 - ``onResourceError`` parameter contains now always ``status`` and ``statusText`` properties
 - ``proxy()`` and ``setProxy()`` methods
 - ``slimer.version`` and ``slimer.geckoVersion`` have a new ``prerelease`` property.
-- With Firefox 56 and more, SlimerJS can be trully headless by adding the --headless option on the command line
+- With Firefox 56 and more, SlimerJS can be trully headless by adding the ``--headless`` option on the command line
 - Proxy config: support https URI for pac
 - new ``fs.isSpecial()``
-- onResourceRequested: support of requestData.postData when http method is "patch"
+- ``onResourceRequested``: support of requestData.postData when http method is "patch"
 
 Improvements
 ------------
 
 * implements ``system.pid`` (#473)
 * implements ``phantom.proxy()`` and ``phantom.setProxy()`` methods (#436, #444, #445)
-* Compatibility with Firefox 53 to 58
+* Compatibility with Firefox 53 to 59
 
 Fixed bugs
 ----------
@@ -76,6 +76,7 @@ Known issues
 Contributors for this release
 -----------------------------
 
+- Avadh Patel
 - Brian Birtles
 - Brendan Dahl
 - Nagy Attila Gabor
