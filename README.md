@@ -6,11 +6,10 @@ with an external Javascript script: opening a webpage, clicking on links, modify
 It is useful to do functional tests, page automation, network monitoring, screen capture etc.
 
 It is a tool like [PhantomJs](http://phantomjs.org/), except that
-it runs Gecko instead of Webkit, and it is not (yet) natively headless.
-However, it can be headless with the use of xvfb under Linux (but not on MacOS).
+it runs Gecko instead of Webkit, and it is headless when using Firefox 56+.
 
 SlimerJS provides the same API of PhantomJS. The current version of SlimerJS
-is highly compatible with PhantomJS 1.9.
+is highly compatible with PhantomJS 2.1.
 See current release notes in docs/release-notes-*.rst, and
 read the [compatibility table](https://github.com/laurentj/slimerjs/blob/master/API_COMPAT.md)
 to know the implementation level.
@@ -36,11 +35,6 @@ Or discuss with us on IRC: channel #slimerjs on irc.mozilla.org.
 
 See documentation into the docs/ directory into the source code, or read
 it [on the web site](http://docs.slimerjs.org/current/)
-
-# Roadmap
-
-The goal for a first major stable release 1.0 is to have a full implementation of
-the API of PhantomJS 1.9.x and 2.1, with the support of Coffee scripts and Ghost Driver.
 
 # FAQ and contribution
 
