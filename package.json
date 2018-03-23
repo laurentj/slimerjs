@@ -1,6 +1,6 @@
 {
   "name": "slimerjs",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0",
   "description": "A scriptable browser like PhantomJS, based on Firefox",
   "bin": {
     "slimerjs": "./src/slimerjs-node"

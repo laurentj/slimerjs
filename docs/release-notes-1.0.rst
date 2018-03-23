@@ -8,7 +8,7 @@ Release Notes of SlimerJS 1.0
 version 1.0
 ===========
 
-Not released yet.
+Released on March 23, 2018.
 
 New features and API
 ---------------------
