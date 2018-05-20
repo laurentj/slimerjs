@@ -22,7 +22,7 @@ on [http://docs.slimerjs.org].
   the path by itself but it can fail. You must then set the environment variable
   SLIMERJSLAUNCHER, which should contain the full path to the firefox binary:
    - On linux: ```export SLIMERJSLAUNCHER=/usr/bin/firefox```
-   - on Windows: ```SET SLIMERJSLAUNCHER="c:\Program Files\Mozilla Firefox\firefox.exe```
+   - on Windows: ```SET SLIMERJSLAUNCHER=c:\Program Files\Mozilla Firefox\firefox.exe```
    - On windows with cygwin : ```export SLIMERJSLAUNCHER="/cygdrive/c/program files/mozilla firefox/firefox.exe"```
    - On MacOS: ```export SLIMERJSLAUNCHER=/Applications/Firefox.app/Contents/MacOS/firefox```
 - You can of course set this variable in your .bashrc, .profile or in the computer
