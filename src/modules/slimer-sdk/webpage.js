@@ -1341,6 +1341,7 @@ function _create(parentWebpageInfo) {
             let domWindowUtils = browser.contentWindow
                                         .QueryInterface(Ci.nsIInterfaceRequestor)
                                         .getInterface(Ci.nsIDOMWindowUtils);
+            let sendKeyEvent;
             if (domWindowUtils.sendKeyEvent===undefined){
                 let TIP = Cc["@mozilla.org/text-input-processor;1"]
                             .createInstance(Ci.nsITextInputProcessor);
@@ -1359,23 +1360,21 @@ function _create(parentWebpageInfo) {
                     return false;
                     }
                 });
-                function sendKeyEvent(eventType, keyCode, charCode, modifier){
+                sendKeyEvent = function sendKeyEvent(eventType, keyCode, charCode, modifier){
                     if (eventType==="keydown"){
                         TIP.keydown(new KeyboardEvent("",{ 
-                            key: String.fromCharCode(charCode),                          // Required.
-                            //code: "Enter",                           
-                            keyCode: keyCode,    // Required if printable key, but optional if non-printable key.
-                            location: KeyboardEvent.DOM_VK_STANDARD, // Optional, may be computed from code attribute value.
-                            repeat: false,                           // Optional.
-                        }));                             
+                            key: String.fromCharCode(charCode), 
+                            keyCode: keyCode,
+                            location: KeyboardEvent.DOM_VK_STANDARD,
+                            repeat: false, 
+                        }));                            
                     }
                     if (eventType==="keyup"){
                         TIP.keyup(new KeyboardEvent("",{ 
-                            key: String.fromCharCode(charCode),                            // Required.
-                            //code: "Enter",                           
-                            keyCode: keyCode,    // Required if printable key, but optional if non-printable key.
-                            location: KeyboardEvent.DOM_VK_STANDARD, // Optional, may be computed from code attribute value.
-                            repeat: false,                           // Optional.
+                            key: String.fromCharCode(charCode),
+                            keyCode: keyCode,
+                            location: KeyboardEvent.DOM_VK_STANDARD,
+                            repeat: false,
                         }));
                     }
                 }
