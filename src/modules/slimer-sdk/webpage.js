@@ -1341,6 +1341,47 @@ function _create(parentWebpageInfo) {
             let domWindowUtils = browser.contentWindow
                                         .QueryInterface(Ci.nsIInterfaceRequestor)
                                         .getInterface(Ci.nsIDOMWindowUtils);
+            let sendKeyEvent;
+            if (domWindowUtils.sendKeyEvent===undefined){
+                let TIP = Cc["@mozilla.org/text-input-processor;1"]
+                            .createInstance(Ci.nsITextInputProcessor);
+                TIP.beginInputTransaction(browser.contentWindow,function simpleIME_callback(aTIP, aNotification){
+                    try {
+                    switch (aNotification.type) {
+                        case "request-to-commit":
+                        aTIP.commitComposition();
+                        break;
+                        case "request-to-cancel":
+                        aTIP.cancelComposition();
+                        break;
+                    }
+                    return true;
+                    } catch (e) {
+                    return false;
+                    }
+                });
+                sendKeyEvent = function sendKeyEvent(eventType, keyCode, charCode, modifier){
+                    if (eventType==="keydown"){
+                        TIP.keydown(new KeyboardEvent("",{ 
+                            key: String.fromCharCode(charCode), 
+                            keyCode: keyCode,
+                            location: KeyboardEvent.DOM_VK_STANDARD,
+                            repeat: false, 
+                        }));                            
+                    }
+                    if (eventType==="keyup"){
+                        TIP.keyup(new KeyboardEvent("",{ 
+                            key: String.fromCharCode(charCode),
+                            keyCode: keyCode,
+                            location: KeyboardEvent.DOM_VK_STANDARD,
+                            repeat: false,
+                        }));
+                    }
+                }
+            }
+            else{
+                sendKeyEvent = domWindowUtils.sendKeyEvent;
+            }
             if (modifier) {
                 let  m = 0;
                 let mod = this.event.modifier;
@@ -1368,7 +1409,7 @@ function _create(parentWebpageInfo) {
                 if (DEBUG_WEBPAGE) {
                     slDebugLog("webpage: sendEvent DOMEvent:"+eventType+" keycode:"+DOMKeyCode.keyCode+" charCode:"+DOMKeyCode.charCode+" mod:"+modifier)
                 }
-                domWindowUtils.sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
+                sendKeyEvent(eventType, DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 return;
             }
             else if (eventType == 'keypress') {
@@ -1378,7 +1419,7 @@ function _create(parentWebpageInfo) {
                     if (DEBUG_WEBPAGE) {
                         slDebugLog("webpage: sendEvent DOMEvent:keypress keycode:"+DOMKeyCode.keyCode+" charCode:"+DOMKeyCode.charCode+" mod:"+modifier)
                     }
-                    domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
+                    sendKeyEvent("keypress", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                 }
                 else if (key.length == 1) {
                     let charCode = key.charCodeAt(0);
@@ -1386,7 +1427,7 @@ function _create(parentWebpageInfo) {
                     if (DEBUG_WEBPAGE) {
                         slDebugLog("webpage: sendEvent DOMEvent:keypress keycode:"+DOMKeyCode.keyCode+" charCode:"+charCode+" mod:"+modifier)
                     }
-                    domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, modifier);
+                    sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, modifier);
                 }
                 else {
                     if (DEBUG_WEBPAGE) {
@@ -1395,9 +1436,9 @@ function _create(parentWebpageInfo) {
                     for(let i=0; i < key.length;i++) {
                         let charCode = key.charCodeAt(i);
                         let DOMKeyCode = convertQTKeyCode(charCode);
-                        domWindowUtils.sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
-                        domWindowUtils.sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, modifier);
-                        domWindowUtils.sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
+                        sendKeyEvent("keydown", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
+                        sendKeyEvent("keypress", DOMKeyCode.keyCode, charCode, modifier);
+                        sendKeyEvent("keyup", DOMKeyCode.keyCode, DOMKeyCode.charCode, modifier);
                     }
                 }
                 return;
