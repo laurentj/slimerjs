@@ -1913,9 +1913,9 @@ expect(key.keydownCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    // -----------------------------------------------  single accentued char: keydown
+    // -----------------------------------------------  single accentuated char: keydown
 
-    it("send keydown event with a string of an accentued printable char",function(done) {
+    it("send keydown event with a string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "é");
         readResult()
@@ -1945,7 +1945,7 @@ expect(input).toEqual("é"); // value with phantomjs is "é"
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with  shift + string of an accentued printable char",function(done) {
+    it("send keydown event with  shift + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "é", null, null, modifier.shift);
         readResult()
@@ -1976,7 +1976,7 @@ expect(key.keypressShift).toEqual(true);
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with alt + string of an accentued printable char",function(done) {
+    it("send keydown event with alt + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "é", null, null, modifier.alt);
         readResult()
@@ -2006,7 +2006,7 @@ expect(key.keypressAlt).toEqual(true);
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with ctrl + string of an accentued printable char",function(done) {
+    it("send keydown event with ctrl + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "é", null, null, modifier.ctrl);
         readResult()
@@ -2036,7 +2036,7 @@ expect(key.keypressCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keydown event with shift + ctrl + string of an accentued printable char",function(done) {
+    it("send keydown event with shift + ctrl + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keydown", "é", null, null, modifier.ctrl | modifier.shift);
         readResult()
@@ -2066,9 +2066,9 @@ expect(key.keypressCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(false);
     });
 
-    // -----------------------------------------------  single accentued char: keypress
+    // -----------------------------------------------  single accentuated char: keypress
 
-    it("send keypress event with a string of an accentued printable char",function(done) {
+    it("send keypress event with a string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "é");
         readResult()
@@ -2101,7 +2101,7 @@ expect(key.keyupC).toEqual(0); // value with phantomjs is 0
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keypress event with  shift + string of an accentued printable char",function(done) {
+    it("send keypress event with  shift + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "é", null, null, modifier.shift);
         readResult()
@@ -2136,7 +2136,7 @@ expect(key.keydownShift).toEqual(true);
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keypress event with alt + string of an accentued printable char",function(done) {
+    it("send keypress event with alt + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "é", null, null, modifier.alt);
         readResult()
@@ -2171,7 +2171,7 @@ expect(key.keydownAlt).toEqual(true);
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keypress event with ctrl + string of an accentued printable char",function(done) {
+    it("send keypress event with ctrl + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "é", null, null, modifier.ctrl);
         readResult()
@@ -2206,7 +2206,7 @@ expect(key.keydownCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(false);
     });
 
-    it("send keypress event with shift + ctrl + string of an accentued printable char",function(done) {
+    it("send keypress event with shift + ctrl + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keypress", "é", null, null, modifier.ctrl | modifier.shift);
         readResult()
@@ -2243,9 +2243,9 @@ expect(key.keydownCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(false);
     });
 
-    // -----------------------------------------------  single accentued char: keyup
+    // -----------------------------------------------  single accentuated char: keyup
 
-    it("send keyup event with a string of an accentued printable char",function(done) {
+    it("send keyup event with a string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é");
         readResult()
@@ -2270,7 +2270,7 @@ expect(key.keydownCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with  shift + string of an accentued printable char",function(done) {
+    it("send keyup event with  shift + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é", null, null, modifier.shift);
         readResult()
@@ -2295,7 +2295,7 @@ expect(key.keydownCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with alt + string of an accentued printable char",function(done) {
+    it("send keyup event with alt + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é", null, null, modifier.alt);
         readResult()
@@ -2320,7 +2320,7 @@ expect(key.keydownCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with ctrl + string of an accentued printable char",function(done) {
+    it("send keyup event with ctrl + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é", null, null, modifier.ctrl);
         readResult()
@@ -2345,7 +2345,7 @@ expect(key.keydownCtrl).toEqual(true);
         expect(key.keydownMeta).toEqual(-1);
     });
 
-    it("send keyup event with shift + ctrl + string of an accentued printable char",function(done) {
+    it("send keyup event with shift + ctrl + string of an accentuated printable char",function(done) {
         webpage.evaluate(resetKeyCode);
         webpage.sendEvent("keyup", "é", null, null, modifier.ctrl | modifier.shift);
         readResult()
