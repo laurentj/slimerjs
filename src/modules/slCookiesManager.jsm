@@ -40,7 +40,7 @@ function initCookieFromnsICookie(nsCookie) {
         c.expiry = null;
     }
     else {
-        c.expires = (new Date(nsCookie.expires)).toString();
+        c.expires = (new Date(nsCookie.expires * 1000)).toString();
         c.expiry = nsCookie.expiry;
     }
     return c;
