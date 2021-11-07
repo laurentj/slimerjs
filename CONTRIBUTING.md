@@ -1,4 +1,11 @@
 
+
+Note: the development of SlimerJS has been suspended, due to technical issues difficult to resolve with Firefox 60 
+and higher.
+
+
+
+
 How to fill an issue
 ====================
 

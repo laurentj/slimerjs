@@ -94,11 +94,21 @@
 
     <dt id="firefox-compatibility">Which version of Firefox is SlimerJS compatible with?</dt>
     <dd>It runs with Firefox 52 and higher versions.<br>Officially, SlimerJS
-        is only compatible with stable versions of Firefox.
+        is only compatible with stable versions of Firefox until Firefox 59.
     </dd>
 
-    <dt id="firefox-unstable">Can SlimerJS be executed with unstable version of Firefox?</dt>
-    <dd>Yes, if you make some changes. This is explained <a href="https://docs.slimerjs.org/current/installation.html#using-unstable-version-or-very-old-versions-of-firefox-xulrunner">in the installation manual</a>.</dd>
+    <dt id="end-of-development">Why SlimerJS is not compatible with Firefox 60 and higher?</dt>
+    <dd>The Ghostbusters team of Mozilla decided to kill XUL extensions into Firefox some years ago, and so many
+        of internal API of Firefox became unstable. Then it became more and more difficult to update SlimerJS at each
+    new version of Firefox, as those internal API changed, disappeared etc. This ghost trap worked so well that at some
+        points, it even became  impossible to adapt SlimerJS without rewriting it entirely. Because of lack of time and motivation,
+    the main developer stopped the development of SlimerJS in 2018 and decided in 2021 to officially end the project.</dd>
+
+    <dt id="why-slimerjs-name">Why is it called "SlimerJs"?</dt>
+    <dd>Slimer is the name of a ghost in the movie "GhostBusters". As you may know, the Firefox
+        source code uses some references from this movie, and since PhantomJS,
+        CasperJs and other related tools, is a matter of... ghosts ;-)</dd>
+
 
     <dt id="standalone-version">I don't find anymore the "Standalone" edition
      like for SlimerJS 0.9. Where is it?</dt>
@@ -111,10 +121,6 @@
         on the command line.
     </dd>
 
-    <dt id="why-slimerjs-name">Why is it called "SlimerJs"?</dt>
-    <dd>Slimer is the name of a ghost in the movie "GhostBusters". As you may know, the Firefox
-        source code uses some references from this movie, and since PhantomJS,
-        CasperJs and other related tools, is a matter of... ghosts ;-)</dd>
 
     <dt id="how-to-contribute">How can I contribute?</dt>
     <dd>
@@ -129,7 +135,7 @@
                  It is stored in the github repository.</li>
             <li><a href="https://github.com/laurentj/slimerjs/tree/master/website">Improve the web site</a>.
                  The web site is also stored in the github repository.</li>
-            <li>Other ideas? Discuss with us on the IRC channel or in the mailing list
+            <li>Other ideas? Discuss with us on the mailing list
              (<a href="community.html">see the community page</a>).</li>
         </ul>
     </dd>
@@ -181,7 +187,7 @@
               <a href="https://github.com/laurentj/slimerjs/issues"><img class="imgbtn" src="assets/img/bug_bleu.png"> Bug? Ideas!</a>
             </li>
           </ul>
-          <p>Copyright 2013-2018 Laurent Jouanneau / <a href="http://innophi.com">Innophi</a> - Design by <a href="http://www.3liz.com/">3Liz</a></p>
+          <p>Copyright 2013-2021 Laurent Jouanneau / <a href="http://innophi.com">Innophi</a> - Design by <a href="http://www.3liz.com/">3Liz</a></p>
       </div>
     </footer>
 

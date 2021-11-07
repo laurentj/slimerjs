@@ -126,6 +126,10 @@ hr.soften {
     font-size: 18px;
 }
 
+#download .warning {
+  font-size: 18px;
+}
+
 a {
     color: rgb(22, 120, 127);
 }

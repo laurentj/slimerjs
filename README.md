@@ -7,6 +7,11 @@ It is useful to do functional tests, page automation, network monitoring, screen
 
 It is a tool like [PhantomJs](http://phantomjs.org/), except that
 it runs Gecko instead of Webkit, and it is headless when using Firefox 56+.
+It can be used with Firefox 59. 
+
+**Higher version of Firefox is not supported and probably will not be supported
+in the future, as the development is suspended for now**.
+
 
 SlimerJS provides the same API of PhantomJS. The current version of SlimerJS
 is highly compatible with PhantomJS 2.1.
@@ -29,7 +34,6 @@ Follow us on twitter: [@slimerjs](https://twitter.com/slimerjs)
 
 Ask your questions on the dedicated [mailing list](https://groups.google.com/forum/#!forum/slimerjs).
 
-Or discuss with us on IRC: channel #slimerjs on irc.mozilla.org.
 
 # Install SlimerJS, executing a script...
 
