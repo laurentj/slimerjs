@@ -305,7 +305,7 @@ jasmine.Spy = function(name) {
 };
 
 /**
- * Tells a spy to call through to the actual implemenatation.
+ * Tells a spy to call through to the actual implementation.
  *
  * @example
  * var foo = {
@@ -528,7 +528,7 @@ var expect = function(actual) {
 if (isCommonJS) exports.expect = expect;
 
 /**
- * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
+ * Defines part of a jasmine spec.  Used in combination with waits or waitsFor in asynchrnous specs.
  *
  * @param {Function} func Function that defines part of a jasmine spec.
  */

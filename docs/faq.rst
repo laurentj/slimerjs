@@ -52,7 +52,7 @@ depends on many different things:
 So, don't expect to have exactly the same results between any browser and SlimerJS.
 Moreover, as SlimerJS is executed on top of Firefox, so **At least, the rendering
 with SlimerJs may be exactly the same as with Firefox** (same gecko version, on the
-same operating system). However you could have some difference in some extrem
+same operating system). However you could have some difference in some extremum
 case (high zooming for example) and with different operating system (even it is
 the same gecko version).
 
