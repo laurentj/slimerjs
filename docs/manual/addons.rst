@@ -73,7 +73,7 @@ Steps to install extensions:
 - 4. Set User Prefs extensions.xpiState (prefs.js)
    Add-ons need to be loaded. As a UI is missing to load an extension, you need
    to set user preferences manually. This is done in the profile dir prefs.js
-   file. The value is a JSON object (be careful with masking quots and
+   file. The value is a JSON object (be careful with masking quotes and
    structure). You need to set EXTENSION_ID, realFolderToExtension and VERSION
    accordingly. The timestamps fields (st and mt) should be filled with recent
    timestamps. Everything in the near past should do.

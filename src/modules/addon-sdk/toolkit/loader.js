@@ -7,7 +7,7 @@
 /**
  * this files does originally come from the Mozilla project (addons-sdk)
  * resource://gre/modules/commonjs/loader.js
- * Some functionnalities have been added:
+ * Some functionalities have been added:
  *  - the possibility to indicate the javascript version in the loader options
  *    to evaluate modules with this version.
  *  - the possiblity to indicate our own sandbox for the module loading

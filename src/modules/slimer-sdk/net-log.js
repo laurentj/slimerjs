@@ -348,7 +348,7 @@ TracingListener.prototype = {
         }
 
         if (this.originalRequest.status == Cr.NS_BINDING_REDIRECTED) {
-            // when there is a redirection, the original chanel has this status
+            // when there is a redirection, the original channel has this status
             // but we receive as "request" argument the new channel. We should ignore
             // this new channel because it has its own TracingListener
             this.response = traceResponse(this.index, this.originalRequest);
