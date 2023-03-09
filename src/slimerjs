@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+VER="1.0.0" # Version of SlimerJS for --version
+
 #retrieve full path of the current script
 # symlinks are resolved, so application.ini could be found
 # this code comes from http://stackoverflow.com/questions/59895/
@@ -117,6 +119,10 @@ for i in $*; do
     case "$i" in
         --help|-h)
            showHelp
+           exit 0
+           ;;
+        --version|-v)
+           echo $VER
            exit 0
            ;;
         -reset-profile|-profile|-p|-createprofile|-profilemanager)
